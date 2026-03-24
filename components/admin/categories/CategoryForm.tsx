@@ -8,6 +8,7 @@ export default function CategoryForm({ onSubmit, initialData }: any) {
       name: "",
       description: "",
       image: "",
+      imageAlt: "",
     }
   );
 
@@ -36,6 +37,19 @@ export default function CategoryForm({ onSubmit, initialData }: any) {
         }
         className="border p-2 w-full"
       />
+
+      <input
+        placeholder="Image alt text for SEO"
+        value={form.imageAlt}
+        onChange={(e) =>
+          setForm({ ...form, imageAlt: e.target.value })
+        }
+        className="border p-2 w-full"
+      />
+
+      <p className="text-xs text-gray-500">
+        Example: Gold pendant category banner with gemstone necklace.
+      </p>
 
       <textarea
         placeholder="Description"

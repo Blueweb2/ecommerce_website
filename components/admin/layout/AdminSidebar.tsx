@@ -1,18 +1,62 @@
 "use client";
 
 import Link from "next/link";
-import { LayoutDashboard, Package, Tag, Users } from "lucide-react";
+import {
+  LayoutDashboard,
+  Package,
+  Tag,
+  Users,
+  ShoppingCart,
+  UserCog,
+  User,
+} from "lucide-react";
 import { usePathname } from "next/navigation";
-
-const menu = [
-  { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
-  { name: "Products", href: "/admin/products", icon: Package },
-  { name: "Categories", href: "/admin/categories", icon: Tag },
-  { name: "Users", href: "/admin/users", icon: Users },
-];
+import { useAdminAuthStore } from "@/store/admin/useAdminAuthStore";
 
 export default function AdminSidebar() {
   const pathname = usePathname();
+  const { user } = useAdminAuthStore();
+
+  // 🔥 Dynamic menu
+  const menu = [
+    {
+      name: "Dashboard",
+      href: "/admin/dashboard",
+      icon: LayoutDashboard,
+    },
+    {
+      name: "Products",
+      href: "/admin/products",
+      icon: Package,
+    },
+    {
+      name: "Orders",
+      href: "/admin/orders",
+      icon: ShoppingCart,
+    },
+    {
+      name: "Users",
+      href: "/admin/users",
+      icon: Users,
+    },
+
+    // 🔐 Superadmin only
+    ...(user?.role === "superadmin"
+      ? [
+          {
+            name: "Admins",
+            href: "/admin/admins",
+            icon: UserCog,
+          },
+        ]
+      : []),
+
+    {
+      name: "Profile",
+      href: "/admin/profile",
+      icon: User,
+    },
+  ];
 
   return (
     <div className="w-64 h-screen bg-[#1a1f1a] text-white flex flex-col p-4">
