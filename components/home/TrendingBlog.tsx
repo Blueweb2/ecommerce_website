@@ -37,7 +37,7 @@ export default function TrendingBlogs() {
       <div className="max-w-7xl mx-auto px-4 md:px-8">
 
         {/* TITLE */}
-        <h2 className="text-center text-2xl font-semibold mb-10">
+        <h2 className="text-center text-2xl font-semibold mb-10 font-serif">
           Trending Blogs
         </h2>
 
