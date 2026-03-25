@@ -5,16 +5,16 @@ import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const brands = [
-  { name: "Swarovski", logo: '/home/brandsection/icon.png' },
-  { name: "Kering", logo: '/home/brandsection/icon.png' },
-  { name: "Cartier", logo: '/home/brandsection/icon.png' },
-  { name: "Dior", logo: '/home/brandsection/icon.png' },
-  { name: "Elvira", logo: '/home/brandsection/icon.png' },
-  { name: "Ohana", logo: '/home/brandsection/icon.png' },
-  { name: "Ohana", logo: '/home/brandsection/icon.png' },
-  { name: "Ohana", logo: '/home/brandsection/icon.png' },
-  { name: "Ohana", logo: '/home/brandsection/icon.png' },
-  { name: "Ohana", logo: '/home/brandsection/icon.png' },
+  { logo: '/home/brandsection/icon.png' },
+  { logo: '/home/brandsection/icon.png' },
+  { logo: '/home/brandsection/icon.png' },
+  { logo: '/home/brandsection/icon.png' },
+  { logo: '/home/brandsection/icon.png' },
+  { logo: '/home/brandsection/icon.png' },
+  { logo: '/home/brandsection/icon.png' },
+  { logo: '/home/brandsection/icon.png' },
+  { logo: '/home/brandsection/icon.png' },
+  { logo: '/home/brandsection/icon.png' },
 ];
 
 export default function BrandSection() {
@@ -67,11 +67,11 @@ export default function BrandSection() {
           {brands.map((brand, index) => (
             <div
               key={index}
-              className="min-w-[200px] bg-white rounded-md flex items-center justify-center border border-gray-300"
+              className="h-[80px] w-[120px] md:h-auto md:min-w-[200px] flex-shrink-0 bg-white rounded-md flex items-center justify-center border border-gray-300 overflow-hidden"
             >
               <Image
                 src={brand.logo}
-                alt={brand.name}
+                alt='logo'
                 width={120}
                 height={40}
                 className="object-contain"
