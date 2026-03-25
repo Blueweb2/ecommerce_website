@@ -6,6 +6,7 @@ const BrandSection = dynamic(() => import("@/components/home/BrandSection"));
 const Categories = dynamic(() => import("@/components/home/Categories"));
 const ShopSection = dynamic(() => import("@/components/home/ShopSection"));
 const Advertisement = dynamic(() => import("@/components/home/Advertisement"));
+const TrendingBlog = dynamic(() => import("@/components/home/TrendingBlog"));
 
 const page = () => {
   return (
@@ -16,6 +17,7 @@ const page = () => {
       <Categories />
       <ShopSection />
       <Advertisement />
+      <TrendingBlog />
     </>
   );
 };
