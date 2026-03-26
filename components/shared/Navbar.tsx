@@ -3,10 +3,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Search, Heart, User, ShoppingCart } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function Navbar() {
 
   const pathname = usePathname();
+  const router = useRouter();
 
   const linkClass = (path: string) =>
     `transition hover:text-black ${
@@ -72,7 +74,7 @@ export default function Navbar() {
           <button className="hover:text-black transition">
             <Heart size={18} />
           </button>
-          <button className="hover:text-black transition">
+          <button className="hover:text-black transition" onClick={() => router.push("/login")}>
             <User size={18} />
           </button>
           <button className="hover:text-black transition">
