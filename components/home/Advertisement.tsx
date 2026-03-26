@@ -29,10 +29,10 @@ export default function AdvertisementSection() {
               </p>
 
               <Link
-                href="/collections/bridal"
+                href="/shop"
                 className="inline-block bg-[#c9a96e] text-white text-[10px] sm:text-xs md:text-sm px-3 sm:px-4 md:px-5 py-1.5 sm:py-2 rounded-full"
               >
-                EXPLORE COLLECTION
+                SHOP BRIDAL
               </Link>
             </div>
           </div>

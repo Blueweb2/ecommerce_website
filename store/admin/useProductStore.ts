@@ -1,26 +1,19 @@
 import { create } from "zustand";
 import * as api from "@/lib/api/admin/product.api";
+import {
+  CatalogProduct,
+  ProductPayload,
+} from "@/lib/constants/admin-catalog";
 
-// ✅ Define Product type (basic for now)
-interface Product {
-  _id: string;
-  name: string;
-  price: number;
-  category: any;
-}
-
-// ✅ Define Store type
 interface ProductState {
-  products: Product[];
+  products: CatalogProduct[];
   loading: boolean;
-
   fetchProducts: () => Promise<void>;
-  createProduct: (data: any) => Promise<void>;
-  updateProduct: (id: string, data: any) => Promise<void>;
+  createProduct: (data: ProductPayload) => Promise<void>;
+  updateProduct: (id: string, data: ProductPayload) => Promise<void>;
   deleteProduct: (id: string) => Promise<void>;
 }
 
-// ✅ Typed Zustand store
 export const useProductStore = create<ProductState>((set) => ({
   products: [],
   loading: false,
@@ -28,12 +21,19 @@ export const useProductStore = create<ProductState>((set) => ({
   fetchProducts: async () => {
     set({ loading: true });
 
-    const res = await api.getProducts();
+    try {
+      const res = await api.getProducts();
 
-    set({
-      products: res.data.data,
-      loading: false,
-    });
+      set({
+        products: Array.isArray(res.data?.data) ? res.data.data : [],
+        loading: false,
+      });
+    } catch {
+      set({
+        products: [],
+        loading: false,
+      });
+    }
   },
 
   createProduct: async (data) => {
@@ -44,8 +44,8 @@ export const useProductStore = create<ProductState>((set) => ({
     const res = await api.updateProduct(id, data);
 
     set((state) => ({
-      products: state.products.map((p) =>
-        p._id === id ? res.data.data : p
+      products: state.products.map((product) =>
+        product._id === id ? res.data.data : product
       ),
     }));
   },
@@ -54,7 +54,7 @@ export const useProductStore = create<ProductState>((set) => ({
     await api.deleteProduct(id);
 
     set((state) => ({
-      products: state.products.filter((p) => p._id !== id),
+      products: state.products.filter((product) => product._id !== id),
     }));
   },
 }));

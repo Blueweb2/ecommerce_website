@@ -6,6 +6,11 @@ import CategoryForm from "@/components/admin/categories/CategoryForm";
 import { useCategoryStore } from "@/store/admin/useCategoryStore";
 import toast from "react-hot-toast";
 import axios from "@/lib/api/axios";
+import {
+  ApiErrorResponse,
+  CatalogEntity,
+  CategoryPayload,
+} from "@/lib/constants/admin-catalog";
 
 export default function EditCategoryPage() {
   const { id } = useParams();
@@ -14,7 +19,7 @@ export default function EditCategoryPage() {
   const { updateCategory } = useCategoryStore();
 
   const [loading, setLoading] = useState(true);
-  const [category, setCategory] = useState<any>(null);
+  const [category, setCategory] = useState<CatalogEntity | null>(null);
 
   // Fetch single category
   useEffect(() => {
@@ -32,13 +37,14 @@ export default function EditCategoryPage() {
     if (id) fetchCategory();
   }, [id]);
 
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async (data: CategoryPayload) => {
     try {
       await updateCategory(id as string, data);
       toast.success("Category updated successfully");
       router.push("/admin/categories");
-    } catch (error: any) {
-      toast.error(error?.response?.data?.message || "Update failed");
+    } catch (error: unknown) {
+      const apiError = error as ApiErrorResponse;
+      toast.error(apiError.response?.data?.message || "Update failed");
     }
   };
 
@@ -51,8 +57,15 @@ export default function EditCategoryPage() {
   }
 
   return (
-    <div className="max-w-xl space-y-6">
-      <h1 className="text-2xl font-semibold">Edit Category</h1>
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-3xl font-semibold tracking-tight text-slate-900">
+          Edit Category
+        </h1>
+        <p className="mt-2 text-sm text-slate-500">
+          Refine naming, imagery, and copy for this catalog grouping.
+        </p>
+      </div>
 
       <CategoryForm
         initialData={{

@@ -6,6 +6,13 @@ import ProductForm from "@/components/admin/products/ProductForm";
 import { useProductStore } from "@/store/admin/useProductStore";
 import axios from "@/lib/api/axios";
 import toast from "react-hot-toast";
+import {
+  ApiErrorResponse,
+  CatalogProduct,
+  getPrimaryProductImage,
+  getProductImageUrl,
+  ProductPayload,
+} from "@/lib/constants/admin-catalog";
 
 export default function EditProductPage() {
   const params = useParams();
@@ -14,7 +21,7 @@ export default function EditProductPage() {
   const router = useRouter();
   const { updateProduct } = useProductStore();
 
-  const [product, setProduct] = useState<any>(null);
+  const [product, setProduct] = useState<CatalogProduct | null>(null);
   const [loading, setLoading] = useState(true);
 
   // Fetch product
@@ -33,13 +40,14 @@ export default function EditProductPage() {
     if (id) fetchProduct();
   }, [id]);
 
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async (data: ProductPayload) => {
     try {
       await updateProduct(id, data);
       toast.success("Product updated");
       router.push("/admin/products");
-    } catch {
-      toast.error("Update failed");
+    } catch (error: unknown) {
+      const apiError = error as ApiErrorResponse;
+      toast.error(apiError.response?.data?.message || "Update failed");
     }
   };
 
@@ -47,16 +55,32 @@ export default function EditProductPage() {
   if (!product) return <div className="p-6 text-red-500">Not found</div>;
 
   return (
-    <div className="max-w-xl space-y-6">
-      <h1 className="text-2xl font-semibold">Edit Product</h1>
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-3xl font-semibold tracking-tight text-slate-900">
+          Edit Product
+        </h1>
+        <p className="mt-2 text-sm text-slate-500">
+          Update category placement, section tags, and product media.
+        </p>
+      </div>
 
       <ProductForm
         initialData={{
+          sku: product.sku || "",
           name: product.name,
           price: product.price,
-          category: product.category?._id,
-          imageUrl: product.images?.[0] || "",
+          description: product.description || "",
+          category:
+            typeof product.category === "string"
+              ? product.category
+              : product.category?._id || "",
+          sections: product.sections || [],
+          imageUrl: getProductImageUrl(getPrimaryProductImage(product.images)),
           imageAlt: product.imageAlt || "",
+          stock: product.stock ?? "",
+          isPublished: product.isPublished ?? true,
+          variants: product.variants || [],
         }}
         onSubmit={handleSubmit}
       />
