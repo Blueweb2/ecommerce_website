@@ -1,8 +1,5 @@
-"use client";
-
-import { useRef } from "react";
+//"use client";
 import Image from "next/image";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const brands = [
   { logo: '/home/brandsection/icon.png' },
@@ -17,20 +14,9 @@ const brands = [
   { logo: '/home/brandsection/icon.png' },
 ];
 
+const loopBrands = [...brands, ...brands];
+
 export default function BrandSection() {
-
-  const scrollRef = useRef<HTMLDivElement>(null);
-
-  const scroll = (direction: "left" | "right") => {
-    if (scrollRef.current) {
-      const scrollAmount = 200;
-
-      scrollRef.current.scrollBy({
-        left: direction === "right" ? scrollAmount : -scrollAmount,
-        behavior: "smooth",
-      });
-    };
-  };
 
   return (
     <section className="bg-[#f5f5f5] py-10">
@@ -41,43 +27,26 @@ export default function BrandSection() {
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-medium tracking-tight text-gray-700      font-serif">
             Our Brand
           </h2>
-
-          {/* ARROWS */}
-          <div className="flex gap-2">
-            <button
-              onClick={() => scroll("left")}
-              className="w-8 h-8 rounded-full border border-gray-400 flex items-center justify-center hover:bg-gray-200 transition"
-            >
-              <ChevronLeft size={16} />
-            </button>
-            <button
-              onClick={() => scroll("right")}
-              className="w-8 h-8 rounded-full border border-gray-400 flex items-center justify-center hover:bg-gray-200 transition"
-            >
-              <ChevronRight size={16} />
-            </button>
-          </div>
         </div>
 
         {/* BRAND SLIDER */}
-        <div
-          ref={scrollRef}
-          className="flex gap-4 overflow-x-auto scrollbar-hide"
-        >
-          {brands.map((brand, index) => (
-            <div
-              key={index}
-              className="h-[80px] w-[120px] md:h-auto md:min-w-[200px] flex-shrink-0 bg-white rounded-md flex items-center justify-center border border-gray-300 overflow-hidden"
-            >
-              <Image
-                src={brand.logo}
-                alt='logo'
-                width={120}
-                height={40}
-                className="object-contain"
-              />
-            </div>
-          ))}
+        <div className="overflow-hidden">
+          <div className="flex gap-4 animate-scroll">
+            {loopBrands.map((brand, index) => (
+              <div
+                key={index}
+                className="h-[80px] w-[120px] md:h-auto md:min-w-[200px] flex-shrink-0 bg-white rounded-md flex items-center justify-center border border-gray-300 overflow-hidden"
+              >
+                <Image
+                  src={brand.logo}
+                  alt="logo"
+                  width={120}
+                  height={40}
+                  className="object-contain"
+                />
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* PROMO CARDS */}

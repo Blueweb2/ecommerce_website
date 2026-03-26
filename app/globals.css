@@ -1,6 +1,85 @@
 @import "tailwindcss";
 
-/* hide scrollbar */
+/* HERO SECTION ANIMATION */
+@keyframes fadeUp {
+  0% {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeUp {
+  opacity: 0;
+  animation: fadeUp 1.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.animate-delay-200 {
+  animation-delay: 0.2s;
+}
+
+.animate-delay-400 {
+  animation-delay: 0.4s;
+}
+
+
+/* RIGHT → LEFT */
+@keyframes slideRightToCenter {
+  0% {
+    opacity: 0;
+    transform: translateX(60px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* LEFT → RIGHT */
+@keyframes slideLeftToCenter {
+  0% {
+    opacity: 0;
+    transform: translateX(-60px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-right {
+  animation: slideRightToCenter 1.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.animate-slide-left {
+  animation: slideLeftToCenter 1s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;
+}
+
+
+/* BRAND SECTION AUTO SCROLL ANIMATION */
+@keyframes scrollX {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-scroll {
+  display: flex;
+  width: max-content;
+  animation: scrollX 20s linear infinite;
+}
+
+.animate-scroll:hover {
+  animation-play-state: paused;
+}
+
+/* HIDE SCROLLBAR */
 .scrollbar-hide {
   -ms-overflow-style: none; /* IE & Edge */
   scrollbar-width: none; /* Firefox */
