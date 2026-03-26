@@ -1,10 +1,17 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useAdminAuthStore } from "@/store/admin/useAdminAuthStore";
 import { LogOut } from "lucide-react";
 
 export default function AdminNavbar() {
   const { user, logout } = useAdminAuthStore();
+  const router = useRouter();
+
+  const handleLogout = () => {
+    logout();
+    router.push("/admin/login"); // ✅ redirect here
+  };
 
   return (
     <div className="h-16 bg-white border-b flex items-center justify-between px-6">
@@ -16,7 +23,7 @@ export default function AdminNavbar() {
         </span>
 
         <button
-          onClick={logout}
+          onClick={handleLogout}
           className="flex items-center gap-2 text-red-600 hover:text-red-800"
         >
           <LogOut size={18} />

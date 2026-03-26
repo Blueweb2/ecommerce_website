@@ -59,6 +59,7 @@ export default function EditCategoryPage() {
           name: category.name,
           description: category.description,
           image: category.image,
+          imageAlt: category.imageAlt || "",
         }}
         onSubmit={handleSubmit}
       />

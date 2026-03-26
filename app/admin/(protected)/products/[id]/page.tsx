@@ -49,6 +49,7 @@ export default function ViewProductPage() {
       {product.images?.length > 0 && (
         <img
           src={product.images[0]}
+          alt={product.imageAlt || `${product.name} product image`}
           className="w-64 rounded"
         />
       )}

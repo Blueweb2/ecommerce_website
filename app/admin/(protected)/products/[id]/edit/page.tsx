@@ -55,6 +55,8 @@ export default function EditProductPage() {
           name: product.name,
           price: product.price,
           category: product.category?._id,
+          imageUrl: product.images?.[0] || "",
+          imageAlt: product.imageAlt || "",
         }}
         onSubmit={handleSubmit}
       />
