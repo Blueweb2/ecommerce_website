@@ -1,7 +1,11 @@
-import React from 'react'
+import dynamic from "next/dynamic";
+
+const ProductFeature = dynamic(() => import("@/components/details/ProductFeature"))
 
 export default function page() {
   return (
-    <div>page</div>
-  )
-}
+    <>
+      <ProductFeature />
+    </>
+  );
+};
