@@ -40,6 +40,7 @@ export default function ViewProductPage() {
     if (id) fetchProduct();
   }, [fetchProduct, id]);
 
+
   if (loading) return <div className="p-6">Loading...</div>;
   if (!product) return <div className="p-6 text-red-500">Not found</div>;
 
@@ -93,10 +94,14 @@ export default function ViewProductPage() {
       <section className="grid gap-6 lg:grid-cols-[1fr_0.95fr]">
         <article className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm">
           <div className="bg-[radial-gradient(circle_at_top,#fdf7e7,transparent_55%),linear-gradient(180deg,#ffffff_0%,#f5f5f5_100%)] p-6">
+
             {primaryImageUrl ? (
               <img
                 src={primaryImageUrl}
-                alt={product.imageAlt || `${product.name} product image`}
+                alt={
+                  getPrimaryProductImage(product.images)?.altText ||
+                  `${product.name} product image`
+                }
                 className="h-[420px] w-full rounded-[24px] object-cover"
               />
             ) : (
@@ -104,6 +109,7 @@ export default function ViewProductPage() {
                 No image available
               </div>
             )}
+
           </div>
         </article>
 
@@ -135,7 +141,9 @@ export default function ViewProductPage() {
                 <div>
                   <p className="text-sm font-medium text-slate-500">Category</p>
                   <p className="mt-1 text-base font-semibold text-slate-900">
-                    {product.category?.name || "Uncategorized"}
+                    {typeof product.category === "object" && product.category !== null
+  ? product.category.name
+  : "Uncategorized"}
                   </p>
                 </div>
               </div>

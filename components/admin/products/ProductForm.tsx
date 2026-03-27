@@ -4,8 +4,10 @@ import { useEffect, useMemo, useState } from "react";
 import { ImagePlus, Package2, Plus, Tags, Trash2 } from "lucide-react";
 import { useCategoryStore } from "@/store/admin/useCategoryStore";
 import ImageUpload from "@/components/admin/ui/ImageUpload";
+import { uploadMultipleImages } from "@/lib/cloudinary/upload";
 
 import {
+  CatalogImage,
   PRODUCT_SECTION_OPTIONS,
   ProductPayload,
   ProductVariant,
@@ -18,16 +20,20 @@ type ProductFormValues = {
   description: string;
   category: string;
   sections: string[];
-  imageUrl: string;
-  imageAlt: string;
+
+  // ✅ FIXED
+  images: CatalogImage[];
+
+  altText: string;
   stock: number | string;
   isPublished: boolean;
-  variants: Array<{
+
+  variants: {
     size: string;
     color: string;
-    stock: number | string;
-    price: number | string;
-  }>;
+    stock?: number | string;
+    price?: number | string;
+  }[];
 };
 
 type ProductFormProps = {
@@ -42,8 +48,8 @@ const defaultValues: ProductFormValues = {
   description: "",
   category: "",
   sections: [],
-  imageUrl: "",
-  imageAlt: "",
+  images: [],
+  altText: "",
   stock: "",
   isPublished: true,
   variants: [],
@@ -57,18 +63,34 @@ export default function ProductForm({
 }: ProductFormProps) {
   const { categories, fetchCategories } = useCategoryStore();
 
-  const [form, setForm] = useState<ProductFormValues>({
-    ...defaultValues,
-    ...initialData,
-    sections: initialData?.sections || [],
-    variants:
-      initialData?.variants?.map((variant) => ({
-        size: variant.size || "",
-        color: variant.color || "",
-        stock: variant.stock ?? "",
-        price: variant.price ?? "",
-      })) || [],
-  });
+const defaultValues: ProductFormValues = {
+  sku: "",
+  name: "",
+  price: 0,
+  description: "",
+  category: "",
+  sections: [],
+  images: [],
+  altText: "",
+  stock: 0,
+  isPublished: true,
+  variants: [],
+};
+
+const [form, setForm] = useState<ProductFormValues>({
+  ...defaultValues,
+  ...initialData,
+
+  sections: initialData?.sections || [],
+
+  variants:
+    initialData?.variants?.map((v) => ({
+      size: v.size || "",
+      color: v.color || "",
+      stock: v.stock ?? "",
+      price: v.price ?? "",
+    })) || [],
+});
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [files, setFiles] = useState<File[]>([]);
 
@@ -76,10 +98,7 @@ export default function ProductForm({
     fetchCategories();
   }, [fetchCategories]);
 
-  const imagePreview = useMemo(
-    () => (form.imageUrl.trim() ? form.imageUrl.trim() : ""),
-    [form.imageUrl]
-  );
+
 
   const toggleSection = (section: string) => {
     setForm((current) => ({
@@ -110,9 +129,9 @@ export default function ProductForm({
       variants: current.variants.map((variant, variantIndex) =>
         variantIndex === index
           ? {
-              ...variant,
-              [field]: value,
-            }
+            ...variant,
+            [field]: value,
+          }
           : variant
       ),
     }));
@@ -125,66 +144,112 @@ export default function ProductForm({
     }));
   };
 
-  const validateForm = () => {
-    const nextErrors: Record<string, string> = {};
+const validateForm = () => {
+  const nextErrors: Record<string, string> = {};
 
-    if (!form.name.trim()) nextErrors.name = "Product name is required.";
-    if (!form.category) nextErrors.category = "Pick a category.";
-    if (form.price === "" || Number(form.price) <= 0) {
-      nextErrors.price = "Enter a valid price.";
-    }
-    if (form.stock !== "" && Number(form.stock) < 0) {
-      nextErrors.stock = "Stock cannot be negative.";
-    }
-    if (!form.imageUrl.trim()) {
-      nextErrors.imageUrl = "Add a primary image URL for preview.";
-    }
-    if (
-      form.variants.some(
-        (variant) =>
-          (!variant.size.trim() && variant.color.trim()) ||
-          (variant.size.trim() && !variant.color.trim())
-      )
-    ) {
-      nextErrors.variants = "Each variant should include both size and color.";
-    }
+  const price = Number(form.price);
+  const stock = Number(form.stock);
+  const existingImages = form.images || [];
 
-    setErrors(nextErrors);
-    return Object.keys(nextErrors).length === 0;
-  };
+  // 🔹 Name
+  if (!form.name.trim()) {
+    nextErrors.name = "Product name is required";
+  }
+
+  // 🔹 Category
+  if (!form.category) {
+    nextErrors.category = "Category is required";
+  }
+
+  // 🔹 Price
+  if (isNaN(price) || price <= 0) {
+    nextErrors.price = "Price must be greater than 0";
+  }
+
+  // 🔹 Stock
+  if (isNaN(stock) || stock < 0) {
+    nextErrors.stock = "Stock cannot be negative";
+  }
+
+  // 🔹 Images (NEW + EXISTING)
+  if (files.length === 0 && existingImages.length === 0) {
+    nextErrors.images = "At least one product image is required";
+  }
+
+  // 🔹 Variants validation
+  const hasInvalidVariant = form.variants.some((variant) => {
+    const hasSize = variant.size.trim() !== "";
+    const hasColor = variant.color.trim() !== "";
+
+    // only one filled → invalid
+    return (hasSize && !hasColor) || (!hasSize && hasColor);
+  });
+
+  if (hasInvalidVariant) {
+    nextErrors.variants = "Each variant must have both size and color";
+  }
+
+  // 🔹 Optional: duplicate variants check (🔥 advanced)
+  const variantSet = new Set();
+  for (const v of form.variants) {
+    if (!v.size && !v.color) continue;
+
+    const key = `${v.size.trim()}-${v.color.trim()}`;
+    if (variantSet.has(key)) {
+      nextErrors.variants = "Duplicate variants are not allowed";
+      break;
+    }
+    variantSet.add(key);
+  }
+
+  // 🔹 Optional: description length
+  if (form.description && form.description.length < 10) {
+    nextErrors.description = "Description should be at least 10 characters";
+  }
+
+  setErrors(nextErrors);
+
+  return Object.keys(nextErrors).length === 0;
+};
 
   return (
     <form
-      onSubmit={(event) => {
+      onSubmit={async (event) => {
         event.preventDefault();
 
         if (!validateForm()) return;
 
-        onSubmit({
+        let uploadedImages: CatalogImage[] = [];
+        // 🔥 Upload images to Cloudinary
+        if (files.length > 0) {
+          uploadedImages = await uploadMultipleImages(files);
+        }
+
+        await onSubmit({
           name: form.name.trim(),
           price: Number(form.price),
           description: form.description.trim(),
           category: form.category,
           sections: form.sections,
-          images: form.imageUrl.trim() ? [form.imageUrl.trim()] : [],
-          imageAlt: form.imageAlt.trim(),
+
+          // ✅ USE CLOUDINARY IMAGES
+          images: uploadedImages,
+
           stock: form.stock === "" ? 0 : Number(form.stock),
           isPublished: form.isPublished,
+
           variants: form.variants
             .filter((variant) => variant.size.trim() || variant.color.trim())
-            .map(
-              (variant): ProductVariant => ({
-                size: variant.size.trim(),
-                color: variant.color.trim(),
-                stock:
-                  variant.stock === "" ? undefined : Number(variant.stock),
-                price:
-                  variant.price === "" ? undefined : Number(variant.price),
-              })
-            ),
+            .map((variant) => ({
+              size: variant.size.trim(),
+              color: variant.color.trim(),
+              stock:
+                variant.stock === "" ? undefined : Number(variant.stock),
+              price:
+                variant.price === "" ? undefined : Number(variant.price),
+            })),
         });
       }}
-      className="space-y-6"
     >
       <section className="overflow-hidden rounded-[32px] bg-[#12251a] text-white shadow-xl">
         <div className="flex flex-col gap-4 p-6 md:flex-row md:items-end md:justify-between md:p-8">
@@ -359,11 +424,10 @@ export default function ProductForm({
                         key={section.value}
                         type="button"
                         onClick={() => toggleSection(section.value)}
-                        className={`rounded-[20px] border px-4 py-4 text-left transition ${
-                          active
-                            ? "border-emerald-200 bg-emerald-50 text-emerald-900"
-                            : "border-slate-200 bg-slate-50 text-slate-700 hover:border-slate-300"
-                        }`}
+                        className={`rounded-[20px] border px-4 py-4 text-left transition ${active
+                          ? "border-emerald-200 bg-emerald-50 text-emerald-900"
+                          : "border-slate-200 bg-slate-50 text-slate-700 hover:border-slate-300"
+                          }`}
                       >
                         <p className="font-semibold">{section.label}</p>
                         <p className="mt-1 text-sm text-inherit/80">
@@ -506,55 +570,77 @@ export default function ProductForm({
             </div>
 
             <div className="mt-6 grid gap-4">
+              {/* Upload */}
               <div className="grid gap-2">
                 <label className="text-sm font-medium text-slate-700">
                   Upload product images
                 </label>
+
                 <ImageUpload onFilesSelect={setFiles} />
+
                 <p className="text-xs text-slate-500">
                   {files.length > 0
                     ? `${files.length} image${files.length > 1 ? "s" : ""} selected`
-                    : "You can upload images here or keep using a hosted image URL below."}
+                    : "Upload multiple product images (first image will be primary)"}
                 </p>
-              </div>
 
-              <div className="grid gap-2">
-                <label className="text-sm font-medium text-slate-700">
-                  Primary image URL
-                </label>
-                <input
-                  placeholder="https://example.com/product.jpg"
-                  value={form.imageUrl}
-                  onChange={(event) =>
-                    setForm({ ...form, imageUrl: event.target.value })
-                  }
-                  className="rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-slate-400"
-                />
-                {errors.imageUrl ? (
-                  <p className="text-sm text-rose-600">{errors.imageUrl}</p>
-                ) : (
-                  <p className="text-xs text-slate-500">
-                    The image preview updates instantly from the URL.
-                  </p>
+                {/* 🔥 Validation error */}
+                {errors.images && (
+                  <p className="text-sm text-rose-600">{errors.images}</p>
                 )}
               </div>
 
+              {/* 🔥 Image Preview Grid */}
+              {files.length > 0 && (
+                <div className="flex gap-3 flex-wrap mt-2">
+                  {files.map((file, i) => (
+                    <div key={i} className="relative">
+                      <img
+                        src={URL.createObjectURL(file)}
+                        alt={`preview-${i}`}
+                        className="h-20 w-20 object-cover rounded-lg border"
+                      />
+
+                      {/* ⭐ Primary badge */}
+                      {i === 0 && (
+                        <span className="absolute top-1 left-1 bg-black text-white text-xs px-2 py-0.5 rounded">
+                          Primary
+                        </span>
+                      )}
+
+                      {/* ❌ Remove */}
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setFiles((prev) =>
+                            prev.filter((_, index) => index !== i)
+                          )
+                        }
+                        className="absolute top-1 right-1 bg-red-500 text-white text-xs px-2 py-0.5 rounded hover:bg-red-600"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Alt text */}
               <div className="grid gap-2">
                 <label className="text-sm font-medium text-slate-700">
                   Image alt text
                 </label>
                 <input
                   placeholder="Diamond ring on a cream satin display"
-                  value={form.imageAlt}
+                  value={form.altText}
                   onChange={(event) =>
-                    setForm({ ...form, imageAlt: event.target.value })
+                    setForm({ ...form, altText: event.target.value })
                   }
                   className="rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-slate-400"
                 />
               </div>
             </div>
           </section>
-
           <section className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm">
             <h3 className="text-xl font-semibold tracking-tight text-slate-900">
               Preview
@@ -562,20 +648,60 @@ export default function ProductForm({
 
             <div className="mt-6 overflow-hidden rounded-[28px] border border-slate-200 bg-slate-50">
               <div className="flex h-72 items-center justify-center bg-[radial-gradient(circle_at_top,#fdf7e7,transparent_55%),linear-gradient(180deg,#ffffff_0%,#f5f5f5_100%)]">
-                {imagePreview ? (
+
+                {files.length > 0 ? (
                   <img
-                    src={imagePreview}
-                    alt={form.imageAlt || form.name || "Product preview"}
+                    src={URL.createObjectURL(files[0])}
+                    alt="Preview"
                     className="h-full w-full object-cover"
                   />
                 ) : (
-                  <div className="px-6 text-center text-sm text-slate-400">
-                    Add an image URL to preview the product card.
+                  <div className="text-sm text-slate-400">
+                    Upload images to preview
                   </div>
                 )}
+
               </div>
 
               <div className="space-y-3 p-5">
+
+                {/* Image grid */}
+                {files.length > 0 && (
+                  <div className="flex gap-3 flex-wrap">
+
+                    {files.map((file, i) => (
+                      <div key={i} className="relative">
+
+                        <img
+                          src={URL.createObjectURL(file)}
+                          className="h-20 w-20 object-cover rounded"
+                        />
+
+                        {i === 0 && (
+                          <span className="absolute top-1 left-1 bg-black text-white text-xs px-2 rounded">
+                            Primary
+                          </span>
+                        )}
+
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setFiles((prev) =>
+                              prev.filter((_, index) => index !== i)
+                            )
+                          }
+                          className="absolute top-1 right-1 bg-red-500 text-white text-xs px-2 rounded"
+                        >
+                          ✕
+                        </button>
+
+                      </div>
+                    ))}
+
+                  </div>
+                )}
+
+                {/* Sections */}
                 <div className="flex flex-wrap gap-2">
                   {form.sections.map((section) => (
                     <span
@@ -589,7 +715,8 @@ export default function ProductForm({
                   ))}
                 </div>
 
-                {form.variants.length > 0 ? (
+                {/* Variants */}
+                {form.variants.length > 0 && (
                   <div className="flex flex-wrap gap-2">
                     {form.variants
                       .filter((variant) => variant.size || variant.color)
@@ -602,17 +729,19 @@ export default function ProductForm({
                         </span>
                       ))}
                   </div>
-                ) : null}
+                )}
 
                 <div>
-                  {form.sku ? (
+                  {form.sku && (
                     <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
                       SKU {form.sku}
                     </p>
-                  ) : null}
+                  )}
+
                   <p className="text-lg font-semibold text-slate-900">
                     {form.name || "Product title"}
                   </p>
+
                   <p className="mt-2 text-sm leading-6 text-slate-500">
                     {form.description || "A quick product description will appear here."}
                   </p>
@@ -622,10 +751,12 @@ export default function ProductForm({
                   <p className="text-xl font-semibold text-slate-900">
                     ₹ {form.price || "0"}
                   </p>
+
                   <span className="text-sm text-slate-500">
                     Stock: {form.stock || 0}
                   </span>
                 </div>
+
               </div>
             </div>
           </section>

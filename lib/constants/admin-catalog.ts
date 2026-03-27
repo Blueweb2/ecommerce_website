@@ -1,3 +1,4 @@
+// ✅ SECTION OPTIONS
 export const PRODUCT_SECTION_OPTIONS = [
   { value: "featured", label: "Featured" },
   { value: "best-seller", label: "Best Seller" },
@@ -8,24 +9,37 @@ export const PRODUCT_SECTION_OPTIONS = [
 export type ProductSectionValue =
   (typeof PRODUCT_SECTION_OPTIONS)[number]["value"];
 
+
+// 🔥 COMMON IMAGE TYPE (FINAL)
+export type CatalogImage = {
+  _id?: string;
+  url: string;
+  public_id: string;
+  altText?: string;
+  isPrimary?: boolean;
+};
+
+
+// ✅ CATEGORY / GENERIC ENTITY
 export type CatalogEntity = {
   _id: string;
   name: string;
   slug?: string;
   description?: string;
-  image?: string;
-  imageAlt?: string;
-  banner?: string;
+  image?: CatalogImage;
   isActive?: boolean;
 };
 
+
+// ✅ CATEGORY PAYLOAD
 export type CategoryPayload = {
   name: string;
-  description: string;
-  image: string;
-  imageAlt: string;
+  description?: string;
+  image?: CatalogImage;
 };
 
+
+// ✅ PRODUCT VARIANT
 export type ProductVariant = {
   size: string;
   color: string;
@@ -33,15 +47,12 @@ export type ProductVariant = {
   price?: number;
 };
 
-export type CatalogProductImage =
-  | string
-  | {
-      _id?: string;
-      url: string;
-      isPrimary?: boolean;
-      alt?: string;
-    };
 
+// ❌ REMOVE string | ... → STRICT TYPE
+export type CatalogProductImage = CatalogImage;
+
+
+// ✅ PRODUCT TYPE
 export type CatalogProduct = {
   _id: string;
   sku?: string;
@@ -50,28 +61,30 @@ export type CatalogProduct = {
   price: number;
   stock?: number;
   isPublished?: boolean;
-  imageAlt?: string;
   images?: CatalogProductImage[];
-  category?: CatalogEntity | string | null;
+  category?: CatalogEntity | string | null; // keep union (backend reality)
   sections?: string[];
   variants?: ProductVariant[];
   createdAt?: string;
   updatedAt?: string;
 };
 
+
+// ✅ PRODUCT PAYLOAD
 export type ProductPayload = {
   name: string;
   price: number;
   description: string;
   category: string;
   sections: string[];
-  images: string[];
-  imageAlt: string;
+  images: CatalogImage[];
   stock: number;
   isPublished: boolean;
   variants?: ProductVariant[];
 };
 
+
+// ✅ API ERROR TYPE
 export type ApiErrorResponse = {
   response?: {
     data?: {
@@ -79,6 +92,9 @@ export type ApiErrorResponse = {
     };
   };
 };
+
+
+// 🔥 HELPERS
 
 export function getSectionLabel(section: string) {
   return (
@@ -90,21 +106,24 @@ export function getSectionLabel(section: string) {
   );
 }
 
+
+// ✅ SAFE (NO string case anymore)
 export function getProductImageUrl(image?: CatalogProductImage | null) {
-  if (!image) return "";
-  return typeof image === "string" ? image : image.url;
+  return image?.url || "";
 }
 
-export function getPrimaryProductImage(images?: CatalogProductImage[] | null) {
+
+// ✅ PRIMARY IMAGE
+export function getPrimaryProductImage(
+  images?: CatalogProductImage[] | null
+) {
   if (!images?.length) return undefined;
 
-  return (
-    images.find((image) => typeof image !== "string" && image.isPrimary) ||
-    images[0]
-  );
+  return images.find((img) => img.isPrimary) || images[0];
 }
 
+
+// ✅ IMAGE ID
 export function getProductImageId(image?: CatalogProductImage | null) {
-  if (!image || typeof image === "string") return "";
-  return image._id || "";
+  return image?._id || "";
 }
