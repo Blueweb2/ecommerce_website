@@ -1,13 +1,17 @@
 import { create } from "zustand";
 import * as api from "@/lib/api/admin/category.api";
+import {
+  CatalogEntity,
+  CategoryPayload,
+} from "@/lib/constants/admin-catalog";
 
 interface CategoryState {
-    categories: any[];
+    categories: CatalogEntity[];
     loading: boolean;
 
     fetchCategories: () => Promise<void>;
-    createCategory: (data: any) => Promise<void>;
-    updateCategory: (id: string, data: any) => Promise<void>;
+    createCategory: (data: CategoryPayload) => Promise<void>;
+    updateCategory: (id: string, data: CategoryPayload) => Promise<void>;
     deleteCategory: (id: string) => Promise<void>;
 }
 
@@ -17,8 +21,19 @@ export const useCategoryStore = create<CategoryState>((set) => ({
 
     fetchCategories: async () => {
         set({ loading: true });
-        const res = await api.getCategories();
-        set({ categories: res.data.data, loading: false });
+
+        try {
+            const res = await api.getCategories();
+            set({
+                categories: Array.isArray(res.data?.data) ? res.data.data : [],
+                loading: false,
+            });
+        } catch {
+            set({
+                categories: [],
+                loading: false,
+            });
+        }
     },
 
     createCategory: async (data) => {

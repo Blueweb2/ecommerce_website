@@ -30,6 +30,11 @@ export default function AdminSidebar() {
       icon: Package,
     },
     {
+      name: "Categories",
+      href: "/admin/categories",
+      icon: Tag,
+    },
+    {
       name: "Orders",
       href: "/admin/orders",
       icon: ShoppingCart,

@@ -42,14 +42,6 @@ export default function Navbar() {
           </Link>
 
           <Link
-            href="/collections"
-            aria-label="View Collections"
-            className={linkClass("/collections")}
-          >
-            Collections
-          </Link>
-
-          <Link
             href="/about"
             aria-label="Learn more About Us"
             className={linkClass("/about")}
