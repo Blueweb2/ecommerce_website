@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface Props {
   onFilesSelect: (files: File[]) => void;
@@ -18,6 +18,13 @@ export default function ImageUpload({ onFilesSelect, multiple = true }: Props) {
     const previewUrls = files.map((file) => URL.createObjectURL(file));
     setPreview(previewUrls);
   };
+
+  // 🔥 cleanup memory
+  useEffect(() => {
+    return () => {
+      preview.forEach((url) => URL.revokeObjectURL(url));
+    };
+  }, [preview]);
 
   return (
     <div className="space-y-3">

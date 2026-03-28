@@ -54,36 +54,51 @@ export default function EditProductPage() {
   if (loading) return <div className="p-6">Loading...</div>;
   if (!product) return <div className="p-6 text-red-500">Not found</div>;
 
-  return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-semibold tracking-tight text-slate-900">
-          Edit Product
-        </h1>
-        <p className="mt-2 text-sm text-slate-500">
-          Update category placement, section tags, and product media.
-        </p>
-      </div>
-
-      <ProductForm
-        initialData={{
-          sku: product.sku || "",
-          name: product.name,
-          price: product.price,
-          description: product.description || "",
-          category:
-            typeof product.category === "string"
-              ? product.category
-              : product.category?._id || "",
-          sections: product.sections || [],
-          imageUrl: getProductImageUrl(getPrimaryProductImage(product.images)),
-          imageAlt: product.imageAlt || "",
-          stock: product.stock ?? "",
-          isPublished: product.isPublished ?? true,
-          variants: product.variants || [],
-        }}
-        onSubmit={handleSubmit}
-      />
+return (
+  <div className="space-y-6">
+    <div>
+      <h1 className="text-3xl font-semibold tracking-tight text-slate-900">
+        Edit Product
+      </h1>
+      <p className="mt-2 text-sm text-slate-500">
+        Update category placement, section tags, and product media.
+      </p>
     </div>
-  );
+
+  <ProductForm
+  initialData={{
+    sku: product.sku || "",
+    name: product.name,
+    price: product.price,
+    description: product.description || "",
+
+    category:
+      typeof product.category === "string"
+        ? product.category
+        : product.category?._id || "",
+
+    sections: product.sections || [],
+
+    // ✅ images
+    images: product.images || [],
+
+    // ✅ FIXED altText (from primary image)
+    altText:
+      getPrimaryProductImage(product.images)?.altText || "",
+
+    stock: product.stock ?? "",
+    isPublished: product.isPublished ?? true,
+
+    variants:
+      product.variants?.map((variant) => ({
+        size: variant.size,
+        color: variant.color,
+        stock: variant.stock ?? "",
+        price: variant.price ?? "",
+      })) || [],
+  }}
+  onSubmit={handleSubmit}
+/>
+  </div>
+);
 }
