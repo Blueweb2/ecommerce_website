@@ -1,8 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { ChevronLeft, ChevronRight, Type } from "lucide-react";
-import { useRef } from "react";
 
 type Products = {
   name: string;
@@ -11,7 +9,7 @@ type Products = {
   description: string;
 }
 
-const tabs = ["Featured", "Best Sellers", "New Arrivals", "Top Rated"];
+const tabs = ["Featured", "Best Sellers", "Top Rated"];
 
 const featuredProducts = [
   {
@@ -34,6 +32,13 @@ const featuredProducts = [
     image: "/home/shopsection/shop.png",
     description:
       "Vibrant emerald stones paired with fine detailing for a graceful, eye-catching look.",
+  },
+  {
+    name: "CLASSIC TENNIS BRACELET",
+    price: "₹22,800",
+    image: "/home/shopsection/shop.png",
+    description:
+      "A refined bracelet with a continuous line of brilliance, perfect for any occasion.",
   },
   {
     name: "CLASSIC TENNIS BRACELET",
@@ -73,36 +78,12 @@ const bestSellers = [
     description:
       "A trendy layered necklace that adds depth and style to your outfit.",
   },
-];
-
-const newArrivals = [
   {
-    name: "MINIMALIST BAR NECKLACE",
-    price: "₹7,999",
-    image: "/home/shopsection/shop-two.png",
+    name: "CLASSIC TENNIS BRACELET",
+    price: "₹22,800",
+    image: "/home/shopsection/shop.png",
     description:
-      "A sleek and modern bar necklace designed for a clean, minimal look.",
-  },
-  {
-    name: "TWISTED GOLD HOOPS",
-    price: "₹8,499",
-    image: "/home/shopsection/shop-two.png",
-    description:
-      "Unique twisted hoop earrings that bring a fresh take on a classic style.",
-  },
-  {
-    name: "SAPPHIRE STATEMENT RING",
-    price: "₹19,999",
-    image: "/home/shopsection/shop-two.png",
-    description:
-      "A bold sapphire ring designed to stand out with elegance and color.",
-  },
-  {
-    name: "CRYSTAL CHAIN BRACELET",
-    price: "₹6,299",
-    image: "/home/shopsection/shop-two.png",
-    description:
-      "A lightweight bracelet with sparkling crystals for a modern touch.",
+      "A refined bracelet with a continuous line of brilliance, perfect for any occasion.",
   },
 ];
 
@@ -135,13 +116,19 @@ const topRated = [
     description:
       "A bold cuff bracelet with a modern finish, loved by customers.",
   },
+  {
+    name: "CLASSIC TENNIS BRACELET",
+    price: "₹22,800",
+    image: "/home/shopsection/shop.png",
+    description:
+      "A refined bracelet with a continuous line of brilliance, perfect for any occasion.",
+  },
 ];
 
 export default function ShopSection() {
 
   const [activeTab, setActiveTab] = useState("Featured");
   const [products, setProducts] = useState<Products[]>();
-  const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(()=>{
     switch (activeTab) {
@@ -154,10 +141,6 @@ export default function ShopSection() {
         setProducts(bestSellers)
         break;
 
-      case "New Arrivals":
-        setProducts(newArrivals)
-        break;
-
       case "Top Rated":
         setProducts(topRated)
         break;
@@ -165,26 +148,15 @@ export default function ShopSection() {
       default:
         break;
     };
-  },[activeTab, products])
-
-  const scroll = (direction: "left" | "right") => {
-    if (scrollRef.current) {
-      const scrollAmount = 200;
-
-      scrollRef.current.scrollBy({
-        left: direction === "right" ? scrollAmount : -scrollAmount,
-        behavior: "smooth",
-      });
-    };
-  };
+  },[activeTab, products]);
 
   return (
-    <section className="bg-[#f5f5f5] py-12">
+    <section className="bg-[#f5f5f5] pt-6 md:pt-0 md:py-12">
       <div className="max-w-7xl mx-auto px-4 md:px-8">
 
         {/* TITLE */}
-        <h2 className="text-center text-2xl font-semibold mb-6">
-          Shop GOLDLAND
+        <h2 className="text-center text-2xl font-semibold mb-6 border-t-2 border-gray-300 pt-8">
+          Shop Fazzmi
         </h2>
 
         {/* TABS */}
@@ -205,60 +177,37 @@ export default function ShopSection() {
         </div>
 
         {/* PRODUCTS */}
-        <div className="flex gap-6 overflow-x-auto scrollbar-hide scroll-smooth" ref={scrollRef}>
+        <div className="flex gap-6 overflow-x-auto scrollbar-hide scroll-smooth">
 
           {products?.map((product, index) => (
             <div
               key={index}
-              className="bg-white w-[300px] h-full flex flex-col justify-between flex-shrink-0 rounded-xl p-5 border border-gray-300 "
+              className="w-[200px] md:w-[250px] flex flex-col justify-between flex-shrink-0 rounded-xl"
             >
               {/* IMAGE */}
               <div className="flex justify-center mb-4">
                 <img
                   src={product.image}
                   alt={product.name}
-                  className="h-32 object-contain"
+                  className="h-40 md:h-60 object-contain w-full"
                 />
               </div>
 
               {/* CONTENT */}
-              <div className="text-center">
+              <div>
                 <h3 className="text-sm font-semibold mb-2">
                   {product.name}
                 </h3>
-                <p className="text-xs text-gray-500 mb-3">
+                <p className="text-xs text-gray-500 mb-3 h-[45px]">
                   {product.description}
                 </p>
                 <p className="text-sm font-medium mb-4">
                   {product.price}
                 </p>
-
-                <button
-                  className="w-full py-2 rounded-md text-sm transition text-black
-                   hover:bg-black hover:text-white bg-gray-100 transition-all duration-300 ease-in-out"
-                >
-                  SHOP NOW
-                </button>
               </div>
             </div>
           ))}
 
-        </div>
-
-        {/* BOTTOM ARROWS */}
-        <div className="flex justify-center gap-3 mt-8">
-          <button 
-            className="w-8 h-8 rounded-full border border-gray-400 flex items-center justify-center hover:bg-gray-200 transition"
-            onClick={() => scroll("left")}
-          >
-            <ChevronLeft size={16} />
-          </button>
-          <button 
-            className="w-8 h-8 rounded-full border border-gray-400 flex items-center justify-center hover:bg-gray-200 transition"
-            onClick={() => scroll("right")}
-          >
-            <ChevronRight size={16} />
-          </button>
         </div>
 
       </div>

@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-const brands = [
+const CategoriesOfProducts = [
   { name: "Rings", logo: '/home/categorysection/category-one.png' },
   { name: "Rings", logo: '/home/categorysection/category-one.png' },
   { name: "Rings", logo: '/home/categorysection/category-one.png' },
@@ -16,6 +16,33 @@ const brands = [
   { name: "Rings", logo: '/home/categorysection/category-one.png' },
   { name: "Rings", logo: '/home/categorysection/category-one.png' },
   { name: "Rings", logo: '/home/categorysection/category-one.png' },
+];
+
+const topThreeCategories = [
+  {
+    id: 1,
+    title: "How to wear the polo shirt",
+    description:
+      "Every piece is thoughtfully created to bring out timeless elegance and lasting beauty.",
+    image: "/home/herosection/hero-right-top.png",
+    link: "/shop/polo-shirt",
+  },
+  {
+    id: 2,
+    title: "Minimal leather heels collection",
+    description:
+      "Designed for comfort and sophistication, perfect for every modern outfit.",
+    image: "/home/herosection/hero-right-top.png",
+    link: "/shop/heels",
+  },
+  {
+    id: 3,
+    title: "Luxury gold jewelry essentials",
+    description:
+      "Crafted with precision to highlight brilliance and premium craftsmanship.",
+    image: "/home/herosection/hero-right-top.png",
+    link: "/shop/jewelry",
+  },
 ];
 
 const Categories = () => {
@@ -34,7 +61,7 @@ const Categories = () => {
   };
 
   return (
-    <section className="bg-[#f5f5f5] py-10">
+    <section className="bg-[#f5f5f5] pt-10 pb-6">
       <div className="max-w-7xl mx-auto px-4 md:px-8">
 
         {/* TOP HEADER */}
@@ -65,53 +92,66 @@ const Categories = () => {
           ref={scrollRef}
           className="flex gap-4 overflow-x-auto scrollbar-hide"
         >
-          {brands.map((brand, index) => (
+          {CategoriesOfProducts.map((categories, index) => (
             <div
               key={index}
               className="relative w-[200px] h-[130px] md:min-w-[230px] md:min-h-[250px] flex-shrink-0 bg-white 
-              rounded-[20px] border border-gray-300 overflow-hidden"
+               border border-gray-300 overflow-hidden"
             >
               <Image
-                src={brand.logo}
-                alt={brand.name}
+                src={categories.logo}
+                alt={categories.name}
                 fill
                 className="object-cover"
               />
 
-              <h3 className="absolute inset-0 flex items-center justify-center text-white font-semibold text-lg bg-black/30">{brand.name}</h3>
+              <h3 className="absolute inset-0 flex items-center justify-center text-white font-semibold text-lg bg-black/30">{categories.name}</h3>
             </div>
           ))}
         </div>
 
-        <div
-          className="relative h-[300px] sm:h-[350px] md:h-[400px] mt-6 rounded-2xl overflow-hidden flex items-center justify-end p-4 sm:p-6 md:p-10"
-          style={{
-            backgroundImage: "url('/home/herosection/hero-right-top.png')",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }}
-        >
-          {/* BACKGROUND GRADIENT */}
-          <div className="absolute inset-0 bg-gradient-to-l from-black/70 via-black/40 to-transparent"/>
+        {/* TOP THREE CATEGORIES */}
+        <div className="grid grid-cols-3 gap-4 items-center mt-6">
+          {topThreeCategories.map((categories) => (
+            <div className="flex flex-col h-full" key={categories.id}>
+              <div
+                key={categories.id}
+                className="flex items-center justify-center grayscale hover:grayscale-0 transition duration-300"
+              >
+                <Image
+                  src={categories.image}
+                  alt={categories.title}
+                  width={120}
+                  height={60}
+                  className="object-contain w-full "
+                />
+              </div>
 
-          <div className="max-w-[280px] sm:max-w-[320px] md:max-w-[400px] p-4 sm:p-6 rounded-xl text-white z-10">
-            
-            <h2 className="text-lg sm:text-xl md:text-2xl font-bold mb-2">
-              Designed with Precision
-            </h2>
+              <div className="mt-4 flex flex-col justify-between h-full text-black">
 
-            <p className="text-sm sm:text-base mb-4">
-              Every piece is thoughtfully crafted to bring out timeless elegance and lasting beauty.
-            </p>
+                {/* Top Content */}
+                <div>
+                  <h2 className="text-[13px] md:text-[14px] font-semibold tracking-[0.5px] leading-tight uppercase">
+                    {categories.title}
+                  </h2>
 
-            <Link
-              href="/"
-              className="inline-block text-sm sm:text-base font-semibold bg-[#B89F69] hover:bg-[#9f8755] transition duration-300 rounded-[60px] py-2 px-5 uppercase"
-            >
-              Explore Designs
-            </Link>
+                  <p className="text-[11px] text-gray-500 mt-2 leading-relaxed line-clamp-3">
+                    {categories.description}
+                  </p>
+                </div>
 
-          </div>
+                {/* Bottom Link */}
+                <Link
+                  href={categories.link}
+                  className="mt-4 text-[11px] font-medium uppercase tracking-wide border-b border-black w-fit hover:opacity-60 transition"
+                >
+                  Explore Designs
+                </Link>
+
+              </div>
+
+            </div>
+          ))}
         </div>
 
       </div>

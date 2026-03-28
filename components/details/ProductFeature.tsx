@@ -77,7 +77,7 @@ const ProductFeature = () => {
           onClick={()=>setZooming(true)}
         >
           <img
-            src="/home/brandsection/card1.png"
+            src="/home/herosection/hero-right-top.png"
             alt=""
             className="w-full h-full object-cover"
           />
@@ -245,7 +245,7 @@ const ProductFeature = () => {
             {/* Item 1 */}
             <div className="flex items-center gap-3 bg-gray-50 p-3">
               <img
-                src="/home/brandsection/card1.png"
+                src="/home/herosection/hero-right-top.png"
                 className="w-12 h-12 object-cover"
                 alt=""
               />
@@ -259,7 +259,7 @@ const ProductFeature = () => {
             {/* Item 2 */}
             <div className="flex items-center gap-3 bg-gray-50 p-3">
               <img
-                src="/home/brandsection/card1.png"
+                src="/home/herosection/hero-right-top.png"
                 className="w-12 h-12 object-cover"
                 alt=""
               />

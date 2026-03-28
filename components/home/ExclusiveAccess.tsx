@@ -13,7 +13,7 @@ export default function ExclusiveAccess() {
   };
 
   return (
-    <section className="bg-[#f5f5f5] py-3 lg:py-16">
+    <section className="bg-[#f5f5f5] pb-3 lg:pb-16 lg:pt-5">
       <div className="max-w-2xl mx-auto px-4 text-center">
 
         {/* TITLE */}

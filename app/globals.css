@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+body {
+  overflow-x: hidden;
+}
+
 /* HERO SECTION ANIMATION */
 @keyframes fadeUp {
   0% {
@@ -56,27 +60,6 @@
 
 .animate-slide-left {
   animation: slideLeftToCenter 1s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;
-}
-
-
-/* BRAND SECTION AUTO SCROLL ANIMATION */
-@keyframes scrollX {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
-}
-
-.animate-scroll {
-  display: flex;
-  width: max-content;
-  animation: scrollX 20s linear infinite;
-}
-
-.animate-scroll:hover {
-  animation-play-state: paused;
 }
 
 /* HIDE SCROLLBAR */
