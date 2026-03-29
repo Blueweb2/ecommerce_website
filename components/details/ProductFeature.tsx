@@ -2,12 +2,23 @@
 
 import dynamic from "next/dynamic";
 import { useState, useEffect } from "react";
-import { Heart, Share2 } from "lucide-react";
+import { Heart, ChevronDown } from "lucide-react";
 const Carousel = dynamic(() => import("./Carousel/Carousel"));
 
-const materials = ["White Gold", "Yellow Gold", "Rose Gold"];
-
-const tabs = ['PRODUCT DESCRIPTION', 'KEY FEATURES', 'PRODUCT DETAILS'];
+const rightBottomSection = [
+  {
+    title: "SIZE & FIT",
+    content: "Free delivery within 3-5 business days. Easy returns available.",
+  },
+  {
+    title: "DELIVERY AND RETURNS",
+    content: "This pendant features a romantic design with a delicate chain.",
+  },
+  {
+    title: "RATING AND REVIEWS",
+    content: "Premium quality, lightweight, skin-friendly, long-lasting shine.",
+  },
+];
 
 const productDescription = 'Crafted with precision and attention to detail, this diamond halo ring features a stunning center stone surrounded by a delicate halo of smaller diamonds. The elegant band enhances its brilliance, making it a perfect choice for engagements, celebrations, or everyday luxury.'
 
@@ -19,15 +30,16 @@ const productDetails = 'Lorem ipsum dolor sit amet consectetur adipisicing elit.
 const ProductFeature = () => {
 
   const [selectedSize, setSelectedSize] = useState<string>();
-  const [selectedMaterial, setSelectedMaterial] = useState("White Gold");
   const [activeTab, setActiveTab] = useState("PRODUCT DESCRIPTION");
   const [tabDetails, setTabDetails] = useState<string>();
   const [leftPos, setLeftPos] = useState({ x: 0, y: 0 });
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [zooming, setZooming] = useState(false);
+  const [activeIndex, setActiveIndex] = useState<number | null>(0);
 
   // product description, features and details change content
   useEffect(()=>{
+    console.log(activeTab);
     switch (activeTab) {
 
       case "PRODUCT DESCRIPTION":
@@ -38,7 +50,7 @@ const ProductFeature = () => {
         setTabDetails(keyFeatures)
         break;
 
-      case "PRODUCT DETAILS":
+      case "DELIVERY DETAILS":
         setTabDetails(productDetails)
         break;
 
@@ -59,6 +71,11 @@ const ProductFeature = () => {
     window.addEventListener("mousemove", handleMouseMove);
       return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
+    
+  // right bottom section toggle
+  const toggle = (index: number) => {
+    setActiveIndex(activeIndex === index ? null : index);
+  };
 
   return !zooming ? (
     <section className="py-10">
@@ -122,31 +139,28 @@ const ProductFeature = () => {
             </h1>
 
             <div className="flex gap-4 text-xs text-gray-600 mt-2">
-              <span>• 18K Gold Vermeil</span>
-              <span>• Lab-Grown Diamond</span>
+              <span>• Lorem, ipsum dolor sit amet consectetur adipisicing elit.</span>
             </div>
           </div>
 
           {/* Price */}
           <div>
             <p className="text-xl font-semibold">₹24,500</p>
-            <p className="text-xs text-gray-600 mt-1">★★★★★ 4.8 (1)</p>
+            <p className="text-xs text-gray-600 mt-1">color: <span className="text-black">sky blue</span></p>
           </div>
-
-          <hr className="text-gray-300" />
 
           {/* Size */}
           <div>
-            <p className="text-xs text-gray-500 mb-2">SIZE:</p>
+            <p className="text-xs text-gray-500 mb-2">SELECT SIZE:</p>
             <div className="flex gap-2">
-              {["6", "7", "8", "9"].map((size) => (
+              {["XS", "S", "M", "XL", "XXL"].map((size) => (
                 <button
                   key={size}
                   onClick={() => setSelectedSize(size)}
                   className={`px-3 py-1 border rounded transition ${
                     selectedSize === size
                       ? "bg-black text-white border-black"
-                      : "bg-white text-black hover:bg-gray-100 border border-gray-300"
+                      : "bg-white text-black hover:bg-black hover:text-white border border-gray-300"
                   }`}
                 >
                   {size}
@@ -155,121 +169,109 @@ const ProductFeature = () => {
             </div>
           </div>
 
-          {/* Material */}
-          <div>
-            <p className="text-xs text-gray-500 mb-2">MATERIAL:</p>
-
-            <div className="flex flex-wrap gap-4">
-              {materials.map((item) => (
-                <label
-                  key={item}
-                  className="flex items-center gap-2 cursor-pointer"
-                >
-                  {/* Radio */}
-                  <input
-                    type="radio"
-                    name="material"
-                    value={item}
-                    checked={selectedMaterial === item}
-                    onChange={() => setSelectedMaterial(item)}
-                    className="w-4 h-4 accent-blue-700 cursor-pointer"
-                  />
-
-                  {/* Text */}
-                  <span className="text-sm text-gray-800">
-                    {item}
-                  </span>
-                </label>
-              ))}
-            </div>
-          </div>
-
-          <hr className="text-gray-300" />
-
-          {/* Quantity + Button */}
-          <div className="flex gap-3">
-            <select className="py-2 px-10 text-sm border border-gray-300 rounded-[10px]">
-              <option>1</option>
-              <option>2</option>
-              <option>3</option>
-            </select>
-
-            <button className="flex-1 bg-[#b8965b] text-white text-sm font-medium py-2 hover:bg-[#bd892f] transition rounded-[10px]">
-              ADD TO CART
-            </button>
-          </div>
-
-          <hr className="text-gray-300" />
-
-          {/* Actions */}
-          <div className="flex gap-6 text-sm text-gray-700">
-            <button className="flex items-center gap-1">
-              {/* ♡ Add to Wishlist */}
-              <Heart size={16} /> Add to Wishlist
+          {/* Button */}
+          <div className="flex flex-col gap-3">
+            {/* Add To Cart */}
+            <button className="flex-1 bg-black text-white text-sm font-medium py-2 
+              transition-all duration-300 
+              hover:bg-gray-800 hover:scale-[1.02] active:scale-95">
+              Add To Cart
             </button>
 
-            <button className="flex items-center gap-1">
-              {/* ⇄ Share Product */}
-              <Share2 size={16} /> Share Product
+            {/* Wishlist */}
+            <button className="flex-1 text-black text-sm font-medium py-2 
+              flex items-center justify-center gap-2 border border-gray-300
+              transition-all duration-300
+              hover:bg-black hover:text-white hover:border-black hover:scale-[1.02] active:scale-95">
+              <Heart size={16} />
+              Add to Wishlist
             </button>
           </div>
-
-          <hr className="text-gray-300" />
 
           {/* Tabs */}
           <div className="space-y-2">
             <div className="flex gap-6 text-xs font-medium text-gray-500">
-
-              {tabs.map((tab) => (
-                <button
-                  key={tab}
-                  onClick={()=>setActiveTab(tab)} 
-                  className={`${tab === activeTab? 'text-black border-b border-black pb-1':''}`}
-                >
-                  {tab}
-                </button>
-              ))}
+              <select name="" id="" className="outline-none" onChange={(e) => setActiveTab(e.target.value)}>
+                <option value="DELIVERY DETAILS">DELIVERY DETAILS</option>
+                <option value="PRODUCT DESCRIPTION">PRODUCT DESCRIPTION</option>
+                <option value="KEY FEATURES">KEY FEATURES</option>
+              </select>
             </div>
 
-            <p className="text-xs text-gray-600 leading-relaxed">
+            <p className="text-xs text-gray-600 leading-relaxed h-24">
               {tabDetails}
             </p>
           </div>
 
           {/* Complete the look */}
           <div className="space-y-3">
-            <p className="text-xs font-medium text-gray-500">
+            <p className="text-xs font-medium">
               COMPLETE THE LOOK:
             </p>
 
-            {/* Item 1 */}
-            <div className="flex items-center gap-3 bg-gray-50 p-3">
-              <img
-                src="/home/herosection/hero-right-top.png"
-                className="w-12 h-12 object-cover"
-                alt=""
-              />
-              <div className="flex-1 text-xs">
-                <p className="font-medium">HEART DIAMOND PENDANT</p>
-                <p className="text-gray-500">Romantic design with a delicate chain</p>
-                <p className="text-red-500 mt-1">₹11,900</p>
+            <div className="flex gap-3 overflow-x-auto scroll-smooth scrollbar-hide">
+  
+              {/* Item one */}
+              <div className="flex items-stretch gap-x-3 bg-gray-50 border border-gray-400 w-48 h-20 flex-shrink-0 p-1">
+                <img
+                  src="/home/herosection/hero-right-top.png"
+                  className="w-12 h-full object-cover border rounded-[3px]"
+                  alt=""
+                />
+                <div className="overflow-hidden">
+                  <p className="text-xs text-gray-800 leading-3 line-clamp-2">HEART DIAMOND PENDANT</p>
+                  <p className="text-gray-400 text-xs font-extralight leading-3 mt-1 line-clamp-2">Romantic design with a delicate chain</p>
+                  <p className="text-red-500 mt-1 text-xs">₹11,900</p>
+                </div>
               </div>
+
+              {/* Item two */}
+              <div className="flex items-stretch gap-x-3 bg-gray-50 border border-gray-400 w-48 h-20 flex-shrink-0 p-1">
+                <img
+                  src="/home/herosection/hero-right-top.png"
+                  className="w-12 h-full object-cover border rounded-[3px]"
+                  alt=""
+                />
+                <div className="overflow-hidden">
+                  <p className="text-xs text-gray-800 leading-3 line-clamp-2">HEART DIAMOND PENDANT</p>
+                  <p className="text-gray-400 text-xs font-extralight leading-3 mt-1 line-clamp-2">Romantic design with a delicate chain</p>
+                  <p className="text-red-500 mt-1 text-xs">₹11,900</p>
+                </div>
+              </div>
+
             </div>
 
-            {/* Item 2 */}
-            <div className="flex items-center gap-3 bg-gray-50 p-3">
-              <img
-                src="/home/herosection/hero-right-top.png"
-                className="w-12 h-12 object-cover"
-                alt=""
-              />
-              <div className="flex-1 text-xs">
-                <p className="font-medium">LAYERED CHAIN NECKLACE</p>
-                <p className="text-gray-500">Modern multi-layered design</p>
-                <p className="text-red-500 mt-1">₹13,200</p>
-              </div>
-            </div>
+          </div>
 
+          <div className="mt-6">
+            {rightBottomSection.map((item, index) => (
+              <div key={index}>
+                
+                {/* Header */}
+                <button
+                  onClick={() => toggle(index)}
+                  className="flex items-center py-1 text-sm leading-1 text text-gray-700"
+                >
+                  <ChevronDown
+                    size={18}
+                    className={`transition-transform duration-300 ${
+                      activeIndex === index ? "rotate-180" : ""
+                    }`}
+                  />
+                  {item.title}
+                </button>
+
+                {/* Content */}
+                <div
+                  className={`overflow-hidden transition-all duration-300 pl-5 ${
+                    activeIndex === index ? "max-h-40 pb-4" : "max-h-0"
+                  }`}
+                >
+                  <p className="text-xs text-gray-500">{item.content}</p>
+                </div>
+
+              </div>
+            ))}
           </div>
 
         </div>

@@ -10,12 +10,12 @@ const slides = [
     desc: "Fine jewellery designed to be worn, loved, and remembered.",
   },
   {
-    image: "/home/herosection/hero-right-bottom.png",
+    image: "/home/herosection/hero-center.png",
     title: "Elegant Designs for Every Style",
     desc: "Discover pieces that reflect your unique personality.",
   },
   {
-    image: "/home/herosection/hero-right-bottom.png",
+    image: "/home/categorysection/category-one.png",
     title: "Crafted with Passion",
     desc: "Every piece tells a story of beauty and craftsmanship.",
   },

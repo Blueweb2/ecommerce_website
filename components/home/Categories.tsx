@@ -90,7 +90,7 @@ const Categories = () => {
         {/* CATEGORIES SLIDER */}
         <div
           ref={scrollRef}
-          className="flex gap-4 overflow-x-auto scrollbar-hide"
+          className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth"
         >
           {CategoriesOfProducts.map((categories, index) => (
             <div
