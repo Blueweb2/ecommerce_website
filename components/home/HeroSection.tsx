@@ -110,7 +110,7 @@ export default function HeroSection() {
             </div>
           </div>
 
-          {/* Optional overlay (for better text visibility) */}
+          {/* for better text visibility */}
           <div className="absolute inset-0 bg-white/30 z-0" />
         </div>
 
