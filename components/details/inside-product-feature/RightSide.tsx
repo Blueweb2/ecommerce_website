@@ -57,7 +57,7 @@ const RightSide = () => {
   };
 
   return (
-    <div className="h-fit lg:sticky top-20 space-y-6 text-sm mx-4 lg:mx-10 mt-28 lg:mt-0">
+    <div className="h-fit lg:sticky top-20 space-y-6 text-sm mx-4 lg:mx-10 mt-32 md:mt-[300px] lg:mt-0">
 
       {/* Title */}
       <div>

@@ -1,11 +1,27 @@
-import dynamic from "next/dynamic";
+"use client";
 
-const ProductFeature = dynamic(() => import("@/components/details/ProductFeature"))
+import dynamic from "next/dynamic";
+import { useState } from "react";
+
+const Navbar = dynamic(() => import("@/components/shared/Navbar"));
+const ProductFeature = dynamic(() => import("@/components/details/ProductFeature"));
+const RelatedProducts = dynamic(() => import("@/components/details/RelatedProducts"));
+const Footer = dynamic(() => import("@/components/shared/Footer"));
 
 export default function page() {
+
+  const [isLayoutVisible, setIsLayoutVisible] = useState(true);
+
+  const handleLayoutVisibility = (visible: boolean) => {
+    setIsLayoutVisible(visible);
+  };
+  
   return (
     <>
-      <ProductFeature />
+      {!isLayoutVisible && <Navbar /> }
+      <ProductFeature onToggleLayout={handleLayoutVisibility} />
+      {!isLayoutVisible && <RelatedProducts /> }
+      {!isLayoutVisible && <Footer /> }
     </>
   );
 };
