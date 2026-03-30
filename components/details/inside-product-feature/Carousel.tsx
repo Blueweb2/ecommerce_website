@@ -15,22 +15,24 @@ const Carousel = ({ setZooming }: CarouselProps) => {
 
   const [leftPos, setLeftPos] = useState({ x: 0, y: 0 });
   const [hideCursor, setHideCursor] = useState(false);
-  const [index, setIndex] = useState(0);
+  const [indexx, setIndex] = useState(0);
 
   const nextSlide = () => {
-    if (index < images.length - 1) {
-      setIndex(index + 1);
+    if (indexx < images.length - 1) {
+      setIndex(indexx + 1);
     };
   };
 
   const prevSlide = () => {
-    if (index > 0) {
-      setIndex(index - 1);
+    if (indexx > 0) {
+      setIndex(indexx - 1);
     };
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen" onClick={()=>setZooming(false)}>
+    <div className="flex items-center justify-center h-[400px] lg:min-h-screen" 
+      onClick={()=>setZooming(false)}
+    >
       <div
         onMouseMove={(e) => {
           const rect = e.currentTarget.getBoundingClientRect();
@@ -46,7 +48,7 @@ const Carousel = ({ setZooming }: CarouselProps) => {
         <div
           className="flex transition-transform duration-500"
           style={{
-            transform: `translateX(-${index * 100}%)`,
+            transform: `translateX(-${indexx * 100}%)`,
           }}
         >
           {images.map((img, i) => (
@@ -54,7 +56,7 @@ const Carousel = ({ setZooming }: CarouselProps) => {
               <img
                 src={img}
                 alt=""
-                className="w-full h-[600px]  object-cover"
+                className="w-full h-full lg:h-[600px]  object-cover"
               />
             </div>
           ))}
@@ -98,6 +100,30 @@ const Carousel = ({ setZooming }: CarouselProps) => {
         >
           <span className="scale-190">&times;</span>
         </div>
+
+        {/* buttons */}
+        <div
+          onMouseEnter={() => setHideCursor(true)}
+          onMouseLeave={() => setHideCursor(false)}
+          onClick={(e) => e.stopPropagation()}
+          className="flex gap-3 items-center justify-center h-6 lg:h-12 cursor-auto"
+        >
+          {images.map((_, index) => (
+            <button
+              key={index}
+              onClick={(e) => {
+                e.stopPropagation()
+                setIndex(index)
+              }}
+              className={`rounded-full transform transition-all duration-300 ease-out ${
+                indexx === index
+                  ? "w-4 h-4 bg-black scale-125"
+                  : "w-2.5 h-2.5 bg-gray-400 scale-100 hover:bg-black"
+              }`}
+            />
+          ))}
+        </div>
+
       </div>
    </div> 
   )
