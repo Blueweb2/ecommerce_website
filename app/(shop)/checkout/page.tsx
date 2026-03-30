@@ -1,7 +1,14 @@
-import React from 'react'
+"use client";
 
-export default function page() {
-  return (
-    <div>page</div>
-  )
+import { useRequireAuth } from "@/hooks/useRequireAuth";
+
+export default function CheckoutPage() {
+  const { user, loading } = useRequireAuth();
+
+  if (loading || !user) {
+    return <div>Loading...</div>;
+  }
+
+  return <div>Checkout Page</div>;
+  // router.replace("/login?redirect=/checkout");
 }

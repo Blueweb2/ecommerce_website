@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import api from "@/lib/api/axios";
-import { useAdminAuthStore } from "@/store/admin/useAdminAuthStore";
+import { useAuthStore } from "@/store/auth/useAuthStore";
 import toast from "react-hot-toast";
 import {
   BadgeCheck,
@@ -36,7 +36,7 @@ function formatRole(role?: string) {
 }
 
 export default function ProfilePage() {
-  const { user } = useAdminAuthStore();
+  const { user } = useAuthStore();
   const [profile, setProfile] = useState<AdminProfile | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -45,16 +45,16 @@ export default function ProfilePage() {
 
     try {
       const res = await api.get("/auth/me");
-      setProfile(res.data?.data ?? null);
+      setProfile(res.data?.user ?? null);
     } catch {
       setProfile(
         user
           ? {
-              _id: user._id,
-              name: user.name,
-              email: user.email,
-              role: user.role,
-            }
+            _id: user.id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+          }
           : null
       );
       toast.error("Failed to refresh profile");
@@ -66,15 +66,15 @@ export default function ProfilePage() {
   useEffect(() => {
     if (user) {
       setProfile({
-        _id: user._id,
+        _id: user.id,
         name: user.name,
         email: user.email,
         role: user.role,
       });
-    }
 
-    fetchProfile();
-  }, [fetchProfile, user]);
+      fetchProfile(); // 🔥 only when user exists
+    }
+  }, [user]);
 
   if (loading && !profile) {
     return (
@@ -112,12 +112,23 @@ export default function ProfilePage() {
 
   if (!profile) {
     return (
-      <div className="rounded-[28px] border border-rose-100 bg-white p-8 text-center shadow-sm">
+      <div className="rounded-[28px] border border-rose-100 bg-white p-8 text-center shadow-sm ">
         <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-rose-50 text-rose-600">
           <UserRound className="h-7 w-7" />
         </div>
         <h1 className="mt-5 text-2xl font-semibold text-slate-900">
-          Profile unavailable
+          <div className="text-center py-12">
+            <UserRound className="mx-auto h-10 w-10 text-gray-400" />
+            <p className="mt-4 text-gray-600 font-medium">
+              Unable to load profile
+            </p>
+            <button
+              onClick={fetchProfile}
+              className="mt-4 px-4 py-2 bg-gray-800 text-white rounded-lg"
+            >
+              Retry
+            </button>
+          </div>
         </h1>
         <p className="mt-2 text-sm text-slate-500">
           We could not load the current admin profile right now.
@@ -132,8 +143,17 @@ export default function ProfilePage() {
         <div className="flex flex-col gap-6 p-6 md:p-8">
           <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
             <div className="flex items-center gap-4">
-              <div className="flex h-18 w-18 items-center justify-center rounded-[28px] bg-white/10 text-2xl font-semibold text-white">
-                {getInitials(profile.name || "Admin")}
+              <div className="relative">
+                <div className="h-28 w-full rounded-2xl bg-gradient-to-r from-emerald-600 to-green-400" />
+
+                <div className="absolute -bottom-8 left-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-white text-xl font-bold text-emerald-700 shadow-lg">
+                  {getInitials(profile.name || "A")}
+                </div>
+              </div>
+
+              <div className="mt-12 px-6">
+                <h1 className="text-2xl font-semibold">{profile.name}</h1>
+                <p className="text-sm text-gray-500">{profile.email}</p>
               </div>
 
               <div>
@@ -155,28 +175,29 @@ export default function ProfilePage() {
               onClick={fetchProfile}
               className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/8 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/12"
             >
-              <RefreshCw className="h-4 w-4" />
+              <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
               Refresh profile
+            </button>
+            <button className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 text-sm">
+              Edit Profile
             </button>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-3">
-            <article className="rounded-[24px] bg-white/7 p-5">
-              <p className="text-sm text-emerald-50/75">Current role</p>
-              <p className="mt-3 text-xl font-semibold">
-                {formatRole(profile.role)}
-              </p>
-            </article>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 text-black">
+            <div className="p-5 rounded-2xl bg-white shadow-sm border">
+              <p className="text-sm text-gray-500">Role</p>
+              <p className="text-lg font-semibold mt-2">{formatRole(profile.role)}</p>
+            </div>
 
-            <article className="rounded-[24px] bg-white/7 p-5">
-              <p className="text-sm text-emerald-50/75">Workspace access</p>
-              <p className="mt-3 text-xl font-semibold">Protected admin area</p>
-            </article>
+            <div className="p-5 rounded-2xl bg-white shadow-sm border">
+              <p className="text-sm text-gray-500">Access</p>
+              <p className="text-lg font-semibold mt-2">Admin Panel</p>
+            </div>
 
-            <article className="rounded-[24px] bg-white/7 p-5">
-              <p className="text-sm text-emerald-50/75">Account state</p>
-              <p className="mt-3 text-xl font-semibold">Authenticated</p>
-            </article>
+            <div className="p-5 rounded-2xl bg-white shadow-sm border">
+              <p className="text-sm text-gray-500">Status</p>
+              <p className="text-lg font-semibold mt-2 text-green-600">Active</p>
+            </div>
           </div>
         </div>
       </section>

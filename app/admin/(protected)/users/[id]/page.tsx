@@ -75,6 +75,7 @@ export default function UserDetailsPage() {
         setUser(res.data?.data ?? null);
       } catch {
         const res = await api.get("/auth/customers");
+        console.log("API RESPONSE:", res.data); 
         const customers = Array.isArray(res.data?.data) ? res.data.data : [];
         const matchedUser = customers.find(
           (customer: Customer) => customer._id === id
@@ -88,6 +89,7 @@ export default function UserDetailsPage() {
       }
     } catch {
       setUser(null);
+      
       toast.error("Failed to load user details");
     } finally {
       setLoading(false);

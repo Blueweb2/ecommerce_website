@@ -27,6 +27,7 @@ export type CatalogEntity = {
   slug?: string;
   description?: string;
   image?: CatalogImage;
+  parent?: string | CatalogEntity | null; // 🔥 important
   isActive?: boolean;
 };
 
@@ -36,8 +37,9 @@ export type CategoryPayload = {
   name: string;
   description?: string;
   image?: CatalogImage;
+  parent?: string | null; // 🔥 REQUIRED for subcategory
+  slug?: string;
 };
-
 
 // ✅ PRODUCT VARIANT
 export type ProductVariant = {

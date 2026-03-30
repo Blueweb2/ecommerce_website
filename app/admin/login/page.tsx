@@ -1,14 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import axios from "@/lib/api/axios";
-import { useAdminAuthStore } from "@/store/admin/useAdminAuthStore";
+import { useAuthStore } from "@/store/auth/useAuthStore";
+import { setAccessToken } from "@/lib/auth";
 
 export default function AdminLoginPage() {
   const router = useRouter();
-  const { setAuth } = useAdminAuthStore();
+  const { setUser, user, hydrate } = useAuthStore();
 
   const [form, setForm] = useState({
     email: "",
@@ -17,40 +18,52 @@ export default function AdminLoginPage() {
 
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = async (e: any) => {
-    e.preventDefault();
-    setLoading(true);
+  // 🔥 Redirect if already logged in
 
-    try {
-      const res = await axios.post("/auth/login", form);
 
-      const { user, token } = res.data.data;
-
-      // 🔒 Optional: block non-admin users
-      if (user.role !== "admin" && user.role !== "superadmin") {
-        toast.error("Access denied: Admin only");
-        setLoading(false);
-        return;
-      }
-
-      setAuth({ user, token });
-
-      toast.success("Welcome back!");
-
-      router.push("/admin/dashboard");
-    } catch (error: any) {
-      toast.error(
-        error?.response?.data?.message || "Login failed"
-      );
-    } finally {
-      setLoading(false);
+  useEffect(() => {
+    if (user && (user.role === "admin" || user.role === "superadmin")) {
+      router.replace("/admin/dashboard");
     }
-  };
+  }, [user]);
+
+const handleLogin = async (e: any) => {
+  e.preventDefault();
+  setLoading(true);
+
+  try {
+    const res = await axios.post("/auth/login", form, {
+      withCredentials: true,
+    });
+
+    const user = res.data.user;
+    const accessToken = res.data.accessToken;
+
+    // ✅ validate FIRST
+    if (!user || (user.role !== "admin" && user.role !== "superadmin")) {
+      toast.error("Access denied: Admin only");
+      return;
+    }
+
+    // ✅ then set
+    setAccessToken(accessToken);
+    setUser(user);
+
+    toast.success("Welcome back!");
+
+    router.replace("/admin/dashboard"); // ✅ no timeout needed
+
+  } catch (error: any) {
+    toast.error(error?.response?.data?.message || "Login failed");
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#0f172a] to-[#1a1f1a] px-4">
       <div className="w-full max-w-md bg-white/95 backdrop-blur rounded-2xl shadow-xl p-8 space-y-6">
-        
+
         {/* Header */}
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-800">
@@ -63,12 +76,10 @@ export default function AdminLoginPage() {
 
         {/* Form */}
         <form onSubmit={handleLogin} className="space-y-4">
-          
+
           {/* Email */}
           <div>
-            <label className="text-sm text-gray-600">
-              Email
-            </label>
+            <label className="text-sm text-gray-600">Email</label>
             <input
               type="email"
               required
@@ -83,9 +94,7 @@ export default function AdminLoginPage() {
 
           {/* Password */}
           <div>
-            <label className="text-sm text-gray-600">
-              Password
-            </label>
+            <label className="text-sm text-gray-600">Password</label>
             <input
               type="password"
               required
