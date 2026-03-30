@@ -1,22 +1,20 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { getAllCategories } from "@/lib/api/category.api";
 
-const CategoriesOfProducts = [
-  { name: "Rings", logo: '/home/categorysection/category-one.png' },
-  { name: "Rings", logo: '/home/categorysection/category-one.png' },
-  { name: "Rings", logo: '/home/categorysection/category-one.png' },
-  { name: "Rings", logo: '/home/categorysection/category-one.png' },
-  { name: "Rings", logo: '/home/categorysection/category-one.png' },
-  { name: "Rings", logo: '/home/categorysection/category-one.png' },
-  { name: "Rings", logo: '/home/categorysection/category-one.png' },
-  { name: "Rings", logo: '/home/categorysection/category-one.png' },
-  { name: "Rings", logo: '/home/categorysection/category-one.png' },
-  { name: "Rings", logo: '/home/categorysection/category-one.png' },
-];
+// ✅ TYPE
+type Category = {
+  _id: string;
+  name: string;
+  slug: string;
+  image?: {
+    url: string;
+  };
+};
 
 const topThreeCategories = [
   {
@@ -46,31 +44,48 @@ const topThreeCategories = [
 ];
 
 const Categories = () => {
-
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // ✅ FETCH FROM BACKEND
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await getAllCategories();
+        console.log("Categories:", res.data);
+
+        setCategories(res.data.data); // adjust if needed
+      } catch (error) {
+        console.error("Failed to fetch categories", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   const scroll = (direction: "left" | "right") => {
     if (scrollRef.current) {
-      const scrollAmount = 200;
-
       scrollRef.current.scrollBy({
-        left: direction === "right" ? scrollAmount : -scrollAmount,
+        left: direction === "right" ? 200 : -200,
         behavior: "smooth",
       });
-    };
+    }
   };
 
   return (
     <section className="bg-[#f5f5f5] pt-10 pb-6">
       <div className="max-w-7xl mx-auto px-4 md:px-8">
 
-        {/* TOP HEADER */}
+        {/* HEADER */}
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-medium tracking-tight text-gray-700      font-serif">
+          <h2 className="text-2xl md:text-4xl font-medium text-gray-700 font-serif">
             Shop by Categories
           </h2>
 
-          {/* ARROWS */}
           <div className="flex gap-2">
             <button
               onClick={() => scroll("left")}
@@ -87,69 +102,73 @@ const Categories = () => {
           </div>
         </div>
 
-        {/* CATEGORIES SLIDER */}
+        {/* 🔥 CATEGORY SLIDER */}
         <div
           ref={scrollRef}
           className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth"
         >
-          {CategoriesOfProducts.map((categories, index) => (
-            <div
-              key={index}
-              className="relative w-[200px] h-[130px] md:min-w-[230px] md:min-h-[250px] flex-shrink-0 bg-white 
-               border border-gray-300 overflow-hidden"
-            >
-              <Image
-                src={categories.logo}
-                alt={categories.name}
-                fill
-                className="object-cover"
-              />
+          {loading ? (
+            <p className="text-gray-500">Loading categories...</p>
+          ) : categories.length === 0 ? (
+            <p className="text-gray-500">No categories found</p>
+          ) : (
+            categories.map((cat) => (
+              <Link
+                key={cat._id}
+                href={`/category/${cat.slug}`} // ✅ SEO-friendly
+              >
+                <div className="relative w-[200px] h-[130px] md:min-w-[230px] md:min-h-[250px] flex-shrink-0 bg-white border overflow-hidden hover:scale-105 transition duration-300">
 
-              <h3 className="absolute inset-0 flex items-center justify-center text-white font-semibold text-lg bg-black/30">{categories.name}</h3>
-            </div>
-          ))}
+                  <Image
+                    src={cat.image?.url || "/home/categorysection/category-one.png"}
+                    alt={cat.name}
+                    fill
+                    sizes="(max-width: 768px) 200px, 230px"
+                    className="object-cover"
+                  />
+
+                  <h3 className="absolute inset-0 flex items-center justify-center text-white font-semibold text-lg bg-black/30">
+                    {cat.name}
+                  </h3>
+
+                </div>
+              </Link>
+            ))
+          )}
         </div>
 
-        {/* TOP THREE CATEGORIES */}
+        {/* TOP THREE CATEGORIES (UNCHANGED) */}
         <div className="grid grid-cols-3 gap-4 items-center mt-6">
-          {topThreeCategories.map((categories) => (
-            <div className="flex flex-col h-full" key={categories.id}>
-              <div
-                key={categories.id}
-                className="flex items-center justify-center grayscale hover:grayscale-0 transition duration-300"
-              >
+          {topThreeCategories.map((item) => (
+            <div className="flex flex-col h-full" key={item.id}>
+              <div className="flex items-center justify-center grayscale hover:grayscale-0 transition duration-300">
                 <Image
-                  src={categories.image}
-                  alt={categories.title}
+                  src={item.image}
+                  alt={item.title}
                   width={120}
                   height={60}
-                  className="object-contain w-full "
+                  className="object-contain w-full"
                 />
               </div>
 
               <div className="mt-4 flex flex-col justify-between h-full text-black">
-
-                {/* Top Content */}
                 <div>
-                  <h2 className="text-[13px] md:text-[14px] font-semibold tracking-[0.5px] leading-tight uppercase">
-                    {categories.title}
+                  <h2 className="text-[13px] md:text-[14px] font-semibold uppercase">
+                    {item.title}
                   </h2>
 
-                  <p className="text-[11px] text-gray-500 mt-2 leading-relaxed line-clamp-3">
-                    {categories.description}
+                  <p className="text-[11px] text-gray-500 mt-2 line-clamp-3">
+                    {item.description}
                   </p>
                 </div>
 
-                {/* Bottom Link */}
                 <Link
-                  href={categories.link}
-                  className="mt-4 text-[11px] font-medium uppercase tracking-wide border-b border-black w-fit hover:opacity-60 transition"
+                  href={item.link}
+                  className="mt-4 text-[11px] font-medium uppercase border-b border-black w-fit hover:opacity-60 transition"
                 >
                   Explore Designs
                 </Link>
-
               </div>
-
             </div>
           ))}
         </div>

@@ -46,10 +46,10 @@ const fetchCategory = async () => {
 
 
 
-  if (loading) return <p className="text-white p-6">Loading...</p>;
+  if (loading) return <p className="text-black p-6">Loading...</p>;
 
   return (
-    <div className="p-6 text-white max-w-xl">
+    <div className="p-6 text-black max-w-xl">
       <CategoryForm
         initialData={category}
         onSuccess={handleSuccess}
