@@ -1,37 +1,32 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useAdminAuthStore } from "@/store/admin/useAdminAuthStore";
+import { useAuthStore } from "@/store/auth/useAuthStore";
 import AdminLayoutWrapper from "@/components/admin/layout/AdminLayoutWrapper";
+import { useAuthInit } from "@/hooks/useAuthInit"; // 👈 import
 
 export default function AdminLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
-  const { user } = useAdminAuthStore();
+}) {
+  const { user, loading } = useAuthStore();
   const router = useRouter();
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-
-    if (!token) {
-      router.replace("/admin/login");
-      return;
-    }
-
-    if (user && user.role !== "admin" && user.role !== "superadmin") {
-      router.replace("/admin/login");
-      return;
-    }
-
-    setLoading(false);
-  }, [router, user]);
+  useAuthInit(); // 🔥 THIS IS THE KEY
 
   if (loading) {
     return <div className="p-6">Loading...</div>;
+  }
+
+  if (!user) {
+    router.replace("/admin/login");
+    return null;
+  }
+
+  if (user.role !== "admin" && user.role !== "superadmin") {
+    router.replace("/admin/login");
+    return null;
   }
 
   return <AdminLayoutWrapper>{children}</AdminLayoutWrapper>;

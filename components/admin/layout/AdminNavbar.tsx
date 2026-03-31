@@ -1,11 +1,11 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useAdminAuthStore } from "@/store/admin/useAdminAuthStore";
+import { useAuthStore } from "@/store/auth/useAuthStore";
 import { LogOut } from "lucide-react";
 
 export default function AdminNavbar() {
-  const { user, logout } = useAdminAuthStore();
+  const { user, logout } = useAuthStore();
   const router = useRouter();
 
   const handleLogout = () => {

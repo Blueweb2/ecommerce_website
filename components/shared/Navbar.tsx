@@ -4,11 +4,17 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Search, Heart, User, ShoppingCart } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useCartUIStore } from "@/store/ui/useCartUIStore";
+import { useCartStore } from "@/store/user/cart/useCartStore";
 
 export default function Navbar() {
 
   const pathname = usePathname();
   const router = useRouter();
+  const { openCart } = useCartUIStore();
+  const { items } = useCartStore();
+
+  const cartCount = items.reduce((acc, item) => acc + item.quantity, 0);
 
   const linkClass = (path: string) => {
     return (
@@ -71,8 +77,13 @@ export default function Navbar() {
           <button onClick={() => router.push("/login")} className="transition-colors duration-300 hover:text-[#D4AF37]">
             <User size={18} />
           </button>
-          <button className="transition-colors duration-300 hover:text-[#D4AF37]">
+          <button onClick={openCart} className="hover:text-black transition">
             <ShoppingCart size={18} />
+            {cartCount > 0 && (
+              <span className="absolute -top-2 -right-3 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
+                {cartCount > 99 ? "99+" : cartCount}
+              </span>
+            )}
           </button>
         </div>
 

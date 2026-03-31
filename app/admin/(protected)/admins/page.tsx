@@ -3,19 +3,16 @@
 import { useEffect, useState } from "react";
 import api from "@/lib/api/axios";
 import toast from "react-hot-toast";
-import { useAdminAuthStore } from "@/store/admin/useAdminAuthStore";
+import { useAuthStore } from "@/store/auth/useAuthStore";
 import Link from "next/link";
 
 export default function AdminsPage() {
-  const { user } = useAdminAuthStore();
+  const { user, loading } = useAuthStore();
 
   const [admins, setAdmins] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [pageLoading, setPageLoading] = useState(true);
 
-  if (user?.role !== "superadmin") {
-    return <div className="p-6 text-red-600">Access denied</div>;
-  }
-
+  // 🔥 Fetch admins
   const fetchAdmins = async () => {
     try {
       const res = await api.get("/auth/admins");
@@ -23,13 +20,33 @@ export default function AdminsPage() {
     } catch {
       toast.error("Failed to load admins");
     } finally {
-      setLoading(false);
+      setPageLoading(false); // ✅ FIXED
     }
   };
 
+  // ✅ wait for auth, then fetch
   useEffect(() => {
-    fetchAdmins();
-  }, []);
+    if (user?.role === "superadmin") {
+      fetchAdmins();
+    } else {
+      setPageLoading(false); // stop loader if no access
+    }
+  }, [user]);
+
+  // ⏳ wait for auth
+  if (loading) {
+    return <div className="p-6">Loading...</div>;
+  }
+
+  // ❌ role check
+  if (user?.role !== "superadmin") {
+    return <div className="p-6 text-red-600">Access denied</div>;
+  }
+
+  // ⏳ page loading
+  if (pageLoading) {
+    return <div className="p-6">Loading admins...</div>;
+  }
 
   // 🗑️ DELETE ADMIN
   const handleDelete = async (id: string) => {
@@ -40,18 +57,14 @@ export default function AdminsPage() {
       await api.delete(`/auth/admin/${id}`);
       toast.success("Admin deleted");
 
-      // 🔄 Refresh list
       setAdmins((prev) => prev.filter((a) => a._id !== id));
     } catch (err: any) {
       toast.error(err?.response?.data?.message || "Delete failed");
     }
   };
 
-  if (loading) return <div className="p-6">Loading...</div>;
-
   return (
     <div className="p-6 bg-white rounded-2xl shadow space-y-6">
-      
       {/* Header */}
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-semibold">Admins</h2>
@@ -93,29 +106,30 @@ export default function AdminsPage() {
                   </span>
                 </td>
 
-                {/* 🔥 ACTION BUTTONS */}
                 <td className="p-3 flex justify-center gap-2">
-                  
-                  {/* ✏️ Edit */}
                   <Link href={`/admin/admins/${a._id}`}>
                     <button className="px-3 py-1 text-sm bg-blue-500 hover:bg-blue-600 text-white rounded-md">
                       Edit
                     </button>
                   </Link>
 
-                  {/* 🗑️ Delete */}
                   <button
                     onClick={() => handleDelete(a._id)}
                     className="px-3 py-1 text-sm bg-red-500 hover:bg-red-600 text-white rounded-md"
                   >
                     Delete
                   </button>
-
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
+
+        {admins.length === 0 && (
+          <div className="p-6 text-center text-gray-500">
+            No admins found
+          </div>
+        )}
       </div>
     </div>
   );

@@ -11,3 +11,6 @@ export const updateCategory = (id: string, data: CategoryPayload) =>
 
 export const deleteCategory = (id: string) =>
   axios.delete(`/categories/${id}`);
+
+
+  export const getCategoryById = (id: string) => axios.get(`/categories/${id}`);

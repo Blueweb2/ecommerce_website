@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import axios from "@/lib/api/axios";
+import { setAccessToken } from "@/lib/auth";
 
 export default function CustomerLoginPage() {
   const router = useRouter();
@@ -20,14 +21,14 @@ export default function CustomerLoginPage() {
     setLoading(true);
 
     try {
-      const res = await axios.post("/auth/login", form);
+     const res = await axios.post("/auth/login", form);
 
-      const { user, token } = res.data.data;
+const { user, accessToken } = res.data;
 
-      // Save token
-      localStorage.setItem("token", token);
+setAccessToken(accessToken);
 
-      toast.success("Welcome back!");
+toast.success("Welcome back!");
+router.push("/checkout");
 
       // Redirect to checkout or homepage
       router.push("/checkout");

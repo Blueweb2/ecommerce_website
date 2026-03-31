@@ -59,8 +59,11 @@ export default function UsersPage() {
     setLoading(true);
 
     try {
-      const res = await api.get("/auth/customers");
-      setUsers(Array.isArray(res.data?.data) ? res.data.data : []);
+     const res = await api.get("/auth/customers");
+
+setUsers(
+  Array.isArray(res.data?.data) ? res.data.data : []
+);
     } catch {
       toast.error("Failed to load users");
     } finally {

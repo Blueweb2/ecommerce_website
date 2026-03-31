@@ -1,156 +1,224 @@
 "use client";
 
-import { useState } from "react";
-import { CategoryPayload } from "@/lib/constants/admin-catalog";
+import { useEffect, useState } from "react";
+import { useCategoryStore } from "@/store/admin/useCategoryStore";
+import { CategoryPayload, CatalogEntity } from "@/lib/constants/admin-catalog";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 import ImageUpload from "@/components/admin/ui/ImageUpload";
+import { uploadSingleImage } from "@/lib/cloudinary/upload";
+import { deleteImage } from "@/lib/cloudinary/delete";
 
-type CategoryFormProps = {
-  onSubmit: (data: CategoryPayload) => void | Promise<void>;
-  initialData?: Partial<CategoryPayload>;
-};
+interface Props {
+  initialData?: CatalogEntity | null;
+  onSuccess?: () => void;
+}
 
-// 🔥 Cloudinary upload
-const uploadToCloudinary = async (file: File) => {
-  const res = await fetch(
-  `${process.env.NEXT_PUBLIC_API_URL}/cloudinary/signature?folder=categories`
-);
-  const { timestamp, signature, cloudName, apiKey } = await res.json();
+export default function CategoryForm({ initialData, onSuccess }: Props) {
+  const router = useRouter();
 
-  const formData = new FormData();
-  formData.append("file", file);
-  formData.append("api_key", apiKey);
-  formData.append("timestamp", timestamp);
-  formData.append("signature", signature);
-  formData.append("folder", "categories");
+  const {
+    createCategory,
+    updateCategory,
+    fetchCategories,
+    getParentCategories,
+  } = useCategoryStore();
 
-  const uploadRes = await fetch(
-    `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-    {
-      method: "POST",
-      body: formData,
-    }
-  );
+  const [loading, setLoading] = useState(false);
 
-  const data = await uploadRes.json();
-
-  return {
-    url: data.secure_url,
-    public_id: data.public_id,
-  };
-};
-
-export default function CategoryForm({
-  onSubmit,
-  initialData,
-}: CategoryFormProps) {
   const [form, setForm] = useState<CategoryPayload>({
     name: initialData?.name || "",
     description: initialData?.description || "",
+    parent:
+      typeof initialData?.parent === "string"
+        ? initialData.parent
+        : initialData?.parent?._id || "",
     image: initialData?.image || undefined,
   });
 
-  const [files, setFiles] = useState<File[]>([]);
-  const [altText, setAltText] = useState("");
+  // 🔥 fetch categories for parent dropdown
+  useEffect(() => {
+    fetchCategories();
+  }, [fetchCategories]);
 
-  // 🔥 FINAL SUBMIT HANDLER
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
+  const parentCategories = getParentCategories();
 
-    let imageData = form.image;
+  // 🔥 HANDLE IMAGE UPLOAD (Cloudinary)
 
-    // Upload new image if selected
-    if (files.length > 0) {
-      const uploaded = await uploadToCloudinary(files[0]);
 
-      imageData = {
-        url: uploaded.url,
-        public_id: uploaded.public_id,
-        altText: altText,
-      };
+  const handleUpload = async (file: File) => {
+    try {
+      setLoading(true);
+
+      const oldImage = form.image;
+
+      const img = await uploadSingleImage(file, "categories");
+
+      // ✅ only delete AFTER success
+      if (oldImage?.public_id) {
+        await deleteImage(oldImage.public_id);
+      }
+
+      setForm((prev) => ({
+        ...prev,
+        image: img,
+      }));
+
+    } catch (error) {
+      toast.error("Upload failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+  // 🔥 SUBMIT
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!form.name.trim()) {
+      return toast.error("Category name is required");
     }
 
-    await onSubmit({
-      ...form,
-      image: imageData,
-    });
+    try {
+      setLoading(true);
+
+      if (initialData?._id) {
+        await updateCategory(initialData._id, form);
+        toast.success("Category updated");
+      } else {
+        await createCategory(form);
+        toast.success("Category created");
+      }
+
+      onSuccess?.();
+    } catch (err) {
+      toast.error("Something went wrong");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <section className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm">
-        <h2 className="text-lg font-semibold text-slate-900">
-          Category details
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-6 bg-white p-6 rounded-2xl shadow"
+    >
+      {/* TITLE */}
+      <div>
+        <h2 className="text-xl font-semibold text-gray-800">
+          {initialData ? "Edit Category" : "Create Category"}
         </h2>
+        <p className="text-sm text-gray-500">
+          Manage your category details
+        </p>
+      </div>
 
-        <div className="mt-6 grid gap-4">
-          {/* Name */}
-          <div className="grid gap-2">
-            <label className="text-sm font-medium text-slate-700">
-              Category name
-            </label>
-            <input
-              required
-              placeholder="Rings"
-              value={form.name}
-              onChange={(e) =>
-                setForm({ ...form, name: e.target.value })
-              }
-              className="rounded-2xl border px-4 py-3"
+      {/* NAME */}
+      <div>
+        <label className="text-sm text-gray-600">Category Name</label>
+        <input
+          type="text"
+          value={form.name}
+          onChange={(e) =>
+            setForm({ ...form, name: e.target.value })
+          }
+          className="w-full mt-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500"
+          placeholder="e.g. Clothing"
+        />
+      </div>
+
+      {/* DESCRIPTION */}
+      <div>
+        <label className="text-sm text-gray-600">Description</label>
+        <textarea
+          value={form.description}
+          onChange={(e) =>
+            setForm({ ...form, description: e.target.value })
+          }
+          className="w-full mt-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500"
+          placeholder="Optional description"
+        />
+      </div>
+
+      {/* PARENT CATEGORY */}
+      <div>
+        <label className="text-sm text-gray-600">
+          Parent Category (Optional)
+        </label>
+        <select
+          value={form.parent || ""}
+          onChange={(e) =>
+            setForm({
+              ...form,
+              parent: e.target.value || null,
+            })
+          }
+          className="w-full mt-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500"
+        >
+          <option value="">Main Category</option>
+          {parentCategories.map((cat) => (
+            <option key={cat._id} value={cat._id}>
+              {cat.name}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* IMAGE UPLOAD */}
+
+      <div>
+        <label className="text-sm text-gray-600">Category Image</label>
+
+        <ImageUpload
+          multiple={false}
+          onFilesSelect={(files) => {
+            if (files.length > 0) {
+              handleUpload(files[0]);
+            }
+          }}
+        />
+
+        {/* PREVIEW */}
+        {form.image?.url && (
+          <div className="mt-3">
+            <img
+              src={form.image.url.replace(
+                "/upload/",
+                "/upload/f_auto,q_auto,w_300/"
+              )}
+              alt={form.image?.altText || "preview"}
+              className="w-32 h-32 object-cover rounded-lg border"
             />
           </div>
+        )}
 
-          {/* Image Upload */}
-          <div className="grid gap-2">
-            <label className="text-sm font-medium text-slate-700">
-              Upload category image
-            </label>
-            <ImageUpload onFilesSelect={setFiles} multiple={false} />
-          </div>
+        {loading && (
+          <p className="text-sm text-gray-500">Uploading...</p>
+        )}
+      </div>
 
-          {/* Alt Text */}
-          <div className="grid gap-2">
-            <label className="text-sm font-medium text-slate-700">
-              Image alt text
-            </label>
-            <input
-              placeholder="Gold rings"
-              value={altText}
-              onChange={(e) => setAltText(e.target.value)}
-              className="rounded-2xl border px-4 py-3"
-            />
-          </div>
+      {/* ACTIONS */}
+      <div className="flex gap-3">
+        <button
+          type="submit"
+          disabled={loading}
+          className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+        >
+          {loading
+            ? "Saving..."
+            : initialData
+              ? "Update Category"
+              : "Create Category"}
+        </button>
 
-          {/* Description */}
-          <div className="grid gap-2">
-            <label className="text-sm font-medium text-slate-700">
-              Description
-            </label>
-            <textarea
-              rows={4}
-              value={form.description}
-              onChange={(e) =>
-                setForm({ ...form, description: e.target.value })
-              }
-              className="rounded-2xl border px-4 py-3"
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* 🔥 Preview */}
-      {files.length > 0 && (
-        <section className="rounded-[28px] border bg-white p-6 shadow-sm">
-          <h2 className="text-lg font-semibold">Preview</h2>
-          <img
-            src={URL.createObjectURL(files[0])}
-            className="mt-4 h-64 w-full object-cover rounded-xl"
-          />
-        </section>
-      )}
-
-      <button className="rounded-full bg-[#12251a] px-5 py-3 text-white">
-        Save Category
-      </button>
+        <button
+          type="button"
+          disabled={loading}
+          onClick={() => router.back()}
+          className="px-4 py-2 bg-gray-200 rounded-lg"
+        >
+          Cancel
+        </button>
+      </div>
     </form>
   );
 }

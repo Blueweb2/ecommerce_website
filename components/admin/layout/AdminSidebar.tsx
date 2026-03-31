@@ -11,11 +11,11 @@ import {
   User,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { useAdminAuthStore } from "@/store/admin/useAdminAuthStore";
+import { useAuthStore } from "@/store/auth/useAuthStore";
 
 export default function AdminSidebar() {
   const pathname = usePathname();
-  const { user } = useAdminAuthStore();
+  const { user } = useAuthStore();
 
   // 🔥 Dynamic menu
   const menu = [
