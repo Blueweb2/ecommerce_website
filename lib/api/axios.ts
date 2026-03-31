@@ -2,9 +2,11 @@ import axios from "axios";
 import { getAccessToken, setAccessToken, clearAccessToken } from "@/lib/auth";
 
 const api = axios.create({
-  baseURL: "http://localhost:5000/api",
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
   withCredentials: true,
 });
+
+console.log("API URL:", process.env.NEXT_PUBLIC_API_URL);
 
 // ✅ Attach access token
 api.interceptors.request.use((config) => {
