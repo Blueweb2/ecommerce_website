@@ -30,7 +30,7 @@ const Carousel = ({ setZooming }: CarouselProps) => {
   };
 
   return (
-    <div className="flex items-center justify-center h-[400px] lg:min-h-screen" 
+    <div className="flex items-center justify-center h-[100px] lg:min-h-screen mt-40 lg:mt-3" 
       onClick={()=>setZooming(false)}
     >
       <div
@@ -56,7 +56,7 @@ const Carousel = ({ setZooming }: CarouselProps) => {
               <img
                 src={img}
                 alt=""
-                className="w-full h-full lg:h-[600px]  object-cover"
+                className="w-full h-[300px] md:h-[600px] lg:h-[500px]  object-cover"
               />
             </div>
           ))}
