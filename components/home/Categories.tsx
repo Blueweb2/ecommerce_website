@@ -6,7 +6,6 @@ import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { getAllCategories } from "@/lib/api/category.api";
 
-// ✅ TYPE
 type Category = {
   _id: string;
   name: string;
@@ -49,7 +48,7 @@ const Categories = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // ✅ FETCH FROM BACKEND
+  // FETCH FROM BACKEND
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -102,7 +101,7 @@ const Categories = () => {
           </div>
         </div>
 
-        {/* 🔥 CATEGORY SLIDER */}
+        {/* CATEGORY SLIDER */}
         <div
           ref={scrollRef}
           className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth"
@@ -115,9 +114,9 @@ const Categories = () => {
             categories.map((cat) => (
               <Link
                 key={cat._id}
-                href={`/category/${cat.slug}`} // ✅ SEO-friendly
+                href={`/category/${cat.slug}`}
               >
-                <div className="relative w-[200px] h-[130px] md:min-w-[230px] md:min-h-[250px] flex-shrink-0 bg-white border overflow-hidden hover:scale-105 transition duration-300">
+                <div className="relative w-[200px] h-[130px] md:min-w-[230px] md:min-h-[250px] flex-shrink-0 bg-white overflow-hidden hover:scale-105 transition duration-300">
 
                   <Image
                     src={cat.image?.url || "/home/categorysection/category-one.png"}
@@ -137,7 +136,7 @@ const Categories = () => {
           )}
         </div>
 
-        {/* TOP THREE CATEGORIES (UNCHANGED) */}
+        {/* TOP THREE CATEGORIES */}
         <div className="grid grid-cols-3 gap-4 items-center mt-6">
           {topThreeCategories.map((item) => (
             <div className="flex flex-col h-full" key={item.id}>
