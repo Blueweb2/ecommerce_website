@@ -5,7 +5,11 @@ import { useState, useEffect } from "react";
 const Carousel = dynamic(() => import("./inside-product-feature/Carousel"));
 const RightSide = dynamic(() => import("./inside-product-feature/RightSide"));
 
-const ProductFeature = () => {
+type ProductFeatureProps = {
+  onToggleLayout: (visible: boolean) => void;
+};
+
+const ProductFeature = ({ onToggleLayout }: ProductFeatureProps) => {
 
   const [leftPos, setLeftPos] = useState({ x: 0, y: 0 });
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
@@ -36,6 +40,11 @@ const ProductFeature = () => {
     window.addEventListener("mousemove", handleMouseMove);
       return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
+
+  // pass zooming value to parent component
+  useEffect(() => {
+    onToggleLayout(zooming);
+  },[zooming]);
 
 
   return !isMobile && !zooming ? (
