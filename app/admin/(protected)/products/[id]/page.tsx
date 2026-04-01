@@ -142,8 +142,8 @@ export default function ViewProductPage() {
                   <p className="text-sm font-medium text-slate-500">Category</p>
                   <p className="mt-1 text-base font-semibold text-slate-900">
                     {typeof product.category === "object" && product.category !== null
-  ? product.category.name
-  : "Uncategorized"}
+                      ? product.category.name
+                      : "Uncategorized"}
                   </p>
                 </div>
               </div>
@@ -166,16 +166,26 @@ export default function ViewProductPage() {
 
             <div className="rounded-[24px] border border-slate-200 bg-slate-50 p-4">
               <p className="text-sm font-medium text-slate-500">Variants</p>
+
               {product.variants?.length ? (
                 <div className="mt-3 flex flex-wrap gap-2">
-                  {product.variants.map((variant, index) => (
-                    <span
-                      key={`${variant.size}-${variant.color}-${index}`}
-                      className="rounded-full border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700"
-                    >
-                      {variant.size || "No size"} / {variant.color || "No color"}
-                    </span>
-                  ))}
+                  {product.variants.map((variant, index) => {
+                    const attributes = variant.attributes || {};
+
+                    // Convert attributes → "size: M / color: Red"
+                    const label = Object.entries(attributes)
+                      .map(([key, value]) => `${key}: ${value}`)
+                      .join(" / ");
+
+                    return (
+                      <span
+                        key={`${Object.values(attributes).join("-")}-${index}`}
+                        className="rounded-full border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700"
+                      >
+                        {label || "No attributes"}
+                      </span>
+                    );
+                  })}
                 </div>
               ) : (
                 <p className="mt-2 text-base font-semibold text-slate-900">
