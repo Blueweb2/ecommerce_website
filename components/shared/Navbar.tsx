@@ -77,7 +77,7 @@ export default function Navbar() {
           <button onClick={() => router.push("/login")} className="transition-colors duration-300 hover:text-[#D4AF37]">
             <User size={18} />
           </button>
-          <button onClick={openCart} className="hover:text-black transition">
+          <button onClick={openCart} className="transition-colors duration-300 hover:text-[#D4AF37]">
             <ShoppingCart size={18} />
             {cartCount > 0 && (
               <span className="absolute -top-2 -right-3 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
