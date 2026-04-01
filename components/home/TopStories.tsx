@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 const products = [
   {
     name: "FASHION",
@@ -57,13 +59,16 @@ export default function ShopSection() {
               className="w-[200px] flex flex-col justify-between flex-shrink-0 rounded-xl"
             >
               {/* IMAGE */}
-              <div className="flex justify-center h-56 mb-4">
+              <Link 
+                href="/product/3"
+                className="flex justify-center h-56 mb-4"
+              >
                 <img
                   src={product.image}
                   alt={product.name}
                   className="h-full object-cover w-full"
                 />
-              </div>
+              </Link>
 
               {/* CONTENT */}
               <div >

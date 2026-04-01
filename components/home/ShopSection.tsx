@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState, useEffect } from "react";
 
 type Products = {
@@ -185,13 +186,16 @@ export default function ShopSection() {
               className="w-[200px] md:w-[250px] flex flex-col justify-between flex-shrink-0 rounded-xl"
             >
               {/* IMAGE */}
-              <div className="flex justify-center mb-4">
+              <Link
+                href="/product/3"
+                className="flex justify-center mb-4"
+              >
                 <img
                   src={product.image}
                   alt={product.name}
                   className="h-40 md:h-60 object-contain w-full"
                 />
-              </div>
+              </Link>
 
               {/* CONTENT */}
               <div>

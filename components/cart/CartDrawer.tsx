@@ -1,8 +1,9 @@
 "use client";
 
+import { X, ShoppingCart } from "lucide-react";
+import Link from "next/link";
 import { useCartUIStore } from "@/store/ui/useCartUIStore";
 import { useCartStore } from "@/store/user/cart/useCartStore";
-import { X } from "lucide-react";
 
 export default function CartDrawer() {
   const { isOpen, closeCart } = useCartUIStore();
@@ -13,18 +14,21 @@ export default function CartDrawer() {
       {/* Overlay */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/40 z-40"
+          className="fixed inset-0 bg-black/40 z-9999"
           onClick={closeCart}
         />
       )}
 
       {/* Drawer */}
       <div
-        className={`fixed top-0 right-0 h-full w-[380px] bg-white z-50 shadow-xl transform transition-transform duration-300
+        className={`fixed top-0 right-0 h-screen w-[300px] md:w-[380px] bg-white z-50 shadow-xl transform transition-transform duration-300 z-9999 mt-16
         ${isOpen ? "translate-x-0" : "translate-x-full"}`}
       >
         {/* Header */}
-        <div className="flex justify-between items-center p-4 border-b">
+        <div className="flex justify-between items-center p-4 border-b border-gray-300">
+          <Link href='/'>
+            <ShoppingCart />
+          </Link>
           <h2 className="text-lg font-semibold">Your Cart</h2>
           <button onClick={closeCart}>
             <X />
@@ -87,7 +91,7 @@ export default function CartDrawer() {
         </div>
 
         {/* Footer */}
-        <div className="absolute bottom-0 w-full p-4 border-t bg-white">
+        <div className="absolute bottom-0 w-full p-4 border-t border-b border-gray-300 bg-white pb-20">
           <div className="flex justify-between mb-3">
             <span>Total</span>
             <span className="font-semibold">₹{totalPrice}</span>
