@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 const slides = [
@@ -25,6 +26,7 @@ export default function HeroSection() {
 
   const [current, setCurrent] = useState(0);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const router = useRouter();
 
   const startAutoSlide = () => {
     intervalRef.current = setInterval(() => {
@@ -41,7 +43,9 @@ export default function HeroSection() {
   }, []);
 
 
-  const handleClick = (index:number) => {
+  const handleClick = (e:React.MouseEvent<HTMLButtonElement>,index:number) => {
+    e.preventDefault();
+    e.stopPropagation();
     setCurrent(index)
     // stop auto slide
     if (intervalRef.current) {
@@ -57,8 +61,9 @@ export default function HeroSection() {
       <div className="max-w-7xl mx-auto px-4 md:px-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
 
         {/* LEFT BIG CARD */}
-        <div
-          className="relative rounded-2xl overflow-hidden min-h-[420px] flex items-end p-6 text-white"
+        <Link
+          href='/more-products'
+          className="relative rounded-2xl overflow-hidden min-h-[420px] flex items-end p-6 text-white border"
         >
           {/* Background */}
           <div
@@ -87,19 +92,28 @@ export default function HeroSection() {
               {slides[current].desc}
             </p>
 
-            <Link
-              href="/shop"
-              className="inline-block bg-black text-white text-sm px-5 py-2 rounded-[5px] hover:opacity-90 transition animate-fadeUp animate-delay-300"
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                router.push("/product/3");
+              }}
+              
+              className="inline-block bg-black text-white text-sm px-5 py-2 rounded-[5px]
+             transition-all duration-300
+             hover:-translate-y-1 hover:shadow-lg hover:bg-gray-900
+             active:translate-y-0 active:shadow-md
+             animate-fadeUp animate-delay-300"
             >
               SHOP NOW
-            </Link>
+            </button>
 
             {/* buttons */}
             <div className="flex gap-3 items-center justify-center mt-6 h-6">
               {slides.map((_, index) => (
                 <button
                   key={index}
-                  onClick={() => handleClick(index)}
+                  onClick={(e) => handleClick(e,index)}
                   className={`rounded-full transform transition-all duration-300 ease-out ${
                     current === index
                       ? "w-4 h-4 bg-black scale-125"
@@ -112,11 +126,12 @@ export default function HeroSection() {
 
           {/* for better text visibility */}
           <div className="absolute inset-0 bg-white/30 z-0" />
-        </div>
+        </Link>
 
         {/* CENTER CARD */}
-        <div
-          className="relative rounded-2xl overflow-hidden min-h-[420px] flex flex-col justify-between p-6"
+        <Link
+          href='/more-products'
+          className="relative rounded-2xl overflow-hidden min-h-[420px] flex flex-col justify-between p-6 border border-white"
           style={{
             backgroundImage: "url('/home/herosection/hero-center.png')",
             backgroundSize: "cover",
@@ -131,21 +146,31 @@ export default function HeroSection() {
               From delicate bands to statement designs, find rings crafted to
               capture every moment beautifully.
             </p>
-            <Link
-              href="/shop/rings"
-              className="inline-block mt-4 bg-black text-white text-sm px-5 py-2 rounded-[5px] hover:opacity-90 transition animate-fadeUp animate-delay-400"
+
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                router.push("/product/3");
+              }}
+              
+              className="inline-block bg-black text-white text-sm px-5 py-2 rounded-[5px] mt-4
+             transition-all duration-300
+             hover:-translate-y-1 hover:shadow-lg hover:bg-gray-900
+             active:translate-y-0 active:shadow-md
+             animate-fadeUp animate-delay-300"
             >
               SHOP RINGS
-            </Link>
+            </button>
           </div>
-        </div>
+        </Link>
 
         {/* RIGHT SIDE (2 CARDS) */}
         <div className="flex lg:flex-col gap-6">
 
           {/* TOP RIGHT */}
           <div
-            className="relative rounded-2xl overflow-hidden min-h-[200px] flex items-end p-5 text-white w-full"
+            className="relative rounded-2xl overflow-hidden min-h-[200px] flex items-end p-5 text-white w-full border"
             style={{
               backgroundImage: "url('/home/herosection/hero-right-top.png')",
               backgroundSize: "cover",
@@ -156,18 +181,25 @@ export default function HeroSection() {
               <h3 className="text-lg animate-slide-right font-serif">
                 Signature <br /> Necklaces
               </h3>
+
               <Link
-                href="/shop/necklaces"
-                className="text-xs mt-2 inline-flex items-center gap-1 animate-slide-left"
+                href="/product/3"
+                className="group text-xs mt-2 inline-flex items-center text-white/70 gap-1 transition duration-300"
               >
-                SHOP NECKLACES →
+                <span className="group-hover:text-white transition duration-300">
+                  SHOP NECKLACES
+                </span>
+                <span className="group-hover:text-white transform transition-transform duration-300 group-hover:translate-x-1">
+                  →
+                </span>
               </Link>
+
             </div>
           </div>
 
           {/* BOTTOM RIGHT */}
           <div
-            className="relative rounded-2xl overflow-hidden min-h-[200px] flex items-end p-5 w-full"
+            className="relative rounded-2xl overflow-hidden min-h-[200px] flex items-end p-5 w-full border border-white"
             style={{
               backgroundImage: "url('/home/herosection/hero-right-bottom.png')",
               backgroundSize: "cover",
@@ -179,11 +211,17 @@ export default function HeroSection() {
                 Modern Earrings
               </h3>
               <Link
-                href="/shop/earrings"
-                className="text-xs mt-2 inline-flex items-center gap-1 text-gray-700 animate-slide-left"
+                href="/product/3"
+                className="group text-xs mt-2 inline-flex items-center gap-1 text-gray-700 transition duration-300"
               >
-                SHOP EARRINGS →
+                <span className="group-hover:text-black transition duration-300">
+                  SHOP EARRINGS
+                </span>
+                <span className="transform transition-transform duration-300 group-hover:translate-x-1">
+                  →
+                </span>
               </Link>
+
             </div>
           </div>
 

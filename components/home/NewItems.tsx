@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 interface Product {
   id: number;
@@ -98,12 +99,12 @@ export default function NewInSection() {
             New arrivals, now dropping five days a week — discover the latest
             launches onsite from Monday to Friday.
           </p>
-          <a
-            href="/new-in"
+          <Link
+            href="/more-products"
             className="inline-block border bg-black border-neutral-900 text-white text-xs tracking-widest uppercase px-5 py-2.5 hover:bg-black hover:text-white transition-colors duration-200 w-fit"
           >
             Shop New In
-          </a>
+          </Link>
         </div>
 
         {/* Carousel Wrapper */}
@@ -137,9 +138,9 @@ export default function NewInSection() {
             className="flex gap-3 overflow-x-auto scroll-smooth w-full scrollbar-hide"
           >
             {products.map((product) => (
-              <a
+              <Link
                 key={product.id}
-                href="#"
+                href="/product/3"
                 className="flex-shrink-0 group flex flex-col items-center gap-2"
                 style={{ width: "clamp(140px, 22vw, 200px)" }}
               >
@@ -162,7 +163,7 @@ export default function NewInSection() {
                 <span className="text-[10px] tracking-[0.15em] uppercase text-neutral-800 font-medium group-hover:text-neutral-500 transition-colors duration-150">
                   {product.label}
                 </span>
-              </a>
+              </Link>
             ))}
           </div>
 
