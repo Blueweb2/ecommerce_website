@@ -13,19 +13,30 @@ export default function CreateProductPage() {
   const { createProduct } = useProductStore();
   const router = useRouter();
 
-  const handleSubmit = async (data: ProductPayload) => {
+  // ✅ FIXED: now receives files also
+  const handleSubmit = async (
+    data: ProductPayload,
+    files: File[]
+  ) => {
     try {
-      await createProduct(data);
+      await createProduct(data, files);
+
       toast.success("Product created successfully");
+
       router.push("/admin/products");
     } catch (error: unknown) {
       const apiError = error as ApiErrorResponse;
-      toast.error(apiError.response?.data?.message || "Error creating product");
+
+      toast.error(
+        apiError.response?.data?.message ||
+          "Error creating product"
+      );
     }
   };
 
   return (
     <div className="space-y-6">
+      
       <div>
         <h1 className="text-3xl font-semibold tracking-tight text-slate-900">
           Create Product
@@ -35,7 +46,9 @@ export default function CreateProductPage() {
         </p>
       </div>
 
+      {/* ✅ IMPORTANT: ProductForm must send (data, files) */}
       <ProductForm onSubmit={handleSubmit} />
+      
     </div>
   );
 }

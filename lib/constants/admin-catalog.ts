@@ -42,12 +42,20 @@ export type CategoryPayload = {
 };
 
 // ✅ PRODUCT VARIANT
-export type ProductVariant = {
-  size: string;
-  color: string;
-  stock?: number;
+export interface ProductVariant {
+  attributes: Record<string, string>; // 🔥 IMPORTANT
+  stock: number;
   price?: number;
-};
+  discountPrice?: number;
+  sku?: string;
+  images?: {
+    url: string;
+    altText?: string;
+    public_id?: string;
+    isPrimary?: boolean;
+  }[];
+  isActive?: boolean;
+}
 
 
 // ❌ REMOVE string | ... → STRICT TYPE
@@ -82,6 +90,12 @@ export type ProductPayload = {
   images: CatalogImage[];
   stock: number;
   isPublished: boolean;
+
+  attributes?: {
+    name: string;
+    values: string[];
+  }[]; // 🔥 REQUIRED FOR BACKEND
+
   variants?: ProductVariant[];
 };
 
