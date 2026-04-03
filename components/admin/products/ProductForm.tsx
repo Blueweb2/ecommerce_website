@@ -21,6 +21,8 @@ type ProductFormValues = {
   name: string;
   price: number | string;
   description: string;
+    deliveryDetails: string;   // ✅ ADD
+  keyFeatures: string[];
   category: string;
   sections: string[];
   images: CatalogImage[];
@@ -43,6 +45,8 @@ const defaultValues: ProductFormValues = {
   name: "",
   price: "",
   description: "",
+  deliveryDetails: "",   // ✅ ADD
+  keyFeatures: [],
   category: "",
   sections: [],
   images: [],
@@ -183,6 +187,8 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
         {
           name: form.name.trim(),
           description: form.description.trim(),
+            deliveryDetails: form.deliveryDetails.trim(),   // ✅ ADD
+          keyFeatures: form.keyFeatures.map((f) => f.trim()).filter((f) => f !== ""), 
           price: Number(form.price),
           category: form.category,
           sections: form.sections,
@@ -218,6 +224,8 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
       {
         name: form.name.trim(),
         description: form.description.trim(),
+          deliveryDetails: form.deliveryDetails.trim(),   // ✅ ADD
+        keyFeatures: form.keyFeatures.map((f) => f.trim()).filter((f) => f !== ""),
         price: Number(form.price),
         category: form.category,
         sections: form.sections,
@@ -276,6 +284,100 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
             setFiles={setFiles}
           />
         </div>
+
+        {/* Product Content Section */}
+<section className="rounded-2xl border p-6 bg-white space-y-4">
+  <h3 className="text-lg font-semibold">Product Content</h3>
+
+  {/* Description */}
+  <div>
+    <label className="block text-sm font-medium mb-1">
+      Product Description
+    </label>
+    <textarea
+      value={form.description}
+      onChange={(e) =>
+        setForm((prev) => ({
+          ...prev,
+          description: e.target.value,
+        }))
+      }
+      className="w-full border rounded px-3 py-2"
+      rows={4}
+    />
+  </div>
+
+  {/* Delivery Details */}
+  <div>
+    <label className="block text-sm font-medium mb-1">
+      Delivery Details
+    </label>
+    <textarea
+      value={form.deliveryDetails}
+      onChange={(e) =>
+        setForm((prev) => ({
+          ...prev,
+          deliveryDetails: e.target.value,
+        }))
+      }
+      className="w-full border rounded px-3 py-2"
+      rows={3}
+    />
+  </div>
+
+  {/* Key Features */}
+  <div>
+    <label className="block text-sm font-medium mb-2">
+      Key Features
+    </label>
+
+    {form.keyFeatures.map((feature: string, index: number) => (
+      <div key={index} className="flex gap-2 mb-2">
+        <input
+          value={feature}
+          onChange={(e) => {
+            const updated = [...form.keyFeatures];
+            updated[index] = e.target.value;
+
+            setForm((prev) => ({
+              ...prev,
+              keyFeatures: updated,
+            }));
+          }}
+          className="border px-3 py-2 rounded w-full"
+        />
+
+        <button
+          type="button"
+          onClick={() => {
+            const updated = form.keyFeatures.filter(
+              (_, i) => i !== index
+            );
+            setForm((prev) => ({
+              ...prev,
+              keyFeatures: updated,
+            }));
+          }}
+        >
+          ❌
+        </button>
+      </div>
+    ))}
+
+    <button
+      type="button"
+      onClick={() =>
+        setForm((prev) => ({
+          ...prev,
+          keyFeatures: [...prev.keyFeatures, ""],
+        }))
+      }
+      className="text-blue-600 text-sm"
+    >
+      + Add Feature
+    </button>
+  </div>
+</section>
       </div>
 
       <button className="rounded-full bg-[#12251a] px-5 py-3 text-sm font-semibold text-white hover:bg-[#1c3424]">

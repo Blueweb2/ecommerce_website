@@ -33,6 +33,21 @@ export default function ProductsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeSection, setActiveSection] = useState("all");
   const [activeCategory, setActiveCategory] = useState("all");
+  const [expandedProduct, setExpandedProduct] = useState<string | null>(null);
+
+  const toggleExpand = (id: string) => {
+    setExpandedProduct((prev) => (prev === id ? null : id));
+  };
+
+
+  const handleCopySKU = (sku?: string) => {
+    if (!sku) return;
+
+    navigator.clipboard.writeText(sku);
+    toast.success("SKU copied!");
+  };
+
+
 
   useEffect(() => {
     fetchProducts();
@@ -92,11 +107,18 @@ export default function ProductsPage() {
           ? product.category
           : product.category?._id;
 
+      const matchesSKU =
+        product.sku?.toLowerCase().includes(query) ||
+        product.variants?.some((v) =>
+          v.sku?.toLowerCase().includes(query)
+        );
+
       const matchesQuery =
         !query ||
-        product.sku?.toLowerCase().includes(query) ||
+        matchesSKU ||
         product.name.toLowerCase().includes(query) ||
-        product.description?.toLowerCase().includes(query);
+        product.description?.toLowerCase()?.includes(query);
+
       const matchesSection =
         activeSection === "all" ||
         (product.sections || []).includes(activeSection);
@@ -253,6 +275,14 @@ export default function ProductsPage() {
                   ? categories.find((c) => c._id === product.category)?.name || "Unknown"
                   : product.category?.name || "Uncategorized";
 
+              const displaySKU =
+                product.sku ||
+                product.variants?.[0]?.sku ||
+                "Pending";
+
+              const variants = product.variants || [];
+              const hasVariants = variants.length > 0;
+
               return (
                 <article
                   key={product._id}
@@ -323,8 +353,8 @@ export default function ProductsPage() {
 
                         <span
                           className={`rounded-full px-3 py-1 text-xs font-semibold ${product.isPublished
-                              ? "bg-emerald-50 text-emerald-700"
-                              : "bg-slate-100 text-slate-600"
+                            ? "bg-emerald-50 text-emerald-700"
+                            : "bg-slate-100 text-slate-600"
                             }`}
                         >
                           {product.isPublished ? "Published" : "Draft"}
@@ -335,13 +365,71 @@ export default function ProductsPage() {
                         {product.name}
                       </h3>
 
-                      <p className="mt-1 text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
-                        SKU {product.sku || "Pending"}
-                      </p>
+                      <div className="mt-1 flex flex-col gap-1">
+
+                        {/* 🔥 MAIN SKU + COPY */}
+                        <div className="flex items-center gap-2">
+                          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
+                            SKU {displaySKU}
+                          </p>
+
+                          <button
+                            onClick={() => handleCopySKU(displaySKU)}
+                            className="text-xs px-2 py-1 bg-slate-200 rounded hover:bg-slate-300"
+                          >
+                            Copy
+                          </button>
+                        </div>
+
+                        {/* 🔽 VARIANT TOGGLE */}
+                        {hasVariants && (
+                          <button
+                            onClick={() => toggleExpand(product._id)}
+                            className="text-xs text-blue-600 hover:underline"
+                          >
+                            {expandedProduct === product._id
+                              ? "Hide variants"
+                              : `View ${variants.length} variant SKUs`}
+                          </button>
+                        )}
+                      </div>
+
 
                       <p className="mt-2 line-clamp-2 text-sm leading-6 text-slate-500">
                         {product.description || "No description added yet."}
                       </p>
+
+                      {expandedProduct === product._id && hasVariants && (
+                        <div className="mt-3 space-y-2 border rounded-lg p-3 bg-slate-50">
+                          {variants.map((variant, index) => {
+                            const attrLabel = Object.entries(variant.attributes || {})
+                              .map(([k, v]) => `${k}: ${v}`)
+                              .join(" / ");
+
+                            return (
+                              <div
+                                key={index}
+                                className="flex items-center justify-between bg-white px-3 py-2 rounded border"
+                              >
+                                <div className="text-xs text-slate-700">
+                                  <span className="font-medium">{attrLabel}</span>
+                                  <span className="ml-2 text-slate-400">
+                                    ({variant.sku || "No SKU"})
+                                  </span>
+                                </div>
+
+                                {/* COPY BUTTON (next step) */}
+                                <button
+                                  onClick={() => handleCopySKU(variant.sku)}
+                                  className="text-xs px-2 py-1 bg-slate-200 rounded hover:bg-slate-300"
+                                >
+                                  Copy
+                                </button>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
 
                       <div className="mt-4 flex flex-wrap gap-4 text-sm text-slate-600">
                         <span className="inline-flex items-center gap-2">
@@ -356,8 +444,8 @@ export default function ProductsPage() {
 
                         <span className="inline-flex items-center gap-2">
                           <Package2 className="h-4 w-4" />
-                          {product.variants?.length
-                            ? `${product.variants.length} variants`
+                          {hasVariants
+                            ? `${variants.length} variants`
                             : "No variants"}
                         </span>
                       </div>

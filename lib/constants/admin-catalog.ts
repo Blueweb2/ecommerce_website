@@ -48,12 +48,7 @@ export interface ProductVariant {
   price?: number;
   discountPrice?: number;
   sku?: string;
-  images?: {
-    url: string;
-    altText?: string;
-    public_id?: string;
-    isPrimary?: boolean;
-  }[];
+  images?: CatalogImage[];
   isActive?: boolean;
 }
 
@@ -68,6 +63,8 @@ export type CatalogProduct = {
   sku?: string;
   name: string;
   description?: string;
+  deliveryDetails?: string;
+  keyFeatures?: string[];
   price: number;
   stock?: number;
   isPublished?: boolean;
@@ -85,6 +82,8 @@ export type ProductPayload = {
   name: string;
   price: number;
   description: string;
+  deliveryDetails: string;   // ✅ ADD
+  keyFeatures: string[];
   category: string;
   sections: string[];
   images: CatalogImage[];
