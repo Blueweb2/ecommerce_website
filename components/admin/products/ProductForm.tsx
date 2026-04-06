@@ -16,18 +16,20 @@ import VariantSection from "./VariantSection";
 import MediaSection from "./MediaSection";
 import PreviewSection from "./PreviewSection";
 import AttributeBuilder from "./AttributeBuilder";
+import toast from "react-hot-toast";
 
 type ProductFormValues = {
   name: string;
   price: number | string;
   description: string;
-    deliveryDetails: string;   // ✅ ADD
+  deliveryDetails: string;
   keyFeatures: string[];
   category: string;
   sections: string[];
   images: CatalogImage[];
   stock: number | string;
   isPublished: boolean;
+   primaryImageIndex?: number;
 
   variants: {
     attributes: Record<string, string>;
@@ -53,6 +55,8 @@ const defaultValues: ProductFormValues = {
   stock: "",
   isPublished: true,
   variants: [],
+   primaryImageIndex: 0,
+  
 };
 
 // 🔹 Normalize helper (important)
@@ -165,6 +169,7 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
 
     if (hasInvalidVariant) {
       nextErrors.variants = "All variant attributes must be filled";
+      toast.error("Please fill all variant attributes");
     }
 
     setErrors(nextErrors);
@@ -180,6 +185,11 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
     const cleanedVariants = form.variants.filter((v) =>
       Object.values(v.attributes).every((val) => val.trim() !== "")
     );
+    toast.error(
+      form.variants.length > cleanedVariants.length
+        ? "Some variants were removed due to missing attributes"
+        : ""
+    );
 
     // ✅ No variants
     if (cleanedVariants.length === 0) {
@@ -187,16 +197,17 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
         {
           name: form.name.trim(),
           description: form.description.trim(),
-            deliveryDetails: form.deliveryDetails.trim(),   // ✅ ADD
-          keyFeatures: form.keyFeatures.map((f) => f.trim()).filter((f) => f !== ""), 
+          deliveryDetails: form.deliveryDetails.trim(),   // ✅ ADD
+          keyFeatures: form.keyFeatures.map((f) => f.trim()).filter((f) => f !== ""),
           price: Number(form.price),
           category: form.category,
           sections: form.sections,
-          images: [],
+          images: form.images,
           stock: Number(form.stock) || 0,
           isPublished: form.isPublished,
           attributes: [],
           variants: [],
+          primaryImageIndex: Number(form.primaryImageIndex) || 0,
         },
         files
       );
@@ -224,16 +235,23 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
       {
         name: form.name.trim(),
         description: form.description.trim(),
-          deliveryDetails: form.deliveryDetails.trim(),   // ✅ ADD
-        keyFeatures: form.keyFeatures.map((f) => f.trim()).filter((f) => f !== ""),
+        deliveryDetails: form.deliveryDetails.trim(),
+        keyFeatures: form.keyFeatures.map((f) => f.trim()).filter(Boolean),
         price: Number(form.price),
         category: form.category,
         sections: form.sections,
-        images: [],
+
+        // ✅ IMPORTANT: keep existing images
+        images: form.images,
+
         stock: Number(form.stock) || 0,
         isPublished: form.isPublished,
+
         attributes: attributesPayload,
         variants: variantsPayload,
+
+        // ✅ send primary index
+        primaryImageIndex: form.primaryImageIndex || 0,
       },
       files
     );
@@ -286,98 +304,98 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
         </div>
 
         {/* Product Content Section */}
-<section className="rounded-2xl border p-6 bg-white space-y-4">
-  <h3 className="text-lg font-semibold">Product Content</h3>
+        <section className="rounded-2xl border p-6 bg-white space-y-4">
+          <h3 className="text-lg font-semibold">Product Content</h3>
 
-  {/* Description */}
-  <div>
-    <label className="block text-sm font-medium mb-1">
-      Product Description
-    </label>
-    <textarea
-      value={form.description}
-      onChange={(e) =>
-        setForm((prev) => ({
-          ...prev,
-          description: e.target.value,
-        }))
-      }
-      className="w-full border rounded px-3 py-2"
-      rows={4}
-    />
-  </div>
+          {/* Description */}
+          <div>
+            <label className="block text-sm font-medium mb-1">
+              Product Description
+            </label>
+            <textarea
+              value={form.description}
+              onChange={(e) =>
+                setForm((prev) => ({
+                  ...prev,
+                  description: e.target.value,
+                }))
+              }
+              className="w-full border rounded px-3 py-2"
+              rows={4}
+            />
+          </div>
 
-  {/* Delivery Details */}
-  <div>
-    <label className="block text-sm font-medium mb-1">
-      Delivery Details
-    </label>
-    <textarea
-      value={form.deliveryDetails}
-      onChange={(e) =>
-        setForm((prev) => ({
-          ...prev,
-          deliveryDetails: e.target.value,
-        }))
-      }
-      className="w-full border rounded px-3 py-2"
-      rows={3}
-    />
-  </div>
+          {/* Delivery Details */}
+          <div>
+            <label className="block text-sm font-medium mb-1">
+              Delivery Details
+            </label>
+            <textarea
+              value={form.deliveryDetails}
+              onChange={(e) =>
+                setForm((prev) => ({
+                  ...prev,
+                  deliveryDetails: e.target.value,
+                }))
+              }
+              className="w-full border rounded px-3 py-2"
+              rows={3}
+            />
+          </div>
 
-  {/* Key Features */}
-  <div>
-    <label className="block text-sm font-medium mb-2">
-      Key Features
-    </label>
+          {/* Key Features */}
+          <div>
+            <label className="block text-sm font-medium mb-2">
+              Key Features
+            </label>
 
-    {form.keyFeatures.map((feature: string, index: number) => (
-      <div key={index} className="flex gap-2 mb-2">
-        <input
-          value={feature}
-          onChange={(e) => {
-            const updated = [...form.keyFeatures];
-            updated[index] = e.target.value;
+            {form.keyFeatures.map((feature: string, index: number) => (
+              <div key={index} className="flex gap-2 mb-2">
+                <input
+                  value={feature}
+                  onChange={(e) => {
+                    const updated = [...form.keyFeatures];
+                    updated[index] = e.target.value;
 
-            setForm((prev) => ({
-              ...prev,
-              keyFeatures: updated,
-            }));
-          }}
-          className="border px-3 py-2 rounded w-full"
-        />
+                    setForm((prev) => ({
+                      ...prev,
+                      keyFeatures: updated,
+                    }));
+                  }}
+                  className="border px-3 py-2 rounded w-full"
+                />
 
-        <button
-          type="button"
-          onClick={() => {
-            const updated = form.keyFeatures.filter(
-              (_, i) => i !== index
-            );
-            setForm((prev) => ({
-              ...prev,
-              keyFeatures: updated,
-            }));
-          }}
-        >
-          ❌
-        </button>
-      </div>
-    ))}
+                <button
+                  type="button"
+                  onClick={() => {
+                    const updated = form.keyFeatures.filter(
+                      (_, i) => i !== index
+                    );
+                    setForm((prev) => ({
+                      ...prev,
+                      keyFeatures: updated,
+                    }));
+                  }}
+                >
+                  ❌
+                </button>
+              </div>
+            ))}
 
-    <button
-      type="button"
-      onClick={() =>
-        setForm((prev) => ({
-          ...prev,
-          keyFeatures: [...prev.keyFeatures, ""],
-        }))
-      }
-      className="text-blue-600 text-sm"
-    >
-      + Add Feature
-    </button>
-  </div>
-</section>
+            <button
+              type="button"
+              onClick={() =>
+                setForm((prev) => ({
+                  ...prev,
+                  keyFeatures: [...prev.keyFeatures, ""],
+                }))
+              }
+              className="text-blue-600 text-sm"
+            >
+              + Add Feature
+            </button>
+          </div>
+        </section>
       </div>
 
       <button className="rounded-full bg-[#12251a] px-5 py-3 text-sm font-semibold text-white hover:bg-[#1c3424]">

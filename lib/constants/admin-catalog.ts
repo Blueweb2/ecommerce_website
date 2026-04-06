@@ -93,9 +93,10 @@ export type ProductPayload = {
   attributes?: {
     name: string;
     values: string[];
-  }[]; // 🔥 REQUIRED FOR BACKEND
+  }[]; 
 
   variants?: ProductVariant[];
+  primaryImageIndex?: number;
 };
 
 

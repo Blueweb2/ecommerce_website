@@ -8,31 +8,43 @@ import {
   ApiErrorResponse,
   ProductPayload,
 } from "@/lib/constants/admin-catalog";
+import { uploadMultipleImages } from "@/lib/cloudinary/upload";
+
 
 export default function CreateProductPage() {
   const { createProduct } = useProductStore();
   const router = useRouter();
 
   // ✅ FIXED: now receives files also
-  const handleSubmit = async (
-    data: ProductPayload,
-    files: File[]
-  ) => {
-    try {
-      await createProduct(data, files);
 
-      toast.success("Product created successfully");
+const handleSubmit = async (
+  data: ProductPayload,
+  files: File[]
+) => {
+  try {
+    // 🔥 STEP 1: Upload images to Cloudinary
+    const uploadedImages = await uploadMultipleImages(files);
 
-      router.push("/admin/products");
-    } catch (error: unknown) {
-      const apiError = error as ApiErrorResponse;
+    // 🔥 STEP 2: Attach images to payload
+    const payload = {
+      ...data,
+      images: uploadedImages, // ✅ THIS IS THE FIX
+    };
 
-      toast.error(
-        apiError.response?.data?.message ||
-          "Error creating product"
-      );
-    }
-  };
+    // 🔥 STEP 3: Send to backend
+    await createProduct(payload, []); // no need files anymore
+
+    toast.success("Product created successfully");
+    router.push("/admin/products");
+  } catch (error: unknown) {
+    const apiError = error as ApiErrorResponse;
+
+    toast.error(
+      apiError.response?.data?.message ||
+        "Error creating product"
+    );
+  }
+};
 
   return (
     <div className="space-y-6">

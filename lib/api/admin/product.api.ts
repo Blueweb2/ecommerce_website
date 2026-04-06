@@ -1,55 +1,64 @@
 import axios from "@/lib/api/axios";
 import { ProductPayload } from "@/lib/constants/admin-catalog";
+import { uploadMultipleImages } from "@/lib/cloudinary/upload";
 
 // ✅ GET PRODUCTS
 export const getProducts = () => axios.get("/products");
 
-// ✅ CREATE PRODUCT (FIXED FOR MULTIPART)
-export const createProduct = async (
-  data: ProductPayload,
-  files: File[]
-) => {
-  const formData = new FormData();
+// ✅ CREATE PRODUCT (WITH CLOUDINARY)
+export const createProduct = async (data: any, files: File[]) => {
+  try {
+    let images: any[] = data.images || [];
 
-  // 🔹 Basic fields
-  formData.append("name", data.name);
-  formData.append("description", data.description);
-  formData.append("price", String(data.price));
-  formData.append("category", data.category);
-  formData.append("stock", String(data.stock));
-  formData.append("isPublished", String(data.isPublished));
+    if (files.length > 0) {
+      const uploadedImages = await uploadMultipleImages(files);
+      images = [...images, ...uploadedImages];
+    }
 
-  // 🔹 Sections (array)
-  data.sections.forEach((section) => {
-    formData.append("sections", section);
-  });
+    // ✅ set primary
+    images = images.map((img, index) => ({
+      ...img,
+      isPrimary: index === (data.primaryImageIndex || 0),
+    }));
 
-  // 🔥 Attributes (JSON → string)
-  if (data.attributes) {
-    formData.append("attributes", JSON.stringify(data.attributes));
+    return axios.post("/products", {
+      ...data,
+      images,
+    });
+
+  } catch (error) {
+    console.error("Create product error:", error);
+    throw error;
   }
-
-  // 🔥 Variants (JSON → string)
-  if (data.variants) {
-    formData.append("variants", JSON.stringify(data.variants));
-  }
-
-  // 🔥 Images (FILES)
-  files.forEach((file) => {
-    formData.append("images", file);
-  });
-
-  return axios.post("/products", formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-    withCredentials: true,
-  });
 };
 
-// ✅ UPDATE PRODUCT (KEEP JSON unless adding file upload later)
-export const updateProduct = (id: string, data: ProductPayload) =>
-  axios.put(`/products/${id}`, data);
+// ✅ UPDATE PRODUCT (NOW SUPPORTS IMAGE UPLOAD)
+export const updateProduct = async (
+  id: string,
+  data: ProductPayload,
+  files: File[] = []
+) => {
+  try {
+    let images = data.images || [];
+
+    // 🔥 If new files exist → upload
+    if (files.length > 0) {
+      const uploadedImages = await uploadMultipleImages(files);
+
+      // ✅ Merge old + new images
+      images = [...images, ...uploadedImages];
+    }
+
+    return axios.put(`/products/${id}`, {
+      ...data,
+      images,
+    });
+
+  } catch (error) {
+    console.error("Update product error:", error);
+    throw error;
+  }
+};
 
 // ✅ DELETE PRODUCT
 export const deleteProduct = (id: string) =>
