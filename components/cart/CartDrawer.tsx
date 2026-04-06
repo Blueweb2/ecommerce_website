@@ -97,9 +97,15 @@ export default function CartDrawer() {
             <span className="font-semibold">₹{totalPrice}</span>
           </div>
 
-          <button className="w-full bg-black text-white py-2 rounded">
+          <Link
+            href="/checkout"
+            onClick={closeCart}
+            className="block text-center w-full bg-black text-white py-2 rounded border 
+                      transition-all duration-300 
+                      hover:bg-white hover:text-black hover:border-black"
+          >
             Continue to Checkout →
-          </button>
+          </Link>
         </div>
       </div>
     </>
