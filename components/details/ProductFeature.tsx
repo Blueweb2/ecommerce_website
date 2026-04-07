@@ -49,7 +49,7 @@ const ProductFeature = ({ onToggleLayout }: ProductFeatureProps) => {
 
   return !isMobile && !zooming ? (
     <section className="py-10 mt-4 lg:mt-10">
-      <div className="lg:grid  grid-cols-3 max-w-7xl mx-auto">
+      <div className="lg:grid  grid-cols-3 ">
 
         {/* LEFT (IMAGE DISPLAY) (LARGE DIVICE ONLY) */}
         <div
