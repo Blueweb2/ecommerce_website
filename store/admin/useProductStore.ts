@@ -28,7 +28,7 @@ export const useProductStore = create<ProductState>((set, get) => ({
       const res = await api.getProducts();
 
       set({
-        products: Array.isArray(res.data?.data) ? res.data.data : [],
+        products: Array.isArray(res.data?.data.products) ? res.data.data.products : [],
         loading: false,
       });
     } catch (error) {

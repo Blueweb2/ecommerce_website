@@ -38,7 +38,7 @@ export default function CoreDetails({ form, setForm, errors }: Props) {
           </label>
 
           <input
-            value={form.sku}
+            value={form.sku || ""}
             readOnly
             placeholder="Auto generated after product creation"
             className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-500 outline-none"
