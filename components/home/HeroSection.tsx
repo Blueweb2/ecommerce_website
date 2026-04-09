@@ -56,12 +56,12 @@ export default function HeroSection() {
 
   return (
     <section className="w-full bg-[#f5f5f5] py-8 mt-8 ">
-      <div className="max-w-7xl mx-auto px-4 md:px-8 grid grid-cols-1 lg:grid-cols-2 gap-3">
+      <div className="max-w-[2000px] mx-auto px-4 md:px-8 grid grid-cols-1 lg:grid-cols-2 gap-3 h-[calc(100vh-100px)]">
 
         {/* LEFT BIG CARD */}
         <Link
           href='/more-products'
-          className="relative overflow-hidden min-h-[570px] flex justify-center items-end p-6 text-white border"
+          className="relative overflow-hidden  flex justify-center items-end p-6 text-white border"
         >
           {/* Background */}
           <div
@@ -97,12 +97,12 @@ export default function HeroSection() {
         </Link>
 
         {/* RIGHT CARD */}
-        <div className="flex flex-col md:flex-row gap-3">
+        <div className="flex flex-col lg:flex-row gap-3">
           
           {/* LEFT SIDE */}
           <Link
             href='/more-products'
-            className="relative overflow-hidden w-[60%] flex flex-col justify-between p-6 border border-white"
+            className="relative overflow-hidden flex flex-col justify-between p-6 border h-full w-full border-white"
             style={{
               backgroundImage: "url('/home/herosection/hero-center.png')",
               backgroundSize: "cover",
@@ -111,7 +111,7 @@ export default function HeroSection() {
           />
 
           {/* RIGHT SIDE (2 CARDS) */}
-          <div className="flex lg:flex-col justify-between gap-3 w-[40%] h-full">
+          <div className="flex lg:flex-col justify-between gap-3 lg:w-[40%] h-full">
 
             {/* TOP RIGHT */}
             <div

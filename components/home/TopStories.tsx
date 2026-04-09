@@ -43,7 +43,7 @@ export default function ShopSection() {
 
   return (
     <section className="bg-[#f5f5f5] py-12">
-      <div className="max-w-7xl mx-auto px-4 md:px-8">
+      <div className="max-w-[2000px] mx-auto px-4 md:px-8">
 
         {/* TITLE */}
         <h2 className="text-2xl font-semibold border-t-2 py-5 border-gray-300">
