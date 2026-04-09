@@ -17,6 +17,7 @@ import MediaSection from "./MediaSection";
 import PreviewSection from "./PreviewSection";
 import AttributeBuilder from "./AttributeBuilder";
 import toast from "react-hot-toast";
+import router from "next/router";
 
 type ProductFormValues = {
   name: string;
@@ -72,6 +73,7 @@ const normalize = (obj: Record<string, string>) =>
 
 export default function ProductForm({ onSubmit, initialData }: Props) {
   const { categories, fetchCategories } = useCategoryStore();
+  const [loading, setLoading] = useState(false);
 
   const [form, setForm] = useState<ProductFormValues>({
     ...defaultValues,
@@ -177,62 +179,33 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
   };
 
   // ✅ SUBMIT
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+ const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
 
-    if (!validateForm()) return;
+  // ❗ prevent double submit
+  if (loading) return;
+
+  if (!validateForm()) return;
+
+  try {
+    setLoading(true);
 
     const cleanedVariants = form.variants.filter((v) =>
       Object.values(v.attributes).every((val) => val.trim() !== "")
     );
-    toast.error(
-      form.variants.length > cleanedVariants.length
-        ? "Some variants were removed due to missing attributes"
-        : ""
-    );
 
-    // ✅ No variants
-    if (cleanedVariants.length === 0) {
-      await onSubmit(
-        {
-          name: form.name.trim(),
-          description: form.description.trim(),
-          deliveryDetails: form.deliveryDetails.trim(),   // ✅ ADD
-          keyFeatures: form.keyFeatures.map((f) => f.trim()).filter((f) => f !== ""),
-          price: Number(form.price),
-          category: form.category,
-          sections: form.sections,
-          images: form.images,
-          stock: Number(form.stock) || 0,
-          isPublished: form.isPublished,
-          attributes: [],
-          variants: [],
-          primaryImageIndex: Number(form.primaryImageIndex) || 0,
-        },
-        files
-      );
-      return;
+    // ✅ Show warning only if needed
+    if (form.variants.length > cleanedVariants.length) {
+      toast.error("Some variants were removed due to missing attributes");
     }
 
-    // ✅ Attributes payload
-    const attributeKeys = Object.keys(cleanedVariants[0].attributes);
+    let payload: any;
 
-    const attributesPayload = attributeKeys.map((key) => ({
-      name: key,
-      values: [
-        ...new Set(cleanedVariants.map((v) => v.attributes[key])),
-      ],
-    }));
-
-    // ✅ Variants payload (NO SKU)
-    const variantsPayload = cleanedVariants.map((v) => ({
-      attributes: v.attributes,
-      stock: v.stock === "" ? 0 : Number(v.stock),
-      price: v.price === "" ? undefined : Number(v.price),
-    }));
-
-    await onSubmit(
-      {
+    // ===============================
+    // ✅ CASE 1: NO VARIANTS
+    // ===============================
+    if (cleanedVariants.length === 0) {
+      payload = {
         name: form.name.trim(),
         description: form.description.trim(),
         deliveryDetails: form.deliveryDetails.trim(),
@@ -240,22 +213,73 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
         price: Number(form.price),
         category: form.category,
         sections: form.sections,
-
-        // ✅ IMPORTANT: keep existing images
         images: form.images,
-
         stock: Number(form.stock) || 0,
         isPublished: form.isPublished,
+        attributes: [],
+        variants: [],
+        primaryImageIndex: Number(form.primaryImageIndex) || 0,
+      };
+    } else {
+      // ===============================
+      // ✅ CASE 2: WITH VARIANTS
+      // ===============================
 
+      const attributeKeys = Object.keys(cleanedVariants[0].attributes);
+
+      const attributesPayload = attributeKeys.map((key) => ({
+        name: key,
+        values: [
+          ...new Set(cleanedVariants.map((v) => v.attributes[key])),
+        ],
+      }));
+
+      const variantsPayload = cleanedVariants.map((v) => ({
+        attributes: v.attributes,
+        stock: v.stock === "" ? 0 : Number(v.stock),
+        price: v.price === "" ? undefined : Number(v.price),
+      }));
+
+      payload = {
+        name: form.name.trim(),
+        description: form.description.trim(),
+        deliveryDetails: form.deliveryDetails.trim(),
+        keyFeatures: form.keyFeatures.map((f) => f.trim()).filter(Boolean),
+        price: Number(form.price),
+        category: form.category,
+        sections: form.sections,
+        images: form.images,
+        stock: Number(form.stock) || 0,
+        isPublished: form.isPublished,
         attributes: attributesPayload,
         variants: variantsPayload,
-
-        // ✅ send primary index
         primaryImageIndex: form.primaryImageIndex || 0,
-      },
-      files
+      };
+    }
+
+    // ===============================
+    // ✅ API CALL
+    // ===============================
+    await onSubmit(payload, files);
+
+    // ===============================
+    // ✅ SUCCESS UX
+    // ===============================
+    toast.success("Product created successfully");
+
+    // ✅ redirect
+    router.replace("/admin/products");
+
+  } catch (error: any) {
+    console.error(error);
+
+    toast.error(
+      error?.response?.data?.message || "Failed to create product"
     );
-  };
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <form onSubmit={handleSubmit}>
@@ -398,9 +422,15 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
         </section>
       </div>
 
-      <button className="rounded-full bg-[#12251a] px-5 py-3 text-sm font-semibold text-white hover:bg-[#1c3424]">
-        Save Product
-      </button>
+    <button
+  onClick={handleSubmit}
+  disabled={loading}
+  className={`px-4 py-2 rounded ${
+    loading ? "opacity-50 cursor-not-allowed" : "bg-green-600"
+  }`}
+>
+  {loading ? "Creating..." : "Create Product"}
+</button>
     </form>
   );
 }

@@ -4,8 +4,7 @@ import { useRef, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { getAllCategories } from "@/lib/api/category.api";
-
+import { categoryAPI } from "@/lib/api/category.api";
 type Category = {
   _id: string;
   name: string;
@@ -52,7 +51,7 @@ const Categories = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await getAllCategories();
+        const res = await categoryAPI.getAll();
         console.log("Categories:", res.data);
 
         setCategories(res.data.data); // adjust if needed

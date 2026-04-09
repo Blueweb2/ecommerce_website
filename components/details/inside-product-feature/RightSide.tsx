@@ -2,207 +2,335 @@
 
 import { useState, useEffect } from "react";
 import { Heart, ChevronDown } from "lucide-react";
+import { toast } from "react-hot-toast";
 
-const rightBottomSection = [
-  {
-    title: "SIZE & FIT",
-    content: "Free delivery within 3-5 business days. Easy returns available.",
-  },
-  {
-    title: "DELIVERY AND RETURNS",
-    content: "This pendant features a romantic design with a delicate chain.",
-  },
-  {
-    title: "RATING AND REVIEWS",
-    content: "Premium quality, lightweight, skin-friendly, long-lasting shine.",
-  },
-];
+type Props = {
+  product: any;
+};
 
-const productDescription = 'Crafted with precision and attention to detail, this diamond halo ring features a stunning center stone surrounded by a delicate halo of smaller diamonds. The elegant band enhances its brilliance, making it a perfect choice for engagements, celebrations, or everyday luxury.'
+type CustomDataItem = {
+  fieldName: string;
+  value: string | number;
+};
 
-const keyFeatures = 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugiat ipsam culpa saepe accusamus tempore itaque minima rerum maiores officia officiis recusandae velit, quos vero libero sapiente autem voluptatum mollitia at?'
-
-const productDetails = 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis vel consectetur nihil ex aspernatur obcaecati quae iure necessitatibus, dolorum, laudantium deleniti repellat repudiandae alias, sapiente ipsum fugit eum dicta rem.'
-
-const RightSide = () => {
-
-  const [selectedSize, setSelectedSize] = useState<string>();
-  const [activeTab, setActiveTab] = useState("PRODUCT DESCRIPTION");
-  const [tabDetails, setTabDetails] = useState<string>();
+const RightSide = ({ product }: Props) => {
+  const [selectedVariant, setSelectedVariant] = useState<any>(null);
   const [activeIndex, setActiveIndex] = useState<number | null>(0);
+  const isCustomizable = product?.customizable?.isCustomizable;
+  const [showCustom, setShowCustom] = useState(false);
+  const [selectedSize, setSelectedSize] = useState<string | undefined>();
 
-  // product description, features and details change content
-  useEffect(()=>{
-    switch (activeTab) {
+  const [customData, setCustomData] = useState<CustomDataItem[]>([]);
 
-      case "PRODUCT DESCRIPTION":
-        setTabDetails(productDescription)
-        break;
+const handleCustomChange = (name: string, value: string | number) => {
+  setCustomData((prev) => {
+    const existing = prev.find(f => f.fieldName === name);
 
-      case "KEY FEATURES":
-        setTabDetails(keyFeatures)
-        break;
+    if (existing) {
+      return prev.map(f =>
+        f.fieldName === name ? { ...f, value } : f
+      );
+    }
 
-      case "DELIVERY DETAILS":
-        setTabDetails(productDetails)
-        break;
+    return [...prev, { fieldName: name, value }];
+  });
+};
 
-      default:
-        break;
-    };
-  },[activeTab, tabDetails]);
+  // ✅ Initialize default variant
+  useEffect(() => {
+    if (product?.variants?.length > 0) {
+      setSelectedVariant(product.variants[0]);
+    }
+  }, [product]);
+
+  const isValid = product?.customizable?.fields?.every((field: any) => {
+    if (!field.required) return true;
+    return customData.find((f) => f.fieldName === field.name);
+  }) ?? true;
 
   const toggle = (index: number) => {
     setActiveIndex(activeIndex === index ? null : index);
   };
 
-  return (
-    <div className="h-fit lg:sticky top-20 space-y-6 text-sm mx-4 lg:mx-10 mt-32 md:mt-[300px] lg:mt-0">
+  // ✅ Dynamic price
+  const price = selectedVariant?.price || product.price;
+  const discountPrice =
+    selectedVariant?.discountPrice || product.discountPrice;
 
-      {/* Title */}
-      <div>
-        <h1 className="text-2xl md:text-3xl font-serif">
-          Diamond Halo Ring
-        </h1>
+  // ===========================
+  // ✅ ADD TO CART
+  // ===========================
+const handleAddToCart = () => {
+  if (product.variants?.length && !selectedVariant) {
+    toast.error("Please select a variant");
+    return;
+  }
 
-        <div className="flex gap-4 text-xs text-gray-600 mt-2">
-          <span>• Lorem, ipsum dolor sit amet consectetur adipisicing elit.</span>
-        </div>
-      </div>
+  if (!isValid) {
+    toast.error("Please fill all required measurements");
+    return;
+  }
 
-      {/* Price */}
-      <div>
-        <p className="text-xl font-semibold">₹24,500</p>
-        <p className="text-xs text-gray-600 mt-1">color: <span className="text-black">sky blue</span></p>
-      </div>
+  const cartItem = {
+    productId: product._id,
+    name: product.name,
+    image: product.images?.[0]?.url,
+    price,
+    quantity: 1,
+    variant: selectedVariant?.attributes || null,
 
-      {/* Size */}
-      <div>
-        <p className="text-xs text-gray-500 mb-2">SELECT SIZE:</p>
-        <div className="flex gap-2">
-          {["XS", "S", "M", "XL", "XXL"].map((size) => (
-            <button
-              key={size}
-              onClick={() => setSelectedSize(size)}
-              className={`px-3 py-1 border rounded transition ${
-                selectedSize === size
-                  ? "bg-black text-white border-black"
-                  : "bg-white text-black hover:bg-black hover:text-white border border-gray-300"
-              }`}
-            >
-              {size}
-            </button>
-          ))}
-        </div>
-      </div>
+    // ✅ IMPORTANT
+    customData: isCustomizable ? customData : []
+  };
 
-      {/* Button */}
-      <div className="flex flex-col gap-3">
-        {/* Add To Cart */}
-        <button className="flex-1 bg-black text-white text-sm font-medium py-2 
-          transition-all duration-300 
-          hover:bg-gray-800 hover:scale-[1.02] active:scale-95">
-          Add To Cart
-        </button>
+  const existingCart = JSON.parse(localStorage.getItem("cart") || "[]");
 
-        {/* Wishlist */}
-        <button className="flex-1 text-black text-sm font-medium py-2 
-          flex items-center justify-center gap-2 border border-gray-300
-          transition-all duration-300
-          hover:bg-black hover:text-white hover:border-black hover:scale-[1.02] active:scale-95">
-          <Heart size={16} />
-          Add to Wishlist
-        </button>
-      </div>
+  existingCart.push(cartItem);
 
-      {/* Tabs */}
-      <div className="space-y-2">
-        <div className="flex gap-6 text-xs font-medium text-gray-500">
-          <select name="" id="" className="outline-none" onChange={(e) => setActiveTab(e.target.value)}>
-            <option value="DELIVERY DETAILS">DELIVERY DETAILS</option>
-            <option value="PRODUCT DESCRIPTION">PRODUCT DESCRIPTION</option>
-            <option value="KEY FEATURES">KEY FEATURES</option>
-          </select>
-        </div>
+  localStorage.setItem("cart", JSON.stringify(existingCart));
 
-        <p className="text-xs text-gray-600 leading-relaxed h-24">
-          {tabDetails}
-        </p>
-      </div>
+  toast.success("Added to cart");
+};
 
-      {/* Complete the look */}
-      <div className="space-y-3">
-        <p className="text-xs font-medium">
-          COMPLETE THE LOOK:
-        </p>
+return (
+  <div className="h-fit lg:sticky top-20 space-y-6 text-sm mx-4 lg:mx-10 mt-10">
 
-        <div className="flex gap-3 overflow-x-auto scroll-smooth scrollbar-hide">
-
-          {/* Item one */}
-          <div className="flex items-stretch gap-x-3 bg-gray-50 border border-gray-400 w-48 h-20 flex-shrink-0 p-1">
-            <img
-              src="/home/herosection/hero-right-top.png"
-              className="w-12 h-full object-cover border rounded-[3px]"
-              alt=""
-            />
-            <div className="overflow-hidden">
-              <p className="text-xs text-gray-800 leading-3 line-clamp-2">HEART DIAMOND PENDANT</p>
-              <p className="text-gray-400 text-xs font-extralight leading-3 mt-1 line-clamp-2">Romantic design with a delicate chain</p>
-              <p className="text-red-500 mt-1 text-xs">₹11,900</p>
-            </div>
-          </div>
-
-          {/* Item two */}
-          <div className="flex items-stretch gap-x-3 bg-gray-50 border border-gray-400 w-48 h-20 flex-shrink-0 p-1">
-            <img
-              src="/home/herosection/hero-right-top.png"
-              className="w-12 h-full object-cover border rounded-[3px]"
-              alt=""
-            />
-            <div className="overflow-hidden">
-              <p className="text-xs text-gray-800 leading-3 line-clamp-2">HEART DIAMOND PENDANT</p>
-              <p className="text-gray-400 text-xs font-extralight leading-3 mt-1 line-clamp-2">Romantic design with a delicate chain</p>
-              <p className="text-red-500 mt-1 text-xs">₹11,900</p>
-            </div>
-          </div>
-
-        </div>
-
-      </div>
-
-      <div className="mt-6">
-        {rightBottomSection.map((item, index) => (
-          <div key={index}>
-            
-            {/* Header */}
-            <button
-              onClick={() => toggle(index)}
-              className="flex items-center py-1 text-sm leading-1 text text-gray-700"
-            >
-              <ChevronDown
-                size={18}
-                className={`transition-transform duration-300 ${
-                  activeIndex === index ? "rotate-180" : ""
-                }`}
-              />
-              {item.title}
-            </button>
-
-            {/* Content */}
-            <div
-              className={`overflow-hidden transition-all duration-300 pl-5 ${
-                activeIndex === index ? "max-h-40 pb-4" : "max-h-0"
-              }`}
-            >
-              <p className="text-xs text-gray-500">{item.content}</p>
-            </div>
-
-          </div>
-        ))}
-      </div>
-
+    {/* ✅ TITLE */}
+    <div>
+      <h1 className="text-2xl md:text-3xl font-serif">
+        {product.name}
+      </h1>
     </div>
-  )
-}
 
-export default RightSide
+    {/* ✅ PRICE */}
+    <div>
+      <p className="text-xl font-semibold">₹{price}</p>
+
+      {discountPrice && (
+        <p className="text-sm line-through text-gray-400">
+          ₹{discountPrice}
+        </p>
+      )}
+    </div>
+
+    {/* ===========================
+        ✅ VARIANT SELECTOR
+    =========================== */}
+    {product.variants?.length > 0 && (
+      <div>
+        <p className="text-xs text-gray-500 mb-2">
+          SELECT OPTION:
+        </p>
+
+        <div className="flex flex-wrap gap-2">
+          {product.variants.map((variant: any, index: number) => {
+            const label = Object.values(variant.attributes).join(" / ");
+
+            return (
+              <button
+                key={index}
+                onClick={() => setSelectedVariant(variant)}
+                className={`px-3 py-1 border rounded ${
+                  selectedVariant === variant
+                    ? "bg-black text-white"
+                    : "bg-white hover:bg-black hover:text-white"
+                }`}
+              >
+                {label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    )}
+
+    {product.sizes?.length > 0 && (
+  <div>
+    <p className="text-xs text-gray-500 mb-2">SELECT SIZE:</p>
+    <div className="flex gap-2">
+      {product.sizes.map((size: string) => (
+        <button
+          key={size}
+          onClick={() => setSelectedSize(size)}
+          className={`px-3 py-1 border ${
+            selectedSize === size
+              ? "bg-black text-white"
+              : "bg-white hover:bg-black hover:text-white"
+          }`}
+        >
+          {size}
+        </button>
+      ))}
+    </div>
+  </div>
+)}
+
+    {/* ===========================
+        ✅ BUTTONS
+    =========================== */}
+    <div className="flex flex-col gap-3">
+
+      <button
+        disabled={!isValid}
+        onClick={handleAddToCart}
+        className="bg-black text-white py-2 hover:bg-gray-800 disabled:bg-gray-400"
+      >
+        Add To Cart
+      </button>
+
+      <button className="border py-2 flex items-center justify-center gap-2">
+        <Heart size={16} />
+        Wishlist
+      </button>
+
+      {/* ✅ CUSTOM BUTTON (ONLY FOR CLOTHING) */}
+      {product?.customizable?.isCustomizable && (
+        <button
+          onClick={() => setShowCustom(true)}
+          className="border py-2 w-full mt-2 hover:bg-black hover:text-white transition"
+        >
+          ✂ Customize Your Fit
+        </button>
+      )}
+    </div>
+
+    {/* ===========================
+        ✅ PRODUCT INFO
+    =========================== */}
+    <div className="space-y-4">
+
+      {/* DESCRIPTION */}
+      <div>
+        <h3 className="text-sm font-semibold mb-1">
+          PRODUCT DESCRIPTION
+        </h3>
+        <p className="text-xs text-gray-600 leading-relaxed">
+          {product?.description || "No description available"}
+        </p>
+      </div>
+
+      {/* KEY FEATURES */}
+      {product?.keyFeatures?.length > 0 && (
+        <div>
+          <h3 className="text-sm font-semibold mb-1">
+            KEY FEATURES
+          </h3>
+          <ul className="text-xs text-gray-600 space-y-1 list-disc pl-4">
+            {product.keyFeatures.map((feature: string, index: number) => (
+              <li key={index}>{feature}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* DELIVERY */}
+      {product?.deliveryDetails && (
+        <div>
+          <h3 className="text-sm font-semibold mb-1">
+            DELIVERY DETAILS
+          </h3>
+          <p className="text-xs text-gray-600">
+            {product.deliveryDetails}
+          </p>
+        </div>
+      )}
+    </div>
+
+    {/* ===========================
+        ✅ ACCORDION
+    =========================== */}
+    <div>
+      {[
+        { title: "Size & Fit", content: "Standard fit" },
+        { title: "Returns", content: "Easy returns available" },
+      ].map((item, index) => (
+        <div key={index}>
+          <button
+            onClick={() => toggle(index)}
+            className="flex items-center gap-2"
+          >
+            <ChevronDown
+              className={`${
+                activeIndex === index ? "rotate-180" : ""
+              }`}
+            />
+            {item.title}
+          </button>
+
+          {activeIndex === index && (
+            <p className="text-xs text-gray-500">
+              {item.content}
+            </p>
+          )}
+        </div>
+      ))}
+    </div>
+
+    {/* ===========================
+        ✅ CUSTOMIZATION MODAL
+    =========================== */}
+    {showCustom && (
+      <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
+        <div className="bg-white w-[90%] max-w-md p-6 rounded-lg space-y-4">
+
+          <h2 className="text-lg font-semibold">
+            Customize Your Fit
+          </h2>
+
+          {product.customizable.fields.map((field: any, index: number) => (
+            <div key={index}>
+              <label className="text-sm font-medium">
+                {field.name} {field.unit && `(${field.unit})`}
+              </label>
+
+              {field.type === "select" ? (
+                <select
+                  onChange={(e) =>
+                    handleCustomChange(field.name, e.target.value)
+                  }
+                  className="border p-2 w-full mt-1 rounded"
+                >
+                  <option value="">Select</option>
+                  {field.options?.map((opt: string, i: number) => (
+                    <option key={i} value={opt}>
+                      {opt}
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                <input
+                  type={field.type}
+                  onChange={(e) =>
+                    handleCustomChange(field.name, e.target.value)
+                  }
+                  className="border p-2 w-full mt-1 rounded"
+                />
+              )}
+            </div>
+          ))}
+
+          {/* ACTIONS */}
+          <div className="flex gap-2">
+            <button
+              onClick={() => setShowCustom(false)}
+              className="flex-1 border py-2"
+            >
+              Cancel
+            </button>
+
+            <button
+              onClick={() => setShowCustom(false)}
+              className="flex-1 bg-black text-white py-2"
+            >
+              Save
+            </button>
+          </div>
+        </div>
+      </div>
+    )}
+
+  </div>
+);
+};
+
+export default RightSide;

@@ -52,6 +52,23 @@ export interface ProductVariant {
   isActive?: boolean;
 }
 
+export type CustomField = {
+  name: string;
+  type: "text" | "number" | "select";
+  required?: boolean;
+  options?: string[];
+  unit?: string;
+};
+
+export type CustomizableConfig = {
+  isCustomizable: boolean;
+  fields: CustomField[];
+};
+
+export type CustomDataItem = {
+  fieldName: string;
+  value: string | number;
+};
 
 // ❌ REMOVE string | ... → STRICT TYPE
 export type CatalogProductImage = CatalogImage;
@@ -72,6 +89,7 @@ export type CatalogProduct = {
   category?: CatalogEntity | string | null; // keep union (backend reality)
   sections?: string[];
   variants?: ProductVariant[];
+   customizable?: CustomizableConfig;
   createdAt?: string;
   updatedAt?: string;
 };
@@ -90,6 +108,8 @@ export type ProductPayload = {
   stock: number;
   isPublished: boolean;
 
+   customizable?: CustomizableConfig;
+
   attributes?: {
     name: string;
     values: string[];
@@ -97,6 +117,19 @@ export type ProductPayload = {
 
   variants?: ProductVariant[];
   primaryImageIndex?: number;
+};
+
+export type CartItem = {
+  productId: string;
+  name: string;
+  image?: string;
+  price: number;
+  quantity: number;
+
+  variant?: Record<string, string> | null;
+
+  // ✅ IMPORTANT
+  customData?: CustomDataItem[];
 };
 
 
