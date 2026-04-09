@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Heart, ChevronDown } from "lucide-react";
 import { toast } from "react-hot-toast";
+import { useCartStore } from "@/store/user/cart/useCartStore";
 
 type Props = {
   product: any;
@@ -36,12 +37,47 @@ const handleCustomChange = (name: string, value: string | number) => {
   });
 };
 
+
+const buildSelectedOptions = (variant: any, customData: any[]) => {
+  const options: { fieldName: string; value: string }[] = [];
+
+  // variant attributes → selectedOptions
+  if (variant?.attributes) {
+    Object.entries(variant.attributes).forEach(([key, value]) => {
+      options.push({
+        fieldName: key,
+        value: String(value),
+      });
+    });
+  }
+
+  // custom fields → selectedOptions
+  customData?.forEach((c) => {
+    options.push({
+      fieldName: c.fieldName,
+      value: String(c.value),
+    });
+  });
+
+  return options;
+};
+
   // ✅ Initialize default variant
-  useEffect(() => {
-    if (product?.variants?.length > 0) {
-      setSelectedVariant(product.variants[0]);
+useEffect(() => {
+  if (product?.variants?.length > 0) {
+    const firstAvailable = product.variants.find(
+      (v: any) => v.stock > 0
+    );
+
+    if (firstAvailable) {
+      setSelectedVariant(firstAvailable);
+    setSelectedSize(
+  String(Object.values(firstAvailable.attributes)[0]).toUpperCase()
+);
     }
-  }, [product]);
+  }
+}, [product]);
+console.log("CUSTOM:", product?.customizable);
 
   const isValid = product?.customizable?.fields?.every((field: any) => {
     if (!field.required) return true;
@@ -60,16 +96,23 @@ const handleCustomChange = (name: string, value: string | number) => {
   // ===========================
   // ✅ ADD TO CART
   // ===========================
+const { addItem } = useCartStore();
+
 const handleAddToCart = () => {
   if (product.variants?.length && !selectedVariant) {
-    toast.error("Please select a variant");
+    toast.error("Please select a size");
     return;
   }
 
   if (!isValid) {
-    toast.error("Please fill all required measurements");
+    toast.error("Please fill all required fields");
     return;
   }
+
+  const selectedOptions = buildSelectedOptions(
+    selectedVariant,
+    isCustomizable ? customData : []
+  );
 
   const cartItem = {
     productId: product._id,
@@ -77,17 +120,12 @@ const handleAddToCart = () => {
     image: product.images?.[0]?.url,
     price,
     quantity: 1,
-    variant: selectedVariant?.attributes || null,
 
-    // ✅ IMPORTANT
-    customData: isCustomizable ? customData : []
+    variantId: selectedVariant?.sku, // ✅ FIXED
+    selectedOptions, // ✅ FIXED
   };
 
-  const existingCart = JSON.parse(localStorage.getItem("cart") || "[]");
-
-  existingCart.push(cartItem);
-
-  localStorage.setItem("cart", JSON.stringify(existingCart));
+  addItem(cartItem); // ✅ Zustand
 
   toast.success("Added to cart");
 };
@@ -114,56 +152,56 @@ return (
     </div>
 
     {/* ===========================
-        ✅ VARIANT SELECTOR
+        ✅ SIZE SELECTOR (FIXED)
     =========================== */}
-    {product.variants?.length > 0 && (
-      <div>
-        <p className="text-xs text-gray-500 mb-2">
-          SELECT OPTION:
-        </p>
+    {(() => {
+      const sizeAttribute = product.attributes?.find(
+        (attr: any) => attr.name === "size"
+      );
 
-        <div className="flex flex-wrap gap-2">
-          {product.variants.map((variant: any, index: number) => {
-            const label = Object.values(variant.attributes).join(" / ");
+      const sizes = sizeAttribute?.values || [];
 
-            return (
-              <button
-                key={index}
-                onClick={() => setSelectedVariant(variant)}
-                className={`px-3 py-1 border rounded ${
-                  selectedVariant === variant
-                    ? "bg-black text-white"
-                    : "bg-white hover:bg-black hover:text-white"
-                }`}
-              >
-                {label}
-              </button>
-            );
-          })}
+      if (sizes.length === 0) return null;
+
+      return (
+        <div>
+          <p className="text-xs text-gray-500 mb-2">SELECT SIZE:</p>
+
+          <div className="flex gap-2">
+            {sizes.map((size: string) => {
+              const variant = product.variants.find(
+                (v: any) =>
+                  v.attributes?.size?.toLowerCase() === size.toLowerCase()
+              );
+
+              const isOutOfStock = !variant || variant.stock === 0;
+
+              return (
+                <button
+                  key={size}
+                  disabled={isOutOfStock}
+                  onClick={() => {
+                    setSelectedSize(size);
+                    setSelectedVariant(variant);
+                  }}
+                  className={`px-3 py-1 border rounded transition
+                    ${
+                      selectedSize === size
+                        ? "bg-black text-white"
+                        : "bg-white hover:bg-black hover:text-white"
+                    }
+                    ${isOutOfStock ? "opacity-40 cursor-not-allowed" : ""}
+                  `}
+                >
+                  {size}
+                </button>
+                
+              );
+            })}
+          </div>
         </div>
-      </div>
-    )}
-
-    {product.sizes?.length > 0 && (
-  <div>
-    <p className="text-xs text-gray-500 mb-2">SELECT SIZE:</p>
-    <div className="flex gap-2">
-      {product.sizes.map((size: string) => (
-        <button
-          key={size}
-          onClick={() => setSelectedSize(size)}
-          className={`px-3 py-1 border ${
-            selectedSize === size
-              ? "bg-black text-white"
-              : "bg-white hover:bg-black hover:text-white"
-          }`}
-        >
-          {size}
-        </button>
-      ))}
-    </div>
-  </div>
-)}
+      );
+    })()}
 
     {/* ===========================
         ✅ BUTTONS
@@ -171,7 +209,7 @@ return (
     <div className="flex flex-col gap-3">
 
       <button
-        disabled={!isValid}
+        disabled={!isValid || (product.variants?.length > 0 && !selectedVariant)}
         onClick={handleAddToCart}
         className="bg-black text-white py-2 hover:bg-gray-800 disabled:bg-gray-400"
       >
@@ -183,7 +221,7 @@ return (
         Wishlist
       </button>
 
-      {/* ✅ CUSTOM BUTTON (ONLY FOR CLOTHING) */}
+      {/* ✅ CUSTOM BUTTON */}
       {product?.customizable?.isCustomizable && (
         <button
           onClick={() => setShowCustom(true)}
@@ -199,7 +237,6 @@ return (
     =========================== */}
     <div className="space-y-4">
 
-      {/* DESCRIPTION */}
       <div>
         <h3 className="text-sm font-semibold mb-1">
           PRODUCT DESCRIPTION
@@ -209,7 +246,6 @@ return (
         </p>
       </div>
 
-      {/* KEY FEATURES */}
       {product?.keyFeatures?.length > 0 && (
         <div>
           <h3 className="text-sm font-semibold mb-1">
@@ -223,7 +259,6 @@ return (
         </div>
       )}
 
-      {/* DELIVERY */}
       {product?.deliveryDetails && (
         <div>
           <h3 className="text-sm font-semibold mb-1">
@@ -309,7 +344,6 @@ return (
             </div>
           ))}
 
-          {/* ACTIONS */}
           <div className="flex gap-2">
             <button
               onClick={() => setShowCustom(false)}

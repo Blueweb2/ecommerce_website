@@ -41,15 +41,22 @@ export default function CartDrawer() {
             <p className="text-gray-500">Cart is empty</p>
           ) : (
             items.map((item) => (
-              <div key={item.product._id} className="flex gap-3">
+              <div key={`${item.productId}-${item.variantSKU || 'base'}`} className="flex gap-3">
                 <img
-                  src={item.product.images?.[0]}
-                  alt={item.product.name}
+                  src={item.image || "/placeholder.png"}
+                  alt={item.name}
                   className="w-16 h-16 object-cover rounded"
                 />
 
                 <div className="flex-1">
-                  <p className="font-medium">{item.product.name}</p>
+                  <p className="font-medium">{item.name}</p>
+                  
+                  {item.variant && (
+                    <p className="text-xs text-gray-500">
+                      {Object.entries(item.variant).map(([k, v]) => `${k}: ${v}`).join(', ')}
+                    </p>
+                  )}
+
                   <p className="text-sm text-gray-500">
                     ₹{item.price}
                   </p>
@@ -58,7 +65,7 @@ export default function CartDrawer() {
                   <div className="flex items-center gap-2 mt-2">
                     <button
                       onClick={() =>
-                        updateQuantity(item.product._id, item.quantity - 1)
+                        updateQuantity(item.productId, item.variantSKU, item.quantity - 1)
                       }
                       className="px-2 border"
                     >
@@ -69,7 +76,7 @@ export default function CartDrawer() {
 
                     <button
                       onClick={() =>
-                        updateQuantity(item.product._id, item.quantity + 1)
+                        updateQuantity(item.productId, item.variantSKU, item.quantity + 1)
                       }
                       className="px-2 border"
                     >
@@ -79,7 +86,7 @@ export default function CartDrawer() {
 
                   {/* Remove */}
                   <button
-                    onClick={() => removeItem(item.product._id)}
+                    onClick={() => removeItem(item.productId, item.variantSKU)}
                     className="text-red-500 text-sm mt-1"
                   >
                     Remove

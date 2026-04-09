@@ -44,8 +44,10 @@ const ProductFeature = ({ onToggleLayout, product }: ProductFeatureProps) => {
 
   // ✅ notify parent about zoom state
   useEffect(() => {
-    onToggleLayout(zooming);
+    onToggleLayout(!zooming);
   }, [zooming, onToggleLayout]);
+  console.log(product,"products");
+  
 
   // ✅ fallback image (important)
   const mainImage =

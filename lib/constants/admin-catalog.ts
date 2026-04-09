@@ -119,20 +119,26 @@ export type ProductPayload = {
   primaryImageIndex?: number;
 };
 
-export type CartItem = {
-  productId: string;
-  name: string;
-  image?: string;
-  price: number;
-  quantity: number;
-
-  variant?: Record<string, string> | null;
-
-  // ✅ IMPORTANT
-  customData?: CustomDataItem[];
+export type SelectedOption = {
+  fieldName: string;
+  value: string;
 };
 
 
+
+export interface CartItem {
+  productId: string;
+
+  name: string;
+  image?: string;
+
+  price: number;
+  quantity: number;
+
+  variantId?: string; // ✅ FIXED
+
+  selectedOptions?: SelectedOption[]; // ✅ FIXED
+}
 // ✅ API ERROR TYPE
 export type ApiErrorResponse = {
   response?: {
