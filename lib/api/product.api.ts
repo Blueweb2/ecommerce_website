@@ -30,6 +30,9 @@ export const productAPI = {
   getTopRated: () =>
     api.get("/products?sort=top-rated"),
 
+  getBestSellers: () =>
+    api.get("/products?sort=best-sellers"),
+
   // ✅ Search
 search: (query: string) =>
   api.get("/products/search", {
