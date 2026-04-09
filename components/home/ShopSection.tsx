@@ -30,15 +30,15 @@ export default function ShopSection() {
 
         switch (activeTab) {
           case "Featured":
-            data = await productAPI.getFeatured().then(res => res.data.data);
+            data = await productAPI.getFeatured().then(res => Array.isArray(res.data.data) ? res.data.data : res.data.data.products || []);
             break;
 
           case "Best Sellers":
-            data = await productAPI.getBestSellers().then(res => res.data.data);
+            data = await productAPI.getBestSellers().then(res => Array.isArray(res.data.data) ? res.data.data : res.data.data.products || []);
             break;
 
           case "Top Rated":
-            data = await productAPI.getTopRated().then(res => res.data.data);
+            data = await productAPI.getTopRated().then(res => Array.isArray(res.data.data) ? res.data.data : res.data.data.products || []);
             break;
         }
 
