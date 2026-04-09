@@ -1,6 +1,12 @@
+"use client";
+
+import { useState } from "react";
 import { Search } from "lucide-react";
 
 export default function CheckoutProducts() {
+
+  const [selected, setSelected] = useState("standard");
+
   return (
     <section className="bg-[#f4f7e3] pt-5 mb-44">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -89,17 +95,31 @@ export default function CheckoutProducts() {
 
             <div className="flex pl-1.5 mt-2">
               <input type="checkbox" className="scale-200 mr-6 "/>
-              <p>Email me with news and offers</p>
+              <p>Text me with news and offers</p>
             </div>
 
           </div>
 
-          {/* DELIVERY DETAILS SECTION */}
-          <div className="flex flex-col w-full border rounded-[7px] mt-3 px-3">
+          {/* SHIPPING METHOD */}
+          <div className="flex flex-col w-full mt-6">
 
-            <div className="flex items-center justify-between">
+            {/* HEADING */}
+            <h3 className="font-bold text-[19px]">SHIPPING METHOD</h3>
+
+            {/* FIRST OPTION */}
+            <div
+              onClick={() => setSelected("standard")}
+              className={`flex items-center justify-between border px-3 py-3 rounded-t-[9px] cursor-pointer 
+              ${selected === "standard" ? "border-black" : "border-gray-300"}`}
+            >
               <div className="flex gap-3">
-                <input type="radio" name="shipping" className=" accent-black scale-150" />
+                <input
+                  type="radio"
+                  name="shipping"
+                  checked={selected === "standard"}
+                  onChange={() => setSelected("standard")}
+                  className="accent-black scale-150"
+                />
                 <div className="flex flex-col">
                   <h3 className="font-semibold">Standard Shipping</h3>
                   <p className="font-extralight">4 Business days</p>
@@ -107,24 +127,119 @@ export default function CheckoutProducts() {
               </div>
               <p className="text-red-500">FREE</p>
             </div>
-            <div className="flex items-center justify-between">
+
+            {/* SECOND OPTION */}
+            <div
+              onClick={() => setSelected("express")}
+              className={`flex items-center justify-between border px-3 py-3 rounded-b-[9px] cursor-pointer 
+              ${selected === "express" ? "border-black" : "border-gray-300"}`}
+            >
               <div className="flex gap-3">
-                <input type="radio" name="shipping" className=" accent-black scale-150" />
+                <input
+                  type="radio"
+                  name="shipping"
+                  checked={selected === "express"}
+                  onChange={() => setSelected("express")}
+                  className="accent-black scale-150"
+                />
                 <div className="flex flex-col">
-                  <h3 className="font-semibold">Standard Shipping</h3>
-                  <p className="font-extralight">4 Business days</p>
+                  <h3 className="font-semibold">Express Shipping</h3>
+                  <p className="font-extralight">2 Business days</p>
                 </div>
               </div>
-              <p className="text-red-500">FREE</p>
+              <p className="text-red-500">$10</p>
             </div>
+
           </div>
+
+          {/* PAYMENT SECTION */}
+           <div className="flex flex-col w-full mt-6">
+
+              {/* HEADING */}
+              <h3 className="font-bold text-[19px] mt-3">Payment</h3>
+              <p>All transactions are secure and encrypted.</p>
+
+              <div
+                className="flex items-center justify-between border px-3 py-4 rounded-t-[9px] border-black"
+              >
+                <div className="flex gap-3">
+                  <input
+                    type="radio"
+                    className="accent-black scale-150"
+                  />
+                  <div className="flex flex-col">
+                    <h3 className="font-semibold">Credit card</h3>
+                  </div>
+                </div>
+
+                <div className="flex gap-3">
+                  <img src="/home/footer/visa.png" alt="" />
+                  <img src="/home/footer/master.png" alt="" />
+                  <img src="/checkout/amex.png" alt="" />
+                </div>
+
+              </div>
+
+              <div className="flex flex-col  border border-gray-300 p-4 bg-gray-100">
+
+                <input type="password" placeholder="Card Number" className="text-black py-2 px-4 bg-white mt-3 rounded-[5px] border-2 border-gray-200 outline-none" />
+
+                <div className="flex gap-3">
+                  <input type="date" placeholder="Expiration Date (mm/yy)" className="text-black py-2 px-4 bg-white mt-3 rounded-[5px] border-2 border-gray-200 outline-none w-full" />
+                  <input type="password" placeholder="Security Code" className="text-black py-2 px-4 bg-white mt-3 rounded-[5px] border-2 border-gray-200 outline-none w-full" />
+                </div>
+
+                <input type="text" placeholder="Name on Card" className="text-black py-2 px-4 bg-white mt-3 rounded-[5px] border-2 border-gray-200 outline-none" />
+
+                <div className="flex pl-1.5 mt-2">
+                  <input type="checkbox" className="scale-200 mr-6 "/>
+                  <p>Text me with news and offers</p>
+                </div>
+
+              </div>
+
+              <div className="flex flex-col w-full border border-gray-300 rounded-b-[9px]">
+                <div
+                  className='flex items-center justify-between px-3 py-3 cursor-pointer'
+                >
+                  <div className="flex gap-3">
+                    <input
+                      type="radio"
+                      className="accent-black scale-150"
+                    />
+                    <div className="flex flex-col">
+                      <h3 className="font-semibold">Shop Pay</h3>
+                    </div>
+                  </div>
+                  <p className="text-red-500">FREE</p>
+                </div>
+
+                <div
+                  className='flex items-center justify-between px-3 py-3 cursor-pointer'
+                >
+                  <div className="flex gap-3">
+                    <input
+                      type="radio"
+                      className="accent-black scale-150"
+                    />
+                    <div className="flex flex-col">
+                      <h3 className="font-semibold">PayPal</h3>
+                    </div>
+                  </div>
+                  <p className="text-red-500">FREE</p>
+                </div>
+
+              </div>
+
+           </div>
+
           
-           
+              
         </div>
 
 
 
-        <div className="border  w-full">
+        <div className="border w-full">
 
         </div>
 
