@@ -31,7 +31,7 @@ export default function Navbar() {
 
   return (
     <header className="w-full bg-black fixed top-0 z-9999">
-      <div className="max-w-[2000px] mx-auto px-4 md:px-8 py-2 flex items-center justify-between">
+      <div className="max-w-[2000px] mx-auto px-4 md:px-20 py-2 flex items-center justify-between">
         
         {/* LOGO */}
         <div className={`${playfair.className} text-2xl font-semibold tracking-wide text-white`}>

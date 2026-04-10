@@ -61,7 +61,7 @@ export default function ShopSection() {
 
   return (
     <section className="bg-[#f5f5f5] pt-6 md:pt-0 md:py-12">
-      <div className="max-w-[2000px] mx-auto px-4 md:px-8">
+      <div className="max-w-[2000px] mx-auto px-4 md:px-20">
 
         {/* TITLE */}
         <h2 className={`${lora.className} text-center text-[40px] font-normal tracking-tight text-neutral-900 mb-6 border-t-2 border-gray-300 pt-8`}>
@@ -89,7 +89,7 @@ export default function ShopSection() {
         <div className="flex gap-6 overflow-x-auto scrollbar-hide scroll-smooth">
 
           {loading ? (
-            <div className="w-full h-[300px] md:h-[455px] flex items-center justify-center">
+            <div className="w-full h-[300px] md:h-[377px] lg:h-[455px] flex items-center justify-center">
               <div className="w-10 h-10 border-4 border-gray-300 border-t-black rounded-full animate-spin"></div>
             </div>
           ) : products.length === 0 ? (
