@@ -1,10 +1,12 @@
 "use client";
 
 import { useRef, useEffect, useState } from "react";
+import { Lora } from 'next/font/google';
 import Image from "next/image";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { categoryAPI } from "@/lib/api/category.api";
+
 type Category = {
   _id: string;
   name: string;
@@ -41,9 +43,14 @@ const topThreeCategories = [
   },
 ];
 
-const Categories = () => {
-  const scrollRef = useRef<HTMLDivElement>(null);
+const lora = Lora({
+  subsets: ['latin'],
+  weight: ['400', '700'],
+});
 
+const Categories = () => {
+
+  const scrollRef = useRef<HTMLDivElement>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -80,7 +87,7 @@ const Categories = () => {
 
         {/* HEADER */}
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl md:text-4xl font-medium text-gray-700 font-serif">
+          <h2 className={`${lora.className} font-normal text-[40px] tracking-tight text-neutral-900`}>
             Shop by Categories
           </h2>
 
