@@ -89,7 +89,7 @@ export default function ShopSection() {
         <div className="flex gap-6 overflow-x-auto scrollbar-hide scroll-smooth">
 
           {loading ? (
-            <div className="w-full h-[300px] md:h-[455px] flex items-center justify-center">
+            <div className="w-full h-[300px] md:h-[377px] lg:h-[455px] flex items-center justify-center">
               <div className="w-10 h-10 border-4 border-gray-300 border-t-black rounded-full animate-spin"></div>
             </div>
           ) : products.length === 0 ? (
