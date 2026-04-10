@@ -41,7 +41,7 @@ export default function CartDrawer() {
             <p className="text-gray-500">Cart is empty</p>
           ) : (
             items.map((item) => (
-              <div key={`${item.productId}-${item.variantSKU || 'base'}`} className="flex gap-3">
+              <div key={`${item.productId}-${item.variantId || 'base'}`} className="flex gap-3">
                 <img
                   src={item.image || "/placeholder.png"}
                   alt={item.name}
@@ -51,9 +51,9 @@ export default function CartDrawer() {
                 <div className="flex-1">
                   <p className="font-medium">{item.name}</p>
                   
-                  {item.variant && (
+                  {item.selectedOptions && item.selectedOptions.length > 0 && (
                     <p className="text-xs text-gray-500">
-                      {Object.entries(item.variant).map(([k, v]) => `${k}: ${v}`).join(', ')}
+                      {item.selectedOptions.map((opt) => `${opt.fieldName}: ${opt.value}`).join(', ')}
                     </p>
                   )}
 
@@ -65,7 +65,7 @@ export default function CartDrawer() {
                   <div className="flex items-center gap-2 mt-2">
                     <button
                       onClick={() =>
-                        updateQuantity(item.productId, item.variantSKU, item.quantity - 1)
+                        updateQuantity(item, item.quantity - 1)
                       }
                       className="px-2 border"
                     >
@@ -76,7 +76,7 @@ export default function CartDrawer() {
 
                     <button
                       onClick={() =>
-                        updateQuantity(item.productId, item.variantSKU, item.quantity + 1)
+                        updateQuantity(item, item.quantity + 1)
                       }
                       className="px-2 border"
                     >
@@ -86,7 +86,7 @@ export default function CartDrawer() {
 
                   {/* Remove */}
                   <button
-                    onClick={() => removeItem(item.productId, item.variantSKU)}
+                    onClick={() => removeItem(item)}
                     className="text-red-500 text-sm mt-1"
                   >
                     Remove
