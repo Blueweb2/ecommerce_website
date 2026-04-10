@@ -1,6 +1,6 @@
 "use client";
 
-import { Poppins } from 'next/font/google';
+import { Playfair_Display, Cormorant_Garamond } from 'next/font/google';
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Search, Heart, User, ShoppingCart } from "lucide-react";
@@ -8,7 +8,10 @@ import { useRouter } from "next/navigation";
 import { useCartUIStore } from "@/store/ui/useCartUIStore";
 import { useCartStore } from "@/store/user/cart/useCartStore";
 
-const poppins = Poppins({ subsets: ['latin'], weight: ['400', '600'] });
+const playfair = Playfair_Display({
+  subsets: ['latin'],
+  weight: ['400', '600'],
+});
 
 export default function Navbar() {
 
@@ -28,11 +31,15 @@ export default function Navbar() {
 
   return (
     <header className="w-full bg-black fixed top-0 z-9999">
-      <div className="max-w-[2000px] mx-auto px-4 md:px-8 py-4 flex items-center justify-between">
+      <div className="max-w-[2000px] mx-auto px-4 md:px-8 py-2 flex items-center justify-between">
         
         {/* LOGO */}
-        <div className="text-xl font-semibold tracking-wide text-white">
-          <Link href="/" aria-label="Go to homepage - GOLDLAND">FAZZMI</Link>
+        <div className={`${playfair.className} text-2xl font-semibold tracking-wide text-white`}>
+          <Link href="/" aria-label="Go to homepage - GOLDLAND">
+            FA
+            <span className="script text-5xl p-0.5">zz</span> 
+            MI
+          </Link>
         </div>
 
         {/* NAV LINKS */}
