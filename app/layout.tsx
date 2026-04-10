@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 const CartDrawer = dynamic(() => import('@/components/cart/CartDrawer'));
 import "./globals.css";
 import AuthInitializer from "@/components/admin/auth/AuthInitializer";
+import { Toaster } from "react-hot-toast";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,7 +33,29 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <AuthInitializer />
-        {children} 
+<Toaster
+  position="top-right"
+  toastOptions={{
+    style: {
+      backgroundColor: "#1a1f1a",
+      color: "#c7f9cc",
+      border: "1px solid #37b24d",
+      borderRadius: "8px",
+    },
+    success: {
+      style: {
+        backgroundColor: "#0f5132",
+        color: "#d1e7dd",
+      },
+    },
+    error: {
+      style: {
+        backgroundColor: "#842029",
+        color: "#f8d7da",
+      },
+    },
+  }}
+/>        {children} 
         <CartDrawer />
       </body>
     </html>

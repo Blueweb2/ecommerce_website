@@ -256,6 +256,7 @@ export default function NewInSection() {
                       src={product.image}
                       alt={product.alt}
                       fill
+                      sizes="(max-width: 1024px) 25vw, 20vw"
                       className="object-cover"
                     />
                   </div>

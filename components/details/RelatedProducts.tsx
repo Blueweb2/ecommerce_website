@@ -3,6 +3,10 @@
 import { useState, useEffect } from "react";
 import { Handbag } from "lucide-react";
 
+type RelatedProductsProps = {
+  product?: any;
+};
+
 type Products = {
   name: string;
   price: string;
@@ -87,7 +91,7 @@ const resentViewProducts = [
   },
 ];
 
-export default function RelatedProducts() {
+export default function RelatedProducts({ product }: RelatedProductsProps) {
 
   const [activeTab, setActiveTab] = useState("like");
   const [products, setProducts] = useState<Products[]>();

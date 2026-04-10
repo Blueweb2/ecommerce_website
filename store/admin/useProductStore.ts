@@ -12,7 +12,11 @@ interface ProductState {
 
   fetchProducts: () => Promise<void>;
   createProduct: (data: ProductPayload, files: File[]) => Promise<void>;
-  updateProduct: (id: string, data: ProductPayload) => Promise<void>;
+  updateProduct: (
+    id: string,
+    data: ProductPayload,
+    files: File[]
+  ) => Promise<void>;
   deleteProduct: (id: string) => Promise<void>;
 }
 
@@ -28,7 +32,9 @@ export const useProductStore = create<ProductState>((set, get) => ({
       const res = await api.getProducts();
 
       set({
-        products: Array.isArray(res.data?.data.products) ? res.data.data.products : [],
+        products: Array.isArray(res.data?.data.products)
+          ? res.data.data.products
+          : [],
         loading: false,
       });
     } catch (error) {
@@ -41,7 +47,7 @@ export const useProductStore = create<ProductState>((set, get) => ({
     }
   },
 
-  // ✅ CREATE PRODUCT (FIXED FOR FILE UPLOAD)
+  // ✅ CREATE PRODUCT
   createProduct: async (data, files) => {
     set({ loading: true });
 
@@ -49,14 +55,14 @@ export const useProductStore = create<ProductState>((set, get) => ({
       await api.createProduct(data, files);
     } catch (error) {
       console.error("Create product error:", error);
-      throw error; // 🔥 IMPORTANT for toast handling
+      throw error;
     } finally {
       set({ loading: false });
     }
   },
 
-  // ✅ UPDATE PRODUCT
-  updateProduct: async (id: string, data: ProductPayload) => {
+  // ✅ UPDATE PRODUCT (🔥 FULL FIX)
+  updateProduct: async (id, data, files) => {
     set({ loading: true });
 
     try {
@@ -64,10 +70,22 @@ export const useProductStore = create<ProductState>((set, get) => ({
         (p: CatalogProduct) => p._id === id
       );
 
-      // 🔥 Delete old images ONLY if new images are provided
-      if (existing?.images?.length && data.images?.length) {
+      // 🔥 STEP 1: Upload new images (handled in API)
+      const res = await api.updateProduct(id, data, files);
+
+      // 🔥 STEP 2: OPTIONAL - delete removed images ONLY
+      if (existing?.images?.length) {
+        const newPublicIds = res.data.data.images.map(
+          (img: CatalogProductImage) => img.public_id
+        );
+
+        const removedImages = existing.images.filter(
+          (img) => !newPublicIds.includes(img.public_id)
+        );
+
+        // ✅ delete only removed ones
         await Promise.all(
-          existing.images.map((img: CatalogProductImage) =>
+          removedImages.map((img) =>
             fetch("/api/cloudinary/delete", {
               method: "DELETE",
               headers: { "Content-Type": "application/json" },
@@ -77,8 +95,7 @@ export const useProductStore = create<ProductState>((set, get) => ({
         );
       }
 
-      const res = await api.updateProduct(id, data);
-
+      // 🔥 STEP 3: Update state
       set((state) => ({
         products: state.products.map((product) =>
           product._id === id ? res.data.data : product
@@ -101,7 +118,7 @@ export const useProductStore = create<ProductState>((set, get) => ({
         (p: CatalogProduct) => p._id === id
       );
 
-      // 🔥 Delete images from Cloudinary first
+      // 🔥 Delete all images from Cloudinary
       if (existing?.images?.length) {
         await Promise.all(
           existing.images.map((img: CatalogProductImage) =>

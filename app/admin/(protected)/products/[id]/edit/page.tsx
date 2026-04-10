@@ -46,7 +46,7 @@ export default function EditProductPage() {
   ) => {
     try {
       // 🔥 IMPORTANT: for now ignore files (update API is JSON)
-      await updateProduct(id, data);
+      await updateProduct(id, data, files);
 
       toast.success("Product updated");
       router.push("/admin/products");

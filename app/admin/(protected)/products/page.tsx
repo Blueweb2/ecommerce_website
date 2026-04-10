@@ -153,13 +153,6 @@ export default function ProductsPage() {
               <Package2 className="h-3.5 w-3.5" />
               Product management
             </div>
-            <h1 className="mt-4 text-3xl font-semibold tracking-tight md:text-4xl">
-              Manage your catalog with categories and sections
-            </h1>
-            <p className="mt-3 text-sm leading-6 text-emerald-50/80 md:text-base">
-              Keep one category per product and merchandise items into dynamic
-              storefront sections like Featured or Best Seller.
-            </p>
           </div>
 
           <Link

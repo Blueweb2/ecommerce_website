@@ -2,24 +2,25 @@
 
 import dynamic from "next/dynamic";
 import { useState, useEffect } from "react";
+
 const Carousel = dynamic(() => import("./inside-product-feature/Carousel"));
-const RightSide = dynamic(() => import("./inside-product-feature/RightSide"));
+const RightSide = dynamic<{ product: any }>(() => import("./inside-product-feature/RightSide"));
 
 type ProductFeatureProps = {
   onToggleLayout: (visible: boolean) => void;
+  product: any; // ✅ add product prop
 };
 
-const ProductFeature = ({ onToggleLayout }: ProductFeatureProps) => {
-
+const ProductFeature = ({ onToggleLayout, product }: ProductFeatureProps) => {
   const [leftPos, setLeftPos] = useState({ x: 0, y: 0 });
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [zooming, setZooming] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
-  // take window screen width
+  // ✅ detect screen size
   useEffect(() => {
     const checkScreen = () => {
-      setIsMobile(window.innerWidth < 1024); // lg breakpoint
+      setIsMobile(window.innerWidth < 1024);
     };
 
     checkScreen();
@@ -28,7 +29,7 @@ const ProductFeature = ({ onToggleLayout }: ProductFeatureProps) => {
     return () => window.removeEventListener("resize", checkScreen);
   }, []);
 
-  // custom cursor handling
+  // ✅ custom cursor tracking
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       setMousePos({
@@ -38,20 +39,23 @@ const ProductFeature = ({ onToggleLayout }: ProductFeatureProps) => {
     };
 
     window.addEventListener("mousemove", handleMouseMove);
-      return () => window.removeEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
-  // pass zooming value to parent component
+  // ✅ notify parent about zoom state
   useEffect(() => {
     onToggleLayout(zooming);
-  },[zooming]);
+  }, [zooming, onToggleLayout]);
 
+  // ✅ fallback image (important)
+  const mainImage =
+    product?.images?.[0]?.url || "/placeholder.png";
 
   return !isMobile && !zooming ? (
     <section className="py-10 mt-4 lg:mt-10">
-      <div className="lg:grid  grid-cols-3 ">
+      <div className="lg:grid grid-cols-3 gap-4">
 
-        {/* LEFT (IMAGE DISPLAY) (LARGE DIVICE ONLY) */}
+        {/* ================= LEFT IMAGE ================= */}
         <div
           className="sticky top-20 h-[600px] group cursor-none hidden lg:block"
           onMouseMove={(e) => {
@@ -61,54 +65,73 @@ const ProductFeature = ({ onToggleLayout }: ProductFeatureProps) => {
               y: e.clientY - rect.top,
             });
           }}
-          onClick={()=>setZooming(true)}
+          onClick={() => setZooming(true)}
         >
           <img
-            src="/home/herosection/hero-right-top.png"
-            alt=""
+            src={mainImage}
+            alt={product?.name}
             className="w-full h-full object-cover"
           />
 
-          {/* Custom Cursor */}
+          {/* Cursor */}
           <div
-            className="pointer-events-none absolute w-10 h-10 bg-black/60 rounded-full opacity-0 group-hover:opacity-100 transition flex items-center justify-center leading-none text-white 
-            "
+            className="pointer-events-none absolute w-10 h-10 bg-black/60 rounded-full opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white"
             style={{
               left: leftPos.x - 20,
               top: leftPos.y - 20,
             }}
-          ><span className="scale-190">+</span></div>
+          >
+            <span className="scale-150">+</span>
+          </div>
         </div>
 
-        {/* MIDDLE SECTION ( ANOTHER IMAGES ) (LARGE DIVICE ONLY) */}
-        <div className="group cursor-none relative hidden lg:block" onClick={()=>setZooming(true)}>
-          <img src="/home/categorysection/category-one.png" alt="" className="h-[600px] w-full object-cover" />
-          <img src="/home/herosection/hero-center.png" alt="" className="h-[600px] w-full object-cover" />
-          <img src="/home/shopsection/shop-one.png" alt="" className="h-[600px] w-full object-cover" />
-          <img src="/home/herosection/hero-right-bottom.png" alt="" className="h-[600px] w-full object-cover" />
-          <img src="/home/herosection/hero-right-top.png" alt="" className="h-[600px] w-full object-cover" />
-          {/* Custom Cursor */} 
+        {/* ================= MIDDLE IMAGES ================= */}
+        <div
+          className="group cursor-none relative hidden lg:block overflow-y-auto h-[600px]"
+          onClick={() => setZooming(true)}
+        >
+          {product?.images?.length > 0 ? (
+            product.images.map((img: any, index: number) => (
+              <img
+                key={index}
+                src={img.url}
+                alt={img.altText || product.name}
+                className="h-[600px] w-full object-cover mb-2"
+              />
+            ))
+          ) : (
+            <img
+              src="/placeholder.png"
+              alt="no image"
+              className="h-[600px] w-full object-cover"
+            />
+          )}
+
+          {/* Cursor */}
           <div
-            className="pointer-events-none fixed w-10 h-10 bg-black/60 rounded-full opacity-0 group-hover:opacity-100 transition flex items-center justify-center leading-none text-white"
+            className="pointer-events-none fixed w-10 h-10 bg-black/60 rounded-full opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white"
             style={{
               left: mousePos.x - 20,
               top: mousePos.y - 20,
             }}
           >
-            <span className="scale-190">+</span>
+            <span className="scale-150">+</span>
           </div>
         </div>
 
-        {/* RIGHT (ADD TO CART AREA) */}
-        <RightSide />
-
+        {/* ================= RIGHT SIDE ================= */}
+        <RightSide product={product} />
       </div>
-
     </section>
-  ):(
+  ) : (
     <>
-      <Carousel setZooming={setZooming} />
-      {isMobile && <RightSide /> }
+      {/* ✅ pass images to carousel */}
+      <Carousel
+        images={product?.images || []}
+        setZooming={setZooming}
+      />
+
+      {isMobile && <RightSide product={product} />}
     </>
   );
 };

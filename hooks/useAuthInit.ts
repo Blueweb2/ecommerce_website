@@ -50,7 +50,7 @@ export const useAuthInit = () => {
         // 🔥 1. Always try refresh
         const res = await api.post("/auth/refresh-token");
 
-        const accessToken = res.data.accessToken;
+        const accessToken = res.data.data.accessToken;
 
         setAccessToken(accessToken);
 

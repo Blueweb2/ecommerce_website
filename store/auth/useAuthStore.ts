@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import api from "@/lib/api/axios";
+import { clearAccessToken } from "@/lib/auth";
 
 interface User {
   id: string;
