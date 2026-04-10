@@ -1,15 +1,23 @@
 import { create } from "zustand";
 
-export interface Product {
-  _id: string;
-  name: string;
-  images: string[];
-}
+/* ================= TYPES ================= */
+
+export type SelectedOption = {
+  fieldName: string;
+  value: string;
+};
 
 export interface CartItem {
-  product: Product;
+  productId: string;
+
+  name: string;
+  image?: string;
+
   price: number;
   quantity: number;
+
+  variantId?: string; // ✅ backend aligned
+  selectedOptions?: SelectedOption[]; // ✅ backend aligned
 }
 
 interface CartState {
@@ -17,56 +25,101 @@ interface CartState {
   totalPrice: number;
 
   addItem: (item: CartItem) => void;
-  updateQuantity: (productId: string, quantity: number) => void;
-  removeItem: (productId: string) => void;
+  updateQuantity: (item: CartItem, quantity: number) => void;
+  removeItem: (item: CartItem) => void;
+
   setCart: (items: CartItem[]) => void;
   clearCart: () => void;
 }
 
-const calculateTotal = (items: CartItem[]) => {
-  return items.reduce((total, item) => total + item.price * item.quantity, 0);
+/* ================= HELPERS ================= */
+
+const calculateTotal = (items: CartItem[]) =>
+  items.reduce((total, item) => total + item.price * item.quantity, 0);
+
+const normalizeOptions = (options: SelectedOption[] = []) =>
+  [...options].sort((a, b) =>
+    a.fieldName.localeCompare(b.fieldName)
+  );
+
+const isSameItem = (a: CartItem, b: CartItem) => {
+  return (
+    a.productId === b.productId &&
+    a.variantId === b.variantId &&
+    JSON.stringify(normalizeOptions(a.selectedOptions)) ===
+      JSON.stringify(normalizeOptions(b.selectedOptions))
+  );
 };
+
+/* ================= STORE ================= */
 
 export const useCartStore = create<CartState>((set) => ({
   items: [],
   totalPrice: 0,
 
+  /* 🔹 ADD ITEM */
   addItem: (item) =>
     set((state) => {
-      const existing = state.items.find((i) => i.product._id === item.product._id);
+      const normalizedItem = {
+        ...item,
+        selectedOptions: normalizeOptions(item.selectedOptions || []),
+      };
+
+      const existingIndex = state.items.findIndex((i) =>
+        isSameItem(i, normalizedItem)
+      );
 
       let newItems;
-      if (existing) {
-        newItems = state.items.map((i) =>
-          i.product._id === item.product._id
-            ? { ...i, quantity: i.quantity + item.quantity }
-            : i
-        );
+
+      if (existingIndex > -1) {
+        newItems = [...state.items];
+        newItems[existingIndex].quantity += item.quantity;
       } else {
-        newItems = [...state.items, item];
+        newItems = [...state.items, normalizedItem];
       }
-      return { items: newItems, totalPrice: calculateTotal(newItems) };
+
+      return {
+        items: newItems,
+        totalPrice: calculateTotal(newItems),
+      };
     }),
 
-  updateQuantity: (productId, quantity) =>
+  /* 🔹 UPDATE QUANTITY */
+  updateQuantity: (item, quantity) =>
     set((state) => {
       if (quantity <= 0) {
-        const newItems = state.items.filter((i) => i.product._id !== productId);
+        const newItems = state.items.filter((i) => !isSameItem(i, item));
         return { items: newItems, totalPrice: calculateTotal(newItems) };
       }
+
       const newItems = state.items.map((i) =>
-        i.product._id === productId ? { ...i, quantity } : i
+        isSameItem(i, item) ? { ...i, quantity } : i
       );
-      return { items: newItems, totalPrice: calculateTotal(newItems) };
+
+      return {
+        items: newItems,
+        totalPrice: calculateTotal(newItems),
+      };
     }),
 
-  removeItem: (productId) =>
+  /* 🔹 REMOVE ITEM */
+  removeItem: (item) =>
     set((state) => {
-      const newItems = state.items.filter((i) => i.product._id !== productId);
-      return { items: newItems, totalPrice: calculateTotal(newItems) };
+      const newItems = state.items.filter((i) => !isSameItem(i, item));
+
+      return {
+        items: newItems,
+        totalPrice: calculateTotal(newItems),
+      };
     }),
 
-  setCart: (items) => set({ items, totalPrice: calculateTotal(items) }),
+  /* 🔹 SET CART (from backend) */
+  setCart: (items) =>
+    set({
+      items,
+      totalPrice: calculateTotal(items),
+    }),
 
+  /* 🔹 CLEAR CART */
   clearCart: () => set({ items: [], totalPrice: 0 }),
 }));

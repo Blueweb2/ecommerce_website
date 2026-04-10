@@ -3,129 +3,68 @@
 import { useState } from "react";
 
 type CarouselProps = {
-  images: any[]; // ✅ dynamic images
+  images: any[];
   setZooming: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const Carousel = ({ images = [], setZooming }: CarouselProps) => {
-  const [leftPos, setLeftPos] = useState({ x: 0, y: 0 });
-  const [hideCursor, setHideCursor] = useState(false);
-  const [indexx, setIndex] = useState(0);
+  const [index, setIndex] = useState(0);
 
-  // ✅ fallback if no images
   const safeImages =
     images.length > 0
       ? images
       : [{ url: "/placeholder.png", altText: "no image" }];
 
-  const nextSlide = () => {
-    if (indexx < safeImages.length - 1) {
-      setIndex(indexx + 1);
-    }
+  const next = () => {
+    setIndex((prev) => (prev + 1) % safeImages.length);
   };
 
-  const prevSlide = () => {
-    if (indexx > 0) {
-      setIndex(indexx - 1);
-    }
+  const prev = () => {
+    setIndex((prev) =>
+      prev === 0 ? safeImages.length - 1 : prev - 1
+    );
   };
 
   return (
-    <div
-      className="flex items-center justify-center h-[100px] lg:min-h-screen mt-40 lg:mt-3"
-      onClick={() => setZooming(false)}
-    >
-      <div
-        onMouseMove={(e) => {
-          const rect = e.currentTarget.getBoundingClientRect();
-          setLeftPos({
-            x: e.clientX - rect.left,
-            y: e.clientY - rect.top,
-          });
-        }}
-        className="relative w-full max-w-7xl mx-auto overflow-hidden cursor-none group"
-      >
-        {/* ================= SLIDES ================= */}
-        <div
-          className="flex transition-transform duration-500"
-          style={{
-            transform: `translateX(-${indexx * 100}%)`,
-          }}
-        >
-          {safeImages.map((img, i) => (
-            <div key={i} className="min-w-full">
-              <img
-                src={img.url}
-                alt={img.altText || "product"}
-                className="w-full h-[300px] md:h-[600px] lg:h-[500px] object-cover"
-              />
-            </div>
-          ))}
-        </div>
+    <div className="w-full max-w-6xl mx-auto">
 
-        {/* ================= LEFT BUTTON ================= */}
+      {/* MAIN IMAGE */}
+      <div className="relative">
+        <img
+          src={safeImages[index].url}
+          alt={safeImages[index].altText}
+          className="w-full h-[400px] md:h-[600px] object-cover rounded"
+        />
+
+        {/* LEFT */}
         <button
-          onMouseEnter={() => setHideCursor(true)}
-          onMouseLeave={() => setHideCursor(false)}
-          onClick={(e) => {
-            e.stopPropagation();
-            prevSlide();
-          }}
-          className="absolute top-1/2 left-4 -translate-y-1/2 bg-black/60 text-white px-3 py-2 rounded"
+          onClick={prev}
+          className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/60 text-white px-3 py-2 rounded"
         >
           ◀
         </button>
 
-        {/* ================= RIGHT BUTTON ================= */}
+        {/* RIGHT */}
         <button
-          onMouseEnter={() => setHideCursor(true)}
-          onMouseLeave={() => setHideCursor(false)}
-          onClick={(e) => {
-            e.stopPropagation();
-            nextSlide();
-          }}
-          className="absolute top-1/2 right-4 -translate-y-1/2 bg-black/60 text-white px-3 py-2 rounded"
+          onClick={next}
+          className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/60 text-white px-3 py-2 rounded"
         >
           ▶
         </button>
+      </div>
 
-        {/* ================= CURSOR ================= */}
-        <div
-          className={`pointer-events-none absolute w-10 h-10 bg-black/60 rounded-full 
-          ${
-            hideCursor ? "opacity-0" : "opacity-0 group-hover:opacity-100"
-          } 
-          transition flex items-center justify-center text-white`}
-          style={{
-            left: leftPos.x - 20,
-            top: leftPos.y - 20,
-          }}
-        >
-          <span className="scale-150">&times;</span>
-        </div>
-
-        {/* ================= DOTS ================= */}
-        <div
-          onMouseEnter={() => setHideCursor(true)}
-          onMouseLeave={() => setHideCursor(false)}
-          onClick={(e) => e.stopPropagation()}
-          className="flex gap-3 items-center justify-center h-6 lg:h-12 cursor-auto"
-        >
-          {safeImages.map((_, index) => (
-            <button
-              key={index}
-              onClick={(e) => {
-                e.stopPropagation();
-                setIndex(index);
-              }}
-              className={`rounded-full transition-all duration-300 ${
-                indexx === index
-                  ? "w-4 h-4 bg-black scale-125"
-                  : "w-2.5 h-2.5 bg-gray-400 hover:bg-black"
-              }`}
-            />
-          ))}
-        </div>
+      {/* THUMBNAILS */}
+      <div className="flex gap-2 mt-3 justify-center">
+        {safeImages.map((img, i) => (
+          <img
+            key={i}
+            src={img.url}
+            onClick={() => setIndex(i)}
+            className={`w-16 h-16 object-cover cursor-pointer border ${
+              index === i ? "border-black" : "border-gray-300"
+            }`}
+          />
+        ))}
       </div>
     </div>
   );
