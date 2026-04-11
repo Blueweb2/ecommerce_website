@@ -18,43 +18,77 @@ export const useAddressStore = create<AddressState>((set) => ({
   loading: false,
 
   fetchAddresses: async () => {
-    const res = await addressAPI.getAll();
-    set({ addresses: res.data.data });
+    try {
+      set({ loading: true });
+      const res = await addressAPI.getAll();
+      set({ addresses: res.data.data, loading: false });
+    } catch (error) {
+      console.error("Failed to fetch addresses:", error);
+      set({ loading: false });
+    }
   },
 
   addAddress: async (data) => {
-    const res = await addressAPI.create(data);
-    set((state) => ({
-      addresses: [...state.addresses, res.data.data],
-    }));
+    try {
+      set({ loading: true });
+      const res = await addressAPI.create(data);
+      set((state) => ({
+        addresses: [...state.addresses, res.data.data],
+        loading: false,
+      }));
+    } catch (error) {
+      console.error("Failed to add address:", error);
+      set({ loading: false });
+    }
   },
 
   updateAddress: async (id, data) => {
-    const res = await addressAPI.update(id, data);
+    try {
+      set({ loading: true });
+      const res = await addressAPI.update(id, data);
 
-    set((state) => ({
-      addresses: state.addresses.map((a) =>
-        a._id === id ? res.data.data : a
-      ),
-    }));
+      set((state) => ({
+        addresses: state.addresses.map((a) =>
+          a._id === id ? res.data.data : a
+        ),
+        loading: false,
+      }));
+    } catch (error) {
+      console.error("Failed to update address:", error);
+      set({ loading: false });
+    }
   },
 
   deleteAddress: async (id) => {
-    await addressAPI.delete(id);
-    set((state) => ({
-      addresses: state.addresses.filter((a) => a._id !== id),
-    }));
+    try {
+      set({ loading: true });
+      await addressAPI.delete(id);
+      set((state) => ({
+        addresses: state.addresses.filter((a) => a._id !== id),
+        loading: false,
+      }));
+    } catch (error) {
+      console.error("Failed to delete address:", error);
+      set({ loading: false });
+    }
   },
 
   setDefault: async (id) => {
-    await addressAPI.setDefault(id);
+    try {
+      set({ loading: true });
+      await addressAPI.setDefault(id);
 
-    // ⭐ update local state
-    set((state) => ({
-      addresses: state.addresses.map((a) => ({
-        ...a,
-        isDefault: a._id === id,
-      })),
-    }));
+      // ⭐ update local state
+      set((state) => ({
+        addresses: state.addresses.map((a) => ({
+          ...a,
+          isDefault: a._id === id,
+        })),
+        loading: false,
+      }));
+    } catch (error) {
+      console.error("Failed to set default address:", error);
+      set({ loading: false });
+    }
   },
 }));

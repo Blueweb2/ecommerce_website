@@ -1,13 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import axios from "@/lib/api/axios";
 import { setAccessToken } from "@/lib/auth";
+import { useAuthStore } from "@/store/auth/useAuthStore";
 
 export default function CustomerLoginPage() {
   const router = useRouter();
+  const { setUser, user, loading: authLoading } = useAuthStore();
 
   const [form, setForm] = useState({
     email: "",
@@ -16,22 +18,31 @@ export default function CustomerLoginPage() {
 
   const [loading, setLoading] = useState(false);
 
+  // 🔥 Redirect if already logged in
+  useEffect(() => {
+    if (!authLoading && user) {
+      router.replace("/checkout");
+    }
+  }, [user, authLoading, router]);
+
   const handleLogin = async (e: any) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-     const res = await axios.post("/auth/login", form);
+      const res = await axios.post("/auth/login", form);
 
-const { user, accessToken } = res.data;
+      const { user, accessToken } = res.data;
 
-setAccessToken(accessToken);
+      if (!user || !accessToken) {
+        throw new Error("Invalid response from server");
+      }
 
-toast.success("Welcome back!");
-router.push("/checkout");
+      setAccessToken(accessToken);
+      setUser(user);
 
-      // Redirect to checkout or homepage
-      router.push("/checkout");
+      toast.success("Welcome back!");
+      router.replace("/checkout");
     } catch (error: any) {
       toast.error(
         error?.response?.data?.message || "Login failed"

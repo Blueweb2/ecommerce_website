@@ -26,7 +26,7 @@ export default function Navbar() {
 
   const linkClass = (path: string) => {
     return (
-      `${ pathname === path ? "text-[#D4AF37] font-semibold" : "text-white hover:text-[#D4AF37]"}`
+      `${pathname === path ? "text-[#D4AF37] font-semibold" : "text-white hover:text-[#D4AF37]"}`
     );
   };
 
@@ -34,12 +34,12 @@ export default function Navbar() {
   return (
     <header className="w-full bg-black fixed top-0 z-9999">
       <div className="max-w-[2000px] mx-auto px-4 md:px-20 py-2 flex items-center justify-between">
-        
+
         {/* LOGO */}
         <div className={`${playfair.className} text-2xl font-semibold tracking-wide text-white`}>
           <Link href="/" aria-label="Go to homepage - GOLDLAND">
             FA
-            <span className="script text-5xl p-0.5">zz</span> 
+            <span className="script text-5xl p-0.5">zz</span>
             MI
           </Link>
         </div>
@@ -103,9 +103,9 @@ export default function Navbar() {
             <Heart size={18} />
           </button>
           <button onClick={() => {
-  if (loading) return; // prevent flicker issues
-  router.push(user ? "/profile" : "/login");
-}} className="transition-colors duration-300 hover:text-[#D4AF37]">
+            if (loading) return; // prevent flicker issues
+            router.push(user ? "/profile" : "/login");
+          }} className="transition-colors duration-300 hover:text-[#D4AF37]">
             <User size={18} />
           </button>
           <button onClick={openCart} className="transition-colors duration-300 hover:text-[#D4AF37]">

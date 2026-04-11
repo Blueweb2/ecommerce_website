@@ -38,7 +38,13 @@ api.interceptors.response.use(
     const originalRequest = error.config;
 
     // 🔴 If access token expired
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      !originalRequest.url?.includes("/auth/refresh-token") &&
+      !originalRequest.url?.includes("/auth/login") &&
+      !originalRequest.url?.includes("/auth/register")
+    ) {
       
       if (isRefreshing) {
         // queue requests while refreshing
@@ -72,8 +78,10 @@ api.interceptors.response.use(
 
         clearAccessToken();
 
-        // 🚪 logout user if refresh fails
-        window.location.href = "/admin/login";
+        // only redirect if we're not already on a login page
+        if (!window.location.pathname.includes("/login")) {
+          window.location.href = "/login";
+        }
 
         return Promise.reject(err);
 
