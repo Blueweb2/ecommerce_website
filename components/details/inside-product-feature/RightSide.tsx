@@ -5,7 +5,8 @@ import { Heart, ChevronDown } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { useCartStore } from "@/store/user/cart/useCartStore";
 import { useWishlistStore } from "@/store/user/wishlist/useWishlistStore";
-
+import { wishlistAPI } from "@/lib/api/wishlist.api";
+import { useAuthStore } from "@/store/auth/useAuthStore";
 
 type Props = {
   product: any;
@@ -28,10 +29,36 @@ const RightSide = ({ product }: Props) => {
 
   const { toggleWishlist, isInWishlist } = useWishlistStore();
 
+
+  const { user } = useAuthStore();
+
   const isWishlisted = isInWishlist(product._id);
-  const addToWishlist = useWishlistStore(
-    (state) => state.addToWishlist
-  );
+
+  const handleWishlistToggle = async () => {
+    // ✅ Optimistic UI
+    toggleWishlist({
+      _id: product._id,
+      name: product.name,
+      price: product.price,
+      image: product.images?.[0]?.url,
+    });
+
+    // ✅ Backend sync if logged in
+    if (user) {
+      try {
+        await wishlistAPI.toggle(product._id);
+      } catch (err) {
+        console.log("Wishlist sync failed");
+      }
+    }
+
+    // ✅ Toast feedback
+    if (isWishlisted) {
+      toast.success("Removed from wishlist");
+    } else {
+      toast.success("Added to wishlist ❤️");
+    }
+  };
 
   const handleCustomChange = (name: string, value: string | number) => {
     setCustomData((prev) => {
@@ -217,14 +244,7 @@ const RightSide = ({ product }: Props) => {
           Add To Cart
         </button>
         <button
-          onClick={() =>
-            toggleWishlist({
-              _id: product._id,
-              name: product.name,
-              price: product.price,
-              image: product.images?.[0]?.url,
-            })
-          }
+          onClick={handleWishlistToggle}
           className={`border py-2 flex items-center justify-center gap-2 transition
     ${isWishlisted ? "bg-black text-white" : "bg-white"}
   `}

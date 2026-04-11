@@ -101,18 +101,18 @@ export default function Navbar() {
           <button className="transition-colors duration-300 hover:text-[#D4AF37]">
             <Search size={18} />
           </button>
-<Link
-  href="/wishlist"
-  className="relative transition-colors duration-300 hover:text-[#D4AF37]"
->
-  <Heart size={18} />
+          <Link
+            href="/wishlist"
+            className="relative transition-colors duration-300 hover:text-[#D4AF37]"
+          >
+            <Heart size={18} />
 
-  {wishlistItems.length > 0 && (
-    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] px-1 rounded-full">
-      {wishlistItems.length}
-    </span>
-  )}
-</Link>
+            {wishlistItems.length > 0 && (
+              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] px-1 rounded-full">
+                {wishlistItems.length}
+              </span>
+            )}
+          </Link>
           <button onClick={() => {
 
             if (loading) return;

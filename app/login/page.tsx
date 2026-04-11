@@ -6,6 +6,8 @@ import toast from "react-hot-toast";
 import axios from "@/lib/api/axios";
 import { setAccessToken } from "@/lib/auth";
 import { useAuthStore } from "@/store/auth/useAuthStore";
+import { useWishlistStore } from "@/store/user/wishlist/useWishlistStore";
+
 
 export default function CustomerLoginPage() {
   const router = useRouter();
@@ -17,6 +19,7 @@ export default function CustomerLoginPage() {
   });
 
   const [loading, setLoading] = useState(false);
+  const { mergeWishlist, syncWishlist } = useWishlistStore.getState();
 
   // 🔥 Redirect if already logged in
   useEffect(() => {
@@ -43,6 +46,8 @@ export default function CustomerLoginPage() {
 
       toast.success("Welcome back!");
       router.replace("/checkout");
+      await mergeWishlist();   // send guest wishlist
+await syncWishlist();    // fetch backend wishlist
     } catch (error: any) {
       toast.error(
         error?.response?.data?.message || "Login failed"
