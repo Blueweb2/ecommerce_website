@@ -5,13 +5,15 @@ import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { productAPI } from "@/lib/api/product.api";
 
+import Loading from "@/app/loading";
 const Navbar = dynamic(() => import("@/components/shared/Navbar"));
 const ProductFeature = dynamic(() => import("@/components/details/ProductFeature"));
 const RelatedProducts = dynamic(() => import("@/components/details/RelatedProducts"));
 const Footer = dynamic(() => import("@/components/shared/Footer"));
 
 export default function Page() {
-  const [isLayoutVisible, setIsLayoutVisible] = useState(true);
+
+  const [isLayoutVisible, setIsLayoutVisible] = useState(false);
   const [product, setProduct] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -23,7 +25,7 @@ export default function Page() {
     setIsLayoutVisible(visible);
   };
 
-  // ✅ Fetch product
+  // Fetch product
   useEffect(() => {
     if (!slug) return;
 
@@ -43,46 +45,44 @@ export default function Page() {
     fetchProduct();
   }, [slug]);
 
-  // ✅ Loading
+  // Loading
   if (loading) {
     return (
-      <div className="p-10 text-center text-gray-500">
-        Loading product...
-      </div>
+      <Loading />
     );
-  }
+  };
 
-  // ✅ Error
+  // Error
   if (error) {
     return (
       <div className="p-10 text-center text-red-500">
         {error}
       </div>
     );
-  }
+  };
 
-  // ✅ Not found
-  if (!product) {
+  // Not found
+  if (product?.length === 0) {
     return (
       <div className="p-10 text-center">
         Product not found
       </div>
     );
-  }
+  };
 
   return (
     <>
-      {/* ✅ Navbar hidden when zooming */}
-      {!isLayoutVisible && <Navbar />}
+      {/* Navbar hidden when zooming  */}
+      {isLayoutVisible && <Navbar />}
 
-      {/* ✅ Product Section */}
+      {/* Product Section */}
       <ProductFeature
         product={product}
         onToggleLayout={handleLayoutVisibility}
       />
 
-      {/* ✅ Related + Footer */}
-      {!isLayoutVisible && (
+      {/* Related + Footer */}
+      {isLayoutVisible && (
         <>
           <RelatedProducts product={product} />
           <Footer />
@@ -90,4 +90,4 @@ export default function Page() {
       )}
     </>
   );
-}
+};

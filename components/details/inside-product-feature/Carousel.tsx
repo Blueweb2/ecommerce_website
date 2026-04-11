@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 
 type CarouselProps = {
   images: any[];
@@ -8,36 +8,53 @@ type CarouselProps = {
 };
 
 const Carousel = ({ images = [], setZooming }: CarouselProps) => {
+
   const [index, setIndex] = useState(0);
+  const [leftPos, setLeftPos] = useState({ x: 0, y: 0 });
+  const [hideCursor, setHideCursor] = useState(false);
 
   const safeImages =
     images.length > 0
       ? images
       : [{ url: "/placeholder.png", altText: "no image" }];
 
-  const next = () => {
+  const next = (e:React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
     setIndex((prev) => (prev + 1) % safeImages.length);
   };
 
-  const prev = () => {
+  const prev = (e:React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
     setIndex((prev) =>
       prev === 0 ? safeImages.length - 1 : prev - 1
     );
   };
 
   return (
-    <div className="w-full max-w-6xl mx-auto">
+    <div className="w-full lg:max-w-6xl lg:my-auto mx-auto mt-[63px] lg:mt-auto lg:flex lg:flex-col lg:items-center lg:justify-center text-center">
 
       {/* MAIN IMAGE */}
-      <div className="relative">
+      <div
+        onMouseMove={(e) => {
+          const rect = e.currentTarget.getBoundingClientRect();
+          setLeftPos({
+            x: e.clientX - rect.left,
+            y: e.clientY - rect.top,
+          });
+        }}
+        className="relative overflow-hidden cursor-none group w-full"
+        onClick={() => setZooming(false)}
+      >
         <img
           src={safeImages[index].url}
           alt={safeImages[index].altText}
-          className="w-full h-[400px] md:h-[600px] object-cover rounded"
+          className="w-full h-[400px] md:h-[500px] object-cover rounded"
         />
 
         {/* LEFT */}
         <button
+          onMouseEnter={() => setHideCursor(true)}
+          onMouseLeave={() => setHideCursor(false)}
           onClick={prev}
           className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/60 text-white px-3 py-2 rounded"
         >
@@ -46,11 +63,27 @@ const Carousel = ({ images = [], setZooming }: CarouselProps) => {
 
         {/* RIGHT */}
         <button
+          onMouseEnter={() => setHideCursor(true)}
+          onMouseLeave={() => setHideCursor(false)}
           onClick={next}
           className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/60 text-white px-3 py-2 rounded"
         >
           ▶
         </button>
+
+        {/* Custom Cursor */}
+        <div
+          className={`pointer-events-none absolute w-10 h-10 bg-black/60 rounded-full 
+          ${hideCursor ? "opacity-0" : "opacity-0 group-hover:opacity-100"} 
+          transition flex items-center justify-center leading-none text-white`}
+          style={{
+            left: leftPos.x - 20,
+            top: leftPos.y - 20,
+          }}
+        >
+          <span className="scale-190">&times;</span>
+        </div>
+
       </div>
 
       {/* THUMBNAILS */}
@@ -66,6 +99,7 @@ const Carousel = ({ images = [], setZooming }: CarouselProps) => {
           />
         ))}
       </div>
+
     </div>
   );
 };
