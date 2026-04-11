@@ -1,17 +1,29 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 type CarouselProps = {
   images: any[];
   setZooming: React.Dispatch<React.SetStateAction<boolean>>;
+  firstImage?: number;
 };
 
-const Carousel = ({ images = [], setZooming }: CarouselProps) => {
+const Carousel = ({ images = [], setZooming, firstImage }: CarouselProps) => {
 
-  const [index, setIndex] = useState(0);
+  // const [index, setIndex] = useState(0);
+  const [index, setIndex] = useState(firstImage ?? 0);
   const [leftPos, setLeftPos] = useState({ x: 0, y: 0 });
   const [hideCursor, setHideCursor] = useState(false);
+
+  // useEffect(() => {
+  //   if (typeof firstImage === "number") {
+  //     setIndex(firstImage);
+  //   }
+  // }, [firstImage]);
+
+  useEffect(() => {
+    setIndex(firstImage ?? 0);
+  }, [firstImage]);
 
   const safeImages =
     images.length > 0

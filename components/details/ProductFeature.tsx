@@ -3,8 +3,12 @@
 import dynamic from "next/dynamic";
 import { useState, useEffect } from "react";
 
-const Carousel = dynamic(() => import("./inside-product-feature/Carousel"));
-const RightSide = dynamic<{ product: any }>(() => import("./inside-product-feature/RightSide"));
+const Carousel = dynamic(() => import("./inside-product-feature/Carousel"),{
+  loading: () => <p className="text-center py-10">Loading...</p>,
+});
+const RightSide = dynamic<{ product: any }>(() => import("./inside-product-feature/RightSide"),{
+  loading: () => <p className="text-center py-10">Loading...</p>,
+});
 
 type ProductFeatureProps = {
   onToggleLayout: (visible: boolean) => void;
@@ -17,6 +21,7 @@ const ProductFeature = ({ onToggleLayout, product }: ProductFeatureProps) => {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [zooming, setZooming] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [carouselImageIndex, setCarouselImageIndex] = useState<number>(0)
 
   // detect screen size
   useEffect(() => {
@@ -60,6 +65,7 @@ const ProductFeature = ({ onToggleLayout, product }: ProductFeatureProps) => {
       <Carousel
         images={product?.images || []}
         setZooming={setZooming}
+        firstImage={carouselImageIndex}
       />
     );
   };
@@ -89,7 +95,10 @@ const ProductFeature = ({ onToggleLayout, product }: ProductFeatureProps) => {
               y: e.clientY - rect.top,
             });
           }}
-          onClick={() => setZooming(true)}
+          onClick={() => {
+            setCarouselImageIndex(() => 0)
+            setZooming(true)
+          }}
         >
           <img
             src={mainImage}
@@ -111,16 +120,19 @@ const ProductFeature = ({ onToggleLayout, product }: ProductFeatureProps) => {
 
         {/* ================= MIDDLE IMAGES ================= */}
         <div
-          className="group cursor-none relative hidden lg:block "
-          onClick={() => setZooming(true)}
+          className="group cursor-none relative hidden lg:block"
         >
           {product?.images?.length > 0 ? (
-            product.images.map((img: any, index: number) => (
+            product.images.slice(1).map((img: any, index: number) => (
               <img
                 key={index}
                 src={img.url}
                 alt={img.altText || product.name}
                 className="h-[600px] w-full object-cover mb-2"
+                onClick={() => {
+                  setCarouselImageIndex(() => index + 1 )
+                  setZooming(true)
+                }}
               />
             ))
           ) : (
