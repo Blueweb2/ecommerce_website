@@ -1,6 +1,6 @@
 "use client";
 
-import { Playfair_Display, Cormorant_Garamond } from 'next/font/google';
+import { Playfair_Display } from 'next/font/google';
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Search, Heart, User, ShoppingCart } from "lucide-react";
@@ -103,19 +103,26 @@ export default function Navbar() {
             <Heart size={18} />
           </button>
           <button onClick={() => {
-            if (loading) return; // prevent flicker issues
+
+            if (loading) return;
             router.push(user ? "/profile" : "/login");
           }} className="transition-colors duration-300 hover:text-[#D4AF37]">
             <User size={18} />
           </button>
-          <button onClick={openCart} className="transition-colors duration-300 hover:text-[#D4AF37]">
+
+          <button
+            onClick={openCart}
+            className="relative transition-colors duration-300 hover:text-[#D4AF37]"
+          >
             <ShoppingCart size={18} />
+
             {cartCount > 0 && (
-              <span className="absolute -top-2 -right-3 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
+              <span className="absolute -top-3 -right-3 bg-red-500 text-white font-bold text-[11px] px-1.5 py-0.5 rounded-full">
                 {cartCount > 99 ? "99+" : cartCount}
               </span>
             )}
           </button>
+
         </div>
 
       </div>
