@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { useCartUIStore } from "@/store/ui/useCartUIStore";
 import { useCartStore } from "@/store/user/cart/useCartStore";
 import { useAuthStore } from "@/store/auth/useAuthStore";
+import { useWishlistStore } from '@/store/user/wishlist/useWishlistStore';
 
 const playfair = Playfair_Display({
   subsets: ['latin'],
@@ -21,6 +22,7 @@ export default function Navbar() {
   const { openCart } = useCartUIStore();
   const { items } = useCartStore();
   const { user, loading } = useAuthStore();
+  const wishlistItems = useWishlistStore((state) => state.items);
 
   const cartCount = items.reduce((acc, item) => acc + item.quantity, 0);
 
@@ -99,9 +101,18 @@ export default function Navbar() {
           <button className="transition-colors duration-300 hover:text-[#D4AF37]">
             <Search size={18} />
           </button>
-          <button className="transition-colors duration-300 hover:text-[#D4AF37]">
-            <Heart size={18} />
-          </button>
+<Link
+  href="/wishlist"
+  className="relative transition-colors duration-300 hover:text-[#D4AF37]"
+>
+  <Heart size={18} />
+
+  {wishlistItems.length > 0 && (
+    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] px-1 rounded-full">
+      {wishlistItems.length}
+    </span>
+  )}
+</Link>
           <button onClick={() => {
 
             if (loading) return;

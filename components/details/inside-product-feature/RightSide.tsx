@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { Heart, ChevronDown } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { useCartStore } from "@/store/user/cart/useCartStore";
+import { useWishlistStore } from "@/store/user/wishlist/useWishlistStore";
+
 
 type Props = {
   product: any;
@@ -23,6 +25,13 @@ const RightSide = ({ product }: Props) => {
   const [selectedSize, setSelectedSize] = useState<string | undefined>();
 
   const [customData, setCustomData] = useState<CustomDataItem[]>([]);
+
+  const { toggleWishlist, isInWishlist } = useWishlistStore();
+
+  const isWishlisted = isInWishlist(product._id);
+  const addToWishlist = useWishlistStore(
+    (state) => state.addToWishlist
+  );
 
   const handleCustomChange = (name: string, value: string | number) => {
     setCustomData((prev) => {
@@ -71,7 +80,7 @@ const RightSide = ({ product }: Props) => {
 
       if (firstAvailable) {
         setSelectedVariant(firstAvailable);
-            setSelectedSize(
+        setSelectedSize(
           String(Object.values(firstAvailable.attributes)[0]).toUpperCase()
         );
       }
@@ -180,17 +189,16 @@ const RightSide = ({ product }: Props) => {
                       setSelectedVariant(variant);
                     }}
                     className={`px-3 py-1 border rounded transition
-                      ${
-                        selectedSize === size
-                          ? "bg-black text-white"
-                          : "bg-white hover:bg-black hover:text-white"
+                      ${selectedSize === size
+                        ? "bg-black text-white"
+                        : "bg-white hover:bg-black hover:text-white"
                       }
                       ${isOutOfStock ? "opacity-40 cursor-not-allowed" : ""}
                     `}
                   >
                     {size}
                   </button>
-                  
+
                 );
               })}
             </div>
@@ -208,11 +216,26 @@ const RightSide = ({ product }: Props) => {
         >
           Add To Cart
         </button>
-
-        <button className="border py-2 flex items-center justify-center gap-2">
-          <Heart size={16} />
-          Wishlist
+        <button
+          onClick={() =>
+            toggleWishlist({
+              _id: product._id,
+              name: product.name,
+              price: product.price,
+              image: product.images?.[0]?.url,
+            })
+          }
+          className={`border py-2 flex items-center justify-center gap-2 transition
+    ${isWishlisted ? "bg-black text-white" : "bg-white"}
+  `}
+        >
+          <Heart
+            size={16}
+            fill={isWishlisted ? "currentColor" : "none"}
+          />
+          {isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
         </button>
+
 
         {/* CUSTOM BUTTON */}
         {product?.customizable?.isCustomizable && (
@@ -274,9 +297,8 @@ const RightSide = ({ product }: Props) => {
               className="flex items-center gap-2"
             >
               <ChevronDown
-                className={`${
-                  activeIndex === index ? "rotate-180" : ""
-                }`}
+                className={`${activeIndex === index ? "rotate-180" : ""
+                  }`}
               />
               {item.title}
             </button>
