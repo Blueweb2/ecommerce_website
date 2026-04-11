@@ -3,21 +3,27 @@
 import dynamic from "next/dynamic";
 import { useState, useEffect } from "react";
 
-const Carousel = dynamic(() => import("./inside-product-feature/Carousel"));
-const RightSide = dynamic<{ product: any }>(() => import("./inside-product-feature/RightSide"));
+const Carousel = dynamic(() => import("./inside-product-feature/Carousel"),{
+  loading: () => <p className="text-center py-10">Loading...</p>,
+});
+const RightSide = dynamic<{ product: any }>(() => import("./inside-product-feature/RightSide"),{
+  loading: () => <p className="text-center py-10">Loading...</p>,
+});
 
 type ProductFeatureProps = {
   onToggleLayout: (visible: boolean) => void;
-  product: any; // ✅ add product prop
+  product: any;
 };
 
 const ProductFeature = ({ onToggleLayout, product }: ProductFeatureProps) => {
+
   const [leftPos, setLeftPos] = useState({ x: 0, y: 0 });
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [zooming, setZooming] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [carouselImageIndex, setCarouselImageIndex] = useState<number>(0)
 
-  // ✅ detect screen size
+  // detect screen size
   useEffect(() => {
     const checkScreen = () => {
       setIsMobile(window.innerWidth < 1024);
@@ -29,7 +35,7 @@ const ProductFeature = ({ onToggleLayout, product }: ProductFeatureProps) => {
     return () => window.removeEventListener("resize", checkScreen);
   }, []);
 
-  // ✅ custom cursor tracking
+  // custom cursor tracking
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       setMousePos({
@@ -42,24 +48,46 @@ const ProductFeature = ({ onToggleLayout, product }: ProductFeatureProps) => {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
-  // ✅ notify parent about zoom state
+  // notify parent about zoom state
   useEffect(() => {
     onToggleLayout(!zooming);
   }, [zooming, onToggleLayout]);
-  console.log(product,"products");
   
 
-  // ✅ fallback image (important)
+  // fallback image (important)
   const mainImage =
     product?.images?.[0]?.url || "/placeholder.png";
 
-  return !isMobile && !zooming ? (
-    <section className="py-10 mt-4 lg:mt-10">
-      <div className="lg:grid grid-cols-3 gap-4">
+
+  // display only product images
+  if (zooming) {
+    return (
+      <Carousel
+        images={product?.images || []}
+        setZooming={setZooming}
+        firstImage={carouselImageIndex}
+      />
+    );
+  };
+
+  // only in mobile divice
+  if (isMobile) {
+    return (
+      <>
+        <Carousel images={product?.images || []} setZooming={setZooming} />
+        <RightSide product={product} />
+      </>
+    );
+  };
+
+  // only in large large divice 
+  return (
+    <section className="py-10">
+      <div className="lg:grid grid-cols-3">
 
         {/* ================= LEFT IMAGE ================= */}
         <div
-          className="sticky top-20 h-[600px] group cursor-none hidden lg:block"
+          className="sticky top-14 h-[600px] group cursor-none hidden lg:block"
           onMouseMove={(e) => {
             const rect = e.currentTarget.getBoundingClientRect();
             setLeftPos({
@@ -67,7 +95,10 @@ const ProductFeature = ({ onToggleLayout, product }: ProductFeatureProps) => {
               y: e.clientY - rect.top,
             });
           }}
-          onClick={() => setZooming(true)}
+          onClick={() => {
+            setCarouselImageIndex(() => 0)
+            setZooming(true)
+          }}
         >
           <img
             src={mainImage}
@@ -89,16 +120,19 @@ const ProductFeature = ({ onToggleLayout, product }: ProductFeatureProps) => {
 
         {/* ================= MIDDLE IMAGES ================= */}
         <div
-          className="group cursor-none relative hidden lg:block overflow-y-auto h-[600px]"
-          onClick={() => setZooming(true)}
+          className="group cursor-none relative hidden lg:block"
         >
           {product?.images?.length > 0 ? (
-            product.images.map((img: any, index: number) => (
+            product.images.slice(1).map((img: any, index: number) => (
               <img
                 key={index}
                 src={img.url}
                 alt={img.altText || product.name}
                 className="h-[600px] w-full object-cover mb-2"
+                onClick={() => {
+                  setCarouselImageIndex(() => index + 1 )
+                  setZooming(true)
+                }}
               />
             ))
           ) : (
@@ -125,16 +159,6 @@ const ProductFeature = ({ onToggleLayout, product }: ProductFeatureProps) => {
         <RightSide product={product} />
       </div>
     </section>
-  ) : (
-    <>
-      {/* ✅ pass images to carousel */}
-      <Carousel
-        images={product?.images || []}
-        setZooming={setZooming}
-      />
-
-      {isMobile && <RightSide product={product} />}
-    </>
   );
 };
 
