@@ -9,7 +9,7 @@ import { setAccessToken } from "@/lib/auth";
 
 export default function AdminLoginPage() {
   const router = useRouter();
-  const { setUser, user, hydrate } = useAuthStore();
+  const { setUser, user } = useAuthStore();
 
   const [form, setForm] = useState({
     email: "",

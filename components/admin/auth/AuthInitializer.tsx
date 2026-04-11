@@ -1,5 +1,7 @@
 "use client";
 
+
+// this is not using anymore, moved to Providers.tsx
 import { useEffect } from "react";
 import api from "@/lib/api/axios";
 import { setAccessToken } from "@/lib/auth";

@@ -7,6 +7,7 @@ import { Search, Heart, User, ShoppingCart } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCartUIStore } from "@/store/ui/useCartUIStore";
 import { useCartStore } from "@/store/user/cart/useCartStore";
+import { useAuthStore } from "@/store/auth/useAuthStore";
 
 const playfair = Playfair_Display({
   subsets: ['latin'],
@@ -19,6 +20,7 @@ export default function Navbar() {
   const router = useRouter();
   const { openCart } = useCartUIStore();
   const { items } = useCartStore();
+  const { user, loading } = useAuthStore();
 
   const cartCount = items.reduce((acc, item) => acc + item.quantity, 0);
 
@@ -100,7 +102,10 @@ export default function Navbar() {
           <button className="transition-colors duration-300 hover:text-[#D4AF37]">
             <Heart size={18} />
           </button>
-          <button onClick={() => router.push("/login")} className="transition-colors duration-300 hover:text-[#D4AF37]">
+          <button onClick={() => {
+  if (loading) return; // prevent flicker issues
+  router.push(user ? "/profile" : "/login");
+}} className="transition-colors duration-300 hover:text-[#D4AF37]">
             <User size={18} />
           </button>
           <button onClick={openCart} className="transition-colors duration-300 hover:text-[#D4AF37]">
