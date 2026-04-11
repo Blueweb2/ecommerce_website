@@ -5,7 +5,7 @@ export default function Footer() {
   return (
     <footer>
       <div className="bg-[#e7e7e7] py-12 text-sm text-gray-700">
-        <div className="max-w-[2000px] mx-auto px-4 md:px-8 grid grid-cols-2 md:grid-cols-4 gap-10">
+        <div className="max-w-[2000px] mx-auto px-4 md:px-20 grid grid-cols-2 md:grid-cols-4 gap-10">
 
           {/* SHOP */}
           <div>

@@ -56,7 +56,7 @@ export default function HeroSection() {
 
   return (
     <section className="w-full bg-[#f5f5f5] py-8 mt-8 ">
-      <div className="max-w-[2000px] mx-auto px-4 md:px-8 grid grid-cols-1 lg:grid-cols-2 gap-3 h-[calc(100vh-100px)]">
+      <div className="max-w-[2000px] mx-auto px-4 md:px-20 grid grid-cols-1 lg:grid-cols-2 gap-3 h-[calc(100vh-100px)]">
 
         {/* LEFT BIG CARD */}
         <Link

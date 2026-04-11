@@ -149,7 +149,7 @@ export default function NewInSection() {
 
   return (
     <section className="w-full bg-[#f5f5f5] py-10 font-sans">
-      <div className="max-w-[2000px] mx-auto flex flex-col md:flex-row gap-6 md:gap-0 items-stretch px-4 md:px-8">
+      <div className="max-w-[2000px] mx-auto flex flex-col md:flex-row gap-6 md:gap-0 items-stretch px-4 md:px-20">
 
         {/* Left Info Panel */}
         <div className="md:w-96 flex-shrink-0 flex flex-col justify-center pr-3">

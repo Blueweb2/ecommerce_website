@@ -61,7 +61,7 @@ export default function ShopSection() {
 
   return (
     <section className="bg-[#f5f5f5] pt-6 md:pt-0 md:py-12">
-      <div className="max-w-[2000px] mx-auto px-4 md:px-8">
+      <div className="max-w-[2000px] mx-auto px-4 md:px-20">
 
         {/* TITLE */}
         <h2 className={`${lora.className} text-center text-[40px] font-normal tracking-tight text-neutral-900 mb-6 border-t-2 border-gray-300 pt-8`}>
