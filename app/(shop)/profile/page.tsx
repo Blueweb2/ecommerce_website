@@ -1,75 +1,39 @@
 "use client";
 
-import { useAuthStore } from "@/store/auth/useAuthStore";
+import { useState } from "react";
 import { useRequireAuth } from "@/hooks/useRequireAuth";
-import { useRouter } from "next/navigation";
 import AddressSection from "@/components/profile/AddressSection";
 
 export default function ProfilePage() {
-  useRequireAuth(); // 🔐 protect route
 
-  const { user, logout, loading } = useAuthStore();
-  const router = useRouter();
-
-  const handleLogout = async () => {
-    await logout();
-    router.push("/login");
-  };
-
-  if (loading || !user) {
-    return (
-      <div className="flex items-center justify-center h-[60vh] text-gray-500">
-        Loading profile...
-      </div>
-    );
-  }
+  useRequireAuth();
+  const [state, setState] = useState('My Orders');
 
   return (
-    <div className="min-h-screen bg-gray-50 px-4 md:px-10 py-10">
-      <div className="max-w-3xl mx-auto bg-white shadow-md rounded-2xl p-6 md:p-10">
-        
-        {/* HEADER */}
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-semibold text-gray-800">
-            My Profile
-          </h1>
+    <section className="bg-gray-50 px-4 md:px-20 mt-16">
 
-          <button
-            onClick={handleLogout}
-            className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm transition"
-          >
-            Logout
-          </button>
+      {/* HEADER */}
+      <div className="flex flex-col items-center justify-center border-b py-5 border-gray-300">
+        <h5>My Account</h5>
+        <h2>Account Details</h2>
+      </div>
+
+      {/* USER DETAILS */}
+      <div className="max-w-[2000] mx-auto flex my-5">
+
+        <div className="flex flex-col gap-7 w-[40%]">
+          <h3 onClick={() => setState('Account Details')}>Account Details</h3>
+          <h3 onClick={() => setState('My Orders')}>My Orders</h3>
+          <h3 onClick={() => setState('Wish List')}>Wish List</h3>
+          <h3 onClick={() => setState('Address Book')}>Address Book</h3>
         </div>
 
-        {/* USER INFO */}
-        <div className="space-y-4">
-          
-          <div>
-            <p className="text-sm text-gray-500">Name</p>
-            <p className="text-lg font-medium text-gray-800">
-              {user.name}
-            </p>
-          </div>
-
-          <div>
-            <p className="text-sm text-gray-500">Email</p>
-            <p className="text-lg font-medium text-gray-800">
-              {user.email}
-            </p>
-          </div>
-
-          <div>
-            <p className="text-sm text-gray-500">Role</p>
-            <p className="text-lg font-medium text-gray-800 capitalize">
-              {user.role}
-            </p>
-          </div>
-
+        <div className="w-full">
+          {state === 'Account Details' && <AddressSection />}
         </div>
-        <AddressSection />
 
       </div>
-    </div>
+
+    </section>
   );
-}
+};
