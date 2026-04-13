@@ -67,10 +67,9 @@ export default function AccountDetails() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto bg-white shadow-md rounded-2xl p-6 md:p-10">
-          
+    <div className="shadow-md rounded-2xl p-6 md:p-10 w-full">
         
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between  mb-6">
         <h1 className="text-2xl font-semibold text-gray-800">
           My Profile
         </h1>
@@ -108,8 +107,6 @@ export default function AccountDetails() {
         </div>
 
       </div>
-      
-
 
       <div className="mt-10">
         <h2 className="text-xl font-semibold mb-4">My Addresses</h2>

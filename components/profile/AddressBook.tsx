@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 
-const MyOrders = () => {
+const AddressBook = () => {
   return (
     <div className="w-full flex items-center justify-center mt-6 md:mt-0">
       <div className="text-center max-w-md px-6">
@@ -16,20 +16,20 @@ const MyOrders = () => {
 
         {/* TITLE */}
         <h2 className="text-xl md:text-2xl font-medium mb-3">
-          You don’t currently have any orders
+         You don’t have any saved addresses
         </h2>
 
         {/* DESCRIPTION */}
         <p className="text-gray-600 text-sm md:text-base mb-6 leading-relaxed">
-          Once you have checked out, you can view and track your order here
+         Add an address to check out more quickly
         </p>
 
         {/* CTA */}
         <Link
-          href="/shop"
+          href="/"
           className="text-sm underline underline-offset-4 hover:text-gray-800 transition"
         >
-          Shop What’s New
+          Add an address
         </Link>
 
       </div>
@@ -37,4 +37,4 @@ const MyOrders = () => {
   );
 };
 
-export default MyOrders;
+export default AddressBook;
