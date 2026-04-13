@@ -44,19 +44,19 @@ export default function ProfilePage() {
 
         <div className="md:w-[40%] w-full flex md:flex-col md:items-start md:justify-start gap-7">
           <h3
-            className={`pl-2 border-l-2 hover:border-black cursor-pointer hover:text-black ${state === 'Account-Details' ? "border-black" : "border-transparent text-gray-500"}`} 
+            className={`pl-2 border-b md:border-b-0 md:border-l-2 hover:border-black cursor-pointer hover:text-black ${state === 'Account-Details' ? "border-black" : "border-transparent text-gray-500"}`} 
             onClick={() => setState('Account-Details')}
           >Account Details</h3>
           <h3 
-            className={`pl-2 border-l-2 hover:border-black cursor-pointer hover:text-black  ${state === 'My-Orders' ? "border-black" : "border-transparent text-gray-500"}`} 
+            className={`pl-2 border-b md:border-b-0 md:border-l-2 hover:border-black cursor-pointer hover:text-black  ${state === 'My-Orders' ? "border-black" : "border-transparent text-gray-500"}`} 
             onClick={() => setState('My-Orders')}
           >My Orders</h3>
           <h3
-            className="pl-2 border-l-2 border-transparent cursor-pointer hover:border-black text-gray-500 hover:text-black " 
+            className="pl-2 border-b md:border-b-0 md:border-l-2 border-transparent cursor-pointer hover:border-black text-gray-500 hover:text-black " 
             onClick={() => router.push('/wishlist')}
           >Wish List</h3>
           <h3
-            className={`pl-2 border-l-2 cursor-pointer hover:text-black  
+            className={`pl-2 border-b md:border-b-0 md:border-l-2 cursor-pointer hover:text-black  
               ${state === 'Address-Book' ? "border-black text-black" : "border-transparent text-gray-500"} hover:border-black`} 
             onClick={() => setState('Address-Book')}
           >Address Book</h3>
