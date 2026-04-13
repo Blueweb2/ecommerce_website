@@ -104,15 +104,27 @@ export default function CartDrawer() {
             <span className="font-semibold">₹{totalPrice}</span>
           </div>
 
-          <Link
-            href="/checkout"
-            onClick={closeCart}
-            className="block text-center w-full bg-black text-white py-2 rounded border 
-                      transition-all duration-300 
-                      hover:bg-white hover:text-black hover:border-black"
-          >
-            Continue to Checkout →
-          </Link>
+       <div className="space-y-2">
+  {/* Go to Cart Page */}
+  <Link
+    href="/cart"
+    onClick={closeCart}
+    className="block text-center w-full border py-2 rounded 
+              hover:bg-gray-100 transition"
+  >
+    View Cart →
+  </Link>
+
+  {/* Checkout */}
+  <Link
+    href="/checkout"
+    onClick={closeCart}
+    className="block text-center w-full bg-black text-white py-2 rounded 
+              hover:bg-gray-800 transition"
+  >
+    Checkout →
+  </Link>
+</div>
         </div>
       </div>
     </>

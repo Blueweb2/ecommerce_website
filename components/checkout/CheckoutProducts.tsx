@@ -7,6 +7,7 @@ import CheckoutAddress from "./CheckoutAddress";
 export default function CheckoutProducts() {
 
   const [selected, setSelected] = useState("standard");
+  const [address, setAddress] = useState<any>(null);
 
   return (
     <section className="bg-[#f4f7e3] pt-5 mb-44">
@@ -99,7 +100,7 @@ export default function CheckoutProducts() {
               <p>Text me with news and offers</p>
             </div> */}
 
-            <CheckoutAddress />
+            <CheckoutAddress onSelect={setAddress}  />
 
           {/* </div> */}
 

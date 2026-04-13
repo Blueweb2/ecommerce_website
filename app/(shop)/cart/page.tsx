@@ -2,18 +2,31 @@
 
 import Link from "next/link";
 import { useCartStore } from "@/store/user/cart/useCartStore";
+import { ShoppingCart } from "lucide-react";
 
 export default function CartPage() {
   const { items, totalPrice, removeItem, updateQuantity } = useCartStore();
 
   if (items.length === 0) {
     return (
-      <div className="p-10 text-center space-y-4">
-        <h2 className="text-2xl font-semibold">Your Cart is Empty</h2>
-        <Link href="/" className="text-blue-600 underline">
-          Continue Shopping
-        </Link>
-      </div>
+      <div className="flex flex-col items-center justify-center py-20 space-y-4">
+  <ShoppingCart className="w-12 h-12 text-gray-400" />
+  
+  <h2 className="text-xl font-semibold">
+    Your cart is empty
+  </h2>
+
+  <p className="text-gray-500 text-sm">
+    Looks like you haven’t added anything yet
+  </p>
+
+  <Link
+    href="/"
+    className="mt-2 px-6 py-2 border rounded hover:bg-black hover:text-white transition"
+  >
+    Continue Shopping
+  </Link>
+</div>
     );
   }
 
