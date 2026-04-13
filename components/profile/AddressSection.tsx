@@ -6,7 +6,7 @@ import { useAddressStore } from "@/store/user/address/useAddressStore";
 import { useAuthStore } from "@/store/auth/useAuthStore";
 import type { Address } from "@/types/address";
 
-export default function AccountDetails() {
+export default function AddressSection() {
 
   const [editingId, setEditingId] = useState<string | null>(null);
   const { user, logout, loading: authLoading } = useAuthStore();
@@ -127,6 +127,7 @@ return (
     <div className="mt-10">
       <h2 className="text-xl font-semibold mb-4">My Addresses</h2>
 
+      {/* 🔸 ADDRESS LIST */}
       <div className="space-y-4">
         {loading && addresses.length === 0 ? (
           <div className="text-center py-6 text-gray-500">
@@ -246,4 +247,6 @@ return (
     </div>
   </div>
 );
+
+
 }

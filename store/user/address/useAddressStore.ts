@@ -7,7 +7,7 @@ interface AddressState {
   loading: boolean;
 
   fetchAddresses: () => Promise<void>;
-  addAddress: (data: Address) => Promise<void>;
+  addAddress: (data: Address) => Promise<Address>;
   updateAddress: (id: string, data: Address) => Promise<void>;
   deleteAddress: (id: string) => Promise<void>;
   setDefault: (id: string) => Promise<void>;
@@ -28,19 +28,24 @@ export const useAddressStore = create<AddressState>((set) => ({
     }
   },
 
-  addAddress: async (data) => {
-    try {
-      set({ loading: true });
-      const res = await addressAPI.create(data);
-      set((state) => ({
-        addresses: [...state.addresses, res.data.data],
-        loading: false,
-      }));
-    } catch (error) {
-      console.error("Failed to add address:", error);
-      set({ loading: false });
-    }
-  },
+addAddress: async (data) => {
+  try {
+    set({ loading: true });
+    const res = await addressAPI.create(data);
+
+    const newAddress = res.data.data;
+
+    set((state) => ({
+      addresses: [...state.addresses, newAddress],
+      loading: false,
+    }));
+
+    return newAddress; // ✅ IMPORTANT
+  } catch (error) {
+    set({ loading: false });
+    throw error;
+  }
+},
 
   updateAddress: async (id, data) => {
     try {

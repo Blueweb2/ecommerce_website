@@ -8,9 +8,9 @@ const ProductLayout = ({
 }) => {
   return (
     <>
-      <Navbar/>
+      {/* <Navbar/> */}
       {children}
-      <Footer/>
+      {/* <Footer/> */}
     </>
   )
 }

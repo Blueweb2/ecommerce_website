@@ -73,7 +73,7 @@ export default function Page() {
   return (
     <>
       {/* Navbar hidden when zooming  */}
-      {isLayoutVisible && <Navbar />}
+      {/* {isLayoutVisible && <Navbar />} */}
 
       {/* Product Section */}
       <ProductFeature
@@ -85,7 +85,7 @@ export default function Page() {
       {isLayoutVisible && (
         <>
           <RelatedProducts product={product} />
-          <Footer />
+          {/* <Footer /> */}
         </>
       )}
     </>
