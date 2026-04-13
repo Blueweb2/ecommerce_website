@@ -6,7 +6,7 @@ import { useAddressStore } from "@/store/user/address/useAddressStore";
 import { useAuthStore } from "@/store/auth/useAuthStore";
 import type { Address } from "@/types/address";
 
-export default function AddressSection() {
+export default function AccountDetails() {
 
   const [editingId, setEditingId] = useState<string | null>(null);
   const { user, logout, loading: authLoading } = useAuthStore();
@@ -245,8 +245,8 @@ return (
         </div>
       </div>
     </div>
-  </div>
+    </div>
+
 );
-
-
 }
+
