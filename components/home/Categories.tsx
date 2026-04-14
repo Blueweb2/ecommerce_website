@@ -120,7 +120,7 @@ const Categories = () => {
             categories.map((cat) => (
               <Link
                 key={cat._id}
-                href='/product/3'
+                href={`/category/${cat.slug}`}
               >
                 <div className="relative w-[200px] h-[130px] md:min-w-[230px] md:min-h-[250px] flex-shrink-0 bg-white overflow-hidden hover:scale-105 transition duration-300">
 
@@ -148,7 +148,7 @@ const Categories = () => {
             <div className="flex flex-col h-full" key={item.id}>
               <div className="flex items-center justify-center grayscale hover:grayscale-0 transition duration-300">
                 <Link
-                  href='/product/3'
+                  href={`/category/${item.link}`}
                   className="w-full"
                 >
                   <Image
@@ -173,7 +173,7 @@ const Categories = () => {
                 </div>
 
                 <Link
-                  href='/product/3'
+                  href={`/category/${item.link}`}
                   className="mt-4 text-[11px] font-medium uppercase border-b border-black w-fit hover:opacity-60 transition"
                 >
                   Explore Designs

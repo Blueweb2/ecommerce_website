@@ -18,7 +18,7 @@ export default function EmptyWishlist() {
       </p>
 
       <Link
-        href="/shop"
+        href="/"
         className="text-sm border-b border-black hover:text-gray-500 transition"
       >
         Shop What's New

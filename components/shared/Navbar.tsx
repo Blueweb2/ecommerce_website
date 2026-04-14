@@ -56,41 +56,41 @@ export default function Navbar() {
           </Link>
 
           <Link
-            href="/shop"
+            href="/clothing"
             aria-label="Browse Shop products"
-            className={linkClass("/shop")}
+            className={linkClass("/clothing")}
           >
             Clothing
           </Link>
 
           <Link
-            href="/about"
-            aria-label="Learn more About Us"
-            className={linkClass("/about")}
+            href="/jewelry"
+            aria-label="Browse Jewelry products"
+            className={linkClass("/jewelry")}
           >
             Jewelry
           </Link>
 
           <Link
-            href="/contact"
-            aria-label="Contact GOLDLAND"
-            className={linkClass("/contact")}
+            href="/shoes"
+            aria-label="Browse Shoes products"
+            className={linkClass("/shoes")}
           >
             Shoes
           </Link>
 
           <Link
-            href="/about"
-            aria-label="Learn more About Us"
-            className={linkClass("/about")}
+            href="/accessories"
+            aria-label="Browse Accessories products"
+            className={linkClass("/accessories")}
           >
             Accessories
           </Link>
 
           <Link
-            href="/about"
-            aria-label="Learn more About Us"
-            className={linkClass("/about")}
+            href="/sale"
+            aria-label="View Sale items"
+            className={linkClass("/sale")}
           >
             Sale
           </Link>
