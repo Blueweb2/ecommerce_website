@@ -26,7 +26,7 @@ const MyOrders = () => {
 
         {/* CTA */}
         <Link
-          href="/shop"
+          href="/"
           className="text-sm underline underline-offset-4 hover:text-gray-800 transition"
         >
           Shop What’s New
