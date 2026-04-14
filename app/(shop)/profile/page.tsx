@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { useRequireAuth } from "@/hooks/useRequireAuth";
 import AccountDetails from "@/components/profile/AccountDetails";
 import MyOrders from "@/components/profile/MyOrders";
@@ -14,13 +14,7 @@ export default function ProfilePage() {
   const [state, setState] = useState<TabType>('Account-Details');
   const router = useRouter();
 
-  // const components: Record<TabType, JSX.Element> = {
-  //   'Account-Details': <AccountDetails />,
-  //   'My-Orders': <p>my orders</p>,
-  //   'Address-Book': <p>address book</p>,
-  // };
-
-  const components: Record<TabType, JSX.Element> = {
+  const components: Record<TabType, { page:React.ReactNode, heading:string }> = {
     'Account-Details': {
       page: <AccountDetails />,
       heading: 'Account Details'
