@@ -56,33 +56,33 @@ export default function Navbar() {
           </Link>
 
           <Link
-            href="/clothing"
+            href="/category/clothing"
             aria-label="Browse Shop products"
-            className={linkClass("/clothing")}
+            className={linkClass("/category/clothing")}
           >
             Clothing
           </Link>
 
           <Link
-            href="/jewelry"
+            href="/category/jewelry"
             aria-label="Browse Jewelry products"
-            className={linkClass("/jewelry")}
+            className={linkClass("/category/jewelry")}
           >
             Jewelry
           </Link>
 
           <Link
-            href="/shoes"
+            href="/category/shoes"
             aria-label="Browse Shoes products"
-            className={linkClass("/shoes")}
+            className={linkClass("/category/shoes")}
           >
             Shoes
           </Link>
 
           <Link
-            href="/accessories"
+            href="/category/accessories"
             aria-label="Browse Accessories products"
-            className={linkClass("/accessories")}
+            className={linkClass("/category/accessories")}
           >
             Accessories
           </Link>

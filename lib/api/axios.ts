@@ -1,14 +1,20 @@
 import axios from "axios";
-import { getAccessToken, setAccessToken, clearAccessToken } from "@/lib/auth";
+import {
+  clearAccessToken,
+  getAccessToken,
+  setAccessToken,
+} from "@/lib/auth";
+
+type FailedQueueItem = {
+  resolve: (token: string | null) => void;
+  reject: (error: unknown) => void;
+};
 
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
   withCredentials: true,
 });
 
-console.log("API URL:", process.env.NEXT_PUBLIC_API_URL);
-
-// ✅ Attach access token
 api.interceptors.request.use((config) => {
   const token = getAccessToken();
 
@@ -19,25 +25,27 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// 🔥 AUTO REFRESH LOGIC
 let isRefreshing = false;
-let failedQueue: any[] = [];
+let failedQueue: FailedQueueItem[] = [];
 
-const processQueue = (error: any, token: string | null = null) => {
-  failedQueue.forEach((p) => {
-    if (error) p.reject(error);
-    else p.resolve(token);
+const processQueue = (error: unknown, token: string | null = null) => {
+  failedQueue.forEach((request) => {
+    if (error) {
+      request.reject(error);
+      return;
+    }
+
+    request.resolve(token);
   });
+
   failedQueue = [];
 };
 
 api.interceptors.response.use(
   (response) => response,
-
   async (error) => {
     const originalRequest = error.config;
 
-    // 🔴 If access token expired
     if (
       error.response?.status === 401 &&
       !originalRequest._retry &&
@@ -45,10 +53,8 @@ api.interceptors.response.use(
       !originalRequest.url?.includes("/auth/login") &&
       !originalRequest.url?.includes("/auth/register")
     ) {
-      
       if (isRefreshing) {
-        // queue requests while refreshing
-        return new Promise((resolve, reject) => {
+        return new Promise<string | null>((resolve, reject) => {
           failedQueue.push({ resolve, reject });
         }).then((token) => {
           originalRequest.headers.Authorization = `Bearer ${token}`;
@@ -60,31 +66,27 @@ api.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        // 🔥 Call refresh token API
-        const res = await api.post("/auth/refresh-token");
+        const response = await api.post("/auth/refresh-token");
+        const newToken = response.data.data.accessToken;
 
-        const newToken = res.data.data.accessToken;
-
-        setAccessToken(newToken); // store new token
-
+        setAccessToken(newToken);
         processQueue(null, newToken);
 
         originalRequest.headers.Authorization = `Bearer ${newToken}`;
 
-        return api(originalRequest); // retry original request
-
-      } catch (err) {
-        processQueue(err, null);
-
+        return api(originalRequest);
+      } catch (refreshError) {
+        processQueue(refreshError, null);
         clearAccessToken();
 
-        // only redirect if we're not already on a login page
-        if (!window.location.pathname.includes("/login")) {
+        if (
+          typeof window !== "undefined" &&
+          !window.location.pathname.includes("/login")
+        ) {
           window.location.href = "/login";
         }
 
-        return Promise.reject(err);
-
+        return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;
       }

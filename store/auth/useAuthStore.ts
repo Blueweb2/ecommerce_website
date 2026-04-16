@@ -61,6 +61,8 @@
 // removed hydrate, now we do refresh token + fetch user in useAuthInit hook, which is more robust (handles expired tokens)
 import { create } from "zustand";
 import api from "@/lib/api/axios";
+import { clearAccessToken } from "@/lib/auth";
+import { useAddressStore } from "@/store/user/address/useAddressStore";
 
 interface User {
   id: string;
@@ -72,6 +74,7 @@ interface User {
 interface AuthState {
   user: User | null;
   loading: boolean;
+  isAuthenticated: boolean;
 
   setUser: (user: User | null) => void;
   setLoading: (loading: boolean) => void;
@@ -81,8 +84,13 @@ interface AuthState {
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   loading: true,
+  isAuthenticated: false,
 
-  setUser: (user) => set({ user }),
+  setUser: (user) =>
+    set({
+      user,
+      isAuthenticated: Boolean(user),
+    }),
   setLoading: (loading) => set({ loading }),
 
   logout: async () => {
@@ -90,9 +98,13 @@ export const useAuthStore = create<AuthState>((set) => ({
       await api.post("/auth/logout");
     } catch {}
 
+    clearAccessToken();
+    useAddressStore.getState().resetAddresses();
+
     set({
       user: null,
       loading: false,
+      isAuthenticated: false,
     });
   },
 }));

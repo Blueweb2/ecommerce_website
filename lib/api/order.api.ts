@@ -12,13 +12,17 @@ export const orderAPI = {
       postalCode: string;
       country: string;
     };
-    paymentMethod: "card" | "paypal" | "stripe";
+    paymentMethod: "cod" | "razorpay";
     notes?: string;
   }) => api.post("/orders", data),
 
-  // ✅ Get my orders
-  getMyOrders: () => api.get("/orders/my"),
+  // ✅ Get my orders (MATCHES BACKEND)
+  getMyOrders: (page: number = 1, limit: number = 10) =>
+    api.get(`/orders/my-orders?page=${page}&limit=${limit}`),
 
   // ✅ Get single order
   getOrderById: (id: string) => api.get(`/orders/${id}`),
+
+  // ✅ Cancel order
+  cancelOrder: (id: string) => api.put(`/orders/${id}/cancel`),
 };

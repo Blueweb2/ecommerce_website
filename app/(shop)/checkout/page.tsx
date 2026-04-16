@@ -20,11 +20,12 @@
 //   )
 //   // router.replace("/login?redirect=/checkout");
 // }
-
 "use client";
 
 import { useState } from "react";
 import { useCartStore } from "@/store/user/cart/useCartStore";
+import { orderAPI } from "@/lib/api/order.api";
+import { useRouter } from "next/navigation";
 
 import AddressStep from "@/components/checkout/AddressStep";
 import DeliveryStep from "@/components/checkout/DeliveryStep";
@@ -37,11 +38,35 @@ export default function CheckoutPage() {
   const [deliveryMethod, setDeliveryMethod] = useState("standard");
 
   const { items, totalPrice } = useCartStore();
+  const router = useRouter();
+
+  /* 🔥 MAIN FUNCTION */
+  const handlePlaceOrder = async (method: "cod" | "razorpay") => {
+    try {
+      const orderData = {
+        shippingAddress: selectedAddress,
+        paymentMethod: method,
+        notes: "",
+      };
+
+      // ✅ create order
+      await orderAPI.createOrder(orderData);
+
+      // 🔥 clear cart (VERY IMPORTANT)
+      await useCartStore.getState().clearCartAsync();
+
+      // ✅ move to success step
+      setStep(4);
+
+    } catch (err) {
+      console.error("Order failed", err);
+    }
+  };
 
   return (
     <div className="max-w-5xl mx-auto p-6">
 
-      {/* Stepper Header */}
+      {/* Stepper */}
       <div className="flex justify-between mb-8">
         {["Address", "Delivery", "Payment", "Complete"].map((label, i) => (
           <div key={label} className="flex-1 text-center">
@@ -56,7 +81,6 @@ export default function CheckoutPage() {
         ))}
       </div>
 
-      {/* Step Content */}
       <div className="border p-6 rounded-lg">
 
         {step === 1 && (
@@ -79,8 +103,9 @@ export default function CheckoutPage() {
           <PaymentStep
             items={items}
             total={totalPrice}
+            deliveryMethod={deliveryMethod}
             onBack={() => setStep(2)}
-            onPlaceOrder={() => setStep(4)}
+            onPlaceOrder={handlePlaceOrder} // 🔥 FIXED
           />
         )}
 

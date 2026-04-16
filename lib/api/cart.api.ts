@@ -1,32 +1,29 @@
-// lib/api/cart.api.ts
-
 import api from "@/lib/api/axios";
 
+type SelectedOption = {
+  fieldName: string;
+  value: string;
+};
+
+type CartItemPayload = {
+  productId: string;
+  quantity: number;
+  variantId?: string;
+  selectedOptions?: SelectedOption[];
+};
+
 export const cartAPI = {
-  // ✅ Get cart
   getCart: () => api.get("/cart"),
 
-  // ✅ Add to cart
-  addToCart: (data: {
-    productId: string;
-    quantity: number;
-    variant?: Record<string, string> | null;
-    customData?: {
-      fieldName: string;
-      value: string | number;
-    }[];
-  }) =>
-    api.post("/cart", data),
+  addToCart: (data: CartItemPayload) => api.post("/cart", data),
 
-  // ✅ Update quantity
   updateQuantity: (itemId: string, quantity: number) =>
-    api.put(`/cart/${itemId}`, { quantity }),
+    api.patch(`/cart/item/${itemId}`, { quantity }),
 
-  // ✅ Remove item
-  removeItem: (itemId: string) =>
-    api.delete(`/cart/${itemId}`),
+  removeItem: (itemId: string) => api.delete(`/cart/item/${itemId}`),
 
-  // ✅ Clear cart
-  clearCart: () =>
-    api.delete("/cart"),
+  mergeCart: (data: { items: CartItemPayload[] }) =>
+    api.post("/cart/merge", data),
+
+  clearCart: () => api.delete("/cart"),
 };

@@ -8,6 +8,7 @@ const ShopSection = dynamic(() => import("@/components/home/ShopSection"));
 const TopStoriesSection = dynamic(() => import("@/components/home/TopStories"));
 const ExclusiveAccess = dynamic(() => import("@/components/home/ExclusiveAccess"));
 const Footer = dynamic(() => import("@/components/shared/Footer"));
+const CartDrawer = dynamic(() => import("@/components/cart/CartDrawer"));
 
 const page = () => {
   return (
@@ -20,6 +21,7 @@ const page = () => {
       <TopStoriesSection />
       <ExclusiveAccess />
       <Footer />
+      <CartDrawer />
     </>
   );
 };

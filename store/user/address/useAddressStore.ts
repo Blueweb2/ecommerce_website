@@ -11,13 +11,18 @@ interface AddressState {
   updateAddress: (id: string, data: Address) => Promise<void>;
   deleteAddress: (id: string) => Promise<void>;
   setDefault: (id: string) => Promise<void>;
+  resetAddresses: () => void;
 }
 
-export const useAddressStore = create<AddressState>((set) => ({
+export const useAddressStore = create<AddressState>((set, get) => ({
   addresses: [],
   loading: false,
 
   fetchAddresses: async () => {
+    if (get().loading) {
+      return;
+    }
+
     try {
       set({ loading: true });
       const res = await addressAPI.getAll();
@@ -95,5 +100,12 @@ addAddress: async (data) => {
       console.error("Failed to set default address:", error);
       set({ loading: false });
     }
+  },
+
+  resetAddresses: () => {
+    set({
+      addresses: [],
+      loading: false,
+    });
   },
 }));

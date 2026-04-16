@@ -1,94 +1,99 @@
 "use client";
 
+import axios from "axios";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import toast from "react-hot-toast";
 import { useAddressStore } from "@/store/user/address/useAddressStore";
+import { useAuthStore } from "@/store/auth/useAuthStore";
 import type { Address } from "@/types/address";
 
 interface CheckoutAddressProps {
   onSelect: (address: Address) => void;
 }
 
-export default function CheckoutAddress({ onSelect }: CheckoutAddressProps) {
+const emptyForm = {
+  fullName: "",
+  phone: "",
+  street: "",
+  city: "",
+  state: "",
+  postalCode: "",
+  country: "",
+};
+
+export default function CheckoutAddress({
+  onSelect,
+}: CheckoutAddressProps) {
   const { addresses, loading, fetchAddresses, addAddress } =
     useAddressStore();
+  const { user, loading: authLoading } = useAuthStore();
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
+  const [form, setForm] = useState(emptyForm);
 
-  const [form, setForm] = useState({
-    fullName: "",
-    phone: "",
-    street: "",
-    city: "",
-    state: "",
-    postalCode: "",
-    country: "",
-  });
+  const selectedAddress =
+    addresses.find((addr) => addr._id === selectedId) ||
+    addresses.find((addr) => addr.isDefault) ||
+    addresses[0] ||
+    null;
 
-  // ✅ fetch addresses
   useEffect(() => {
-    fetchAddresses();
-  }, [fetchAddresses]);
-
-  // ✅ select default / current
-  useEffect(() => {
-    if (!addresses.length) return;
-
-    const defaultAddr = addresses.find((a) => a.isDefault);
-
-    const selected =
-      addresses.find((a: Address) => a._id === selectedId) ||
-      defaultAddr ||
-      addresses[0];
-
-    if (selected?._id && selected._id !== selectedId) {
-      setSelectedId(selected._id);
+    if (authLoading || !user) {
+      return;
     }
 
-    if (selected) {
-      onSelect(selected);
-    }
-  }, [addresses, selectedId, onSelect]);
+    void fetchAddresses();
+  }, [authLoading, fetchAddresses, user]);
 
-  // ✅ save new address
+  useEffect(() => {
+    if (selectedAddress) {
+      onSelect(selectedAddress);
+    }
+  }, [onSelect, selectedAddress]);
+
   const handleSave = async () => {
-    const newAddress = await addAddress(form);
-
-    setShowForm(false);
-
-    if (newAddress?._id) {
-      setSelectedId(newAddress._id);
+    if (Object.values(form).some((value) => !value.trim())) {
+      toast.error("Please fill in all address fields");
+      return;
     }
 
-    setForm({
-      fullName: "",
-      phone: "",
-      street: "",
-      city: "",
-      state: "",
-      postalCode: "",
-      country: "",
-    });
+    try {
+      const newAddress = await addAddress(form);
+
+      setShowForm(false);
+      setForm(emptyForm);
+      toast.success("Address added");
+
+      if (newAddress?._id) {
+        setSelectedId(newAddress._id);
+      }
+    } catch (error: unknown) {
+      toast.error(
+        axios.isAxiosError(error)
+          ? error.response?.data?.message || "Failed to save address"
+          : "Failed to save address"
+      );
+    }
   };
 
   return (
-    <div className="w-full mt-6">
-      <h2 className="text-xl font-semibold mb-4">
+    <div className="mt-6 w-full">
+      <h2 className="mb-4 text-xl font-semibold">
         Select Delivery Address
       </h2>
 
       {loading && addresses.length === 0 ? (
         <div className="flex justify-center p-6">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-black"></div>
+          <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-black" />
         </div>
       ) : (
         <>
-          {/* 🔹 ADDRESS LIST */}
           <div className="space-y-4">
             {addresses.length === 0 ? (
-              <div className="text-center py-6 border-2 border-dashed rounded-lg">
-                <p className="text-gray-500 mb-3">
+              <div className="rounded-lg border-2 border-dashed py-6 text-center">
+                <p className="mb-3 text-gray-500">
                   No addresses found.
                 </p>
 
@@ -104,20 +109,22 @@ export default function CheckoutAddress({ onSelect }: CheckoutAddressProps) {
                 <div
                   key={addr._id}
                   onClick={() => {
-                    if (addr._id) setSelectedId(addr._id);
+                    if (addr._id) {
+                      setSelectedId(addr._id);
+                    }
                   }}
-                  className={`border p-4 rounded-lg cursor-pointer transition 
-                  ${selectedId === addr._id
+                  className={`cursor-pointer rounded-lg border p-4 transition ${
+                    selectedAddress?._id === addr._id
                       ? "border-black bg-gray-50 ring-1 ring-black"
                       : "hover:border-gray-400"
-                    }`}
+                  }`}
                 >
-                  <div className="flex justify-between items-start">
+                  <div className="flex items-start justify-between">
                     <div>
                       <p className="font-medium">
                         {addr.fullName}
                         {addr.isDefault && (
-                          <span className="ml-2 text-xs bg-green-100 text-green-600 px-2 py-0.5 rounded">
+                          <span className="ml-2 rounded bg-green-100 px-2 py-0.5 text-xs text-green-600">
                             Default
                           </span>
                         )}
@@ -132,18 +139,19 @@ export default function CheckoutAddress({ onSelect }: CheckoutAddressProps) {
                       </p>
 
                       <p className="text-sm text-gray-600">
-                        📞 {addr.phone}
+                        {addr.phone}
                       </p>
                     </div>
 
                     <div
-                      className={`w-5 h-5 rounded-full border flex items-center justify-center ${selectedId === addr._id
+                      className={`flex h-5 w-5 items-center justify-center rounded-full border ${
+                        selectedAddress?._id === addr._id
                           ? "border-black"
                           : "border-gray-300"
-                        }`}
+                      }`}
                     >
-                      {selectedId === addr._id && (
-                        <div className="w-2.5 h-2.5 rounded-full bg-black"></div>
+                      {selectedAddress?._id === addr._id && (
+                        <div className="h-2.5 w-2.5 rounded-full bg-black" />
                       )}
                     </div>
                   </div>
@@ -152,7 +160,6 @@ export default function CheckoutAddress({ onSelect }: CheckoutAddressProps) {
             )}
           </div>
 
-          {/* 🔹 ADD NEW ADDRESS BUTTON */}
           <div className="mt-4">
             <button
               onClick={() => setShowForm(true)}
@@ -162,9 +169,8 @@ export default function CheckoutAddress({ onSelect }: CheckoutAddressProps) {
             </button>
           </div>
 
-          {/* 🔹 FORM */}
           {showForm && (
-            <div className="border p-4 rounded-lg mt-4 space-y-3 bg-gray-50">
+            <div className="mt-4 space-y-3 rounded-lg border bg-gray-50 p-4">
               <h3 className="font-semibold">Add New Address</h3>
 
               <input
@@ -173,7 +179,7 @@ export default function CheckoutAddress({ onSelect }: CheckoutAddressProps) {
                 onChange={(e) =>
                   setForm({ ...form, fullName: e.target.value })
                 }
-                className="w-full border p-2 rounded"
+                className="w-full rounded border p-2"
               />
 
               <input
@@ -182,7 +188,7 @@ export default function CheckoutAddress({ onSelect }: CheckoutAddressProps) {
                 onChange={(e) =>
                   setForm({ ...form, phone: e.target.value })
                 }
-                className="w-full border p-2 rounded"
+                className="w-full rounded border p-2"
               />
 
               <input
@@ -191,7 +197,7 @@ export default function CheckoutAddress({ onSelect }: CheckoutAddressProps) {
                 onChange={(e) =>
                   setForm({ ...form, street: e.target.value })
                 }
-                className="w-full border p-2 rounded"
+                className="w-full rounded border p-2"
               />
 
               <div className="flex gap-2">
@@ -201,7 +207,7 @@ export default function CheckoutAddress({ onSelect }: CheckoutAddressProps) {
                   onChange={(e) =>
                     setForm({ ...form, city: e.target.value })
                   }
-                  className="w-full border p-2 rounded"
+                  className="w-full rounded border p-2"
                 />
                 <input
                   placeholder="State"
@@ -209,7 +215,7 @@ export default function CheckoutAddress({ onSelect }: CheckoutAddressProps) {
                   onChange={(e) =>
                     setForm({ ...form, state: e.target.value })
                   }
-                  className="w-full border p-2 rounded"
+                  className="w-full rounded border p-2"
                 />
               </div>
 
@@ -220,7 +226,7 @@ export default function CheckoutAddress({ onSelect }: CheckoutAddressProps) {
                   onChange={(e) =>
                     setForm({ ...form, postalCode: e.target.value })
                   }
-                  className="w-full border p-2 rounded"
+                  className="w-full rounded border p-2"
                 />
                 <input
                   placeholder="Country"
@@ -228,7 +234,7 @@ export default function CheckoutAddress({ onSelect }: CheckoutAddressProps) {
                   onChange={(e) =>
                     setForm({ ...form, country: e.target.value })
                   }
-                  className="w-full border p-2 rounded"
+                  className="w-full rounded border p-2"
                 />
               </div>
 
@@ -242,7 +248,7 @@ export default function CheckoutAddress({ onSelect }: CheckoutAddressProps) {
 
                 <button
                   onClick={handleSave}
-                  className="bg-black text-white px-4 py-2 rounded"
+                  className="rounded bg-black px-4 py-2 text-white"
                 >
                   Save Address
                 </button>
