@@ -7,14 +7,14 @@ export interface OrderSelectedOption {
 
 export interface OrderItem {
   product:
-    | string // If just the ID
-    | {
-        // If populated
-        _id: string;
-        name: string;
-        price: number;
-        images?: string[];
-      };
+  | string // If just the ID
+  | {
+    // If populated
+    _id: string;
+    name: string;
+    price: number;
+    images?: string[];
+  };
   quantity: number;
   price: number;
   variantId?: string;
@@ -43,7 +43,9 @@ export interface Order {
   totalQuantity: number;
   status: "pending" | "processing" | "shipped" | "delivered" | "cancelled";
   shippingAddress: ShippingAddress;
-  paymentMethod: "cod" | "razorpay" | "card" | "paypal" | "stripe" | string;
+  paymentMethod: "cod" | "razorpay";
+  paymentStatus: "pending" | "success" | "failed";
+  refundStatus: "none" | "requested" | "approved" | "rejected";
   isPaid: boolean;
   paidAt?: string;
   notes?: string;

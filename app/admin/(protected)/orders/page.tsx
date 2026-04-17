@@ -57,32 +57,49 @@ export default function AdminOrdersPage() {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [activeStatus, setActiveStatus] = useState("all");
+  const { approveRefund, rejectRefund } = useOrderStore();
+  const [refundFilter, setRefundFilter] = useState<
+  "all" | "requested" | "approved" | "rejected"
+>("all");
 
   useEffect(() => {
     fetchOrders();
   }, [fetchOrders]);
 
-  const filteredOrders = useMemo(() => {
-    let result = orders;
+  
+const filteredOrders = useMemo(() => {
+  let result = orders;
 
-    if (activeStatus !== "all") {
-        result = result.filter(order => order.status === activeStatus);
-    }
+  // ✅ STATUS FILTER
+  if (activeStatus !== "all") {
+    result = result.filter((order) => order.status === activeStatus);
+  }
 
-    if (searchQuery.trim().length > 0) {
-        const query = searchQuery.toLowerCase();
-        result = result.filter(order => {
-            const userObj = typeof order.user === 'object' ? order.user : null;
-            return (
-              order._id.toLowerCase().includes(query) || 
-              (userObj && userObj.name?.toLowerCase().includes(query)) ||
-              (userObj && userObj.email?.toLowerCase().includes(query))
-            );
-        });
-    }
-    
-    return result;
-  }, [orders, activeStatus, searchQuery]);
+  // ✅ SEARCH FILTER
+  if (searchQuery.trim().length > 0) {
+    const query = searchQuery.toLowerCase();
+
+    result = result.filter((order) => {
+      const userObj =
+        typeof order.user === "object" ? order.user : null;
+
+      return (
+        order._id.toLowerCase().includes(query) ||
+        (userObj?.name?.toLowerCase().includes(query)) ||
+        (userObj?.email?.toLowerCase().includes(query))
+      );
+    });
+  }
+
+  // ✅ 🔥 REFUND FILTER (NEW)
+  if (refundFilter !== "all") {
+    result = result.filter(
+      (order) => order.refundStatus === refundFilter
+    );
+  }
+
+  return result;
+}, [orders, activeStatus, searchQuery, refundFilter]);
 
   const handleDelete = async (id: string) => {
     if (confirm("Are you sure you want to delete this order? This cannot be undone.")) {
@@ -94,186 +111,221 @@ export default function AdminOrdersPage() {
     fetchOrders(newPage, pagination.limit);
   };
 
-  return (
-    <div className="space-y-6">
-      {/* Header section */}
-      <section className="overflow-hidden rounded-[32px] bg-[#12251a] text-white shadow-xl">
-        <div className="flex flex-col gap-6 p-6 md:flex-row md:items-end md:justify-between md:p-8">
-          <div className="max-w-2xl">
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-3 py-1 text-xs font-medium uppercase tracking-[0.24em] text-emerald-100">
-              <ShoppingBag className="h-3.5 w-3.5" />
-              Order Management
-            </div>
-            <h1 className="mt-4 text-3xl font-bold">All Orders</h1>
+return (
+  <div className="space-y-6">
+
+    {/* HEADER */}
+    <section className="overflow-hidden rounded-[32px] bg-[#12251a] text-white shadow-xl">
+      <div className="flex flex-col gap-6 p-6 md:flex-row md:items-end md:justify-between md:p-8">
+        <div className="max-w-2xl">
+          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-3 py-1 text-xs font-medium uppercase tracking-[0.24em] text-emerald-100">
+            <ShoppingBag className="h-3.5 w-3.5" />
+            Order Management
           </div>
+          <h1 className="mt-4 text-3xl font-bold">All Orders</h1>
         </div>
-      </section>
+      </div>
+    </section>
 
-      {/* Stats section */}
-      <section className="grid gap-4 md:grid-cols-3">
-        <article className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm">
-          <p className="text-sm font-medium text-slate-500">Total orders</p>
-          <p className="mt-4 text-3xl font-semibold text-slate-900">
-            {pagination.total}
-          </p>
-        </article>
+    {/* STATS */}
+    <section className="grid gap-4 md:grid-cols-3">
+      <article className="rounded-[24px] border bg-white p-5 shadow-sm">
+        <p className="text-sm text-slate-500">Total orders</p>
+        <p className="mt-4 text-3xl font-semibold">{pagination.total}</p>
+      </article>
 
-        <article className="rounded-[24px] border border-emerald-100 bg-emerald-50 p-5 shadow-sm">
-          <p className="text-sm font-medium text-emerald-700">Delivered</p>
-          <p className="mt-4 text-3xl font-semibold text-emerald-950">
-            {orders.filter((o) => o.status === "delivered").length}
-          </p>
-        </article>
+      <article className="rounded-[24px] border bg-emerald-50 p-5 shadow-sm">
+        <p className="text-sm text-emerald-700">Delivered</p>
+        <p className="mt-4 text-3xl font-semibold">
+          {orders.filter((o) => o.status === "delivered").length}
+        </p>
+      </article>
 
-        <article className="rounded-[24px] border border-orange-100 bg-orange-50 p-5 shadow-sm">
-          <p className="text-sm font-medium text-orange-700">Pending</p>
-          <p className="mt-4 text-3xl font-semibold text-orange-950">
-            {orders.filter((o) => o.status === "pending").length}
-          </p>
-        </article>
-      </section>
+      <article className="rounded-[24px] border bg-orange-50 p-5 shadow-sm">
+        <p className="text-sm text-orange-700">Pending</p>
+        <p className="mt-4 text-3xl font-semibold">
+          {orders.filter((o) => o.status === "pending").length}
+        </p>
+      </article>
+    </section>
 
-      {/* Main List Section */}
-      <section className="rounded-[28px] border border-slate-200 bg-white shadow-sm overflow-hidden">
-        <div className="border-b border-slate-200 p-6">
-          <div className="flex flex-col gap-4">
-            <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
-              <div>
-                <h2 className="text-xl font-semibold tracking-tight text-slate-900">
-                  Transactions
-                </h2>
-                 <p className="mt-1 text-sm text-slate-500">
-                  {filteredOrders.length} orders visible
-                </p>
-              </div>
+    {/* TABLE */}
+    <section className="rounded-[28px] border bg-white shadow-sm overflow-hidden">
 
-              <label className="flex min-w-[260px] items-center gap-2 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-500">
-                <Search className="h-4 w-4" />
-                <input
-                  type="search"
-                  value={searchQuery}
-                  onChange={(event) => setSearchQuery(event.target.value)}
-                  placeholder="Search by ID, name, or email"
-                  className="w-full bg-transparent outline-none placeholder:text-slate-400"
-                />
-              </label>
-            </div>
+      {/* TOP BAR */}
+      <div className="border-b p-6 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+        <h2 className="text-xl font-semibold">Transactions</h2>
 
-            {/* Status Tabs */}
-            <div className="flex flex-wrap gap-3 mt-2">
-              {STATUS_TABS.map((tab) => (
+        <div className="flex flex-col md:flex-row gap-3">
+
+          {/* SEARCH */}
+          <input
+            type="search"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search orders..."
+            className="border px-3 py-2 rounded"
+          />
+
+          {/* 🔥 REFUND FILTER BUTTONS WITH COUNT */}
+          <div className="flex gap-2">
+            {["all", "requested", "approved", "rejected"].map((f) => {
+              const count =
+                f === "all"
+                  ? orders.length
+                  : orders.filter((o) => o.refundStatus === f).length;
+
+              return (
                 <button
-                  key={tab.value}
-                  type="button"
-                  onClick={() => setActiveStatus(tab.value)}
-                  className={`rounded-full px-4 py-2 text-sm font-medium transition ${activeStatus === tab.value
-                    ? "bg-[#12251a] text-white"
-                    : "bg-slate-100 text-slate-700 hover:bg-slate-200"
-                    }`}
+                  key={f}
+                  onClick={() => setRefundFilter(f as any)}
+                  className={`px-3 py-1 rounded text-sm flex items-center gap-1 ${
+                    refundFilter === f
+                      ? "bg-black text-white"
+                      : "bg-gray-100"
+                  }`}
                 >
-                  {tab.label}
+                  {f}
+                  <span className="text-xs opacity-70">({count})</span>
                 </button>
-              ))}
-            </div>
+              );
+            })}
           </div>
-        </div>
 
-        {/* Orders Table */}
-        <div className="overflow-x-auto">
-          {loading ? (
-             <div className="p-10 text-center text-slate-500">Loading orders...</div>
-          ) : filteredOrders.length === 0 ? (
-             <div className="p-10 text-center text-slate-500">No orders found matching the criteria.</div>
-          ) : (
-            <table className="w-full text-left text-sm text-slate-600">
-              <thead className="bg-slate-50 text-xs uppercase tracking-wider text-slate-500">
-                <tr>
-                  <th className="px-6 py-4 font-medium">Order ID</th>
-                  <th className="px-6 py-4 font-medium">Date</th>
-                  <th className="px-6 py-4 font-medium">Customer</th>
-                  <th className="px-6 py-4 font-medium">Total</th>
-                  <th className="px-6 py-4 font-medium">Status</th>
-                  <th className="px-6 py-4 font-medium text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-200">
-                {filteredOrders.map((order) => (
-                  <tr key={order._id} className="hover:bg-slate-50 transition">
-                    <td className="px-6 py-4 font-mono text-xs font-semibold text-slate-700">
-                      {order._id.slice(-8).toUpperCase()}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {new Date(order.createdAt).toLocaleDateString()}
-                    </td>
-                    <td className="px-6 py-4">
-                      {typeof order.user === 'object' && order.user !== null ? (
-                        <>
-                          <div className="font-medium text-slate-900">{order.user.name || "Unknown"}</div>
-                          <div className="text-xs text-slate-500">{order.user.email || "No email"}</div>
-                        </>
-                      ) : (
-                        <div className="font-medium text-slate-900">Unknown</div>
-                      )}
-                    </td>
-                    <td className="px-6 py-4 font-medium text-slate-900">
-                      ₹{order.totalPrice}
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium capitalize ${getStatusColor(order.status)}`}>
-                        {getStatusIcon(order.status)}
-                        {order.status}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <div className="flex items-center justify-end gap-2">
-                         <Link
-                          href={`/admin/orders/${order._id}`}
-                          className="inline-flex items-center gap-1.5 rounded bg-slate-100 px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-200"
-                        >
-                          <Eye className="h-3.5 w-3.5" />
-                          View
-                        </Link>
-                        <button
-                          onClick={() => handleDelete(order._id)}
-                          className="inline-flex items-center gap-1.5 rounded bg-rose-50 px-3 py-1.5 text-xs font-medium text-rose-600 hover:bg-rose-100"
-                        >
-                          <Trash2 className="h-3.5 w-3.5" />
-                          Delete
-                        </button>
+        </div>
+      </div>
+
+      {/* TABLE CONTENT */}
+      <div className="overflow-x-auto">
+
+        {loading ? (
+          <div className="p-10 text-center">Loading...</div>
+        ) : filteredOrders.length === 0 ? (
+          <div className="p-10 text-center">No orders found</div>
+        ) : (
+          <table className="w-full text-sm">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="p-4 text-left">Order</th>
+                <th className="p-4">Customer</th>
+                <th className="p-4">Total</th>
+                <th className="p-4">Status</th>
+                <th className="p-4 text-right">Actions</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {filteredOrders.map((order) => (
+                <tr key={order._id} className="border-t">
+
+                  {/* ID */}
+                  <td className="p-4 font-mono">
+                    {order._id.slice(-8)}
+                  </td>
+
+                  {/* USER */}
+                  <td className="p-4">
+                    {typeof order.user === "object" ? (
+                      <>
+                        <p>{order.user.name}</p>
+                        <p className="text-xs text-gray-500">
+                          {order.user.email}
+                        </p>
+                      </>
+                    ) : "Unknown"}
+                  </td>
+
+                  {/* PRICE */}
+                  <td className="p-4 font-medium">
+                    ₹{order.totalPrice}
+                  </td>
+
+                  {/* STATUS */}
+                  <td className="p-4">
+                    <span className="px-2 py-1 rounded text-xs bg-gray-100">
+                      {order.status}
+                    </span>
+
+                    {/* REFUND BADGE */}
+                    {order.refundStatus !== "none" && (
+                      <div className="text-xs mt-1 text-purple-600">
+                        Refund: {order.refundStatus}
                       </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-        </div>
+                    )}
+                  </td>
 
-        {/* Pagination controls */}
-        {pagination.pages > 1 && (
-          <div className="flex items-center justify-between border-t border-slate-200 px-6 py-4">
-            <span className="text-sm text-slate-500">
-              Page {pagination.page} of {pagination.pages}
-            </span>
-            <div className="flex gap-2">
-                <button
-                  disabled={pagination.page <= 1}
-                  onClick={() => handlePageChange(pagination.page - 1)}
-                  className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 disabled:opacity-50 hover:bg-slate-50"
-                >
-                  Previous
-                </button>
-                <button
-                  disabled={pagination.page >= pagination.pages}
-                  onClick={() => handlePageChange(pagination.page + 1)}
-                  className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 disabled:opacity-50 hover:bg-slate-50"
-                >
-                  Next
-                </button>
-            </div>
-          </div>
+                  {/* ACTIONS */}
+                  <td className="p-4 text-right">
+                    <div className="flex justify-end gap-2 flex-wrap">
+
+                      <Link
+                        href={`/admin/orders/${order._id}`}
+                        className="px-3 py-1 bg-gray-100 rounded text-xs"
+                      >
+                        View
+                      </Link>
+
+                      <button
+                        onClick={() => handleDelete(order._id)}
+                        className="px-3 py-1 bg-red-100 text-red-600 rounded text-xs"
+                      >
+                        Delete
+                      </button>
+
+                      {/* REFUND ACTIONS */}
+                      {order.refundStatus === "requested" && (
+                        <>
+                          <button
+                            onClick={() => approveRefund(order._id)}
+                            className="px-3 py-1 bg-green-600 text-white rounded text-xs"
+                          >
+                            Approve
+                          </button>
+
+                          <button
+                            onClick={() => rejectRefund(order._id)}
+                            className="px-3 py-1 bg-red-600 text-white rounded text-xs"
+                          >
+                            Reject
+                          </button>
+                        </>
+                      )}
+
+                    </div>
+                  </td>
+
+                </tr>
+              ))}
+            </tbody>
+          </table>
         )}
-      </section>
-    </div>
-  );
+
+      </div>
+
+      {/* PAGINATION */}
+      {pagination.pages > 1 && (
+        <div className="flex justify-between p-4 border-t">
+          <button
+            disabled={pagination.page <= 1}
+            onClick={() => handlePageChange(pagination.page - 1)}
+          >
+            Previous
+          </button>
+
+          <span>
+            Page {pagination.page} / {pagination.pages}
+          </span>
+
+          <button
+            disabled={pagination.page >= pagination.pages}
+            onClick={() => handlePageChange(pagination.page + 1)}
+          >
+            Next
+          </button>
+        </div>
+      )}
+
+    </section>
+  </div>
+);
 }

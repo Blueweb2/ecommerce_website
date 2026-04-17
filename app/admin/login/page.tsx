@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import axios from "@/lib/api/axios";
+import api from "@/lib/api/axios";
 import { useAuthStore } from "@/store/auth/useAuthStore";
 import { setAccessToken } from "@/lib/auth";
 
@@ -32,7 +32,7 @@ const handleLogin = async (e: any) => {
   setLoading(true);
 
   try {
-    const res = await axios.post("/auth/login", form, {
+    const res = await api.post("/auth/login", form, {
       withCredentials: true,
     });
 

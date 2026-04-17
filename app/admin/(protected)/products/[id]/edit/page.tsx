@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import ProductForm from "@/components/admin/products/ProductForm";
 import { useProductStore } from "@/store/admin/useProductStore";
-import axios from "@/lib/api/axios";
+import api from "@/lib/api/axios";
 import toast from "react-hot-toast";
 import {
   ApiErrorResponse,
@@ -27,7 +27,7 @@ export default function EditProductPage() {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const res = await axios.get(`/products/${id}`);
+        const res = await api.get(`/products/${id}`);
         setProduct(res.data.data);
       } catch {
         toast.error("Failed to load product");

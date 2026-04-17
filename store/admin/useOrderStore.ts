@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import { adminOrderAPI } from "@/lib/api/admin/order.api";
 import toast from "react-hot-toast";
-
 import { Order } from "@/types/order";
 
 interface OrderStore {
@@ -9,6 +8,7 @@ interface OrderStore {
   currentOrder: Order | null;
   loading: boolean;
   error: string | null;
+
   pagination: {
     total: number;
     page: number;
@@ -20,6 +20,10 @@ interface OrderStore {
   fetchOrderDetails: (id: string) => Promise<void>;
   updateOrderStatus: (id: string, status: string) => Promise<void>;
   deleteOrder: (id: string) => Promise<void>;
+
+  /* 🔥 ADD THESE */
+  approveRefund: (id: string) => Promise<void>;
+  rejectRefund: (id: string) => Promise<void>;
 }
 
 export const useOrderStore = create<OrderStore>((set, get) => ({
@@ -33,15 +37,19 @@ export const useOrderStore = create<OrderStore>((set, get) => ({
     set({ loading: true, error: null });
     try {
       const res = await adminOrderAPI.getAllOrders(page, limit);
-      // Ensure we extract the nested `data` based on standard sendResponse wrapping
       const data = res.data?.data || res.data;
-      set({ 
-        orders: data.orders || [], 
-        pagination: data.pagination || { total: 0, page: 1, limit: 10, pages: 1 } 
+
+      set({
+        orders: data.orders || [],
+        pagination:
+          data.pagination || { total: 0, page: 1, limit: 10, pages: 1 },
       });
     } catch (err: any) {
-      set({ error: err.response?.data?.message || "Failed to fetch orders" });
-      toast.error(err.response?.data?.message || "Failed to fetch orders");
+      set({
+        error:
+          err.response?.data?.message || "Failed to fetch orders",
+      });
+      toast.error("Failed to fetch orders");
     } finally {
       set({ loading: false });
     }
@@ -54,7 +62,6 @@ export const useOrderStore = create<OrderStore>((set, get) => ({
       const data = res.data?.data || res.data;
       set({ currentOrder: data });
     } catch (err: any) {
-      set({ error: err.response?.data?.message || "Failed to fetch order details" });
       toast.error("Failed to load order details");
     } finally {
       set({ loading: false });
@@ -66,38 +73,60 @@ export const useOrderStore = create<OrderStore>((set, get) => ({
     try {
       const res = await adminOrderAPI.updateOrderStatus(id, status);
       const updatedOrder = res.data?.data || res.data;
-      
-      // Update the local list
+
       set((state) => ({
-        orders: state.orders.map((o) => (o._id === id ? updatedOrder : o)),
-        currentOrder: state.currentOrder?._id === id ? updatedOrder : state.currentOrder,
+        orders: state.orders.map((o) =>
+          o._id === id ? updatedOrder : o
+        ),
+        currentOrder:
+          state.currentOrder?._id === id
+            ? updatedOrder
+            : state.currentOrder,
       }));
-      
-      toast.success("Order status updated successfully");
-    } catch (err: any) {
-      set({ error: err.response?.data?.message || "Failed to update status" });
-      toast.error(err.response?.data?.message || "Failed to update status");
+
+      toast.success("Order updated");
+    } catch {
+      toast.error("Failed to update");
     } finally {
       set({ loading: false });
     }
   },
 
   deleteOrder: async (id: string) => {
-     set({ loading: true, error: null });
+    set({ loading: true });
     try {
       await adminOrderAPI.deleteOrder(id);
-      
-      // Remove from local list
+
       set((state) => ({
         orders: state.orders.filter((o) => o._id !== id),
       }));
-      
-      toast.success("Order deleted successfully");
-    } catch (err: any) {
-      set({ error: err.response?.data?.message || "Failed to delete order" });
-      toast.error(err.response?.data?.message || "Failed to delete order");
+
+      toast.success("Deleted");
+    } catch {
+      toast.error("Delete failed");
     } finally {
       set({ loading: false });
     }
-  }
+  },
+
+  /* 🔥 REFUND ACTIONS */
+  approveRefund: async (id: string) => {
+    try {
+      await adminOrderAPI.approveRefund(id);
+      toast.success("Refund approved");
+      get().fetchOrders();
+    } catch {
+      toast.error("Failed to approve refund");
+    }
+  },
+
+  rejectRefund: async (id: string) => {
+    try {
+      await adminOrderAPI.rejectRefund(id);
+      toast.success("Refund rejected");
+      get().fetchOrders();
+    } catch {
+      toast.error("Failed to reject refund");
+    }
+  },
 }));

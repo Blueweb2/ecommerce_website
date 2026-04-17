@@ -2,6 +2,9 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { loadRazorpay } from "@/lib/utils/loadRazorpay";
+import { orderAPI } from "@/lib/api/order.api";
+import { useCartStore } from "@/store/user/cart/useCartStore";
 
 export default function PaymentStep({
   items,
@@ -9,12 +12,62 @@ export default function PaymentStep({
   deliveryMethod,
   onBack,
   onPlaceOrder,
+  shippingAddress,
 }: any) {
   const [method, setMethod] = useState<"cod" | "razorpay">("cod");
   const [loading, setLoading] = useState(false);
 
   const deliveryCharge = deliveryMethod === "express" ? 50 : 0;
   const finalTotal = total + deliveryCharge;
+
+const handlePayment = async () => {
+  try {
+    setLoading(true);
+
+    if (method === "cod") {
+      await onPlaceOrder("cod");
+      return;
+    }
+
+    const isLoaded = await loadRazorpay();
+    if (!isLoaded) throw new Error("Razorpay failed");
+
+    const res = await orderAPI.createOrder({
+      shippingAddress,
+      paymentMethod: "razorpay",
+    });
+
+    const order = res.data.data;
+
+    const rzp = new (window as any).Razorpay({
+      key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+      amount: order.totalPrice * 100,
+      currency: "INR",
+      order_id: order.razorpayOrderId,
+
+      handler: async (response: any) => {
+        await orderAPI.verifyPayment({
+          razorpayOrderId: response.razorpay_order_id,
+          paymentId: response.razorpay_payment_id,
+          signature: response.razorpay_signature,
+          orderId: order._id,
+        });
+
+        window.location.href = "/profile?tab=orders";
+      },
+    });
+
+    rzp.on("payment.failed", () => {
+      alert("Payment failed. You can retry from orders.");
+    });
+
+    rzp.open();
+  } catch (err) {
+    alert("Something went wrong");
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleClick = async () => {
     setLoading(true);

@@ -105,7 +105,8 @@ export default function CheckoutPage() {
             total={totalPrice}
             deliveryMethod={deliveryMethod}
             onBack={() => setStep(2)}
-            onPlaceOrder={handlePlaceOrder} // 🔥 FIXED
+            onPlaceOrder={handlePlaceOrder}
+            shippingAddress={selectedAddress}
           />
         )}
 

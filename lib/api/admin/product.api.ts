@@ -1,9 +1,9 @@
-import axios from "@/lib/api/axios";
+import api from "@/lib/api/axios";
 import { ProductPayload } from "@/lib/constants/admin-catalog";
 import { uploadMultipleImages } from "@/lib/cloudinary/upload";
 
 // ✅ GET PRODUCTS
-export const getProducts = () => axios.get("/products");
+export const getProducts = () => api.get("/products");
 
 // ✅ CREATE PRODUCT (WITH CLOUDINARY)
 export const createProduct = async (data: any, files: File[]) => {
@@ -21,7 +21,7 @@ export const createProduct = async (data: any, files: File[]) => {
       isPrimary: index === (data.primaryImageIndex || 0),
     }));
 
-    return axios.post("/products", {
+    return api.post("/products", {
       ...data,
       images,
     });
@@ -49,7 +49,7 @@ export const updateProduct = async (
       images = [...images, ...uploadedImages];
     }
 
-    return axios.put(`/products/${id}`, {
+    return api.put(`/products/${id}`, {
       ...data,
       images,
     });
@@ -62,4 +62,4 @@ export const updateProduct = async (
 
 // ✅ DELETE PRODUCT
 export const deleteProduct = (id: string) =>
-  axios.delete(`/products/${id}`);
+  api.delete(`/products/${id}`);

@@ -11,4 +11,9 @@ export const adminOrderAPI = {
     api.put(`/orders/${id}/status`, { status }),
 
   deleteOrder: (id: string) => api.delete(`/orders/${id}`),
+  approveRefund: (id: string) =>
+  api.put(`/orders/${id}/refund/approve`),
+
+rejectRefund: (id: string) =>
+  api.put(`/orders/${id}/refund/reject`),
 };

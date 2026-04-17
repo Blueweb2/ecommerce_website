@@ -31,7 +31,7 @@ export default function ProfilePage() {
   };
 
   return (
-    <section className="bg-gray-50 px-4 md:px-20 mt-16">
+    <section className="px-4 md:px-20 mt-16">
 
       {/* HEADER */}
       <div className="flex flex-col items-center justify-center border-b py-5 border-gray-300">

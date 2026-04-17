@@ -25,4 +25,17 @@ export const orderAPI = {
 
   // ✅ Cancel order
   cancelOrder: (id: string) => api.put(`/orders/${id}/cancel`),
+  verifyPayment: (data: {
+  razorpayOrderId: string;
+  paymentId: string;
+  signature: string;
+  orderId: string;
+}) => api.post("/orders/verify-payment", data),
+
+retryPayment: (orderId: string) =>
+  api.post(`/orders/${orderId}/retry-payment`),
+
+requestRefund: (orderId: string) =>
+  api.put(`/orders/${orderId}/refund/request`),
+
 };

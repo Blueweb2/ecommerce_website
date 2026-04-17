@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import axios from "@/lib/api/axios";
+import api from "@/lib/api/axios";
 import toast from "react-hot-toast";
 import {
   ArrowLeft,
@@ -27,7 +27,7 @@ export default function ViewProductPage() {
 
   const fetchProduct = useCallback(async () => {
     try {
-      const res = await axios.get(`/products/${id}`);
+      const res = await api.get(`/products/${id}`);
       setProduct(res.data?.data ?? null);
     } catch {
       toast.error("Failed to fetch product");

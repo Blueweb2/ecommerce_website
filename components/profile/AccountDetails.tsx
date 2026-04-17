@@ -18,6 +18,16 @@ const emptyForm = {
   country: "",
 };
 
+const fieldLabels: Record<string, string> = {
+  fullName: "Full Name",
+  phone: "Phone Number",
+  street: "Street Address",
+  city: "City",
+  state: "State",
+  postalCode: "Postal Code",
+  country: "Country",
+};
+
 export default function AccountDetails() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState(emptyForm);
@@ -35,17 +45,23 @@ export default function AccountDetails() {
     setDefault,
   } = useAddressStore();
 
+  // ✅ FIXED useEffect (no unnecessary dependency)
   useEffect(() => {
-    if (authLoading || !user) {
-      return;
+    if (!authLoading && user) {
+      fetchAddresses();
     }
+  }, [authLoading, user]);
 
-    void fetchAddresses();
-  }, [authLoading, fetchAddresses, user]);
-
+  // ✅ FORM VALIDATION
   const handleSubmit = async () => {
     if (Object.values(form).some((value) => !value.trim())) {
       toast.error("Please fill in all address fields");
+      return;
+    }
+
+    // ✅ Phone validation (India basic)
+    if (!/^\d{10}$/.test(form.phone)) {
+      toast.error("Enter valid 10-digit phone number");
       return;
     }
 
@@ -69,6 +85,7 @@ export default function AccountDetails() {
     }
   };
 
+  // ✅ EDIT
   const handleEdit = (addr: Address) => {
     setForm({
       fullName: addr.fullName,
@@ -80,14 +97,25 @@ export default function AccountDetails() {
       country: addr.country,
     });
 
-    if (addr._id) {
-      setEditingId(addr._id);
-    }
+    if (addr._id) setEditingId(addr._id);
   };
 
+  // ✅ DELETE with confirmation
+  const handleDelete = async (id: string) => {
+    const confirmDelete = confirm(
+      "Are you sure you want to delete this address?"
+    );
+    if (!confirmDelete) return;
+
+    await deleteAddress(id);
+    toast.success("Address deleted");
+  };
+
+  // ✅ LOGOUT improved UX
   const handleLogout = async () => {
     await logout();
-    router.push("/login");
+    toast.success("Logged out successfully");
+    router.replace("/login");
   };
 
   if (authLoading || !user) {
@@ -99,20 +127,22 @@ export default function AccountDetails() {
   }
 
   return (
-    <div className="mx-auto max-w-3xl rounded-2xl bg-white p-6 shadow-md md:p-10">
-      <div className="mb-8 flex items-center justify-between">
+    <div className="max-w-3xl mx-auto bg-white shadow-md rounded-2xl p-6 md:p-10">
+      {/* HEADER */}
+      <div className="flex items-center justify-between mb-8">
         <h1 className="text-2xl font-semibold text-gray-800">
           My Profile
         </h1>
 
         <button
           onClick={handleLogout}
-          className="rounded-lg bg-red-500 px-4 py-2 text-sm text-white transition hover:bg-red-600"
+          className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm transition"
         >
           Logout
         </button>
       </div>
 
+      {/* USER INFO */}
       <div className="space-y-4 border-b pb-6">
         <div>
           <p className="text-sm text-gray-500">Name</p>
@@ -130,35 +160,44 @@ export default function AccountDetails() {
 
         <div>
           <p className="text-sm text-gray-500">Role</p>
-          <p className="text-lg font-medium capitalize text-gray-800">
+          <p className="text-lg font-medium text-gray-800 capitalize">
             {user.role}
           </p>
         </div>
       </div>
 
+      {/* ADDRESS SECTION */}
       <div className="mt-10">
-        <h2 className="mb-4 text-xl font-semibold">My Addresses</h2>
+        <h2 className="text-xl font-semibold mb-4">My Addresses</h2>
 
         <div className="space-y-4">
           {loading && addresses.length === 0 ? (
-            <div className="py-6 text-center text-gray-500">
+            <div className="text-center py-6 text-gray-500">
               Loading addresses...
             </div>
           ) : addresses.length === 0 ? (
-            <div className="rounded-lg border-2 border-dashed py-6 text-center text-gray-500">
+            <div className="text-center py-6 border-2 border-dashed rounded-lg text-gray-500">
               No addresses found.
+              <div className="mt-3">
+                <button
+                  onClick={() => setForm(emptyForm)}
+                  className="text-blue-500 underline"
+                >
+                  Add New Address
+                </button>
+              </div>
             </div>
           ) : (
             addresses.map((addr) => (
               <div
                 key={addr._id}
-                className="flex items-start justify-between rounded-lg border p-4"
+                className="border p-4 rounded-lg flex justify-between items-start"
               >
                 <div>
                   <p className="font-medium">
                     {addr.fullName}
                     {addr.isDefault && (
-                      <span className="ml-2 rounded bg-green-100 px-2 py-0.5 text-xs text-green-600">
+                      <span className="ml-2 text-xs bg-green-100 text-green-600 px-2 py-0.5 rounded">
                         Default
                       </span>
                     )}
@@ -173,21 +212,17 @@ export default function AccountDetails() {
                   </p>
 
                   <p className="text-sm text-gray-600">
-                    {addr.phone}
+                    📞 {addr.phone}
                   </p>
                 </div>
 
-                <div className="flex flex-col gap-2 text-right text-sm">
+                <div className="flex flex-col gap-2 text-sm text-right">
                   {!addr.isDefault && (
                     <button
-                      onClick={() => {
-                        if (addr._id) {
-                          void setDefault(addr._id);
-                        }
-                      }}
+                      onClick={() => addr._id && setDefault(addr._id)}
                       disabled={loading}
                       className={`text-blue-500 hover:underline ${
-                        loading ? "cursor-not-allowed opacity-50" : ""
+                        loading ? "opacity-50 cursor-not-allowed" : ""
                       }`}
                     >
                       Make Default
@@ -198,21 +233,17 @@ export default function AccountDetails() {
                     onClick={() => handleEdit(addr)}
                     disabled={loading}
                     className={`text-yellow-600 hover:underline ${
-                      loading ? "cursor-not-allowed opacity-50" : ""
+                      loading ? "opacity-50 cursor-not-allowed" : ""
                     }`}
                   >
                     Edit
                   </button>
 
                   <button
-                    onClick={() => {
-                      if (addr._id) {
-                        void deleteAddress(addr._id);
-                      }
-                    }}
+                    onClick={() => addr._id && handleDelete(addr._id)}
                     disabled={loading}
                     className={`text-red-500 hover:underline ${
-                      loading ? "cursor-not-allowed opacity-50" : ""
+                      loading ? "opacity-50 cursor-not-allowed" : ""
                     }`}
                   >
                     Delete
@@ -223,8 +254,9 @@ export default function AccountDetails() {
           )}
         </div>
 
+        {/* FORM */}
         <div className="mt-8 space-y-4 border-t pt-6">
-          <h3 className="text-lg font-semibold">
+          <h3 className="font-semibold text-lg">
             {editingId ? "Edit Address" : "Add Address"}
           </h3>
 
@@ -232,12 +264,13 @@ export default function AccountDetails() {
             {Object.keys(emptyForm).map((key) => (
               <input
                 key={key}
-                placeholder={key}
+                type={key === "phone" ? "tel" : "text"}
+                placeholder={fieldLabels[key]}
                 value={(form as Record<string, string>)[key]}
                 onChange={(e) =>
                   setForm({ ...form, [key]: e.target.value })
                 }
-                className="w-full rounded border p-2 focus:outline-none focus:ring-1 focus:ring-black"
+                className="w-full border p-2 rounded focus:outline-none focus:ring-1 focus:ring-black"
               />
             ))}
           </div>
@@ -246,17 +279,15 @@ export default function AccountDetails() {
             <button
               onClick={handleSubmit}
               disabled={loading}
-              className={`rounded bg-black px-5 py-2 text-white transition ${
-                loading
-                  ? "cursor-not-allowed opacity-50"
-                  : "hover:bg-gray-800"
+              className={`bg-black text-white px-5 py-2 rounded transition ${
+                loading ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-800"
               }`}
             >
               {loading
                 ? "Processing..."
                 : editingId
-                  ? "Update Address"
-                  : "Add Address"}
+                ? "Update Address"
+                : "Add Address"}
             </button>
           </div>
         </div>
