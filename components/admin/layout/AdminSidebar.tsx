@@ -9,7 +9,8 @@ import {
   ShoppingCart,
   UserCog,
   User,
-  Image as ImageIcon
+  Image as ImageIcon,
+  BookOpen,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useAuthStore } from "@/store/auth/useAuthStore";
@@ -36,11 +37,18 @@ const menu = [
     icon: Tag,
   },
 
-  // ✅ NEW: Banner Management
+  // ✅ Banner Management
   {
     name: "Banners",
     href: "/admin/banners",
-    icon: ImageIcon, // we’ll improve icon below
+    icon: ImageIcon,
+  },
+
+  // ✅ Stories Management
+  {
+    name: "Stories",
+    href: "/admin/stories",
+    icon: BookOpen,
   },
 
   {
