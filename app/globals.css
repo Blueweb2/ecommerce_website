@@ -1,15 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Allura&display=swap');
+
 @import "tailwindcss";
+
+/* ✅ Typography plugin (THIS FIXES YOUR ISSUE) */
+@plugin "@tailwindcss/typography";
 
 body {
   overflow-x: hidden;
 }
 
-/* LOGO FONT FAMILY */
 .script {
   font-family: 'Allura', cursive;
 }
-
 
 /* HERO SECTION ANIMATION */
 @keyframes fadeUp {

@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import { uploadSingleImage } from "@/lib/cloudinary/upload";
 import { createStory } from "@/lib/api/admin/story.api";
 import ImageUpload from "@/components/admin/ui/ImageUpload";
+import RichEditor from "@/components/admin/ui/RichEditor";
 
 export default function StoryForm({ onSuccess }: { onSuccess: () => void }) {
   const [loading, setLoading] = useState(false);
@@ -18,7 +19,7 @@ export default function StoryForm({ onSuccess }: { onSuccess: () => void }) {
   const handleUpload = async (file: File) => {
     try {
       setLoading(true);
-      const img = await uploadSingleImage(file, "stories");
+      const img = await uploadSingleImage(file, "ecommerce/stories");
       setForm((prev) => ({ ...prev, image: img }));
       toast.success("Image uploaded");
     } catch {
@@ -69,13 +70,12 @@ export default function StoryForm({ onSuccess }: { onSuccess: () => void }) {
       {/* DESCRIPTION */}
       <div className="space-y-1.5">
         <label className="text-sm font-medium text-slate-700">Description</label>
-        <textarea
-          value={form.description}
-          onChange={(e) => setForm({ ...form, description: e.target.value })}
-          placeholder="Story description..."
-          rows={3}
-          className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-[#12251a] focus:ring-1 focus:ring-[#12251a] resize-none"
-        />
+      <RichEditor
+  value={form.description}
+  onChange={(val) =>
+    setForm({ ...form, description: val })
+  }
+/>
       </div>
 
       {/* CATEGORY */}

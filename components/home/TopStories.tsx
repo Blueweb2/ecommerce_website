@@ -21,6 +21,9 @@ type Story = {
 export default function TopStories() {
   const [stories, setStories] = useState<Story[]>([]);
   const [loading, setLoading] = useState(true);
+  const stripHtml = (html: string) => {
+  return html.replace(/<[^>]+>/g, "");
+};
 
   useEffect(() => {
     const fetchStories = async () => {
@@ -103,9 +106,18 @@ if (stories.length === 0) {
                 <h3 className="text-sm font-semibold mb-2 text-gray-500 uppercase">
                   {story.category}
                 </h3>
-                <p className="text-xs line-clamp-3">
-                  {story.description}
-                </p>
+               <div className="text-xs space-y-2">
+  <p className="line-clamp-3 text-gray-700">
+    {stripHtml(story.description)}
+  </p>
+
+  <Link
+    href={`/stories/${story.slug}`}
+    className="text-[11px] font-semibold text-[#12251a] hover:underline"
+  >
+    Read more →
+  </Link>
+</div>
               </div>
             </div>
           ))}
