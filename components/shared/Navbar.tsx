@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from 'react';
 import { Playfair_Display } from 'next/font/google';
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -15,11 +16,18 @@ const playfair = Playfair_Display({
   weight: ['400', '600'],
 });
 
+const messages = [
+  'New arrivals, now dropping five days a week - discover now',
+  'Enjoy Free Standard Delivery on orders over €400',
+  "Subscribe to our emails to hear about our exclusive launches, new arrivals and more"
+];
+
 export default function Navbar() {
 
   const pathname = usePathname();
   const router = useRouter();
   const { openCart } = useCartUIStore();
+  const [index, setIndex] = useState(0);
   const { items } = useCartStore();
   const { user, loading } = useAuthStore();
   const wishlistItems = useWishlistStore((state) => state.items);
@@ -32,9 +40,21 @@ export default function Navbar() {
     );
   };
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIndex((prev) => (prev + 1) % messages.length);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <header className="w-full bg-black fixed top-0 z-9999">
+
+      <div className='h-8 bg-gray-300 flex items-center justify-center text-xs text-center'>
+        {messages[index]}
+      </div>
+
       <div className="max-w-[2000px] mx-auto px-4 md:px-20 py-2 flex items-center justify-between">
 
         {/* LOGO */}
@@ -47,54 +67,66 @@ export default function Navbar() {
         </div>
 
         {/* NAV LINKS */}
-        <nav
-          className="hidden md:flex items-center gap-8 text-sm"
-          aria-label="Main navigation"
-        >
-          <Link href="/" aria-label="Go to Home page" className={linkClass("/")}>
-            New In
-          </Link>
+        <div className='flex flex-col items-center justify-center'>
 
-          <Link
-            href="/category/clothing"
-            aria-label="Browse Shop products"
-            className={linkClass("/category/clothing")}
-          >
-            Clothing
-          </Link>
+          <div className={`${playfair.className} text-2xl font-semibold tracking-wide text-white`}>
+            <Link href="/" aria-label="Go to homepage - GOLDLAND">
+              FA
+              <span className="script text-5xl p-0.5">zz</span>
+              MI
+            </Link>
+          </div>
 
-          <Link
-            href="/category/jewelry"
-            aria-label="Browse Jewelry products"
-            className={linkClass("/category/jewelry")}
-          >
-            Jewelry
-          </Link>
 
-          <Link
-            href="/category/shoes"
-            aria-label="Browse Shoes products"
-            className={linkClass("/category/shoes")}
+          <nav
+            className="hidden md:flex items-center gap-8 text-sm"
+            aria-label="Main navigation"
           >
-            Shoes
-          </Link>
+            <Link href="/" aria-label="Go to Home page" className={linkClass("/")}>
+              New In
+            </Link>
 
-          <Link
-            href="/category/accessories"
-            aria-label="Browse Accessories products"
-            className={linkClass("/category/accessories")}
-          >
-            Accessories
-          </Link>
+            <Link
+              href="/category/clothing"
+              aria-label="Browse Shop products"
+              className={linkClass("/category/clothing")}
+            >
+              Clothing
+            </Link>
 
-          <Link
-            href="/sale"
-            aria-label="View Sale items"
-            className={linkClass("/sale")}
-          >
-            Sale
-          </Link>
-        </nav>
+            <Link
+              href="/category/jewelry"
+              aria-label="Browse Jewelry products"
+              className={linkClass("/category/jewelry")}
+            >
+              Jewelry
+            </Link>
+
+            <Link
+              href="/category/shoes"
+              aria-label="Browse Shoes products"
+              className={linkClass("/category/shoes")}
+            >
+              Shoes
+            </Link>
+
+            <Link
+              href="/category/accessories"
+              aria-label="Browse Accessories products"
+              className={linkClass("/category/accessories")}
+            >
+              Accessories
+            </Link>
+
+            <Link
+              href="/sale"
+              aria-label="View Sale items"
+              className={linkClass("/sale")}
+            >
+              Sale
+            </Link>
+          </nav>
+        </div>
 
         {/* ICONS */}
         <div className="flex items-center gap-4 text-white">
