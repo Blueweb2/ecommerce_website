@@ -134,7 +134,7 @@ const getSignature = async (folder: string) => {
 // 🔥 SINGLE IMAGE UPLOAD
 export const uploadSingleImage = async (
   file: File,
-  folder = "categories"
+  folder = "ecommerce/categories"
 ): Promise<UploadedImage> => {
   try {
     const { timestamp, signature, cloudName, apiKey } =
@@ -174,7 +174,7 @@ export const uploadSingleImage = async (
 // ✅ MULTIPLE IMAGE UPLOAD
 export const uploadMultipleImages = async (
   files: File[],
-  folder = "products"
+  folder = "ecommerce/products"
 ): Promise<UploadedImage[]> => {
   try {
     const { timestamp, signature, cloudName, apiKey } =

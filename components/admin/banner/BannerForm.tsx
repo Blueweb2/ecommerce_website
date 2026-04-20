@@ -24,7 +24,7 @@ export default function BannerForm({ onSuccess }: any) {
       const oldImage = form.image;
 
       // ✅ Upload to Cloudinary
-      const img = await uploadSingleImage(file, "banners");
+      const img = await uploadSingleImage(file, "ecommerce/banners");
 
       // ✅ Delete old image (important)
       if (oldImage?.public_id) {

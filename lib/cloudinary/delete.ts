@@ -1,25 +1,15 @@
 // lib/api/cloudinary/delete.ts
+import api from "@/lib/api/axios";
 
 export const deleteImage = async (public_id: string) => {
   try {
-    const res = await fetch("/api/cloudinary/delete", {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ public_id }),
-      credentials: "include", // 🔐 important
+    const res = await api.delete("/cloudinary/delete", {
+      data: { public_id },
     });
 
-    const data = await res.json();
-
-    if (!res.ok) {
-      throw new Error(data.message || "Delete failed");
-    }
-
-    return data;
-  } catch (error) {
+    return res.data;
+  } catch (error: any) {
     console.error("Delete image error:", error);
-    throw error;
+    throw error?.response?.data || error;
   }
 };
