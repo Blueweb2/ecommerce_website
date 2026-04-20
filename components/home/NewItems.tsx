@@ -245,7 +245,7 @@ export default function NewInSection() {
                   : "translate-x-0"
               }`}
             >
-              {visibleProducts.map((product) => (
+              {visibleProducts.map((product, index) => (
                 <Link
                   key={product.id}
                   href="/product/3"
@@ -258,6 +258,7 @@ export default function NewInSection() {
                       fill
                       sizes="(max-width: 1024px) 25vw, 20vw"
                       className="object-cover"
+                      priority={index < 4}
                     />
                   </div>
 

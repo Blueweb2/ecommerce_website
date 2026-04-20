@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useAuthStore } from "@/store/auth/useAuthStore";
 import AdminLayoutWrapper from "@/components/admin/layout/AdminLayoutWrapper";
 import { useAuthInit } from "@/hooks/useAuthInit";
@@ -13,11 +13,14 @@ export default function AdminLayout({
 }) {
   const { user, loading } = useAuthStore();
   const router = useRouter();
+  const pathname = usePathname();
 
   useAuthInit();
 
+  const isLoginPage = pathname === "/admin/login";
+
   useEffect(() => {
-    if (!loading) {
+    if (!loading && !isLoginPage) {
       if (!user) {
         router.replace("/admin/login");
       } else if (
@@ -27,7 +30,12 @@ export default function AdminLayout({
         router.replace("/admin/login");
       }
     }
-  }, [user, loading, router]);
+  }, [user, loading, router, pathname, isLoginPage]);
+
+  // 🔹 If it's the login page, just render children without auth check or wrapper
+  if (isLoginPage) {
+    return <>{children}</>;
+  }
 
   // ⛔ Prevent rendering until auth is checked
   if (loading || !user) {

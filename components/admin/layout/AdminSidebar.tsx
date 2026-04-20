@@ -9,6 +9,7 @@ import {
   ShoppingCart,
   UserCog,
   User,
+  Image as ImageIcon
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useAuthStore } from "@/store/auth/useAuthStore";
@@ -18,50 +19,57 @@ export default function AdminSidebar() {
   const { user } = useAuthStore();
 
   // 🔥 Dynamic menu
-  const menu = [
-    {
-      name: "Dashboard",
-      href: "/admin/dashboard",
-      icon: LayoutDashboard,
-    },
-    {
-      name: "Products",
-      href: "/admin/products",
-      icon: Package,
-    },
-    {
-      name: "Categories",
-      href: "/admin/categories",
-      icon: Tag,
-    },
-    {
-      name: "Orders",
-      href: "/admin/orders",
-      icon: ShoppingCart,
-    },
-    {
-      name: "Users",
-      href: "/admin/users",
-      icon: Users,
-    },
+const menu = [
+  {
+    name: "Dashboard",
+    href: "/admin/dashboard",
+    icon: LayoutDashboard,
+  },
+  {
+    name: "Products",
+    href: "/admin/products",
+    icon: Package,
+  },
+  {
+    name: "Categories",
+    href: "/admin/categories",
+    icon: Tag,
+  },
 
-    // 🔐 Superadmin only
-    ...(user?.role === "superadmin"
-      ? [
-          {
-            name: "Admins",
-            href: "/admin/admins",
-            icon: UserCog,
-          },
-        ]
-      : []),
+  // ✅ NEW: Banner Management
+  {
+    name: "Banners",
+    href: "/admin/banners",
+    icon: ImageIcon, // we’ll improve icon below
+  },
 
-    {
-      name: "Profile",
-      href: "/admin/profile",
-      icon: User,
-    },
-  ];
+  {
+    name: "Orders",
+    href: "/admin/orders",
+    icon: ShoppingCart,
+  },
+  {
+    name: "Users",
+    href: "/admin/users",
+    icon: Users,
+  },
+
+  ...(user?.role === "superadmin"
+    ? [
+        {
+          name: "Admins",
+          href: "/admin/admins",
+          icon: UserCog,
+        },
+      ]
+    : []),
+
+  {
+    name: "Profile",
+    href: "/admin/profile",
+    icon: User,
+  },
+];
 
   return (
     <div className="w-64 h-screen bg-[#1a1f1a] text-white flex flex-col p-4">

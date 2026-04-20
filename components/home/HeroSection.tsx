@@ -1,137 +1,162 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import Image from "next/image";
 import Link from "next/link";
-
-const slides = [
-  {
-    image: "/home/herosection/hero-right-bottom.png",
-    title: "Timeless Jewellery for Every Moment",
-    desc: "Fine jewellery designed to be worn, loved, and remembered.",
-  },
-  {
-    image: "/home/herosection/hero-center.png",
-    title: "Elegant Designs for Every Style",
-    desc: "Discover pieces that reflect your unique personality.",
-  },
-  {
-    image: "/home/categorysection/category-one.png",
-    title: "Crafted with Passion",
-    desc: "Every piece tells a story of beauty and craftsmanship.",
-  },
-];
+import { getBanners } from "@/lib/api/banner.api";
 
 export default function HeroSection() {
-
   const [current, setCurrent] = useState(0);
+  const [banners, setBanners] = useState<any>(null);
+
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
+  // 🔥 Fetch banners
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await getBanners();
+      setBanners(data);
+    };
+    fetchData();
+  }, []);
+
+  // 🔥 Auto slide
   const startAutoSlide = () => {
     intervalRef.current = setInterval(() => {
-      setCurrent((prev) => (prev + 1) % 3);
+      setCurrent((prev) =>
+        (prev + 1) % (banners?.hero?.length || 1)
+      );
     }, 4000);
   };
 
   useEffect(() => {
+    if (!banners) return;
+
     startAutoSlide();
 
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, []);
+  }, [banners]);
 
-
-  const handleClick = (e:React.MouseEvent<HTMLButtonElement>,index:number) => {
+  const handleClick = (
+    e: React.MouseEvent<HTMLButtonElement>,
+    index: number
+  ) => {
     e.preventDefault();
     e.stopPropagation();
-    setCurrent(index)
-    // stop auto slide
+
+    setCurrent(index);
+
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
     }
 
-    // restart auto slide
     startAutoSlide();
-  }
+  };
+
+  // 🔥 Loading fallback
+  if (!banners) return <div>Loading...</div>;
 
   return (
-    <section className="w-full bg-[#f5f5f5] py-8 mt-8 ">
+    <section className="w-full bg-[#f5f5f5] py-8 mt-8">
       <div className="max-w-[2000px] mx-auto px-4 md:px-20 grid grid-cols-1 lg:grid-cols-2 gap-3 h-[calc(100vh-100px)]">
 
-        {/* LEFT BIG CARD */}
+        {/* LEFT SLIDER */}
         <Link
-          href='/more-products'
-          className="relative overflow-hidden  flex justify-center items-end p-6 text-white border"
+          href={banners.hero[current]?.link || "/"}
+          className="relative overflow-hidden flex justify-center items-end p-6 text-white border"
         >
-          {/* Background */}
-          <div
-            key={current}
-            className="absolute inset-0 transition-opacity duration-700 opacity-100"
-            style={{
-              backgroundImage: `url(${slides[current].image})`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-            }}
-          />
+          {banners.hero.map((hero: any, index: number) => (
+            <div
+              key={index}
+              className={`absolute inset-0 transition-opacity duration-700 ${
+                current === index ? "opacity-100" : "opacity-0"
+              }`}
+            >
+              <Image
+                src={hero.image?.url || "/placeholder.png"}
+                alt="Hero Banner"
+                fill
+                priority={index === 0}
+                className="object-cover"
+              />
+            </div>
+          ))}
 
-          {/* Content */}
-          <div className="relative max-w-xs z-10">
-            {/* buttons */}
-            <div className="flex gap-3 items-center justify-center mt-6 h-6">
-              {slides.map((_, index) => (
+          {/* DOTS */}
+          <div className="relative z-10">
+            <div className="flex gap-3 justify-center mt-6 h-6">
+              {banners.hero.map((_: any, index: number) => (
                 <button
                   key={index}
-                  onClick={(e) => handleClick(e,index)}
-                  className={`rounded-full transform transition-all duration-300 ease-out ${
+                  onClick={(e) => handleClick(e, index)}
+                  className={`rounded-full transition ${
                     current === index
-                      ? "w-4 h-4 bg-black scale-125"
-                      : "w-2.5 h-2.5 bg-gray-400 scale-100 hover:bg-black"
+                      ? "w-4 h-4 bg-black"
+                      : "w-2.5 h-2.5 bg-gray-400"
                   }`}
                 />
               ))}
             </div>
           </div>
 
-          {/* for better text visibility */}
-          <div className="absolute inset-0 bg-white/30 z-0" />
+          <div className="absolute inset-0 bg-white/30 z-0 pointer-events-none" />
         </Link>
 
-        {/* RIGHT CARD */}
+        {/* RIGHT SIDE */}
         <div className="flex flex-col lg:flex-row gap-3">
-          
-          {/* LEFT SIDE */}
-          <Link
-            href='/more-products'
-            className="relative overflow-hidden flex flex-col justify-between p-6 border h-full w-full border-white"
-            style={{
-              backgroundImage: "url('/home/herosection/hero-center.png')",
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-            }}
-          />
 
-          {/* RIGHT SIDE (2 CARDS) */}
-          <div className="flex lg:flex-col justify-between gap-3 lg:w-[40%] h-full">
+          {/* CENTER */}
+          {banners.center && (
+            <Link
+              href={banners.center.link || "/"}
+              className="relative overflow-hidden h-full w-full border"
+            >
+              <Image
+                src={banners.center.image?.url || "/placeholder.png"}
+                alt="Center Banner"
+                fill
+                priority
+                className="object-cover"
+              />
+            </Link>
+          )}
 
-            {/* TOP RIGHT */}
-            <div
-              className="relative overflow-hidden h-full flex items-end p-5 text-white w-full border"
-              style={{
-                backgroundImage: "url('/home/herosection/hero-right-top.png')",
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-              }}
-            />
+          {/* RIGHT */}
+          <div className="flex lg:flex-col gap-3 lg:w-[40%] h-full">
 
-            {/* BOTTOM RIGHT */}
-            <div
-              className="relative overflow-hidden  h-full flex items-end p-5 w-full border border-white"
-              style={{
-                backgroundImage: "url('/home/herosection/hero-right-bottom.png')",
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-              }}
-            />
+            {/* TOP */}
+            {banners.rightTop && (
+              <Link
+                href={banners.rightTop.link || "/"}
+                className="relative h-full w-full border"
+              >
+                <Image
+                  src={banners.rightTop.image?.url || "/placeholder.png"}
+                  alt="Right Top Banner"
+                  fill
+                  priority
+                  className="object-cover"
+                />
+              </Link>
+            )}
+
+            {/* BOTTOM */}
+            {banners.rightBottom && (
+              <Link
+                href={banners.rightBottom.link || "/"}
+                className="relative h-full w-full border"
+              >
+                <Image
+                  src={banners.rightBottom.image?.url || "/placeholder.png"}
+                  alt="Right Bottom Banner"
+                  fill
+                  priority
+                  className="object-cover"
+                />
+              </Link>
+            )}
 
           </div>
         </div>
@@ -139,4 +164,4 @@ export default function HeroSection() {
       </div>
     </section>
   );
-};
+}
