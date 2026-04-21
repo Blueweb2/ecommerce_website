@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useProductStore } from "@/store/user/product/useProductStore";
 import { Lora } from "next/font/google";
+import { ChevronDown, SlidersHorizontal } from "lucide-react";
+import { CatalogProduct } from "@/lib/constants/admin-catalog";
 
 const lora = Lora({
   subsets: ["latin"],
@@ -82,22 +84,34 @@ export default function SalePage() {
       </div>
 
       {/* ─── SORT BAR ─── */}
-      <div className="max-w-[2000px] mx-auto flex justify-between items-center px-4 md:px-20 py-4 border-b bg-white">
-        <p className="text-sm text-gray-500">
-          {loading ? "Loading..." : `${products.length} products`}
-        </p>
+      <div className="max-w-[2000px] mx-auto flex flex-col md:flex-row justify-between items-center px-4 md:px-20 py-5 border-b bg-white gap-4">
+        <div className="flex items-center gap-2">
+          <div className="h-2 w-2 rounded-full bg-red-500 animate-pulse" />
+          <p className="text-sm font-medium text-neutral-600">
+            {loading ? "Discovering offers..." : `Showing ${products.length} exclusive deals`}
+          </p>
+        </div>
 
-        <select
-          value={sort}
-          onChange={(e) => setSort(e.target.value)}
-          className="border border-gray-300 px-4 py-2 text-sm rounded focus:outline-none focus:border-black transition"
-        >
-          {SORT_OPTIONS.map((opt) => (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
-            </option>
-          ))}
-        </select>
+        <div className="flex items-center gap-3">
+          <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-neutral-400 flex items-center gap-2">
+            <SlidersHorizontal className="h-3 w-3" />
+            Sort By
+          </span>
+          <div className="relative group">
+            <select
+              value={sort}
+              onChange={(e) => setSort(e.target.value)}
+              className="appearance-none bg-transparent border-b border-neutral-200 pr-8 py-1 text-sm font-medium focus:outline-none focus:border-black transition-colors cursor-pointer"
+            >
+              {SORT_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+            <ChevronDown className="absolute right-0 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-400 pointer-events-none group-hover:text-black transition-colors" />
+          </div>
+        </div>
       </div>
 
       {/* ─── PRODUCT GRID ─── */}
@@ -127,13 +141,13 @@ export default function SalePage() {
 
         {/* Product Cards */}
         {products.length > 0 && (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-8">
-            {products.map((product: any) => {
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-4 gap-y-10">
+            {products.map((product: CatalogProduct) => {
               const imageUrl =
                 product.images?.[0]?.url || "/placeholder.png";
               const discount = getDiscountPercent(
                 product.price,
-                product.discountPrice
+                product.discountPrice ?? 0
               );
 
               return (

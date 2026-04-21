@@ -16,6 +16,7 @@ import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import { loadRazorpay } from "@/lib/utils/loadRazorpay";
 import { orderAPI } from "@/lib/api/order.api";
+import { Order } from "@/types/order";
 
 const getStatusColor = (status: string) => {
   switch (status) {
@@ -74,7 +75,7 @@ const MyOrders = () => {
   };
 
   /* ================= RETRY PAYMENT ================= */
-  const handleRetryPayment = async (order: any) => {
+  const handleRetryPayment = async (order: Order) => {
     try {
       const isLoaded = await loadRazorpay();
       if (!isLoaded) return alert("Payment gateway failed");
@@ -181,7 +182,7 @@ const MyOrders = () => {
                 {order.items.map((item, i) => {
                   const productName =
                     typeof item.product === "object"
-                      ? (item.product as any).name
+                      ? (item.product as { name: string }).name
                       : "Product";
 
                   return (

@@ -155,8 +155,7 @@ export default function ProductsPage() {
       <ProductHeader />
 
       <ProductStats
-        total={products.length}
-        published={publishedCount}
+        products={products}
       />
 
       <ProductFilters

@@ -1,4 +1,6 @@
-"use client";
+import { useState } from "react";
+import ImageModal from "@/components/admin/ui/ImageModal";
+import { Maximize2, Plus } from "lucide-react";
 
 type Variant = {
   attributes: Record<string, string>;
@@ -23,6 +25,8 @@ export default function VariantSection({
   setForm,
   errors,
 }: Props) {
+  const [zoomedImage, setZoomedImage] = useState<string | null>(null);
+
   if (!variants.length) return null;
 
   const attributeKeys = Object.keys(variants[0]?.attributes || {});
@@ -69,9 +73,9 @@ export default function VariantSection({
       variants: prev.variants.map((v: Variant, i: number) =>
         i === variantIndex
           ? {
-              ...v,
-              images: v.images?.filter((_, j) => j !== imageIndex),
-            }
+            ...v,
+            images: v.images?.filter((_, j) => j !== imageIndex),
+          }
           : v
       ),
     }));
@@ -101,7 +105,7 @@ export default function VariantSection({
           <tbody>
             {variants.map((variant, index) => (
               <tr key={index} className="border-t align-top">
-                
+
                 {/* Attributes */}
                 {attributeKeys.map((key) => (
                   <td key={key} className="p-3 text-sm">
@@ -147,34 +151,44 @@ export default function VariantSection({
 
                 {/* Images */}
                 <td className="p-3 space-y-2">
-                  <input
-                    type="file"
-                    multiple
-                    onChange={(e) =>
-                      handleImageUpload(index, e.target.files)
-                    }
-                  />
+                  <label className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-50 text-blue-600 text-[10px] font-bold uppercase tracking-wider cursor-pointer hover:bg-blue-100 transition active:scale-95">
+                    <Plus className="h-3 w-3" />
+                    Add Images
+                    <input
+                      type="file"
+                      multiple
+                      className="hidden"
+                      onChange={(e) =>
+                        handleImageUpload(index, e.target.files)
+                      }
+                    />
+                  </label>
 
                   <div className="flex gap-2 flex-wrap">
-                    {variant.images?.map((img, i) => (
-                      <div key={i} className="relative">
-                        <img
-                          src={
-                            img.preview ||
-                            img.url ||
-                            "/placeholder.png"
-                          }
-                          className="w-12 h-12 object-cover rounded"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => removeImage(index, i)}
-                          className="absolute top-0 right-0 text-xs bg-red-500 text-white px-1"
-                        >
-                          ✕
-                        </button>
-                      </div>
-                    ))}
+                    {variant.images?.map((img, i) => {
+                      const src = img.preview || img.url || "/placeholder.png";
+                      return (
+                        <div key={i} className="relative group rounded overflow-hidden">
+                          <img
+                            src={src}
+                            className="w-12 h-12 object-cover rounded cursor-pointer group-hover:scale-110 transition"
+                            onClick={() => setZoomedImage(src)}
+                          />
+
+                          <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 flex items-center justify-center pointer-events-none transition">
+                            <Maximize2 className="h-3 w-3 text-white" />
+                          </div>
+
+                          <button
+                            type="button"
+                            onClick={() => removeImage(index, i)}
+                            className="absolute top-0 right-0 bg-red-500 text-white w-4 h-4 flex items-center justify-center rounded-bl text-[10px] hover:bg-red-600 transition"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      );
+                    })}
                   </div>
                 </td>
 
@@ -187,6 +201,13 @@ export default function VariantSection({
       {errors.variants && (
         <p className="text-red-500 text-sm">{errors.variants}</p>
       )}
+
+      {/* ✅ Image Preview Modal */}
+      <ImageModal
+        isOpen={zoomedImage !== null}
+        onClose={() => setZoomedImage(null)}
+        imageUrl={zoomedImage}
+      />
     </section>
   );
 }
