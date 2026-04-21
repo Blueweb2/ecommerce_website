@@ -24,6 +24,9 @@ interface OrderStore {
   /* 🔥 ADD THESE */
   approveRefund: (id: string) => Promise<void>;
   rejectRefund: (id: string) => Promise<void>;
+  approveReturn: (id: string) => Promise<void>;
+  rejectReturn: (id: string) => Promise<void>;
+  markReturnReceived: (id: string) => Promise<void>;
 }
 
 export const useOrderStore = create<OrderStore>((set, get) => ({
@@ -127,6 +130,37 @@ export const useOrderStore = create<OrderStore>((set, get) => ({
       get().fetchOrders();
     } catch {
       toast.error("Failed to reject refund");
+    }
+  },
+
+  /* 🔥 RETURN ACTIONS */
+  approveReturn: async (id: string) => {
+    try {
+      await adminOrderAPI.approveReturn(id);
+      toast.success("Return approved");
+      get().fetchOrders();
+    } catch {
+      toast.error("Failed to approve return");
+    }
+  },
+
+  rejectReturn: async (id: string) => {
+    try {
+      await adminOrderAPI.rejectReturn(id);
+      toast.success("Return rejected");
+      get().fetchOrders();
+    } catch {
+      toast.error("Failed to reject return");
+    }
+  },
+
+  markReturnReceived: async (id: string) => {
+    try {
+      await adminOrderAPI.markReturnReceived(id);
+      toast.success("Return marked as received");
+      get().fetchOrders();
+    } catch {
+      toast.error("Failed to mark return as received");
     }
   },
 }));

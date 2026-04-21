@@ -17,7 +17,7 @@ export default function CategoryPage() {
       try {
         const [catRes, prodRes] = await Promise.all([
           categoryAPI.getBySlug(slug as string),
-          productAPI.getProducts({ category: slug as string }),
+          productAPI.getAll({ category: slug as string }),
         ]);
 
         setCategory(catRes.data.data);

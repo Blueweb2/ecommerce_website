@@ -4,6 +4,7 @@ type Variant = {
   attributes: Record<string, string>;
   stock?: number | string;
   price?: number | string;
+  discountPrice?: number | string;
   images?: {
     file?: File;
     preview?: string;
@@ -29,7 +30,7 @@ export default function VariantSection({
   // 🔥 Update field (NO SKU)
   const updateField = (
     index: number,
-    field: "stock" | "price",
+    field: "stock" | "price" | "discountPrice",
     value: string
   ) => {
     setForm((prev: any) => ({
@@ -91,6 +92,7 @@ export default function VariantSection({
               ))}
 
               <th className="p-3">Price</th>
+              <th className="p-3">Discount Price</th>
               <th className="p-3">Stock</th>
               <th className="p-3">Images</th>
             </tr>
@@ -114,6 +116,18 @@ export default function VariantSection({
                     value={variant.price ?? ""}
                     onChange={(e) =>
                       updateField(index, "price", e.target.value)
+                    }
+                    className="border px-2 py-1 rounded w-24"
+                  />
+                </td>
+
+                {/* Discount Price */}
+                <td className="p-3">
+                  <input
+                    type="number"
+                    value={variant.discountPrice ?? ""}
+                    onChange={(e) =>
+                      updateField(index, "discountPrice", e.target.value)
                     }
                     className="border px-2 py-1 rounded w-24"
                   />

@@ -16,6 +16,7 @@ interface MyOrderStore {
 
   fetchMyOrders: (page?: number, limit?: number) => Promise<void>;
   cancelOrder: (id: string) => Promise<void>;
+  requestReturn: (id: string, reason: string) => Promise<void>;
 }
 
 export const useMyOrderStore = create<MyOrderStore>((set, get) => ({
@@ -57,6 +58,25 @@ export const useMyOrderStore = create<MyOrderStore>((set, get) => ({
     } catch (err: any) {
       set({ error: err.response?.data?.message || "Failed to cancel order" });
       toast.error(err.response?.data?.message || "Failed to cancel order");
+    } finally {
+      set({ loading: false });
+    }
+  },
+
+  requestReturn: async (id: string, reason: string) => {
+    set({ loading: true, error: null });
+    try {
+      const res = await orderAPI.requestReturn(id, reason);
+      const updatedOrder = res.data?.data || res.data;
+      
+      set((state) => ({
+        orders: state.orders.map((o) => (o._id === id ? updatedOrder : o)),
+      }));
+      
+      toast.success("Return requested successfully");
+    } catch (err: any) {
+      set({ error: err.response?.data?.message || "Failed to request return" });
+      toast.error(err.response?.data?.message || "Failed to request return");
     } finally {
       set({ loading: false });
     }

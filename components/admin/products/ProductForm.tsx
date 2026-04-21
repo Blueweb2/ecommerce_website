@@ -22,6 +22,7 @@ import router from "next/router";
 type ProductFormValues = {
   name: string;
   price: number | string;
+  discountPrice: number | string;
   description: string;
   deliveryDetails: string;
   keyFeatures: string[];
@@ -36,6 +37,7 @@ type ProductFormValues = {
     attributes: Record<string, string>;
     stock?: number | string;
     price?: number | string;
+    discountPrice?: number | string;
   }[];
 };
 
@@ -47,6 +49,7 @@ type Props = {
 const defaultValues: ProductFormValues = {
   name: "",
   price: "",
+  discountPrice: "",
   description: "",
   deliveryDetails: "",   // ✅ ADD
   keyFeatures: [],
@@ -86,6 +89,7 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
         attributes: v.attributes || {},
         stock: v.stock ?? "",
         price: v.price ?? "",
+        discountPrice: v.discountPrice ?? "",
       })) || [],
   });
 
@@ -121,13 +125,12 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
           const key = normalize(combo);
           const existing = existingMap.get(key);
 
-          return (
-            existing || {
-              attributes: combo,
-              stock: "",
-              price: "",
-            }
-          );
+          return existing || {
+            attributes: combo,
+            stock: "",
+            price: "",
+            discountPrice: "",
+          };
         }),
       };
     });
@@ -224,6 +227,7 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
           deliveryDetails: form.deliveryDetails.trim(),
           keyFeatures: form.keyFeatures.map((f) => f.trim()).filter(Boolean),
           price: Number(form.price),
+          discountPrice: Number(form.discountPrice) || undefined,
           category: form.category,
           sections: form.sections,
           images: form.images,
@@ -252,6 +256,7 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
           attributes: v.attributes,
           stock: v.stock === "" ? 0 : Number(v.stock),
           price: v.price === "" ? undefined : Number(v.price),
+          discountPrice: v.discountPrice === "" ? undefined : Number(v.discountPrice),
         }));
 
         payload = {
@@ -260,6 +265,7 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
           deliveryDetails: form.deliveryDetails.trim(),
           keyFeatures: form.keyFeatures.map((f) => f.trim()).filter(Boolean),
           price: Number(form.price),
+          discountPrice: Number(form.discountPrice) || undefined,
           category: form.category,
           sections: form.sections,
           images: form.images,

@@ -78,6 +78,7 @@ export default function HeroSection() {
                 src={hero.image?.url || "/placeholder.png"}
                 alt="Hero Banner"
                 fill
+                sizes="(max-width: 1024px) 100vw, 50vw"
                 priority={index === 0}
                 className="object-cover"
               />
@@ -117,6 +118,7 @@ export default function HeroSection() {
                 src={banners.center.image?.url || "/placeholder.png"}
                 alt="Center Banner"
                 fill
+                sizes="(max-width: 1024px) 100vw, 30vw"
                 priority
                 className="object-cover"
               />
@@ -136,6 +138,7 @@ export default function HeroSection() {
                   src={banners.rightTop.image?.url || "/placeholder.png"}
                   alt="Right Top Banner"
                   fill
+                  sizes="(max-width: 1024px) 100vw, 20vw"
                   priority
                   className="object-cover"
                 />
@@ -152,6 +155,7 @@ export default function HeroSection() {
                   src={banners.rightBottom.image?.url || "/placeholder.png"}
                   alt="Right Bottom Banner"
                   fill
+                  sizes="(max-width: 1024px) 100vw, 20vw"
                   priority
                   className="object-cover"
                 />

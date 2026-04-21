@@ -76,6 +76,7 @@ export type CatalogProductImage = CatalogImage;
 
 // ✅ PRODUCT TYPE
 export type CatalogProduct = {
+  isOnSale: boolean;
   _id: string;
   sku?: string;
   name: string;

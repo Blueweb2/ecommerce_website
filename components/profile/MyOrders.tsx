@@ -48,7 +48,7 @@ const getStatusIcon = (status: string) => {
 };
 
 const MyOrders = () => {
-  const { orders, loading, fetchMyOrders, cancelOrder } =
+  const { orders, loading, fetchMyOrders, cancelOrder, requestReturn } =
     useMyOrderStore();
 
   const [expandedOrder, setExpandedOrder] = useState<string | null>(null);
@@ -66,11 +66,12 @@ const MyOrders = () => {
       await cancelOrder(orderId);
     }
   };
-  const handleRefund = async (id: string) => {
-  await orderAPI.requestRefund(id);
-  alert("Refund requested");
-  fetchMyOrders();
-};
+  const handleRequestReturn = async (id: string) => {
+    const reason = window.prompt("Please enter a reason for returning this order:");
+    if (reason) {
+      await requestReturn(id, reason);
+    }
+  };
 
   /* ================= RETRY PAYMENT ================= */
   const handleRetryPayment = async (order: any) => {
@@ -145,12 +146,16 @@ const MyOrders = () => {
 
             <div className="flex items-center gap-3">
               <span
-                className={`px-3 py-1 rounded-full text-sm flex items-center gap-1 ${getStatusColor(
-                  order.status
-                )}`}
+                className={`px-3 py-1 rounded-full text-sm flex items-center gap-1 ${
+                  order.returnStatus && order.returnStatus !== "none"
+                    ? "bg-purple-50 text-purple-700 border-purple-200"
+                    : getStatusColor(order.status)
+                }`}
               >
                 {getStatusIcon(order.status)}
-                {order.status}
+                {order.returnStatus && order.returnStatus !== "none"
+                  ? `Return ${order.returnStatus.charAt(0).toUpperCase() + order.returnStatus.slice(1)}`
+                  : order.status}
               </span>
 
               <button onClick={() => toggleExpand(order._id)}>
@@ -214,14 +219,14 @@ const MyOrders = () => {
                     </button>
                   )}
                 </div>
-                {order.isPaid && order.status === "delivered" && (
-  <button
-    onClick={() => handleRefund(order._id)}
-    className="text-purple-600 text-sm"
-  >
-    Request Refund
-  </button>
-)}
+                {order.isPaid && order.status === "delivered" && order.returnStatus === "none" && (
+                  <button
+                    onClick={() => handleRequestReturn(order._id)}
+                    className="text-purple-600 text-sm"
+                  >
+                    Request Return
+                  </button>
+                )}
 
                 {/* DOWNLOAD */}
                 <button

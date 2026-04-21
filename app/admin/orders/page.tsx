@@ -57,7 +57,7 @@ export default function AdminOrdersPage() {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [activeStatus, setActiveStatus] = useState("all");
-  const { approveRefund, rejectRefund } = useOrderStore();
+  const { approveRefund, rejectRefund, approveReturn, rejectReturn, markReturnReceived } = useOrderStore();
   const [refundFilter, setRefundFilter] = useState<
   "all" | "requested" | "approved" | "rejected"
 >("all");
@@ -252,6 +252,13 @@ return (
                         Refund: {order.refundStatus}
                       </div>
                     )}
+                    
+                    {/* RETURN BADGE */}
+                    {order.returnStatus && order.returnStatus !== "none" && (
+                      <div className="text-xs mt-1 text-orange-600">
+                        Return: {order.returnStatus}
+                      </div>
+                    )}
                   </td>
 
                   {/* ACTIONS */}
@@ -289,6 +296,34 @@ return (
                             Reject
                           </button>
                         </>
+                      )}
+
+                      {/* RETURN ACTIONS */}
+                      {order.returnStatus === "requested" && (
+                        <>
+                          <button
+                            onClick={() => approveReturn(order._id)}
+                            className="px-3 py-1 bg-green-600 text-white rounded text-xs"
+                          >
+                            Approve Return
+                          </button>
+
+                          <button
+                            onClick={() => rejectReturn(order._id)}
+                            className="px-3 py-1 bg-red-600 text-white rounded text-xs"
+                          >
+                            Reject Return
+                          </button>
+                        </>
+                      )}
+
+                      {order.returnStatus === "approved" && (
+                        <button
+                          onClick={() => markReturnReceived(order._id)}
+                          className="px-3 py-1 bg-blue-600 text-white rounded text-xs"
+                        >
+                          Mark Received
+                        </button>
                       )}
 
                     </div>

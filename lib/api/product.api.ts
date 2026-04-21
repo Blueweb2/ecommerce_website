@@ -1,31 +1,42 @@
-// lib/api/product.ts
+// lib/api/product.api.ts
 
 import api from "@/lib/api/axios";
 
 export const productAPI = {
-  // ✅ Product Detail (IMPORTANT)
+  // 🔹 PRODUCT DETAILS
   getBySlug: (slug: string) =>
     api.get(`/products/slug/${slug}`),
 
-  // ✅ Optional (if you use ID anywhere)
   getById: (id: string) =>
     api.get(`/products/${id}`),
 
-  // ✅ Variants
+  // 🔹 VARIANTS
   getVariants: (id: string) =>
     api.get(`/products/${id}/variants`),
 
-  // ✅ Lists
+  // 🔹 MAIN PRODUCT LIST (WITH FILTERS)
+  getAll: (params?: {
+    page?: number;
+    limit?: number;
+    sort?: string;
+    category?: string;
+    minPrice?: number;
+    maxPrice?: number;
+    search?: string;
+  }) =>
+    api.get("/products", { params }),
+
+  // 🔥 SALE PRODUCTS (VERY IMPORTANT FOR YOUR PAGE)
+  getSale: (params?: {
+    page?: number;
+    limit?: number;
+    sort?: string;
+  }) =>
+    api.get("/products/sale", { params }),
+
+  // 🔹 FEATURED / HOME SECTIONS
   getFeatured: () =>
     api.get("/products/featured"),
-
- getProducts: (params?: {
-  page?: number;
-  limit?: number;
-  sort?: string;
-  category?: string;
-}) =>
-  api.get("/products", { params }),
 
   getTopRated: () =>
     api.get("/products?sections=top-rated"),
@@ -33,9 +44,9 @@ export const productAPI = {
   getBestSellers: () =>
     api.get("/products?sections=best-seller"),
 
-  // ✅ Search
-search: (query: string) =>
-  api.get("/products/search", {
-    params: { q: query },
-  }),
+  // 🔍 SEARCH
+  search: (query: string) =>
+    api.get("/products/search", {
+      params: { q: query },
+    }),
 };

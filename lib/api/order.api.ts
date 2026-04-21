@@ -38,4 +38,7 @@ retryPayment: (orderId: string) =>
 requestRefund: (orderId: string) =>
   api.put(`/orders/${orderId}/refund/request`),
 
+requestReturn: (orderId: string, reason: string) =>
+  api.post(`/orders/${orderId}/return`, { reason }),
+
 };
