@@ -57,8 +57,8 @@ export default function Navbar() {
 
       <div className="max-w-[2000px] mx-auto px-4 md:px-20 py-2 flex items-center justify-between">
 
-        {/* LOGO */}
-        <div className={`${playfair.className} text-2xl font-semibold tracking-wide text-white`}>
+        {/* LOGO FOR MOBILE DEVICE */}
+        <div className={`${playfair.className} text-2xl font-semibold tracking-wide text-white md:hidden`}>
           <Link href="/" aria-label="Go to homepage - GOLDLAND">
             FA
             <span className="script text-5xl p-0.5">zz</span>
@@ -66,9 +66,13 @@ export default function Navbar() {
           </Link>
         </div>
 
-        {/* NAV LINKS */}
-        <div className='flex flex-col items-center justify-center'>
+        {/* EMPTY SPACE */}
+        <div className="flex-1 hidden md:block"></div>
 
+        {/* NAV LINKS */}
+        <div className='hidden md:flex flex-col items-center justify-center flex-1'>
+
+          {/* LOGO FOR MOBILE LARGE DEVICE */}
           <div className={`${playfair.className} text-2xl font-semibold tracking-wide text-white`}>
             <Link href="/" aria-label="Go to homepage - GOLDLAND">
               FA
@@ -77,9 +81,8 @@ export default function Navbar() {
             </Link>
           </div>
 
-
           <nav
-            className="hidden md:flex items-center gap-8 text-sm"
+            className="flex items-center gap-8 text-sm"
             aria-label="Main navigation"
           >
             <Link href="/" aria-label="Go to Home page" className={linkClass("/")}>
@@ -129,7 +132,7 @@ export default function Navbar() {
         </div>
 
         {/* ICONS */}
-        <div className="flex items-center gap-4 text-white">
+        <div className="flex items-center gap-4 text-white justify-end flex-1">
           <button className="transition-colors duration-300 hover:text-[#D4AF37]">
             <Search size={18} />
           </button>
