@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import ProductForm from "@/components/admin/products/ProductForm";
 import { useProductStore } from "@/store/admin/useProductStore";
@@ -9,7 +9,6 @@ import toast from "react-hot-toast";
 import {
   ApiErrorResponse,
   CatalogProduct,
-  getPrimaryProductImage,
   ProductPayload,
 } from "@/lib/constants/admin-catalog";
 
@@ -25,6 +24,8 @@ export default function EditProductPage() {
 
   // ✅ Fetch product
   useEffect(() => {
+    if (!id) return;
+
     const fetchProduct = async () => {
       try {
         const res = await api.get(`/products/${id}`);
@@ -36,18 +37,13 @@ export default function EditProductPage() {
       }
     };
 
-    if (id) fetchProduct();
+    fetchProduct();
   }, [id]);
 
-  // ✅ FIXED: accepts files also
-  const handleSubmit = async (
-    data: ProductPayload,
-    files: File[]
-  ) => {
+  // ✅ Submit
+  const handleSubmit = async (data: ProductPayload, files: File[]) => {
     try {
-      // 🔥 IMPORTANT: for now ignore files (update API is JSON)
       await updateProduct(id, data, files);
-
       toast.success("Product updated");
       router.push("/admin/products");
     } catch (error: unknown) {
@@ -58,48 +54,90 @@ export default function EditProductPage() {
     }
   };
 
-  if (loading) return <div className="p-6">Loading...</div>;
-  if (!product)
-    return <div className="p-6 text-red-500">Not found</div>;
+  // ✅ Map product → form initialData (memoized)
+  const initialData = useMemo(() => {
+    if (!product) return undefined;
 
+    return {
+      name: product.name || "",
+      price: product.price ?? "",
+      discountPrice: product.discountPrice ?? "",
+
+      description: product.description || "",
+      deliveryDetails: product.deliveryDetails || "",
+      keyFeatures: product.keyFeatures || [],
+
+      category:
+        typeof product.category === "string"
+          ? product.category
+          : product.category?._id || "",
+
+      sections: product.sections || [],
+      brand: product.brand || "",
+      sku: product.sku || "",
+
+      stock: product.stock ?? "",
+      isPublished: product.isPublished ?? true,
+
+      images: product.images || [],
+
+      attributes: product.attributes || [],
+
+      variants:
+        product.variants?.map((variant) => ({
+          attributes: variant.attributes || {},
+          stock: variant.stock ?? "",
+          price: variant.price ?? "",
+          discountPrice: variant.discountPrice ?? "",
+          sku: variant.sku || "",
+        })) || [],
+
+      customizable: product.customizable || {
+        isCustomizable: false,
+        fields: [],
+      },
+    };
+  }, [product]);
+
+  // ✅ Loading / Not found
+  if (loading) {
+    return (
+      <div className="p-10 text-center text-slate-500">
+        Loading product...
+      </div>
+    );
+  }
+
+  if (!product) {
+    return (
+      <div className="p-10 text-center text-red-500">
+        Product not found
+      </div>
+    );
+  }
+
+  // ✅ UI
   return (
-    <div className="space-y-6">
+    <div className="max-w-6xl mx-auto space-y-8">
 
-      <div>
-        <h1 className="text-3xl font-semibold tracking-tight text-slate-900">
+      {/* HEADER */}
+      <div className="rounded-2xl border bg-white p-6 shadow-sm">
+        <h1 className="text-2xl font-semibold text-slate-900">
           Edit Product
         </h1>
-        <p className="mt-2 text-sm text-slate-500">
-          Update category placement, section tags, and product media.
+        <p className="text-sm text-slate-500 mt-1">
+          Update product details, pricing, sale, variants and media.
         </p>
       </div>
 
-    <ProductForm
-  initialData={{
-    name: product.name,
-    price: product.price,
-    description: product.description || "",
+      {/* FORM */}
+      <div className="rounded-2xl border bg-white p-6 shadow-sm">
+        <ProductForm
+          initialData={initialData}
+          onSubmit={handleSubmit}
+        />
+      </div>
 
-    category:
-      typeof product.category === "string"
-        ? product.category
-        : product.category?._id || "",
-
-    sections: product.sections || [],
-    images: product.images || [],
-
-    stock: product.stock ?? "",
-    isPublished: product.isPublished ?? true,
-
-    variants:
-      product.variants?.map((variant) => ({
-        attributes: variant.attributes || {},
-        stock: variant.stock ?? "",
-        price: variant.price ?? "",
-      })) || [],
-  }}
-  onSubmit={handleSubmit}
-/>
     </div>
   );
 }

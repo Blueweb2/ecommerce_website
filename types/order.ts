@@ -46,6 +46,9 @@ export interface Order {
   paymentMethod: "cod" | "razorpay";
   paymentStatus: "pending" | "success" | "failed";
   refundStatus: "none" | "requested" | "approved" | "rejected";
+  returnStatus: "none" | "requested" | "approved" | "rejected" | "received";
+  returnReason?: string;
+  returnRequestedAt?: string;
   isPaid: boolean;
   paidAt?: string;
   notes?: string;

@@ -77,19 +77,39 @@ export type CatalogProductImage = CatalogImage;
 // ✅ PRODUCT TYPE
 export type CatalogProduct = {
   _id: string;
-  sku?: string;
+
   name: string;
+  slug?: string;
+  sku?: string;
+
   description?: string;
   deliveryDetails?: string;
   keyFeatures?: string[];
+
   price: number;
+  discountPrice?: number; // ✅ ADD THIS
+  isOnSale: boolean;
+
+  brand?: string; // ✅ ADD THIS
+
   stock?: number;
   isPublished?: boolean;
+
   images?: CatalogProductImage[];
-  category?: CatalogEntity | string | null; // keep union (backend reality)
+
+  category?: CatalogEntity | string | null;
+
   sections?: string[];
+
+  attributes?: {
+    name: string;
+    values: string[];
+  }[]; // ✅ ADD THIS
+
   variants?: ProductVariant[];
-   customizable?: CustomizableConfig;
+
+  customizable?: CustomizableConfig;
+
   createdAt?: string;
   updatedAt?: string;
 };
@@ -107,6 +127,8 @@ export type ProductPayload = {
   images: CatalogImage[];
   stock: number;
   isPublished: boolean;
+  isOnSale: boolean;
+  discountPrice?: number;
 
    customizable?: CustomizableConfig;
 

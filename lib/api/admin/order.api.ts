@@ -14,6 +14,15 @@ export const adminOrderAPI = {
   approveRefund: (id: string) =>
   api.put(`/orders/${id}/refund/approve`),
 
-rejectRefund: (id: string) =>
-  api.put(`/orders/${id}/refund/reject`),
+  rejectRefund: (id: string) =>
+    api.put(`/orders/${id}/refund/reject`),
+    
+  approveReturn: (id: string) =>
+    api.put(`/orders/${id}/return/approve`),
+
+  rejectReturn: (id: string) =>
+    api.put(`/orders/${id}/return/reject`),
+
+  markReturnReceived: (id: string) =>
+    api.put(`/orders/${id}/return/receive`),
 };

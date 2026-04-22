@@ -17,11 +17,12 @@ import MediaSection from "./MediaSection";
 import PreviewSection from "./PreviewSection";
 import AttributeBuilder from "./AttributeBuilder";
 import toast from "react-hot-toast";
-import router from "next/router";
+import { useRouter } from "next/navigation";
 
 type ProductFormValues = {
   name: string;
   price: number | string;
+  discountPrice: number | string;
   description: string;
   deliveryDetails: string;
   keyFeatures: string[];
@@ -30,12 +31,14 @@ type ProductFormValues = {
   images: CatalogImage[];
   stock: number | string;
   isPublished: boolean;
+  isOnSale: boolean;
   primaryImageIndex?: number;
 
   variants: {
     attributes: Record<string, string>;
     stock?: number | string;
     price?: number | string;
+    discountPrice?: number | string;
   }[];
 };
 
@@ -47,6 +50,7 @@ type Props = {
 const defaultValues: ProductFormValues = {
   name: "",
   price: "",
+  discountPrice: "",
   description: "",
   deliveryDetails: "",   // ✅ ADD
   keyFeatures: [],
@@ -55,6 +59,7 @@ const defaultValues: ProductFormValues = {
   images: [],
   stock: "",
   isPublished: true,
+  isOnSale: false,
   variants: [],
   primaryImageIndex: 0,
 
@@ -74,18 +79,21 @@ const normalize = (obj: Record<string, string>) =>
   );
 
 export default function ProductForm({ onSubmit, initialData }: Props) {
+  const router = useRouter();
   const { categories, fetchCategories } = useCategoryStore();
   const [loading, setLoading] = useState(false);
 
   const [form, setForm] = useState<ProductFormValues>({
     ...defaultValues,
     ...initialData,
+    isOnSale: initialData?.isOnSale ?? false,
     sections: initialData?.sections || [],
     variants:
       initialData?.variants?.map((v) => ({
         attributes: v.attributes || {},
         stock: v.stock ?? "",
         price: v.price ?? "",
+        discountPrice: v.discountPrice ?? "",
       })) || [],
   });
 
@@ -121,13 +129,12 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
           const key = normalize(combo);
           const existing = existingMap.get(key);
 
-          return (
-            existing || {
-              attributes: combo,
-              stock: "",
-              price: "",
-            }
-          );
+          return existing || {
+            attributes: combo,
+            stock: "",
+            price: "",
+            discountPrice: "",
+          };
         }),
       };
     });
@@ -212,7 +219,7 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
         toast.error("Some variants were removed due to missing attributes");
       }
 
-      let payload: any;
+      let payload: ProductPayload;
 
       // ===============================
       // ✅ CASE 1: NO VARIANTS
@@ -224,11 +231,13 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
           deliveryDetails: form.deliveryDetails.trim(),
           keyFeatures: form.keyFeatures.map((f) => f.trim()).filter(Boolean),
           price: Number(form.price),
+          discountPrice: Number(form.discountPrice) || undefined,
           category: form.category,
           sections: form.sections,
           images: form.images,
           stock: Number(form.stock) || 0,
           isPublished: form.isPublished,
+          isOnSale: Boolean(form.isOnSale),
           attributes: [],
           variants: [],
           customizable: customizable.isCustomizable ? customizable : undefined,
@@ -252,6 +261,7 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
           attributes: v.attributes,
           stock: v.stock === "" ? 0 : Number(v.stock),
           price: v.price === "" ? undefined : Number(v.price),
+          discountPrice: v.discountPrice === "" ? undefined : Number(v.discountPrice),
         }));
 
         payload = {
@@ -260,11 +270,13 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
           deliveryDetails: form.deliveryDetails.trim(),
           keyFeatures: form.keyFeatures.map((f) => f.trim()).filter(Boolean),
           price: Number(form.price),
+          discountPrice: Number(form.discountPrice) || undefined,
           category: form.category,
           sections: form.sections,
           images: form.images,
           stock: Number(form.stock) || 0,
           isPublished: form.isPublished,
+          isOnSale: Boolean(form.isOnSale),
           attributes: attributesPayload,
           variants: variantsPayload,
           primaryImageIndex: form.primaryImageIndex || 0,
@@ -300,6 +312,7 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
     <form onSubmit={handleSubmit}>
       <ProductHeader
         isPublished={form.isPublished}
+        isOnSale={form.isOnSale}
         setForm={setForm}
       />
 
@@ -342,15 +355,24 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
           />
         </div>
 
-        {/* Product Content Section */}
-        <section className="rounded-2xl border p-6 bg-white space-y-4">
-          <h3 className="text-lg font-semibold">Product Content</h3>
+        <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm space-y-6">
 
-          {/* Description */}
+          {/* HEADER */}
           <div>
-            <label className="block text-sm font-medium mb-1">
+            <h3 className="text-lg font-semibold text-slate-900">
+              Product Content
+            </h3>
+            <p className="text-sm text-slate-500 mt-1">
+              Add description, delivery info, and highlight key features
+            </p>
+          </div>
+
+          {/* DESCRIPTION */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-slate-700">
               Product Description
             </label>
+
             <textarea
               value={form.description}
               onChange={(e) =>
@@ -359,16 +381,18 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
                   description: e.target.value,
                 }))
               }
-              className="w-full border rounded px-3 py-2"
+              placeholder="Describe the product, materials, usage..."
+              className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
               rows={4}
             />
           </div>
 
-          {/* Delivery Details */}
-          <div>
-            <label className="block text-sm font-medium mb-1">
+          {/* DELIVERY DETAILS */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-slate-700">
               Delivery Details
             </label>
+
             <textarea
               value={form.deliveryDetails}
               onChange={(e) =>
@@ -377,50 +401,59 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
                   deliveryDetails: e.target.value,
                 }))
               }
-              className="w-full border rounded px-3 py-2"
+              placeholder="Shipping time, packaging info, return policy..."
+              className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
               rows={3}
             />
           </div>
 
-          {/* Key Features */}
-          <div>
-            <label className="block text-sm font-medium mb-2">
+          {/* KEY FEATURES */}
+          <div className="space-y-3">
+            <label className="text-sm font-medium text-slate-700">
               Key Features
             </label>
 
-            {form.keyFeatures.map((feature: string, index: number) => (
-              <div key={index} className="flex gap-2 mb-2">
-                <input
-                  value={feature}
-                  onChange={(e) => {
-                    const updated = [...form.keyFeatures];
-                    updated[index] = e.target.value;
-
-                    setForm((prev) => ({
-                      ...prev,
-                      keyFeatures: updated,
-                    }));
-                  }}
-                  className="border px-3 py-2 rounded w-full"
-                />
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    const updated = form.keyFeatures.filter(
-                      (_, i) => i !== index
-                    );
-                    setForm((prev) => ({
-                      ...prev,
-                      keyFeatures: updated,
-                    }));
-                  }}
+            <div className="space-y-2">
+              {form.keyFeatures.map((feature: string, index: number) => (
+                <div
+                  key={index}
+                  className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2"
                 >
-                  ❌
-                </button>
-              </div>
-            ))}
+                  <input
+                    value={feature}
+                    placeholder="e.g. 100% Cotton, Handmade, Waterproof"
+                    onChange={(e) => {
+                      const updated = [...form.keyFeatures];
+                      updated[index] = e.target.value;
 
+                      setForm((prev) => ({
+                        ...prev,
+                        keyFeatures: updated,
+                      }));
+                    }}
+                    className="flex-1 bg-transparent outline-none text-sm"
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const updated = form.keyFeatures.filter(
+                        (_, i) => i !== index
+                      );
+                      setForm((prev) => ({
+                        ...prev,
+                        keyFeatures: updated,
+                      }));
+                    }}
+                    className="text-red-500 text-sm hover:text-red-700"
+                  >
+                    ✕
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            {/* ADD BUTTON */}
             <button
               type="button"
               onClick={() =>
@@ -429,18 +462,31 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
                   keyFeatures: [...prev.keyFeatures, ""],
                 }))
               }
-              className="text-blue-600 text-sm"
+              className="inline-flex items-center gap-2 text-sm font-medium text-green-600 hover:text-green-700"
             >
               + Add Feature
             </button>
           </div>
         </section>
 
-        <section className="rounded-2xl border p-6 bg-white space-y-4">
-          <h3 className="text-lg font-semibold">Customization</h3>
+        <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm space-y-6">
 
-          {/* Toggle */}
-          <label className="flex items-center gap-2">
+          {/* HEADER */}
+          <div>
+            <h3 className="text-lg font-semibold text-slate-900">
+              Customization
+            </h3>
+            <p className="text-sm text-slate-500 mt-1">
+              Add custom input fields (e.g. size, engraving, measurements)
+            </p>
+          </div>
+
+          {/* TOGGLE */}
+          <div className="flex items-center justify-between border rounded-xl px-4 py-3 bg-slate-50">
+            <span className="text-sm font-medium text-slate-700">
+              Enable Customization
+            </span>
+
             <input
               type="checkbox"
               checked={customizable.isCustomizable}
@@ -450,27 +496,33 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
                   isCustomizable: e.target.checked,
                 }))
               }
+              className="h-4 w-4 accent-green-600"
             />
-            Enable Customization
-          </label>
+          </div>
 
-          {/* Fields */}
+          {/* FIELDS */}
           {customizable.isCustomizable && (
             <div className="space-y-4">
-              {customizable.fields.map((field, index) => (
-                <div key={index} className="border p-3 rounded space-y-2">
 
+              {customizable.fields.map((field, index) => (
+                <div
+                  key={index}
+                  className="border border-slate-200 rounded-xl p-4 bg-slate-50 space-y-3"
+                >
+
+                  {/* FIELD NAME */}
                   <input
-                    placeholder="Field name (e.g., Chest)"
+                    placeholder="Field name (e.g. Chest Size)"
                     value={field.name}
                     onChange={(e) => {
                       const updated = [...customizable.fields];
                       updated[index].name = e.target.value;
                       setCustomizable({ ...customizable, fields: updated });
                     }}
-                    className="border p-2 w-full"
+                    className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
                   />
 
+                  {/* TYPE */}
                   <select
                     value={field.type}
                     onChange={(e) => {
@@ -478,14 +530,15 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
                       updated[index].type = e.target.value as any;
                       setCustomizable({ ...customizable, fields: updated });
                     }}
-                    className="border p-2 w-full"
+                    className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
                   >
-                    <option value="text">Text</option>
-                    <option value="number">Number</option>
-                    <option value="select">Select</option>
+                    <option value="text">Text Input</option>
+                    <option value="number">Number Input</option>
+                    <option value="select">Dropdown</option>
                   </select>
 
-                  <label>
+                  {/* REQUIRED */}
+                  <label className="flex items-center gap-2 text-sm text-slate-600">
                     <input
                       type="checkbox"
                       checked={field.required || false}
@@ -495,33 +548,44 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
                         setCustomizable({ ...customizable, fields: updated });
                       }}
                     />
-                    Required
+                    Required field
                   </label>
 
+                  {/* OPTIONS (ONLY FOR SELECT) */}
                   {field.type === "select" && (
                     <input
-                      placeholder="Options (comma separated)"
+                      placeholder="Options (e.g. S, M, L)"
+                      value={field.options?.join(", ") || ""}
                       onChange={(e) => {
                         const updated = [...customizable.fields];
-                        updated[index].options = e.target.value.split(",").map(o => o.trim());
+                        updated[index].options = e.target.value
+                          .split(",")
+                          .map((o) => o.trim());
                         setCustomizable({ ...customizable, fields: updated });
                       }}
-                      className="border p-2 w-full"
+                      className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
                     />
                   )}
 
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const updated = customizable.fields.filter((_, i) => i !== index);
-                      setCustomizable({ ...customizable, fields: updated });
-                    }}
-                  >
-                    ❌ Remove
-                  </button>
+                  {/* REMOVE BUTTON */}
+                  <div className="flex justify-end">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const updated = customizable.fields.filter(
+                          (_, i) => i !== index
+                        );
+                        setCustomizable({ ...customizable, fields: updated });
+                      }}
+                      className="text-sm text-red-500 hover:text-red-700"
+                    >
+                      Remove
+                    </button>
+                  </div>
                 </div>
               ))}
 
+              {/* ADD BUTTON */}
               <button
                 type="button"
                 onClick={() =>
@@ -533,9 +597,9 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
                     ],
                   }))
                 }
-                className="text-blue-600"
+                className="w-full border border-dashed border-slate-300 rounded-xl py-3 text-sm font-medium text-green-600 hover:bg-slate-50"
               >
-                + Add Field
+                + Add Custom Field
               </button>
             </div>
           )}

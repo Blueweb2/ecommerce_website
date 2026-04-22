@@ -73,7 +73,7 @@ export default function CoreDetails({ form, setForm, errors }: Props) {
         </div>
 
         {/* Price */}
-        <div className="grid gap-2 md:col-span-2">
+        <div className="grid gap-2 md:col-span-1">
           <label className="text-sm font-medium text-slate-700">
             Base Price
           </label>
@@ -99,6 +99,31 @@ export default function CoreDetails({ form, setForm, errors }: Props) {
           {errors.price && (
             <p className="text-sm text-rose-600">{errors.price}</p>
           )}
+        </div>
+
+        {/* Discount Price */}
+        <div className="grid gap-2 md:col-span-1">
+          <label className="text-sm font-medium text-slate-700">
+            Discount Price (Sale)
+          </label>
+
+          <input
+            type="number"
+            min="0"
+            placeholder="Leave blank if not on sale"
+            value={form.discountPrice || ""}
+            onChange={(e) =>
+              setForm((prev: any) => ({
+                ...prev,
+                discountPrice: e.target.value,
+              }))
+            }
+            className="rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-slate-400"
+          />
+
+          <p className="text-xs text-slate-500">
+            Lower than base price puts item on sale.
+          </p>
         </div>
 
         {/* Stock */}

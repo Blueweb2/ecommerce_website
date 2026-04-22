@@ -52,7 +52,7 @@ export default async function StoryDetailPage({ params }: Props) {
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-10">
-      
+
       {/* CATEGORY */}
       <p className="text-xs uppercase text-gray-500 mb-2">
         {story.category}
@@ -69,15 +69,16 @@ export default async function StoryDetailPage({ params }: Props) {
           src={story.image.url}
           alt={story.image.alt || story.title}
           fill
+          sizes="(max-width: 1024px) 100vw, 960px"
           className="object-cover"
         />
       </div>
 
       {/* DESCRIPTION */}
- <div
-  className="prose prose-lg prose-slate max-w-none"
-  dangerouslySetInnerHTML={{ __html: story.description }}
-/>
+      <div
+        className="prose prose-lg prose-slate max-w-none"
+        dangerouslySetInnerHTML={{ __html: story.description }}
+      />
     </div>
   );
 }
