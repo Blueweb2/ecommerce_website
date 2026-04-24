@@ -33,18 +33,20 @@ export default function CategoryPage() {
   }, [slug]);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-10">
+    <section className="px-4 md:px-20 bg-white mt-16">
 
-      {/* 🔹 TITLE */}
-      <h1 className="text-3xl font-semibold mb-2 capitalize">
-        {category?.name || slug}
-      </h1>
+      {/* TITLE */}
+      <div className="flex flex-col items-center justify-center mt-20">
+        <h1 className="text-3xl font-semibold mb-2 capitalize">
+          {category?.name || slug}
+        </h1>
 
-      <p className="text-gray-500 mb-6">
-        Explore all products in this category
-      </p>
+        <p className="text-gray-500 mb-6">
+          Explore all products in this category
+        </p>
+      </div>
 
-      {/* 🔹 PRODUCTS */}
+      {/* PRODUCTS */}
       {loading ? (
         <p>Loading...</p>
       ) : products.length === 0 ? (
@@ -52,17 +54,17 @@ export default function CategoryPage() {
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {products.map((product: any) => (
-            <div key={product._id} className="border p-4 rounded-lg">
+            <div key={product._id} className="p-4 h-[300px] lg:h-[444px]">
 
               <img
                 src={product.images?.[0]?.url}
                 alt={product.name}
-                className="w-full h-40 object-cover"
+                className="w-full h-[40%] lg:h-[70%] object-cover"
               />
 
               <h3 className="mt-2 font-medium">{product.name}</h3>
-
-              <p className="text-gray-600 text-sm">
+              <p className="text-gray-600">{product.description}</p>
+              <p className="mt-5">
                 ₹{product.price}
               </p>
 
@@ -70,6 +72,7 @@ export default function CategoryPage() {
           ))}
         </div>
       )}
-    </div>
+      
+    </section>
   );
-}
+};

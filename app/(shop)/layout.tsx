@@ -11,18 +11,18 @@ export default function ShopLayout({
   return (
     <div className="min-h-screen flex flex-col bg-white">
       
-      {/* 🔹 NAVBAR */}
+      {/* NAVBAR */}
       <Navbar />
 
-      {/* 🔹 CONTENT */}
-      <main className="flex-1 max-w-7xl mx-auto px-4 py-14 w-full">
+      {/* CONTENT */}
+      <main className="flex-1 max-w-[2000px] mx-auto py-14 w-full">
         {children}
       </main>
 
-      {/* 🔹 FOOTER */}
+      {/* FOOTER */}
       <Footer />
 
-      {/* 🔹 CART DRAWER */}
+      {/* CART DRAWER */}
       <CartDrawer />
     </div>
   );
