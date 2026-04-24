@@ -12,6 +12,7 @@ type ProductState = {
   fetchProducts: () => Promise<void>;
   fetchProductBySlug: (slug: string) => Promise<void>;
   fetchSaleProducts: (sort?: string) => Promise<void>;
+  fetchNewProducts: () => Promise<void>;
 };
 
 export const useProductStore = create<ProductState>((set) => ({
@@ -55,6 +56,20 @@ export const useProductStore = create<ProductState>((set) => ({
       set({ products: res.data.data });
     } catch (err: any) {
       set({ error: "Failed to fetch sale products" });
+    } finally {
+      set({ loading: false });
+    }
+  },
+
+  fetchNewProducts: async () => {
+    try {
+      set({ loading: true });
+
+      const res = await productAPI.getNew();
+
+      set({ products: res.data.data });
+    } catch (err: any) {
+      set({ error: "Failed to fetch new products" });
     } finally {
       set({ loading: false });
     }
