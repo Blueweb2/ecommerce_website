@@ -177,7 +177,7 @@ export default function ProductList({
                 </div>
                 <div className="flex gap-2">
                   <Link
-                    href={`/admin/products/${product._id}`}
+                    href={`/admin/products/${product._id}/edit`}
                     className="bg-blue-600 text-white py-2 px-4 rounded text-sm font-medium hover:bg-blue-700 transition-colors"
                   >
                     Edit

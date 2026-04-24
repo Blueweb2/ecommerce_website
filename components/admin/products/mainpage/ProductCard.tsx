@@ -94,7 +94,7 @@ export default function ProductCard({
         {/* Actions */}
         <div className="flex gap-2 pt-2">
           <Link
-            href={`/admin/products/${product._id}`}
+            href={`/admin/products/${product._id}/edit`}
             className="flex-1 bg-blue-600 text-white text-center py-2 px-3 rounded text-sm font-medium hover:bg-blue-700 transition-colors"
           >
             Edit
