@@ -68,7 +68,7 @@ interface User {
   id: string;
   name: string;
   email: string;
-  role: string;
+  role: "user" | "admin" | "superadmin";
 }
 
 interface AuthState {
@@ -78,12 +78,13 @@ interface AuthState {
 
   setUser: (user: User | null) => void;
   setLoading: (loading: boolean) => void;
+  resetAuth: () => void;
   logout: () => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
-  loading: true,
+  loading: false, // ✅ FIXED
   isAuthenticated: false,
 
   setUser: (user) =>
@@ -91,12 +92,22 @@ export const useAuthStore = create<AuthState>((set) => ({
       user,
       isAuthenticated: Boolean(user),
     }),
+
   setLoading: (loading) => set({ loading }),
+
+  resetAuth: () =>
+    set({
+      user: null,
+      isAuthenticated: false,
+      loading: false,
+    }),
 
   logout: async () => {
     try {
       await api.post("/auth/logout");
-    } catch {}
+    } catch (err) {
+      console.warn("Logout API failed, clearing locally");
+    }
 
     clearAccessToken();
     useAddressStore.getState().resetAddresses();
