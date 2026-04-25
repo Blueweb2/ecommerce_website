@@ -2,15 +2,16 @@
 
 import Link from "next/link";
 import {
-  LayoutDashboard,
-  Package,
-  Tag,
-  Users,
-  ShoppingCart,
-  UserCog,
-  User,
-  Image as ImageIcon,
   BookOpen,
+  Image as ImageIcon,
+  LayoutDashboard,
+  LayoutGrid,
+  Package,
+  ShoppingCart,
+  Tag,
+  User,
+  UserCog,
+  Users,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useAuthStore } from "@/store/auth/useAuthStore";
@@ -19,69 +20,66 @@ export default function AdminSidebar() {
   const pathname = usePathname();
   const { user } = useAuthStore();
 
-  // 🔥 Dynamic menu
-const menu = [
-  {
-    name: "Dashboard",
-    href: "/admin/dashboard",
-    icon: LayoutDashboard,
-  },
-  {
-    name: "Products",
-    href: "/admin/products",
-    icon: Package,
-  },
-  {
-    name: "Categories",
-    href: "/admin/categories",
-    icon: Tag,
-  },
-
-  // ✅ Banner Management
-  {
-    name: "Banners",
-    href: "/admin/banners",
-    icon: ImageIcon,
-  },
-
-  // ✅ Stories Management
-  {
-    name: "Stories",
-    href: "/admin/stories",
-    icon: BookOpen,
-  },
-
-  {
-    name: "Orders",
-    href: "/admin/orders",
-    icon: ShoppingCart,
-  },
-  {
-    name: "Users",
-    href: "/admin/users",
-    icon: Users,
-  },
-
-  ...(user?.role === "superadmin"
-    ? [
-        {
-          name: "Admins",
-          href: "/admin/admins",
-          icon: UserCog,
-        },
-      ]
-    : []),
-
-  {
-    name: "Profile",
-    href: "/admin/profile",
-    icon: User,
-  },
-];
+  const menu = [
+    {
+      name: "Dashboard",
+      href: "/admin/dashboard",
+      icon: LayoutDashboard,
+    },
+    {
+      name: "Products",
+      href: "/admin/products",
+      icon: Package,
+    },
+    {
+      name: "Categories",
+      href: "/admin/categories",
+      icon: Tag,
+    },
+    {
+      name: "Collections",
+      href: "/admin/collections",
+      icon: LayoutGrid,
+    },
+    {
+      name: "Banners",
+      href: "/admin/banners",
+      icon: ImageIcon,
+    },
+    {
+      name: "Stories",
+      href: "/admin/stories",
+      icon: BookOpen,
+    },
+    {
+      name: "Orders",
+      href: "/admin/orders",
+      icon: ShoppingCart,
+    },
+    {
+      name: "Users",
+      href: "/admin/users",
+      icon: Users,
+    },
+    ...(user?.role === "superadmin"
+      ? [
+          {
+            name: "Admins",
+            href: "/admin/admins",
+            icon: UserCog,
+          },
+        ]
+      : []),
+    {
+      name: "Profile",
+      href: "/admin/profile",
+      icon: User,
+    },
+  ];
 
   return (
-    <div className="w-64 h-screen bg-[#1a1f1a] text-white flex flex-col p-4">
-      <h1 className="text-xl font-bold mb-8">Admin Panel</h1>
+    <div className="flex h-screen w-64 flex-col bg-[#1a1f1a] p-4 text-white">
+      <h1 className="mb-8 text-xl font-bold">Admin Panel</h1>
 
       <nav className="space-y-2">
         {menu.map((item) => {
@@ -92,10 +90,8 @@ const menu = [
             <Link
               key={item.name}
               href={item.href}
-              className={`flex items-center gap-3 p-3 rounded-lg transition ${
-                active
-                  ? "bg-green-600"
-                  : "hover:bg-[#2a2f2a]"
+              className={`flex items-center gap-3 rounded-lg p-3 transition ${
+                active ? "bg-green-600" : "hover:bg-[#2a2f2a]"
               }`}
             >
               <Icon size={18} />

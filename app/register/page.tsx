@@ -5,6 +5,7 @@ import { ChangeEvent, FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import api from "@/lib/api/axios";
+import axios from "axios";
 
 type RegisterForm = {
   name: string;
@@ -15,12 +16,14 @@ type RegisterForm = {
 
 export default function RegisterPage() {
   const router = useRouter();
+
   const [form, setForm] = useState<RegisterForm>({
     name: "",
     email: "",
     password: "",
     phone: "",
   });
+
   const [loading, setLoading] = useState(false);
 
   const handleChange =
@@ -34,34 +37,38 @@ export default function RegisterPage() {
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    // 🔥 Basic validation
+    if (!form.name || !form.email || !form.password) {
+      return toast.error("Please fill all required fields");
+    }
+
+    if (form.password.length < 6) {
+      return toast.error("Password must be at least 6 characters");
+    }
+
     setLoading(true);
 
     try {
+      const emailNormalized = form.email.trim().toLowerCase();
+
       await api.post("/auth/register", {
-        name: form.name,
-        email: form.email,
+        name: form.name.trim(),
+        email: emailNormalized,
         password: form.password,
         phone: form.phone.trim() || undefined,
       });
 
-      toast.success("Account created successfully");
-      router.push("/login");
-    } catch (error: unknown) {
-      const message =
-        typeof error === "object" &&
-        error !== null &&
-        "response" in error &&
-        typeof error.response === "object" &&
-        error.response !== null &&
-        "data" in error.response &&
-        typeof error.response.data === "object" &&
-        error.response.data !== null &&
-        "message" in error.response.data &&
-        typeof error.response.data.message === "string"
-          ? error.response.data.message
-          : "Registration failed";
+      toast.success("OTP sent to your email");
 
-      toast.error(message);
+      // ✅ redirect to OTP page
+      router.push(`/verify-otp?email=${emailNormalized}`);
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        toast.error(error.response?.data?.message || "Registration failed");
+      } else {
+        toast.error("Something went wrong");
+      }
     } finally {
       setLoading(false);
     }
@@ -70,6 +77,8 @@ export default function RegisterPage() {
   return (
     <div className="min-h-screen bg-[#0f172a] px-4 py-10">
       <div className="mx-auto flex min-h-[calc(100vh-5rem)] w-full max-w-5xl overflow-hidden rounded-[2rem] bg-[#f8f6f2] shadow-2xl">
+
+        {/* LEFT PANEL */}
         <section className="hidden flex-1 bg-[linear-gradient(145deg,#161d15_0%,#283223_55%,#87651e_100%)] p-10 text-white lg:flex lg:flex-col lg:justify-between">
           <div>
             <p className="text-xs uppercase tracking-[0.35em] text-[#e3c67c]">
@@ -79,8 +88,7 @@ export default function RegisterPage() {
               Create your account and start building your jewelry wishlist.
             </h1>
             <p className="mt-4 max-w-md text-sm leading-6 text-white/75">
-              Save favorites, track your orders, and check out faster whenever
-              you are ready.
+              Save favorites, track your orders, and check out faster.
             </p>
           </div>
 
@@ -96,27 +104,30 @@ export default function RegisterPage() {
           </div>
         </section>
 
+        {/* FORM */}
         <section className="flex w-full flex-1 items-center justify-center p-6 sm:p-10">
           <div className="w-full max-w-md space-y-6">
+
             <div className="text-center">
               <h2 className="text-3xl font-semibold text-[#1a1f1a]">
                 Create Account
               </h2>
               <p className="mt-2 text-sm text-gray-500">
-                Join Goldland to shop, save, and manage your orders.
+                Join Goldland to shop and manage your orders.
               </p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
+
               <div>
                 <label className="text-sm text-gray-700">Full Name</label>
                 <input
                   type="text"
                   required
-                  placeholder="Your full name"
                   value={form.name}
                   onChange={handleChange("name")}
-                  className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#d4af37]"
+                  disabled={loading}
+                  className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-[#d4af37]"
                 />
               </div>
 
@@ -125,10 +136,10 @@ export default function RegisterPage() {
                 <input
                   type="email"
                   required
-                  placeholder="you@example.com"
                   value={form.email}
                   onChange={handleChange("email")}
-                  className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#d4af37]"
+                  disabled={loading}
+                  className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-[#d4af37]"
                 />
               </div>
 
@@ -136,10 +147,10 @@ export default function RegisterPage() {
                 <label className="text-sm text-gray-700">Phone</label>
                 <input
                   type="tel"
-                  placeholder="Optional phone number"
                   value={form.phone}
                   onChange={handleChange("phone")}
-                  className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#d4af37]"
+                  disabled={loading}
+                  className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-[#d4af37]"
                 />
               </div>
 
@@ -148,20 +159,17 @@ export default function RegisterPage() {
                 <input
                   type="password"
                   required
-                  placeholder="At least 6 characters"
                   value={form.password}
                   onChange={handleChange("password")}
-                  className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#d4af37]"
+                  disabled={loading}
+                  className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-[#d4af37]"
                 />
-                <p className="mt-2 text-xs text-gray-500">
-                  Must include one uppercase letter and one number.
-                </p>
               </div>
 
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full rounded-lg bg-[#1a1f1a] py-2 text-white transition hover:bg-black disabled:cursor-not-allowed disabled:opacity-70"
+                className="w-full rounded-lg bg-[#1a1f1a] py-2 text-white hover:bg-black transition disabled:opacity-70"
               >
                 {loading ? "Creating account..." : "Create Account"}
               </button>
@@ -173,6 +181,7 @@ export default function RegisterPage() {
                 Login
               </Link>
             </p>
+
           </div>
         </section>
       </div>

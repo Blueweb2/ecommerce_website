@@ -54,11 +54,11 @@ export default function CollectionForm({ initialData, onSubmit }: Props) {
     const bannerImage =
       initialData.bannerImage && typeof initialData.bannerImage !== "string"
         ? {
-            url: initialData.bannerImage.url || "",
-            public_id: initialData.bannerImage.public_id || "",
-            altText:
-              initialData.bannerImage.altText || initialData.bannerImage.alt || "",
-          }
+          url: initialData.bannerImage.url || "",
+          public_id: initialData.bannerImage.public_id || "",
+          altText:
+            initialData.bannerImage.altText || initialData.bannerImage.alt || "",
+        }
         : undefined;
 
     setForm({
@@ -197,7 +197,7 @@ export default function CollectionForm({ initialData, onSubmit }: Props) {
       await onSubmit({
         title: form.title.trim(),
         slug: slugifyCollectionTitle(form.slug),
-        description: form.description.trim(),
+        description: form.description?.trim() || "",
         bannerImage: form.bannerImage,
         filters: {
           category: form.filters.category || undefined,
@@ -418,11 +418,10 @@ export default function CollectionForm({ initialData, onSubmit }: Props) {
                   return (
                     <label
                       key={tag.value}
-                      className={`flex items-center gap-3 rounded-2xl border px-4 py-3 text-sm transition ${
-                        checked
+                      className={`flex items-center gap-3 rounded-2xl border px-4 py-3 text-sm transition ${checked
                           ? "border-emerald-200 bg-emerald-50 text-emerald-900"
                           : "border-slate-200 bg-white text-slate-700 hover:border-slate-300"
-                      }`}
+                        }`}
                     >
                       <input
                         type="checkbox"

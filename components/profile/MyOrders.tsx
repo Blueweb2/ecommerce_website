@@ -127,6 +127,36 @@ const MyOrders = () => {
     return <div className="p-6 text-center">Loading...</div>;
   }
 
+  if (!loading && orders.length === 0) {
+  return (
+    <div className="flex flex-col items-center justify-center py-20 text-center">
+      
+      {/* ICON */}
+      <div className="w-16 h-16 rounded-full border flex items-center justify-center mb-4">
+        <span className="text-2xl">!</span>
+      </div>
+
+      {/* TITLE */}
+      <h2 className="text-xl font-semibold text-gray-800">
+        You don’t currently have any orders
+      </h2>
+
+      {/* SUBTEXT */}
+      <p className="text-gray-500 mt-2 max-w-sm">
+        Once you have checked out, you can view and track your orders here
+      </p>
+
+      {/* BUTTON */}
+      <button
+        onClick={() => window.location.href = "/"}
+        className="mt-6 text-[#d4af37] underline hover:text-black transition"
+      >
+        Shop What’s New
+      </button>
+    </div>
+  );
+}
+
   return (
     <div className="space-y-6">
       {orders.map((order) => (
