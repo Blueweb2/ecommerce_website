@@ -88,13 +88,6 @@ export default function NewInSection() {
             >
               Shop New In
             </Link>
-            <Link
-              href="/new-in"
-              className="inline-block border border-neutral-900 text-neutral-900 text-xs tracking-widest px-10 
-              py-2.5 hover:bg-neutral-100 transition-colors duration-200"
-            >
-              View All
-            </Link>
           </div>
         </div>
 
