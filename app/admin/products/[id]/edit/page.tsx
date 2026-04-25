@@ -11,6 +11,16 @@ import {
   CatalogProduct,
   ProductPayload,
 } from "@/lib/constants/admin-catalog";
+import {
+  ArrowLeft,
+  ExternalLink,
+  ChevronRight,
+  Eye,
+  Settings,
+  Globe,
+  Tag
+} from "lucide-react";
+import Link from "next/link";
 
 export default function EditProductPage() {
   const params = useParams();
@@ -78,6 +88,7 @@ export default function EditProductPage() {
 
       stock: product.stock ?? "",
       isPublished: product.isPublished ?? true,
+      isOnSale: product.isOnSale ?? false, // ✅ ADDED
 
       images: product.images || [],
 
@@ -118,7 +129,7 @@ export default function EditProductPage() {
 
   // ✅ UI
   return (
-    <div className="max-w-6xl mx-auto space-y-8">
+    <div className="max-w-6xl mx-auto space-y-8 pb-20">
 
       {/* HEADER */}
       <div className="rounded-2xl border bg-white p-6 shadow-sm">

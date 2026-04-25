@@ -4,6 +4,7 @@ export const PRODUCT_SECTION_OPTIONS = [
   { value: "best-seller", label: "Best Seller" },
   { value: "new-arrival", label: "New Arrival" },
   { value: "top-rated", label: "Top Rated" },
+  { value: "new-in", label: "New In" },
 ] as const;
 
 export type ProductSectionValue =

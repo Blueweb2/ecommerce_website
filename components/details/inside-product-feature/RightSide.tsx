@@ -174,13 +174,17 @@ const RightSide = ({ product }: Props) => {
       </div>
 
       {/* PRICE */}
-      <div>
-        <p className="text-xl font-semibold">₹{price}</p>
-
-        {discountPrice && (
-          <p className="text-sm line-through text-gray-400">
-            ₹{discountPrice}
-          </p>
+      <div className="flex items-center gap-3">
+        {discountPrice ? (
+          <>
+            <p className="text-2xl font-bold text-red-600">₹{discountPrice}</p>
+            <p className="text-lg line-through text-gray-400">₹{price}</p>
+            <span className="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded tracking-wide">
+              {Math.round(((price - discountPrice) / price) * 100)}% OFF
+            </span>
+          </>
+        ) : (
+          <p className="text-2xl font-bold text-gray-900">₹{price}</p>
         )}
       </div>
 

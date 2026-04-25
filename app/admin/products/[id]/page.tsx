@@ -50,13 +50,22 @@ export default function ViewProductPage() {
 
   return (
     <div className="space-y-6">
-      <Link
-        href="/admin/products"
-        className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50"
-      >
-        <ArrowLeft className="h-4 w-4" />
-        Back to products
-      </Link>
+      <div className="flex flex-wrap items-center gap-3">
+        <Link
+          href="/admin/products"
+          className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to products
+        </Link>
+
+        <Link
+          href={`/admin/products/${id}/edit`}
+          className="inline-flex items-center gap-2 rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-slate-800"
+        >
+          Edit product
+        </Link>
+      </div>
 
       <section className="overflow-hidden rounded-[32px] bg-[#12251a] text-white shadow-xl">
         <div className="flex flex-col gap-6 p-6 md:flex-row md:items-end md:justify-between md:p-8">

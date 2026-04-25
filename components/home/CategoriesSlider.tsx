@@ -1,0 +1,87 @@
+"use client";
+
+import { useRef, useEffect, useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { categoryAPI } from "@/lib/api/category.api";
+
+type Category = {
+  _id: string;
+  name: string;
+  slug: string;
+  image?: {
+    url: string;
+  };
+};
+
+export default function CategoriesSlider() {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await categoryAPI.getAll();
+        setCategories(res.data?.data || []);
+      } catch (error) {
+        console.error("Failed to fetch categories", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  const scroll = (direction: "left" | "right") => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollBy({
+        left: scrollRef.current.offsetWidth * 0.7,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  return (
+    <div>
+      {/* HEADER */}
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-[40px]">Shop by Categories</h2>
+
+        <div className="flex gap-2">
+          <button onClick={() => scroll("left")}>
+            <ChevronLeft />
+          </button>
+          <button onClick={() => scroll("right")}>
+            <ChevronRight />
+          </button>
+        </div>
+      </div>
+
+      {/* SLIDER */}
+      <div ref={scrollRef} className="flex gap-4 overflow-x-auto">
+        {loading ? (
+          <p>Loading...</p>
+        ) : (
+          categories.map((cat) => (
+            <Link key={cat._id} href={`/category/${cat.slug}`}>
+              <div className="relative w-[200px] h-[130px]">
+                <Image
+                  src={cat.image?.url || "/placeholder.png"}
+                  alt={cat.name}
+                  fill
+                  className="object-cover"
+                />
+                <h3 className="absolute inset-0 flex items-center justify-center text-white bg-black/30">
+                  {cat.name}
+                </h3>
+              </div>
+            </Link>
+          ))
+        )}
+      </div>
+    </div>
+  );
+}

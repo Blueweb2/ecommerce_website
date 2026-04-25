@@ -34,6 +34,10 @@ export const productAPI = {
   }) =>
     api.get("/products/sale", { params }),
 
+  // 🔹 NEW PRODUCTS
+  getNew: () =>
+    api.get("/products/new"),
+
   // 🔹 FEATURED / HOME SECTIONS
   getFeatured: () =>
     api.get("/products/featured"),

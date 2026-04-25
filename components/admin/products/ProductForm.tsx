@@ -16,6 +16,7 @@ import VariantSection from "./VariantSection";
 import MediaSection from "./MediaSection";
 import PreviewSection from "./PreviewSection";
 import AttributeBuilder from "./AttributeBuilder";
+import PricingSection from "./PricingSection";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
@@ -52,7 +53,7 @@ const defaultValues: ProductFormValues = {
   price: "",
   discountPrice: "",
   description: "",
-  deliveryDetails: "",   // ✅ ADD
+  deliveryDetails: "",
   keyFeatures: [],
   category: "",
   sections: [],
@@ -62,12 +63,8 @@ const defaultValues: ProductFormValues = {
   isOnSale: false,
   variants: [],
   primaryImageIndex: 0,
-
 };
 
-
-
-// 🔹 Normalize helper (important)
 const normalize = (obj: Record<string, string>) =>
   JSON.stringify(
     Object.keys(obj)
@@ -97,7 +94,6 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
       })) || [],
   });
 
-
   const [customizable, setCustomizable] = useState({
     isCustomizable: false,
     fields: [] as {
@@ -108,54 +104,48 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
       unit?: string;
     }[],
   });
+
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [files, setFiles] = useState<File[]>([]);
-  const [attributes, setAttributes] = useState<
-    { name: string; values: string[] }[]
-  >([]);
+  const [attributes, setAttributes] = useState<{ name: string; values: string[] }[]>([]);
+  const [currentStep, setCurrentStep] = useState(1);
+  const [saleType, setSaleType] = useState<"percentage" | "fixed">("percentage");
 
-  // 🔥 Generate variants (NO SKU here)
+  const steps = [
+    "Basic Info",
+    "Media",
+    "Attributes & Variants",
+    "Pricing & Sale",
+    "Customization",
+    "Preview & Publish",
+  ];
+
+  const nextStep = () => setCurrentStep((prev) => Math.min(prev + 1, 6));
+  const prevStep = () => setCurrentStep((prev) => Math.max(prev - 1, 1));
+
   useEffect(() => {
     const combos = generateVariants(attributes);
-
     setForm((prev) => {
-      const existingMap = new Map(
-        prev.variants.map((v) => [normalize(v.attributes), v])
-      );
-
+      const existingMap = new Map(prev.variants.map((v) => [normalize(v.attributes), v]));
       return {
         ...prev,
         variants: combos.map((combo) => {
           const key = normalize(combo);
           const existing = existingMap.get(key);
-
-          return existing || {
-            attributes: combo,
-            stock: "",
-            price: "",
-            discountPrice: "",
-          };
+          return existing || { attributes: combo, stock: "", price: "", discountPrice: "" };
         }),
       };
     });
   }, [attributes]);
 
-  // 🔥 Load attributes in edit mode
   useEffect(() => {
     if (initialData?.variants?.length) {
       const first = initialData.variants[0];
-
       const keys = Object.keys(first.attributes || {});
-
       const attrs = keys.map((key) => ({
         name: key,
-        values: [
-          ...new Set(
-            initialData.variants!.map((v) => v.attributes[key])
-          ),
-        ],
+        values: [...new Set(initialData.variants!.map((v) => v.attributes[key]))],
       }));
-
       setAttributes(attrs);
     }
   }, [initialData]);
@@ -164,456 +154,184 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
     fetchCategories();
   }, [fetchCategories]);
 
-  // ✅ Validation
   const validateForm = () => {
     const nextErrors: Record<string, string> = {};
-
-    const price = Number(form.price);
-    const stock = Number(form.stock);
-
     if (!form.name.trim()) nextErrors.name = "Product name is required";
     if (!form.category) nextErrors.category = "Category is required";
-
-    if (isNaN(price) || price <= 0)
-      nextErrors.price = "Price must be greater than 0";
-
-    if (isNaN(stock) || stock < 0)
-      nextErrors.stock = "Stock cannot be negative";
-
-    if (files.length === 0 && form.images.length === 0) {
-      nextErrors.images = "At least one product image is required";
-    }
-
-    const hasInvalidVariant = form.variants.some((v) =>
-      Object.keys(v.attributes).length > 0 &&
-      Object.values(v.attributes).some((val) => val.trim() === "")
-    );
-
-    if (hasInvalidVariant) {
-      nextErrors.variants = "All variant attributes must be filled";
-      toast.error("Please fill all variant attributes");
-    }
-
+    if (files.length === 0 && form.images.length === 0) nextErrors.images = "At least one product image is required";
     setErrors(nextErrors);
     return Object.keys(nextErrors).length === 0;
   };
 
-  // ✅ SUBMIT
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    // ❗ prevent double submit
     if (loading) return;
-
     if (!validateForm()) return;
-
     try {
       setLoading(true);
-
       const cleanedVariants = form.variants.filter((v) =>
         Object.values(v.attributes).every((val) => val.trim() !== "")
       );
 
-      // ✅ Show warning only if needed
-      if (form.variants.length > cleanedVariants.length) {
-        toast.error("Some variants were removed due to missing attributes");
-      }
-
-      let payload: ProductPayload;
-
-      // ===============================
-      // ✅ CASE 1: NO VARIANTS
-      // ===============================
-      if (cleanedVariants.length === 0) {
-        payload = {
-          name: form.name.trim(),
-          description: form.description.trim(),
-          deliveryDetails: form.deliveryDetails.trim(),
-          keyFeatures: form.keyFeatures.map((f) => f.trim()).filter(Boolean),
-          price: Number(form.price),
-          discountPrice: Number(form.discountPrice) || undefined,
-          category: form.category,
-          sections: form.sections,
-          images: form.images,
-          stock: Number(form.stock) || 0,
-          isPublished: form.isPublished,
-          isOnSale: Boolean(form.isOnSale),
-          attributes: [],
-          variants: [],
-          customizable: customizable.isCustomizable ? customizable : undefined,
-          primaryImageIndex: Number(form.primaryImageIndex) || 0,
-        };
-      } else {
-        // ===============================
-        // ✅ CASE 2: WITH VARIANTS
-        // ===============================
-
-        const attributeKeys = Object.keys(cleanedVariants[0].attributes);
-
-        const attributesPayload = attributeKeys.map((key) => ({
-          name: key,
-          values: [
-            ...new Set(cleanedVariants.map((v) => v.attributes[key])),
-          ],
-        }));
-
-        const variantsPayload = cleanedVariants.map((v) => ({
+      const payload: ProductPayload = {
+        name: form.name.trim(),
+        description: form.description.trim(),
+        deliveryDetails: form.deliveryDetails.trim(),
+        keyFeatures: form.keyFeatures.map((f) => f.trim()).filter(Boolean),
+        price: Number(form.price),
+        discountPrice: Number(form.discountPrice) || undefined,
+        category: form.category,
+        sections: form.sections,
+        images: form.images,
+        stock: Number(form.stock) || 0,
+        isPublished: form.isPublished,
+        isOnSale: Boolean(form.isOnSale),
+        attributes:
+          cleanedVariants.length > 0
+            ? Object.keys(cleanedVariants[0].attributes).map((key) => ({
+              name: key,
+              values: [
+                ...new Set(cleanedVariants.map((v) => v.attributes[key])),
+              ],
+            }))
+            : [],
+        variants: cleanedVariants.map((v) => ({
           attributes: v.attributes,
           stock: v.stock === "" ? 0 : Number(v.stock),
           price: v.price === "" ? undefined : Number(v.price),
           discountPrice: v.discountPrice === "" ? undefined : Number(v.discountPrice),
-        }));
+        })),
+        primaryImageIndex: form.primaryImageIndex || 0,
+        customizable: customizable.isCustomizable ? customizable : undefined,
+      };
 
-        payload = {
-          name: form.name.trim(),
-          description: form.description.trim(),
-          deliveryDetails: form.deliveryDetails.trim(),
-          keyFeatures: form.keyFeatures.map((f) => f.trim()).filter(Boolean),
-          price: Number(form.price),
-          discountPrice: Number(form.discountPrice) || undefined,
-          category: form.category,
-          sections: form.sections,
-          images: form.images,
-          stock: Number(form.stock) || 0,
-          isPublished: form.isPublished,
-          isOnSale: Boolean(form.isOnSale),
-          attributes: attributesPayload,
-          variants: variantsPayload,
-          primaryImageIndex: form.primaryImageIndex || 0,
-          customizable: customizable.isCustomizable ? customizable : undefined,
-        };
-      }
-
-      // ===============================
-      // ✅ API CALL
-      // ===============================
       await onSubmit(payload, files);
-
-      // ===============================
-      // ✅ SUCCESS UX
-      // ===============================
-      toast.success("Product created successfully");
-
-      // ✅ redirect
+      toast.success(initialData ? "Product updated" : "Product created");
       router.replace("/admin/products");
-
     } catch (error: any) {
-      console.error(error);
-
-      toast.error(
-        error?.response?.data?.message || "Failed to create product"
-      );
+      toast.error(error?.response?.data?.message || "Operation failed");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="space-y-10">
       <ProductHeader
         isPublished={form.isPublished}
         isOnSale={form.isOnSale}
         setForm={setForm}
+        loading={loading}
+        isEdit={!!initialData}
+        currentStep={currentStep}
+        totalSteps={steps.length}
+        stepTitle={steps[currentStep - 1]}
       />
 
-      <div className="grid gap-6 xl:grid-cols-[1.15fr_0.85fr] my-6">
-        <div className="space-y-6">
-          <CoreDetails form={form} setForm={setForm} errors={errors} />
-
-          <CatalogSection
-            form={form}
-            setForm={setForm}
-            categories={categories}
-            errors={errors}
-          />
-
-          <AttributeBuilder
-            attributes={attributes}
-            setAttributes={setAttributes}
-          />
-
-          <VariantSection
-            variants={form.variants}
-            setForm={setForm}
-            errors={errors}
-          />
-        </div>
-
-        <div className="space-y-6">
-          <MediaSection
-            files={files}
-            setFiles={setFiles}
-            form={form}
-            setForm={setForm}
-            errors={errors}
-          />
-
-          <PreviewSection
-            form={form}
-            files={files}
-            setFiles={setFiles}
-          />
-        </div>
-
-        <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm space-y-6">
-
-          {/* HEADER */}
-          <div>
-            <h3 className="text-lg font-semibold text-slate-900">
-              Product Content
-            </h3>
-            <p className="text-sm text-slate-500 mt-1">
-              Add description, delivery info, and highlight key features
-            </p>
-          </div>
-
-          {/* DESCRIPTION */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-700">
-              Product Description
-            </label>
-
-            <textarea
-              value={form.description}
-              onChange={(e) =>
-                setForm((prev) => ({
-                  ...prev,
-                  description: e.target.value,
-                }))
-              }
-              placeholder="Describe the product, materials, usage..."
-              className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-              rows={4}
-            />
-          </div>
-
-          {/* DELIVERY DETAILS */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-700">
-              Delivery Details
-            </label>
-
-            <textarea
-              value={form.deliveryDetails}
-              onChange={(e) =>
-                setForm((prev) => ({
-                  ...prev,
-                  deliveryDetails: e.target.value,
-                }))
-              }
-              placeholder="Shipping time, packaging info, return policy..."
-              className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-              rows={3}
-            />
-          </div>
-
-          {/* KEY FEATURES */}
-          <div className="space-y-3">
-            <label className="text-sm font-medium text-slate-700">
-              Key Features
-            </label>
-
-            <div className="space-y-2">
-              {form.keyFeatures.map((feature: string, index: number) => (
-                <div
-                  key={index}
-                  className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2"
-                >
-                  <input
-                    value={feature}
-                    placeholder="e.g. 100% Cotton, Handmade, Waterproof"
-                    onChange={(e) => {
-                      const updated = [...form.keyFeatures];
-                      updated[index] = e.target.value;
-
-                      setForm((prev) => ({
-                        ...prev,
-                        keyFeatures: updated,
-                      }));
-                    }}
-                    className="flex-1 bg-transparent outline-none text-sm"
-                  />
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const updated = form.keyFeatures.filter(
-                        (_, i) => i !== index
-                      );
-                      setForm((prev) => ({
-                        ...prev,
-                        keyFeatures: updated,
-                      }));
-                    }}
-                    className="text-red-500 text-sm hover:text-red-700"
-                  >
-                    ✕
-                  </button>
-                </div>
-              ))}
-            </div>
-
-            {/* ADD BUTTON */}
-            <button
-              type="button"
-              onClick={() =>
-                setForm((prev) => ({
-                  ...prev,
-                  keyFeatures: [...prev.keyFeatures, ""],
-                }))
-              }
-              className="inline-flex items-center gap-2 text-sm font-medium text-green-600 hover:text-green-700"
-            >
-              + Add Feature
-            </button>
-          </div>
-        </section>
-
-        <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm space-y-6">
-
-          {/* HEADER */}
-          <div>
-            <h3 className="text-lg font-semibold text-slate-900">
-              Customization
-            </h3>
-            <p className="text-sm text-slate-500 mt-1">
-              Add custom input fields (e.g. size, engraving, measurements)
-            </p>
-          </div>
-
-          {/* TOGGLE */}
-          <div className="flex items-center justify-between border rounded-xl px-4 py-3 bg-slate-50">
-            <span className="text-sm font-medium text-slate-700">
-              Enable Customization
-            </span>
-
-            <input
-              type="checkbox"
-              checked={customizable.isCustomizable}
-              onChange={(e) =>
-                setCustomizable((prev) => ({
-                  ...prev,
-                  isCustomizable: e.target.checked,
-                }))
-              }
-              className="h-4 w-4 accent-green-600"
-            />
-          </div>
-
-          {/* FIELDS */}
-          {customizable.isCustomizable && (
-            <div className="space-y-4">
-
-              {customizable.fields.map((field, index) => (
-                <div
-                  key={index}
-                  className="border border-slate-200 rounded-xl p-4 bg-slate-50 space-y-3"
-                >
-
-                  {/* FIELD NAME */}
-                  <input
-                    placeholder="Field name (e.g. Chest Size)"
-                    value={field.name}
-                    onChange={(e) => {
-                      const updated = [...customizable.fields];
-                      updated[index].name = e.target.value;
-                      setCustomizable({ ...customizable, fields: updated });
-                    }}
-                    className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-                  />
-
-                  {/* TYPE */}
-                  <select
-                    value={field.type}
-                    onChange={(e) => {
-                      const updated = [...customizable.fields];
-                      updated[index].type = e.target.value as any;
-                      setCustomizable({ ...customizable, fields: updated });
-                    }}
-                    className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-                  >
-                    <option value="text">Text Input</option>
-                    <option value="number">Number Input</option>
-                    <option value="select">Dropdown</option>
-                  </select>
-
-                  {/* REQUIRED */}
-                  <label className="flex items-center gap-2 text-sm text-slate-600">
-                    <input
-                      type="checkbox"
-                      checked={field.required || false}
-                      onChange={(e) => {
-                        const updated = [...customizable.fields];
-                        updated[index].required = e.target.checked;
-                        setCustomizable({ ...customizable, fields: updated });
-                      }}
-                    />
-                    Required field
-                  </label>
-
-                  {/* OPTIONS (ONLY FOR SELECT) */}
-                  {field.type === "select" && (
-                    <input
-                      placeholder="Options (e.g. S, M, L)"
-                      value={field.options?.join(", ") || ""}
-                      onChange={(e) => {
-                        const updated = [...customizable.fields];
-                        updated[index].options = e.target.value
-                          .split(",")
-                          .map((o) => o.trim());
-                        setCustomizable({ ...customizable, fields: updated });
-                      }}
-                      className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-                    />
-                  )}
-
-                  {/* REMOVE BUTTON */}
-                  <div className="flex justify-end">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const updated = customizable.fields.filter(
-                          (_, i) => i !== index
-                        );
-                        setCustomizable({ ...customizable, fields: updated });
-                      }}
-                      className="text-sm text-red-500 hover:text-red-700"
-                    >
-                      Remove
-                    </button>
-                  </div>
-                </div>
-              ))}
-
-              {/* ADD BUTTON */}
-              <button
-                type="button"
-                onClick={() =>
-                  setCustomizable((prev) => ({
-                    ...prev,
-                    fields: [
-                      ...prev.fields,
-                      { name: "", type: "text" },
-                    ],
-                  }))
-                }
-                className="w-full border border-dashed border-slate-300 rounded-xl py-3 text-sm font-medium text-green-600 hover:bg-slate-50"
+      <div className="flex items-center justify-between px-4 py-2 bg-slate-50 rounded-2xl border border-slate-200 overflow-x-auto gap-4">
+        {steps.map((step, idx) => {
+          const stepNum = idx + 1;
+          const isActive = currentStep === stepNum;
+          const isCompleted = currentStep > stepNum;
+          return (
+            <div key={step} className="flex items-center shrink-0">
+              <div
+                onClick={() => isCompleted && setCurrentStep(stepNum)}
+                className={`flex items-center justify-center w-8 h-8 rounded-full text-xs font-bold transition-all ${isActive ? "bg-emerald-600 text-white shadow-lg shadow-emerald-200" : isCompleted ? "bg-emerald-100 text-emerald-700 cursor-pointer" : "bg-slate-200 text-slate-500"
+                  }`}
               >
-                + Add Custom Field
-              </button>
+                {isCompleted ? "✓" : stepNum}
+              </div>
+              <span className={`ml-2 text-xs font-bold hidden md:block ${isActive ? "text-slate-900" : "text-slate-400"}`}>{step}</span>
+              {idx < steps.length - 1 && <div className={`w-4 md:w-8 h-0.5 mx-2 ${isCompleted ? "bg-emerald-500" : "bg-slate-200"}`} />}
             </div>
-          )}
-        </section>
+          );
+        })}
       </div>
 
-      <button
-        type="submit"
-        disabled={loading}
-        className={`px-4 py-2 rounded ${loading ? "opacity-50 cursor-not-allowed" : "bg-green-600"
-          }`}
-      >
-        {loading ? "Creating..." : "Create Product"}
-      </button>
+      <div className="min-h-[400px]">
+        {currentStep === 1 && (
+          <div className="space-y-8">
+            <CoreDetails form={form} setForm={setForm} errors={errors} />
+            <CatalogSection form={form} setForm={setForm} categories={categories} errors={errors} />
+            {/* Features section merged here for Step 1 */}
+            <section className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm space-y-6">
+              <div>
+                <h3 className="text-xl font-bold text-slate-900">Key Features</h3>
+                <p className="text-sm text-slate-500">Highlights of this product.</p>
+              </div>
+              <div className="space-y-3">
+                {form.keyFeatures.map((f: string, i: number) => (
+                  <div key={i} className="flex gap-2">
+                    <input value={f} onChange={(e) => {
+                      const updated = [...form.keyFeatures];
+                      updated[i] = e.target.value;
+                      setForm((prev: any) => ({ ...prev, keyFeatures: updated }));
+                    }} className="flex-1 rounded-xl border border-slate-200 px-4 py-2 text-sm" />
+                    <button type="button" onClick={() => setForm((prev: any) => ({ ...prev, keyFeatures: prev.keyFeatures.filter((_: any, idx: any) => idx !== i) }))} className="text-red-500 font-bold">×</button>
+                  </div>
+                ))}
+                <button type="button" onClick={() => setForm((prev: any) => ({ ...prev, keyFeatures: [...prev.keyFeatures, ""] }))} className="text-emerald-600 text-sm font-bold">+ Add Feature</button>
+              </div>
+            </section>
+          </div>
+        )}
+        {currentStep === 2 && <MediaSection files={files} setFiles={setFiles} form={form} setForm={setForm} errors={errors} />}
+        {currentStep === 3 && (
+          <div className="space-y-8">
+            <AttributeBuilder attributes={attributes} setAttributes={setAttributes} />
+            <VariantSection variants={form.variants} setForm={setForm} errors={errors} />
+          </div>
+        )}
+        {currentStep === 4 && <PricingSection form={form} setForm={setForm} errors={errors} saleType={saleType} setSaleType={setSaleType} />}
+        {currentStep === 5 && (
+          <section className="rounded-[28px] border border-slate-200 bg-white p-8 shadow-sm space-y-8">
+            <div className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl">
+              <div>
+                <h3 className="font-bold text-slate-900">Allow Customization</h3>
+                <p className="text-sm text-slate-500">Add input fields for buyer personalization.</p>
+              </div>
+              <input type="checkbox" checked={customizable.isCustomizable} onChange={(e) => setCustomizable({ ...customizable, isCustomizable: e.target.checked })} className="h-6 w-6 accent-emerald-500" />
+            </div>
+            {customizable.isCustomizable && (
+              <div className="space-y-4">
+                {customizable.fields.map((field, idx) => (
+                  <div key={idx} className="p-4 border border-slate-100 rounded-2xl bg-white shadow-sm space-y-4">
+                    <input placeholder="Field Name (e.g. Size)" value={field.name} onChange={(e) => {
+                      const updated = [...customizable.fields];
+                      updated[idx].name = e.target.value;
+                      setCustomizable({ ...customizable, fields: updated });
+                    }} className="w-full rounded-xl border border-slate-200 px-4 py-2" />
+                    <select value={field.type} onChange={(e) => {
+                      const updated = [...customizable.fields];
+                      updated[idx].type = e.target.value as any;
+                      setCustomizable({ ...customizable, fields: updated });
+                    }} className="w-full rounded-xl border border-slate-200 px-4 py-2 bg-white">
+                      <option value="text">Text</option>
+                      <option value="number">Number</option>
+                      <option value="select">Dropdown</option>
+                    </select>
+                    <button type="button" onClick={() => setCustomizable({ ...customizable, fields: customizable.fields.filter((_, i) => i !== idx) })} className="text-red-500 text-xs font-bold uppercase">Remove</button>
+                  </div>
+                ))}
+                <button type="button" onClick={() => setCustomizable({ ...customizable, fields: [...customizable.fields, { name: "", type: "text" }] })} className="w-full py-4 border-2 border-dashed border-slate-200 rounded-2xl text-slate-400 font-bold hover:bg-slate-50 hover:border-emerald-200 hover:text-emerald-600 transition-all">+ Add custom field</button>
+              </div>
+            )}
+          </section>
+        )}
+        {currentStep === 6 && <PreviewSection form={form} files={files} setFiles={setFiles} />}
+      </div>
+
+      <div className="flex items-center justify-between p-6 bg-white border border-slate-200 rounded-[32px] shadow-xl shadow-slate-100">
+        <button type="button" onClick={prevStep} disabled={currentStep === 1} className="px-8 py-3 rounded-2xl text-slate-500 font-bold hover:bg-slate-50 disabled:opacity-30">Back</button>
+        {currentStep < 6 ? (
+          <button type="button" onClick={nextStep} className="px-10 py-4 bg-slate-900 text-white font-bold rounded-2xl shadow-lg shadow-slate-200 hover:bg-slate-800 transition-all active:scale-95">Continue to {steps[currentStep]}</button>
+        ) : (
+          <button type="submit" disabled={loading} className="px-10 py-4 bg-emerald-600 text-white font-bold rounded-2xl shadow-lg shadow-emerald-100 hover:bg-emerald-700 transition-all active:scale-95 disabled:opacity-50">
+            {loading ? "Publishing..." : "Finish & Publish"}
+          </button>
+        )}
+      </div>
     </form>
   );
 }
