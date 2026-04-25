@@ -4,6 +4,7 @@ import { useRef, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Lora } from 'next/font/google';
 import { categoryAPI } from "@/lib/api/category.api";
 
 type Category = {
@@ -15,7 +16,13 @@ type Category = {
   };
 };
 
+const lora = Lora({
+  subsets: ['latin'],
+  weight: ['400', '700'],
+});
+
 export default function CategoriesSlider() {
+
   const scrollRef = useRef<HTMLDivElement>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
@@ -37,10 +44,19 @@ export default function CategoriesSlider() {
 
   const scroll = (direction: "left" | "right") => {
     if (scrollRef.current) {
-      scrollRef.current.scrollBy({
-        left: scrollRef.current.offsetWidth * 0.7,
-        behavior: "smooth",
-      });
+
+      if(direction === 'right'){
+        scrollRef.current.scrollBy({
+          left: scrollRef.current.offsetWidth * 0.7,
+          behavior: "smooth",
+        });
+      } else if (direction === 'left'){
+        scrollRef.current.scrollBy({
+          left: -scrollRef.current.offsetWidth * 0.7,
+          behavior: "smooth",
+        });
+      }
+      
     }
   };
 
@@ -48,7 +64,8 @@ export default function CategoriesSlider() {
     <div>
       {/* HEADER */}
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-[40px]">Shop by Categories</h2>
+        
+        <h2 className={`${lora.className} tracking-tight text-neutral-900 lora text-[40px] font-normal`}>Shop by Categories</h2>
 
         <div className="flex gap-2">
           <button onClick={() => scroll("left")}>
@@ -67,7 +84,7 @@ export default function CategoriesSlider() {
         ) : (
           categories.map((cat) => (
             <Link key={cat._id} href={`/category/${cat.slug}`}>
-              <div className="relative w-[200px] h-[130px]">
+              <div className="relative w-[200px] h-[250px] lg:w-[290px] lg:h-[330px]">
                 <Image
                   src={cat.image?.url || "/placeholder.png"}
                   alt={cat.name}
@@ -84,4 +101,4 @@ export default function CategoriesSlider() {
       </div>
     </div>
   );
-}
+};
