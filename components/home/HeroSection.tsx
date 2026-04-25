@@ -112,7 +112,7 @@ export default function HeroSection() {
           {banners.center && (
             <Link
               href={banners.center.link || "/"}
-              className="relative overflow-hidden h-full w-full border"
+              className="relative overflow-hidden h-full w-full"
             >
               <Image
                 src={banners.center.image?.url || "/placeholder.png"}
@@ -132,7 +132,7 @@ export default function HeroSection() {
             {banners.rightTop && (
               <Link
                 href={banners.rightTop.link || "/"}
-                className="relative h-full w-full border"
+                className="relative h-full w-full"
               >
                 <Image
                   src={banners.rightTop.image?.url || "/placeholder.png"}
@@ -149,7 +149,7 @@ export default function HeroSection() {
             {banners.rightBottom && (
               <Link
                 href={banners.rightBottom.link || "/"}
-                className="relative h-full w-full border"
+                className="relative h-full w-full"
               >
                 <Image
                   src={banners.rightBottom.image?.url || "/placeholder.png"}
