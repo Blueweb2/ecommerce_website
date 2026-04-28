@@ -1,7 +1,36 @@
+"use client";
 import Link from "next/link";
 import { Facebook, Instagram, Linkedin, X, Youtube } from "lucide-react";
+import { useEffect, useState } from "react";
+import { categoryAPI } from "@/lib/api/category.api";
+
+interface Category {
+  _id: string;
+  name: string;
+  slug: string;
+  parent?: string | null;
+  isActive: boolean;
+}
 
 export default function Footer() {
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await categoryAPI.getAll();
+        // Filter only top-level active categories
+        const topLevel = (res.data.data || []).filter(
+          (cat: Category) => !cat.parent && cat.isActive
+        );
+        setCategories(topLevel);
+      } catch (error) {
+        console.error("Failed to fetch footer categories:", error);
+      }
+    };
+    fetchCategories();
+  }, []);
+
   return (
     <footer>
       <div className="bg-[#e7e7e7] py-12 text-sm text-gray-700">
@@ -11,11 +40,23 @@ export default function Footer() {
           <div>
             <h3 className="font-semibold mb-4 text-black">Shop</h3>
             <ul className="space-y-2">
-              <li><Link href="#">Rings</Link></li>
-              <li><Link href="#">Necklaces</Link></li>
-              <li><Link href="#">Earrings</Link></li>
-              <li><Link href="#">Bracelets</Link></li>
-              <li><Link href="#">New Arrivals</Link></li>
+              {categories.length > 0 ? (
+                categories.map((cat) => (
+                  <li key={cat._id}>
+                    <Link href={`/category/${cat.slug}`} className="hover:text-black transition-colors">
+                      {cat.name}
+                    </Link>
+                  </li>
+                ))
+              ) : (
+                <>
+                  <li><Link href="/category/rings">Rings</Link></li>
+                  <li><Link href="/category/necklaces">Necklaces</Link></li>
+                  <li><Link href="/category/earrings">Earrings</Link></li>
+                  <li><Link href="/category/bracelets">Bracelets</Link></li>
+                </>
+              )}
+              <li><Link href="/collection/new-in" className="hover:text-black transition-colors">New Arrivals</Link></li>
             </ul>
           </div>
 

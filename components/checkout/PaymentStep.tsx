@@ -4,7 +4,63 @@ import { useState } from "react";
 import Image from "next/image";
 import { loadRazorpay } from "@/lib/utils/loadRazorpay";
 import { orderAPI } from "@/lib/api/order.api";
-import { useCartStore } from "@/store/user/cart/useCartStore";
+import toast from "react-hot-toast";
+import type {
+  CartItem,
+  SelectedOption,
+} from "@/store/user/cart/useCartStore";
+import type { Address } from "@/types/address";
+
+type PaymentMethod = "cod" | "razorpay";
+type DeliveryMethod = "standard" | "express";
+
+interface PaymentStepProps {
+  items: CartItem[];
+  total: number;
+  deliveryMethod: DeliveryMethod;
+  onBack: () => void;
+  onPlaceOrder: (method: PaymentMethod) => Promise<void>;
+  onPaymentSuccess: () => Promise<void>;
+  shippingAddress: Address | null;
+}
+
+interface RazorpayOrder {
+  _id: string;
+  totalPrice: number;
+  razorpayOrderId: string;
+}
+
+interface RazorpaySuccessResponse {
+  razorpay_order_id: string;
+  razorpay_payment_id: string;
+  razorpay_signature: string;
+}
+
+interface RazorpayInstance {
+  on: (event: "payment.failed", handler: () => void) => void;
+  open: () => void;
+}
+
+interface RazorpayOptions {
+  key: string | undefined;
+  amount: number;
+  currency: string;
+  order_id: string;
+  handler: (response: RazorpaySuccessResponse) => Promise<void>;
+}
+
+type RazorpayConstructor = new (options: RazorpayOptions) => RazorpayInstance;
+
+const formatSelectedOptions = (selectedOptions: SelectedOption[] = []) =>
+  selectedOptions.map((opt) => `${opt.fieldName}: ${opt.value}`).join(", ");
+
+const buildShippingAddress = (address: Address) => ({
+  street: address.street,
+  city: address.city,
+  state: address.state,
+  postalCode: address.postalCode,
+  country: address.country,
+});
 
 export default function PaymentStep({
   items,
@@ -12,79 +68,87 @@ export default function PaymentStep({
   deliveryMethod,
   onBack,
   onPlaceOrder,
+  onPaymentSuccess,
   shippingAddress,
-}: any) {
-  const [method, setMethod] = useState<"cod" | "razorpay">("cod");
+}: PaymentStepProps) {
+  const [method, setMethod] = useState<PaymentMethod>("cod");
   const [loading, setLoading] = useState(false);
 
   const deliveryCharge = deliveryMethod === "express" ? 50 : 0;
   const finalTotal = total + deliveryCharge;
 
-const handlePayment = async () => {
-  try {
-    setLoading(true);
+  const handlePayment = async () => {
+    try {
+      setLoading(true);
 
-    if (method === "cod") {
-      await onPlaceOrder("cod");
-      return;
+      if (method === "cod") {
+        await onPlaceOrder("cod");
+        return;
+      }
+
+      if (!shippingAddress) {
+        toast.error("Please select a delivery address before payment.");
+        return;
+      }
+
+      const isLoaded = await loadRazorpay();
+      if (!isLoaded) {
+        toast.error("Razorpay failed to load.");
+        return;
+      }
+
+      const res = await orderAPI.createOrder({
+        shippingAddress: buildShippingAddress(shippingAddress),
+        paymentMethod: "razorpay",
+      });
+      const order = res.data.data as RazorpayOrder;
+
+      const Razorpay = (
+        window as Window & typeof globalThis & { Razorpay: RazorpayConstructor }
+      ).Razorpay;
+
+      const rzp = new Razorpay({
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+        amount: order.totalPrice * 100,
+        currency: "INR",
+        order_id: order.razorpayOrderId,
+        handler: async (response) => {
+          await orderAPI.verifyPayment({
+            razorpayOrderId: response.razorpay_order_id,
+            paymentId: response.razorpay_payment_id,
+            signature: response.razorpay_signature,
+            orderId: order._id,
+          });
+
+          await onPaymentSuccess();
+        },
+      });
+
+      rzp.on("payment.failed", () => {
+        toast.error("Payment failed. You can retry from orders.");
+      });
+
+      rzp.open();
+    } catch (err) {
+      console.error("Payment failed", err);
+      toast.error("Something went wrong");
+    } finally {
+      setLoading(false);
     }
-
-    const isLoaded = await loadRazorpay();
-    if (!isLoaded) throw new Error("Razorpay failed");
-
-    const res = await orderAPI.createOrder({
-      shippingAddress,
-      paymentMethod: "razorpay",
-    });
-
-    const order = res.data.data;
-
-    const rzp = new (window as any).Razorpay({
-      key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
-      amount: order.totalPrice * 100,
-      currency: "INR",
-      order_id: order.razorpayOrderId,
-
-      handler: async (response: any) => {
-        await orderAPI.verifyPayment({
-          razorpayOrderId: response.razorpay_order_id,
-          paymentId: response.razorpay_payment_id,
-          signature: response.razorpay_signature,
-          orderId: order._id,
-        });
-
-        window.location.href = "/profile?tab=orders";
-      },
-    });
-
-    rzp.on("payment.failed", () => {
-      alert("Payment failed. You can retry from orders.");
-    });
-
-    rzp.open();
-  } catch (err) {
-    alert("Something went wrong");
-  } finally {
-    setLoading(false);
-  }
-};
-
-  const handleClick = async () => {
-    setLoading(true);
-    await onPlaceOrder(method);
-    setLoading(false);
   };
 
   return (
     <div className="space-y-6">
       <h2 className="text-xl font-semibold">Payment</h2>
 
-      {/* ORDER SUMMARY */}
       <div className="border rounded-lg p-4 space-y-4 bg-gray-50">
         <h3 className="font-medium">Order Summary</h3>
 
-        {items.map((item: any, index: number) => (
-          <div key={`${item.productId}-${index}`} className="flex gap-3 items-center">
+        {items.map((item, index) => (
+          <div
+            key={`${item.productId}-${index}`}
+            className="flex gap-3 items-center"
+          >
             <Image
               src={item.image || "/placeholder.png"}
               alt={item.name}
@@ -96,20 +160,16 @@ const handlePayment = async () => {
             <div className="flex-1">
               <p className="font-medium text-sm">{item.name}</p>
 
-              {item.selectedOptions?.length > 0 && (
+              {item.selectedOptions && item.selectedOptions.length > 0 && (
                 <p className="text-xs text-gray-500">
-                  {item.selectedOptions
-                    .map((opt: any) => `${opt.fieldName}: ${opt.value}`)
-                    .join(", ")}
+                  {formatSelectedOptions(item.selectedOptions)}
                 </p>
               )}
 
               <p className="text-xs text-gray-500">Qty: {item.quantity}</p>
             </div>
 
-            <p className="font-medium text-sm">
-              ₹{item.price * item.quantity}
-            </p>
+            <p className="font-medium text-sm">₹{item.price * item.quantity}</p>
           </div>
         ))}
 
@@ -126,7 +186,6 @@ const handlePayment = async () => {
         </div>
       </div>
 
-      {/* PAYMENT METHODS */}
       <div className="space-y-3">
         <div
           onClick={() => setMethod("cod")}
@@ -149,20 +208,19 @@ const handlePayment = async () => {
         </div>
       </div>
 
-      {/* ACTIONS */}
       <div className="flex justify-between">
         <button onClick={onBack}>← Back</button>
 
         <button
-          onClick={handleClick}
+          onClick={handlePayment}
           disabled={loading}
           className="bg-black text-white px-6 py-2 rounded disabled:opacity-50"
         >
           {loading
             ? "Processing..."
             : method === "cod"
-            ? "Place Order"
-            : "Pay Now"}
+              ? "Place Order"
+              : "Pay Now"}
         </button>
       </div>
     </div>

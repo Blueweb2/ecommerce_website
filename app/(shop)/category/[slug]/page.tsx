@@ -106,7 +106,44 @@ export default function CategoryPage({ params }: CategoryPageProps) {
 
   const filteredProducts = useMemo(() => {
     const filtered = products.filter((product: any) => {
-      return true;
+      const effectivePrice = product.discountPrice ?? product.price;
+
+      const matchesBrand =
+        !activeFilters.brands.length ||
+        (!!product.brand && activeFilters.brands.includes(product.brand));
+
+      const matchesMin =
+        typeof activeFilters.minPrice !== "number" ||
+        effectivePrice >= activeFilters.minPrice;
+
+      const matchesMax =
+        typeof activeFilters.maxPrice !== "number" ||
+        effectivePrice <= activeFilters.maxPrice;
+
+      const productCategoryId = product.category?._id?.toString() || product.category?.toString();
+
+      const matchesCategory =
+        !activeFilters.category ||
+        productCategoryId === activeFilters.category;
+
+      const matchesType =
+        !(activeFilters as any).type ||
+        (product.sections || []).includes((activeFilters as any).type);
+
+      const matchesTags =
+        !((activeFilters as any).tags || []).length ||
+        ((activeFilters as any).tags || []).every((tag: string) =>
+          (product.sections || []).includes(tag)
+        );
+
+      return (
+        matchesBrand &&
+        matchesMin &&
+        matchesMax &&
+        matchesType &&
+        matchesTags &&
+        matchesCategory
+      );
     });
 
     switch (sortBy) {

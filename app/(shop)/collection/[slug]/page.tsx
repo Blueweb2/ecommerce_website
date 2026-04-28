@@ -206,7 +206,44 @@ export default function CollectionPage({ params }: CollectionPageProps) {
 
   const filteredProducts = useMemo(() => {
     const filtered = products.filter((product: any) => {
-      return true;
+      const effectivePrice = product.discountPrice ?? product.price;
+
+      const matchesBrand =
+        !activeFilters.brands.length ||
+        (!!product.brand && activeFilters.brands.includes(product.brand));
+
+      const matchesMin =
+        typeof activeFilters.minPrice !== "number" ||
+        effectivePrice >= activeFilters.minPrice;
+
+      const matchesMax =
+        typeof activeFilters.maxPrice !== "number" ||
+        effectivePrice <= activeFilters.maxPrice;
+
+      const productCategoryId =
+        product.category?._id?.toString() || product.category?.toString();
+
+      const matchesCategory =
+        !activeFilters.category || productCategoryId === activeFilters.category;
+
+      const matchesType =
+        !activeFilters.type ||
+        (product.sections || []).includes(activeFilters.type);
+
+      const matchesTags =
+        !activeFilters.tags.length ||
+        activeFilters.tags.every((tag: string) =>
+          (product.sections || []).includes(tag)
+        );
+
+      return (
+        matchesBrand &&
+        matchesMin &&
+        matchesMax &&
+        matchesCategory &&
+        matchesType &&
+        matchesTags
+      );
     });
 
     switch (sortBy) {

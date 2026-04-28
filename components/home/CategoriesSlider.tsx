@@ -89,6 +89,7 @@ export default function CategoriesSlider() {
                   src={cat.image?.url || "/placeholder.png"}
                   alt={cat.name}
                   fill
+                  sizes="(max-width: 768px) 200px, 290px"
                   className="object-cover"
                 />
                 <h3 className="absolute inset-0 flex items-center justify-center text-white bg-black/30">
