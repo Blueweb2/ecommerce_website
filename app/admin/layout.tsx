@@ -17,17 +17,17 @@ export default function AdminLayout({
 
   useAuthInit();
 
-  const isLoginPage = pathname === "/admin/login";
+  const isLoginPage = pathname === "/admin-login";
 
   useEffect(() => {
     if (!loading && !isLoginPage) {
       if (!user) {
-        router.replace("/admin/login");
+        router.replace("/admin-login");
       } else if (
         user.role !== "admin" &&
         user.role !== "superadmin"
       ) {
-        router.replace("/admin/login");
+        router.replace("/admin-login");
       }
     }
   }, [user, loading, router, pathname, isLoginPage]);

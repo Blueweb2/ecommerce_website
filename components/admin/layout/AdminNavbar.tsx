@@ -10,7 +10,7 @@ export default function AdminNavbar() {
 
   const handleLogout = () => {
     logout();
-    router.push("/admin/login"); // ✅ redirect here
+    router.push("/admin-login");
   };
 
   return (

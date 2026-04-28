@@ -27,31 +27,48 @@ export default function AdminLoginPage() {
     }
   }, [user]);
 
+// const handleLogin = async (e: any) => {
+//   e.preventDefault();
+//   setLoading(true);
+
+//   try {
+//     const emailNormalized = form.email.trim().toLowerCase();
+
+//     const res = await api.post("/auth/login", {
+//       email: emailNormalized,
+//       password: form.password,
+//     });
+
+//     toast.success(res.data.message || "OTP sent");
+
+//     router.push(`/verify-otp?email=${encodeURIComponent(emailNormalized)}&admin=true`);
+
+//   } catch (error: any) {
+//     toast.error(error?.response?.data?.message || "Login failed");
+//   } finally {
+//     setLoading(false);
+//   }
 const handleLogin = async (e: any) => {
   e.preventDefault();
   setLoading(true);
 
   try {
-    const res = await api.post("/auth/login", form, {
-      withCredentials: true,
+    const emailNormalized = form.email.trim().toLowerCase();
+
+    const res = await api.post("/auth/login", {
+      email: emailNormalized,
+      password: form.password,
     });
 
-    const user = res.data.user;
-    const accessToken = res.data.accessToken;
+    toast.success(res.data.message || "OTP sent");
 
-    // ✅ validate FIRST
-    if (!user || (user.role !== "admin" && user.role !== "superadmin")) {
-      toast.error("Access denied: Admin only");
-      return;
+    // 🔥 DEV MODE OTP DISPLAY
+    if (res.data.otp) {
+      alert(`DEV OTP: ${res.data.otp}`);
+      console.log("OTP:", res.data.otp);
     }
 
-    // ✅ then set
-    setAccessToken(accessToken);
-    setUser(user);
-
-    toast.success("Welcome back!");
-
-    router.replace("/admin/dashboard"); // ✅ no timeout needed
+    router.push(`/verify-otp?email=${encodeURIComponent(emailNormalized)}&admin=true`);
 
   } catch (error: any) {
     toast.error(error?.response?.data?.message || "Login failed");
@@ -59,6 +76,7 @@ const handleLogin = async (e: any) => {
     setLoading(false);
   }
 };
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#0f172a] to-[#1a1f1a] px-4">

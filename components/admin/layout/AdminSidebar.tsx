@@ -6,6 +6,7 @@ import {
   Image as ImageIcon,
   LayoutDashboard,
   LayoutGrid,
+  Mail,
   Package,
   ShoppingCart,
   Tag,
@@ -60,6 +61,11 @@ export default function AdminSidebar() {
       name: "Users",
       href: "/admin/users",
       icon: Users,
+    },
+    {
+      name: "Newsletter",
+      href: "/admin/newsletter",
+      icon: Mail,
     },
     ...(user?.role === "superadmin"
       ? [

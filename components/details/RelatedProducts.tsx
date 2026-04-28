@@ -2,121 +2,65 @@
 
 import { useState, useEffect } from "react";
 import { Handbag } from "lucide-react";
+import api from "@/lib/api/axios";
 
-type RelatedProductsProps = {
+type Product = {
+  _id: string;
+  name: string;
+  price: number;
+  images: string[];
+  description: string;
+};
+
+type Props = {
   product?: any;
 };
 
-type Products = {
-  name: string;
-  price: string;
-  image: string;
-  description: string;
-  id: number;
-}
+export default function RelatedProducts({ product }: Props) {
+  const [activeTab, setActiveTab] = useState<"like" | "recent">("like");
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(false);
 
-const relatedProducts = [
-  {
-    id: 1,
-    name: "GOLD HOOP EARRINGS",
-    description: "Bold yet minimal starter hugg hoops",
-    price: "₹11,200",
-    image: "/home/categorysection/category-one.png",
-  },
-  {
-    id: 2,
-    name: "CHARM BRACELET",
-    description: "Playful yet elegant charm bracelet",
-    price: "₹8,700",
-    image: "/home/categorysection/category-one.png",
-  },
-  {
-    id: 3,
-    name: "GEMSTONE STATEMENT PENDANT",
-    description: "Vibrant centerpiece with detailing",
-    price: "₹16,300",
-    image: "/home/categorysection/category-one.png",
-  },
-  {
-    id: 4,
-    name: "MINIMAL GOLD BAND",
-    description: "Simple and timeless everyday ring",
-    price: "₹8,900",
-    image: "/home/categorysection/category-one.png",
-  },
-  {
-    id: 5,
-    name: "MINIMAL GOLD BAND",
-    description: "Simple and timeless everyday ring",
-    price: "₹8,900",
-    image: "/home/categorysection/category-one.png",
-  },
-];
+  // 🔥 Fetch data
+useEffect(() => {
+  let isMounted = true;
 
-const resentViewProducts = [
-  {
-    id: 1,
-    name: "GOLD HOOP EARRINGS",
-    description: "Bold yet minimal starter hugg hoops",
-    price: "₹11,200",
-    image: "/home/herosection/hero-right-top.png",
-  },
-  {
-    id: 2,
-    name: "CHARM BRACELET",
-    description: "Playful yet elegant charm bracelet",
-    price: "₹8,700",
-    image: "/home/herosection/hero-right-top.png",
-  },
-  {
-    id: 3,
-    name: "GEMSTONE STATEMENT PENDANT",
-    description: "Vibrant centerpiece with detailing",
-    price: "₹16,300",
-    image: "/home/herosection/hero-right-top.png",
-  },
-  {
-    id: 4,
-    name: "MINIMAL GOLD BAND",
-    description: "Simple and timeless everyday ring",
-    price: "₹8,900",
-    image: "/home/herosection/hero-right-top.png",
-  },
-  {
-    id: 5,
-    name: "MINIMAL GOLD BAND",
-    description: "Simple and timeless everyday ring",
-    price: "₹8,900",
-    image: "/home/herosection/hero-right-top.png",
-  },
-];
+  const fetchProducts = async () => {
+    try {
+      if (activeTab === "like" && !product?._id) return;
 
-export default function RelatedProducts({ product }: RelatedProductsProps) {
+      setLoading(true);
 
-  const [activeTab, setActiveTab] = useState("like");
-  const [products, setProducts] = useState<Products[]>();
+      let res;
 
-  useEffect(() => {
-    
-    switch (activeTab) {
-      case "like":
-        setProducts(relatedProducts)
-        break;
+      if (activeTab === "like") {
+        res = await api.get(`/products/${product._id}/related`);
+      } else {
+        res = await api.get("/products/recent");
+      }
 
-      case "recent":
-        setProducts(resentViewProducts)
-        break;
-    
-      default:
-        break;
+      if (isMounted) {
+        setProducts(res.data?.data || []);
+      }
+    } catch (error: any) {
+      console.error("❌ API ERROR:", error);
+    } finally {
+      if (isMounted) setLoading(false);
     }
-  },[activeTab, products]);
+  };
+
+  fetchProducts();
+
+  return () => {
+    isMounted = false;
+  };
+}, [activeTab, product?._id]);
 
   return (
     <section className="max-w-7xl lg:mx-auto pb-10 pl-5 lg:pl-0">
-      
+
       {/* Tabs */}
-      <div className="flex justify-center gap-8 text-sm tracking-wide mt-10 lg:mt-0 mb-8">
+      <div className="flex justify-center gap-8 text-sm tracking-wide mt-10 mb-8">
         <button
           onClick={() => setActiveTab("like")}
           className={`pb-2 border-b ${
@@ -140,37 +84,51 @@ export default function RelatedProducts({ product }: RelatedProductsProps) {
         </button>
       </div>
 
+      {/* Loading */}
+      {loading && (
+        <div className="text-center text-gray-500">Loading...</div>
+      )}
+
       {/* Products */}
       <div className="flex overflow-x-auto gap-6 scrollbar-hide">
-        {products?.map((item) => (
-          <div key={item.id} className="group cursor-pointer flex-shrink-0 w-[150px] lg:w-[290px]">
-            
+        {products.map((item) => (
+          <div
+            key={item._id}
+            className="group cursor-pointer flex-shrink-0 w-[150px] lg:w-[290px]"
+          >
             {/* Image */}
             <div className="bg-gray-100 relative">
               <img
-                src={item.image}
+                src={item.images?.[0]}
                 alt={item.name}
                 className="object-cover w-full h-[150px] lg:h-[190px]"
               />
 
-              {/* Bag Icon  */}
               <div className="absolute bottom-0 right-0 w-7 h-7 flex items-center justify-center bg-white/30 backdrop-blur-md text-white">
-                  <Handbag size={16} />
-                </div>
+                <Handbag size={16} />
               </div>
+            </div>
 
             {/* Content */}
             <div className="mt-3">
               <h3 className="text-xs font-semibold tracking-wide">
                 {item.name}
               </h3>
-              <p className="text-xs text-gray-500 mt-">{item.description}</p>
-              <p className="text-sm mt-2">{item.price}</p>
+              <p className="text-xs text-gray-500">
+                {item.description}
+              </p>
+              <p className="text-sm mt-2">₹{item.price}</p>
             </div>
-
           </div>
         ))}
       </div>
+
+      {/* Empty state */}
+      {!loading && products.length === 0 && (
+        <p className="text-center text-gray-400 mt-10">
+          No products found
+        </p>
+      )}
     </section>
   );
 }

@@ -1,21 +1,52 @@
 "use client";
 
 import { useState } from "react";
+import { newsletterAPI } from "@/lib/api/newsletter.api";
+import toast from "react-hot-toast";
 
 export default function ExclusiveAccess() {
-
   const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const validateEmail = (email: string) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setEmail('')
-    console.log(email);
+
+    const trimmedEmail = email.trim();
+
+    if (!trimmedEmail) {
+      toast.error("Please enter your email address.");
+      return;
+    }
+
+    if (!validateEmail(trimmedEmail)) {
+      toast.error("Please enter a valid email address.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const response = await newsletterAPI.subscribe(trimmedEmail);
+
+      if (response.data.success) {
+        toast.success("Thank you for subscribing!");
+        setEmail("");
+      }
+    } catch (err: any) {
+      const errorMessage =
+        err.response?.data?.message || "Failed to subscribe. Please try again.";
+      toast.error(errorMessage);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <section className="bg-[#f5f5f5] pb-3 lg:pb-16 lg:pt-5">
       <div className="max-w-2xl mx-auto px-4 text-center">
-
         {/* TITLE */}
         <h2 className="text-2xl font-semibold mb-3 font-serif">
           Exclusive Access
@@ -23,32 +54,42 @@ export default function ExclusiveAccess() {
 
         {/* DESCRIPTION */}
         <p className="text-sm text-gray-600 mb-6">
-          Get updates on new designs, trends, and special offers straight to your inbox.
+          Get updates on new designs, trends, and special offers straight to
+          your inbox.
         </p>
 
         {/* FORM */}
         <form
           onSubmit={handleSubmit}
-          className="flex items-stretch border border-gray-300 rounded-md overflow-hidden bg-white"
+          className="flex items-stretch border border-gray-300 rounded-md overflow-hidden bg-white max-w-md mx-auto"
         >
           <input
             type="email"
             placeholder="example@gmail.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            disabled={loading}
+            className="flex-1 px-4 py-3 outline-none text-sm disabled:bg-gray-50"
             required
-            className="flex-1 px-2 py-2 lg:px-4 lg:py-3 text-sm outline-none font-mono"
           />
-
           <button
             type="submit"
-            className="px-2 sm:px-5 text-sm font-medium text-black transition hover:bg-gray-100 border-l border-gray-300"
+            disabled={loading}
+            className="bg-black text-white px-6 py-3 text-sm font-semibold uppercase tracking-wider transition hover:bg-neutral-800 disabled:bg-gray-400 disabled:cursor-not-allowed min-w-[120px]"
           >
-            SUBSCRIBE
+            {loading ? (
+              <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin mx-auto"></div>
+            ) : (
+              "Subscribe"
+            )}
           </button>
         </form>
 
+        <p className="mt-4 text-[11px] text-gray-400">
+          By subscribing, you agree to our Privacy Policy and consent to receive
+          updates from us.
+        </p>
       </div>
     </section>
   );
-};
+}

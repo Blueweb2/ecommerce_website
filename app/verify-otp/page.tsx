@@ -14,6 +14,7 @@ export default function VerifyOtpPage() {
   const { setUser } = useAuthStore();
 
   const email = searchParams.get("email") || "";
+  const isAdminFlow = searchParams.get("admin") === "true";
 
   const [otp, setOtp] = useState<string[]>(["", "", "", "", "", ""]);
   const [loading, setLoading] = useState(false);
@@ -45,6 +46,7 @@ export default function VerifyOtpPage() {
     return () => clearInterval(timer);
   }, [cooldown]);
 
+  // 🔢 Handle OTP typing
   const handleChange = (value: string, index: number) => {
     if (!/^\d?$/.test(value)) return;
 
@@ -52,24 +54,24 @@ export default function VerifyOtpPage() {
     newOtp[index] = value;
     setOtp(newOtp);
 
-    // 👉 move forward
     if (value && index < 5) {
       inputsRef.current[index + 1]?.focus();
     }
 
-    // 🔥 auto submit when full
     const otpValue = newOtp.join("");
     if (otpValue.length === 6 && !otpValue.includes("")) {
       setTimeout(() => handleVerify(otpValue), 300);
     }
   };
 
+  // ⌫ Backspace navigation
   const handleKeyDown = (e: React.KeyboardEvent, index: number) => {
     if (e.key === "Backspace" && !otp[index] && index > 0) {
       inputsRef.current[index - 1]?.focus();
     }
   };
 
+  // 📋 Paste OTP
   const handlePaste = (e: React.ClipboardEvent) => {
     const pasted = e.clipboardData.getData("text").slice(0, 6);
     if (!/^\d+$/.test(pasted)) return;
@@ -77,12 +79,12 @@ export default function VerifyOtpPage() {
     const newOtp = pasted.split("");
     setOtp(newOtp);
 
-    // 🔥 focus last
     setTimeout(() => {
       inputsRef.current[5]?.focus();
     }, 0);
   };
 
+  // ✅ VERIFY OTP
   const handleVerify = async (otpParam?: string) => {
     const otpValue = otpParam || otp.join("");
 
@@ -100,12 +102,28 @@ export default function VerifyOtpPage() {
 
       const { accessToken, user } = res.data;
 
+      if (!accessToken || !user) {
+        throw new Error("Invalid response from server");
+      }
+
+      // 🔐 Save auth
       setAccessToken(accessToken);
       setUser(user);
 
       toast.success("Verified successfully 🎉");
 
-      router.replace("/");
+      // 🚨 ROLE-BASED SECURITY
+      if (isAdminFlow) {
+        if (user.role !== "admin" && user.role !== "superadmin") {
+          toast.error("Access denied: Admin only");
+          return;
+        }
+
+        router.replace("/admin/dashboard");
+      } else {
+        router.replace("/");
+      }
+
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
         toast.error(error.response?.data?.message || "Verification failed");
@@ -117,6 +135,7 @@ export default function VerifyOtpPage() {
     }
   };
 
+  // 🔄 RESEND OTP
   const handleResend = async () => {
     if (cooldown > 0) return;
 
@@ -142,7 +161,7 @@ export default function VerifyOtpPage() {
         {/* HEADER */}
         <div className="text-center">
           <h2 className="text-2xl font-semibold text-[#1a1f1a]">
-            Verify OTP
+            {isAdminFlow ? "Admin Verification" : "Verify OTP"}
           </h2>
           <p className="text-sm text-gray-500 mt-2">
             Enter the code sent to your email
