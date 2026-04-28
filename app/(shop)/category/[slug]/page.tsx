@@ -295,14 +295,14 @@ export default function CategoryPage({ params }: CategoryPageProps) {
           </aside>
 
           <div className="space-y-6">
-            <ExploreHeader
+            {/* <ExploreHeader
               title={categoryTitle}
               description={categoryDescription}
               bannerImage={bannerImage}
               productCount={products.length}
               typeLabel="Category Explore"
               activeChips={activeChips}
-            />
+            /> */}
 
             <ExploreControls
               sortBy={sortBy}

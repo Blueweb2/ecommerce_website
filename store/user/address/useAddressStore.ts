@@ -5,8 +5,8 @@ import { Address } from "@/types/address";
 interface AddressState {
   addresses: Address[];
   loading: boolean;
-
-  fetchAddresses: () => Promise<void>;
+  loaded: boolean;
+  fetchAddresses: (force?: boolean) => Promise<void>;
   addAddress: (data: Address) => Promise<Address>;
   updateAddress: (id: string, data: Address) => Promise<void>;
   deleteAddress: (id: string) => Promise<void>;
@@ -17,40 +17,45 @@ interface AddressState {
 export const useAddressStore = create<AddressState>((set, get) => ({
   addresses: [],
   loading: false,
+  loaded: false,
 
-  fetchAddresses: async () => {
-    if (get().loading) {
+  fetchAddresses: async (force = false) => {
+    if (get().loading || (get().loaded && !force)) {
       return;
     }
 
     try {
       set({ loading: true });
       const res = await addressAPI.getAll();
-      set({ addresses: res.data.data, loading: false });
+      set({
+        addresses: res.data.data,
+        loading: false,
+        loaded: true,
+      });
     } catch (error) {
       console.error("Failed to fetch addresses:", error);
       set({ loading: false });
     }
   },
 
-addAddress: async (data) => {
-  try {
-    set({ loading: true });
-    const res = await addressAPI.create(data);
+  addAddress: async (data) => {
+    try {
+      set({ loading: true });
+      const res = await addressAPI.create(data);
+      const newAddress = res.data.data;
 
-    const newAddress = res.data.data;
+      set((state) => ({
+        addresses: [...state.addresses, newAddress],
+        loading: false,
+        loaded: true,
+      }));
 
-    set((state) => ({
-      addresses: [...state.addresses, newAddress],
-      loading: false,
-    }));
-
-    return newAddress; // ✅ IMPORTANT
-  } catch (error) {
-    set({ loading: false });
-    throw error;
-  }
-},
+      return newAddress;
+    } catch (error) {
+      set({ loading: false });
+      throw error;
+    }
+  },
 
   updateAddress: async (id, data) => {
     try {
@@ -62,6 +67,7 @@ addAddress: async (data) => {
           a._id === id ? res.data.data : a
         ),
         loading: false,
+        loaded: true,
       }));
     } catch (error) {
       console.error("Failed to update address:", error);
@@ -76,6 +82,7 @@ addAddress: async (data) => {
       set((state) => ({
         addresses: state.addresses.filter((a) => a._id !== id),
         loading: false,
+        loaded: true,
       }));
     } catch (error) {
       console.error("Failed to delete address:", error);
@@ -88,13 +95,13 @@ addAddress: async (data) => {
       set({ loading: true });
       await addressAPI.setDefault(id);
 
-      // ⭐ update local state
       set((state) => ({
         addresses: state.addresses.map((a) => ({
           ...a,
           isDefault: a._id === id,
         })),
         loading: false,
+        loaded: true,
       }));
     } catch (error) {
       console.error("Failed to set default address:", error);
@@ -106,6 +113,7 @@ addAddress: async (data) => {
     set({
       addresses: [],
       loading: false,
+      loaded: false,
     });
   },
 }));

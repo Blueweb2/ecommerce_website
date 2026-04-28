@@ -3,7 +3,6 @@
 import { useRouter, usePathname } from "next/navigation";
 import { useAuthStore } from "@/store/auth/useAuthStore";
 import AdminLayoutWrapper from "@/components/admin/layout/AdminLayoutWrapper";
-import { useAuthInit } from "@/hooks/useAuthInit";
 import { useEffect } from "react";
 
 export default function AdminLayout({
@@ -14,8 +13,6 @@ export default function AdminLayout({
   const { user, loading } = useAuthStore();
   const router = useRouter();
   const pathname = usePathname();
-
-  useAuthInit();
 
   const isLoginPage = pathname === "/admin-login";
 
