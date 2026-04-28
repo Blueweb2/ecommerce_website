@@ -3,8 +3,14 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { Lora } from 'next/font/google';
 import { collectionAPI } from "@/lib/api/collection.api";
 import { Collection } from "@/types/collection";
+
+const lora = Lora({
+  subsets: ['latin'],
+  weight: ['400', '700'],
+});
 
 const FALLBACK_IMAGE = "/home/herosection/hero-right-top.png";
 
@@ -30,6 +36,7 @@ function getCollectionImage(collection: Collection) {
 }
 
 export default function TopCollections() {
+
   const [collections, setCollections] = useState<Collection[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -99,10 +106,10 @@ export default function TopCollections() {
       {collections.map((item) => (
         <article
           key={item._id || item.slug}
-          className="group overflow-hidden rounded-[28px] bg-white shadow-[0_18px_50px_rgba(15,23,42,0.08)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(15,23,42,0.12)]"
+          className="group overflow-hidden"
         >
           <Link href={`/collection/${item.slug}`} className="block">
-            <div className="relative h-[240px] overflow-hidden bg-neutral-100">
+            <div className="relative h-[300px] overflow-hidden">
               <Image
                 src={getCollectionImage(item)}
                 alt={getCollectionTitle(item)}
@@ -113,8 +120,8 @@ export default function TopCollections() {
             </div>
           </Link>
 
-          <div className="p-5">
-            <h2 className="text-xl font-semibold tracking-tight text-[#12251a]">
+          <div className="pt-5">
+            <h2 className={`${lora.className} lora text-xl font-semibold tracking-tight text-[#12251a]`}>
               {getCollectionTitle(item)}
             </h2>
             <p className="mt-2 line-clamp-3 text-sm leading-6 text-neutral-600">
@@ -123,14 +130,13 @@ export default function TopCollections() {
 
             <Link
               href={`/collection/${item.slug}`}
-              className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-[#12251a] transition hover:text-[#8b6a3f]"
+              className="mt-4 inline-flex items-center underline gap-2 text-sm font-semibold text-[#12251a] transition group-hover:text-[#3f478b]"
             >
               Explore Designs
-              <span aria-hidden>+</span>
             </Link>
           </div>
         </article>
       ))}
     </div>
   );
-}
+};

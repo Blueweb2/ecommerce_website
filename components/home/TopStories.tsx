@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { Lora } from 'next/font/google';
 import { getStories } from "@/lib/api/story.api";
 
 type Story = {
@@ -18,12 +19,19 @@ type Story = {
   slug: string;
 };
 
+const lora = Lora({
+  subsets: ['latin'],
+  weight: ['400', '700'],
+});
+
 export default function TopStories() {
+
   const [stories, setStories] = useState<Story[]>([]);
   const [loading, setLoading] = useState(true);
+
   const stripHtml = (html: string) => {
-  return html.replace(/<[^>]+>/g, "");
-};
+    return html.replace(/<[^>]+>/g, "");
+  };
 
   useEffect(() => {
     const fetchStories = async () => {
@@ -62,15 +70,16 @@ export default function TopStories() {
         </div>
       </section>
     );
-  }
+  };
 
-if (stories.length === 0) {
-  return (
-    <div className="text-center text-gray-500 py-10">
-      No stories available
-    </div>
-  );
-}
+  if (stories.length === 0) {
+    return (
+      <div className="text-center text-gray-500 py-10">
+        No stories available
+      </div>
+    );
+  };
+
   return (
     <section className="bg-[#f5f5f5] py-12">
       <div className="max-w-[2000px] mx-auto px-4 md:px-20">
@@ -85,7 +94,7 @@ if (stories.length === 0) {
           {stories.map((story) => (
             <div
               key={story._id}
-              className="w-[200px] flex flex-col justify-between flex-shrink-0 rounded-xl"
+              className="w-[200px] flex flex-col justify-between flex-shrink-0"
             >
               {/* IMAGE */}
               <Link
@@ -102,23 +111,17 @@ if (stories.length === 0) {
               </Link>
 
               {/* CONTENT */}
-              <div>
+              <div className="mr-8">
                 <h3 className="text-sm font-semibold mb-2 text-gray-500 uppercase">
                   {story.category}
                 </h3>
-               <div className="text-xs space-y-2">
-  <p className="line-clamp-3 text-gray-700">
-    {stripHtml(story.description)}
-  </p>
-
-  <Link
-    href={`/stories/${story.slug}`}
-    className="text-[11px] font-semibold text-[#12251a] hover:underline"
-  >
-    Read more →
-  </Link>
-</div>
+                <div className="text-xs space-y-2">
+                  <p className={`${lora.className} line-clamp-3 mt-3 min-h-[3rem]`}>
+                    {stripHtml(story.description)}
+                  </p>
+                </div>
               </div>
+
             </div>
           ))}
         </div>
