@@ -6,6 +6,7 @@ type ExploreControlsProps = {
   sortBy: string;
   onSortChange: (value: any) => void;
   onMobileFilterOpen: () => void;
+  onHideAside: () => void;
   resultCount: number;
   activeChips: any[];
   onRemoveChip: (type: any, value?: string) => void;
@@ -15,6 +16,7 @@ export default function ExploreControls({
   sortBy,
   onSortChange,
   onMobileFilterOpen,
+  onHideAside,
   resultCount,
   activeChips,
   onRemoveChip,
@@ -33,7 +35,10 @@ export default function ExploreControls({
           </button>
 
           <div className="inline-flex items-center gap-3 rounded-[4px] border border-black/15 bg-white px-4 py-3 text-[15px] text-black">
-            <div className="flex h-5 w-5 items-center justify-center rounded-full bg-black text-white">
+            <div 
+              onClick={onHideAside}
+              className="flex h-5 w-5 items-center justify-center rounded-full bg-black text-white"
+            >
               <span className="text-[10px]">−</span>
             </div>
             <span>Filter</span>

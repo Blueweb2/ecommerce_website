@@ -49,6 +49,8 @@ export default function CategoryPage({ params }: CategoryPageProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const [hideAside, setHideAside] = useState(true);
+  
   const [sortBy, setSortBy] = useState<SortOption>("recommended");
   const [activeFilters, setActiveFilters] = useState<any>({
     category: undefined,
@@ -286,25 +288,32 @@ export default function CategoryPage({ params }: CategoryPageProps) {
     `Explore our curated selection of products in ${categoryTitle}.`;
   const bannerImage = category?.image?.url || FALLBACK_BANNER;
 
+  const handleHideAside = () => {
+    setHideAside(prev => !prev);
+  };
+
   return (
     <section className="bg-[#f8f6f1] py-8 md:py-10 mt-16">
       <div className="mx-auto max-w-[1880px] px-4 md:px-8 xl:px-12">
-        <div className="grid gap-8 xl:grid-cols-[270px_minmax(0,1fr)]">
-          <aside className="hidden xl:block xl:self-start xl:sticky xl:top-24">
-            <ExploreFilters
-              activeFilters={activeFilters}
-              setActiveFilters={setActiveFilters}
-              openSections={openSections}
-              setOpenSections={setOpenSections}
-              allCategories={allCategories}
-              availableTypes={availableTypes}
-              availableTags={availableTags}
-              availableBrands={availableBrands}
-              formatFilterLabel={formatFilterLabel}
-              toggleBrand={toggleBrand}
-              toggleTag={toggleTag}
-            />
-          </aside>
+        <div className={`grid gap-8 ${hideAside ? 'xl:grid-cols-[270px_minmax(0,1fr)]':'xl:grid-cols-1'}`}>
+
+          { hideAside && (
+            <aside className="hidden xl:block xl:self-start xl:sticky xl:top-24">
+              <ExploreFilters
+                activeFilters={activeFilters}
+                setActiveFilters={setActiveFilters}
+                openSections={openSections}
+                setOpenSections={setOpenSections}
+                allCategories={allCategories}
+                availableTypes={availableTypes}
+                availableTags={availableTags}
+                availableBrands={availableBrands}
+                formatFilterLabel={formatFilterLabel}
+                toggleBrand={toggleBrand}
+                toggleTag={toggleTag}
+              />
+            </aside>
+          )}
 
           <div className="space-y-6">
             {/* <ExploreHeader
@@ -320,6 +329,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
               sortBy={sortBy}
               onSortChange={(val) => setSortBy(val)}
               onMobileFilterOpen={() => setMobileFiltersOpen(true)}
+              onHideAside={handleHideAside}
               resultCount={filteredProducts.length}
               activeChips={activeChips}
               onRemoveChip={removeChip}
