@@ -6,12 +6,13 @@ import Link from "next/link";
 import { getBanners } from "@/lib/api/banner.api";
 
 export default function HeroSection() {
+
   const [current, setCurrent] = useState(0);
   const [banners, setBanners] = useState<any>(null);
 
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  // 🔥 Fetch banners
+  // Fetch banners
   useEffect(() => {
     const fetchData = async () => {
       const data = await getBanners();
@@ -20,7 +21,7 @@ export default function HeroSection() {
     fetchData();
   }, []);
 
-  // 🔥 Auto slide
+  // Auto slide
   const startAutoSlide = () => {
     intervalRef.current = setInterval(() => {
       setCurrent((prev) =>
@@ -55,12 +56,12 @@ export default function HeroSection() {
     startAutoSlide();
   };
 
-  // 🔥 Loading fallback
+  // Loading fallback
   if (!banners) return <div>Loading...</div>;
 
   return (
-    <section className="w-full bg-[#f5f5f5] py-8 mt-8">
-      <div className="max-w-[2000px] mx-auto px-4 md:px-20 grid grid-cols-1 lg:grid-cols-2 gap-3 h-[calc(100vh-100px)]">
+    <section className="w-full bg-[#f5f5f5] py-8 mt-22">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 h-[calc(100vh-130px)]">
 
         {/* LEFT SLIDER */}
         <Link
@@ -102,7 +103,6 @@ export default function HeroSection() {
             </div>
           </div>
 
-          <div className="absolute inset-0 bg-white/30 z-0 pointer-events-none" />
         </Link>
 
         {/* RIGHT SIDE */}
@@ -126,7 +126,7 @@ export default function HeroSection() {
           )}
 
           {/* RIGHT */}
-          <div className="flex lg:flex-col gap-3 lg:w-[40%] h-full">
+          <div className="flex lg:flex-col gap-3 lg:w-[60%] h-full">
 
             {/* TOP */}
             {banners.rightTop && (
@@ -164,7 +164,6 @@ export default function HeroSection() {
 
           </div>
         </div>
-        
 
       </div>
     </section>
