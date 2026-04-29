@@ -6,7 +6,7 @@ type ExploreControlsProps = {
   sortBy: string;
   onSortChange: (value: any) => void;
   onMobileFilterOpen: () => void;
-  onHideAside: () => void;
+  onHideAside?: () => void;
   resultCount: number;
   activeChips: any[];
   onRemoveChip: (type: any, value?: string) => void;
