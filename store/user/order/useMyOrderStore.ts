@@ -1,11 +1,12 @@
 import { create } from "zustand";
-import { orderAPI } from "@/lib/api/order.api";
 import toast from "react-hot-toast";
+import { orderAPI } from "@/lib/api/order.api";
 import { Order } from "@/types/order";
 
 interface MyOrderStore {
   orders: Order[];
   loading: boolean;
+  loaded: boolean;
   error: string | null;
   pagination: {
     total: number;
@@ -13,31 +14,52 @@ interface MyOrderStore {
     limit: number;
     pages: number;
   };
-
-  fetchMyOrders: (page?: number, limit?: number) => Promise<void>;
+  fetchMyOrders: (page?: number, limit?: number, force?: boolean) => Promise<void>;
   cancelOrder: (id: string) => Promise<void>;
   requestReturn: (id: string, reason: string) => Promise<void>;
 }
 
+const emptyPagination = {
+  total: 0,
+  page: 1,
+  limit: 10,
+  pages: 1,
+};
+
 export const useMyOrderStore = create<MyOrderStore>((set, get) => ({
   orders: [],
   loading: false,
+  loaded: false,
   error: null,
-  pagination: { total: 0, page: 1, limit: 10, pages: 1 },
+  pagination: emptyPagination,
 
-  fetchMyOrders: async (page = 1, limit = 10) => {
+  fetchMyOrders: async (page = 1, limit = 10, force = false) => {
+    if (get().loading || (get().loaded && !force)) {
+      return;
+    }
+
     set({ loading: true, error: null });
     try {
       const res = await orderAPI.getMyOrders(page, limit);
-      // Ensure we extract the nested `data` based on standard sendResponse wrapping
       const data = res.data?.data || res.data;
-      set({ 
-        orders: data.orders || [], 
-        pagination: data.pagination || { total: 0, page: 1, limit: 10, pages: 1 } 
+
+      set({
+        orders: data.orders || [],
+        pagination: data.pagination || emptyPagination,
+        loaded: true,
       });
-    } catch (err: any) {
-      set({ error: err.response?.data?.message || "Failed to fetch your orders" });
-      toast.error(err.response?.data?.message || "Failed to fetch your orders");
+    } catch (err: unknown) {
+      const message =
+        err && typeof err === "object" && "response" in err
+          ? (
+              err as {
+                response?: { data?: { message?: string } };
+              }
+            ).response?.data?.message || "Failed to fetch your orders"
+          : "Failed to fetch your orders";
+
+      set({ error: message });
+      toast.error(message);
     } finally {
       set({ loading: false });
     }
@@ -48,16 +70,24 @@ export const useMyOrderStore = create<MyOrderStore>((set, get) => ({
     try {
       const res = await orderAPI.cancelOrder(id);
       const updatedOrder = res.data?.data || res.data;
-      
-      // Update the local list
+
       set((state) => ({
         orders: state.orders.map((o) => (o._id === id ? updatedOrder : o)),
       }));
-      
+
       toast.success("Order cancelled successfully");
-    } catch (err: any) {
-      set({ error: err.response?.data?.message || "Failed to cancel order" });
-      toast.error(err.response?.data?.message || "Failed to cancel order");
+    } catch (err: unknown) {
+      const message =
+        err && typeof err === "object" && "response" in err
+          ? (
+              err as {
+                response?: { data?: { message?: string } };
+              }
+            ).response?.data?.message || "Failed to cancel order"
+          : "Failed to cancel order";
+
+      set({ error: message });
+      toast.error(message);
     } finally {
       set({ loading: false });
     }
@@ -68,17 +98,26 @@ export const useMyOrderStore = create<MyOrderStore>((set, get) => ({
     try {
       const res = await orderAPI.requestReturn(id, reason);
       const updatedOrder = res.data?.data || res.data;
-      
+
       set((state) => ({
         orders: state.orders.map((o) => (o._id === id ? updatedOrder : o)),
       }));
-      
+
       toast.success("Return requested successfully");
-    } catch (err: any) {
-      set({ error: err.response?.data?.message || "Failed to request return" });
-      toast.error(err.response?.data?.message || "Failed to request return");
+    } catch (err: unknown) {
+      const message =
+        err && typeof err === "object" && "response" in err
+          ? (
+              err as {
+                response?: { data?: { message?: string } };
+              }
+            ).response?.data?.message || "Failed to request return"
+          : "Failed to request return";
+
+      set({ error: message });
+      toast.error(message);
     } finally {
       set({ loading: false });
     }
-  }
+  },
 }));

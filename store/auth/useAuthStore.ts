@@ -1,64 +1,3 @@
-// import { create } from "zustand";
-
-
-// import api from "@/lib/api/axios";
-// import { clearAccessToken } from "@/lib/auth";
-
-// interface User {
-//   id: string;
-//   name: string;
-//   email: string;
-//   role: string;
-// }
-
-// interface AuthState {
-//   user: User | null;
-//   loading: boolean;
-
-//   setUser: (user: User | null) => void;
-//   setLoading: (loading: boolean) => void;
-//   hydrate: () => Promise<void>;
-//   logout: () => Promise<void>;
-// }
-
-// export const useAuthStore = create<AuthState>((set) => ({
-//   user: null,
-//   loading: true,
-
-//   setUser: (user) => set({ user }),
-//   setLoading: (loading) => set({ loading }),
-
-//   // 🔥 Restore session on app load
-//   hydrate: async () => {
-//     try {
-//       const res = await api.get("/auth/me");
-
-//       set({
-//         user: res.data.data,
-//         loading: false,
-//       });
-//     } catch (err) {
-//       set({
-//         user: null,
-//         loading: false,
-//       });
-//     }
-//   },
-
-//   // 🔥 Logout (backend + frontend)
-//   logout: async () => {
-//     try {
-//       await api.post("/auth/logout");
-//     } catch (err) {}
-
-//     set({
-//       user: null,
-//       loading: false,
-//     });
-//   },
-// }));
-// 
-// removed hydrate, now we do refresh token + fetch user in useAuthInit hook, which is more robust (handles expired tokens)
 import { create } from "zustand";
 import api from "@/lib/api/axios";
 import { clearAccessToken } from "@/lib/auth";
@@ -75,17 +14,19 @@ interface AuthState {
   user: User | null;
   loading: boolean;
   isAuthenticated: boolean;
-
+  initialized: boolean;
   setUser: (user: User | null) => void;
   setLoading: (loading: boolean) => void;
+  setInitialized: (initialized: boolean) => void;
   resetAuth: () => void;
   logout: () => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
-  loading: false, // ✅ FIXED
+  loading: false,
   isAuthenticated: false,
+  initialized: false,
 
   setUser: (user) =>
     set({
@@ -95,17 +36,20 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   setLoading: (loading) => set({ loading }),
 
+  setInitialized: (initialized) => set({ initialized }),
+
   resetAuth: () =>
     set({
       user: null,
       isAuthenticated: false,
       loading: false,
+      initialized: false,
     }),
 
   logout: async () => {
     try {
       await api.post("/auth/logout");
-    } catch (err) {
+    } catch {
       console.warn("Logout API failed, clearing locally");
     }
 
@@ -116,6 +60,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       user: null,
       loading: false,
       isAuthenticated: false,
+      initialized: true,
     });
   },
 }));
