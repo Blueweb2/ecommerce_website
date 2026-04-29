@@ -1,5 +1,6 @@
 "use client";
 
+import { useSearchParams } from "next/navigation";
 import { use, useCallback, useEffect, useMemo, useState } from "react";
 import { X } from "lucide-react";
 import { categoryAPI } from "@/lib/api/category.api";
@@ -43,6 +44,8 @@ export default function CategoryPage({ params }: CategoryPageProps) {
   const [category, setCategory] = useState<Category | null>(null);
   const [allCategories, setAllCategories] = useState<any[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
+  const searchParams = useSearchParams();
+  const filterCategory = searchParams?.get("filterCategory");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
@@ -89,6 +92,15 @@ export default function CategoryPage({ params }: CategoryPageProps) {
   useEffect(() => {
     void loadData();
   }, [loadData]);
+
+  useEffect(() => {
+    if (filterCategory) {
+      setActiveFilters((prev: any) => ({
+        ...prev,
+        category: filterCategory,
+      }));
+    }
+  }, [filterCategory]);
 
   const availableBrands = useMemo(() => {
     return Array.from(

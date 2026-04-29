@@ -139,8 +139,11 @@ export default function CollectionsPage() {
                         Category
                       </p>
                       <p className="mt-2 text-sm font-medium text-slate-900">
-                        {categoryLookup.get(collection.filters?.category || "") ||
-                          "All categories"}
+                        {categoryLookup.get(
+                          typeof collection.filters?.category === "object"
+                            ? collection.filters.category._id
+                            : (collection.filters?.category || "")
+                        ) || "All categories"}
                       </p>
                     </div>
                     <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">

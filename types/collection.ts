@@ -18,7 +18,7 @@ export type CollectionPriceRange = {
 };
 
 export type CollectionFilters = {
-  category?: string;
+  category?: string | { _id: string; slug: string; name?: string };
   type?: string;
   tags?: string[];
   priceRange?: CollectionPriceRange;

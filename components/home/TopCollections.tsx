@@ -103,40 +103,49 @@ export default function TopCollections() {
 
   return (
     <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-      {collections.map((item) => (
-        <article
-          key={item._id || item.slug}
-          className="group overflow-hidden"
-        >
-          <Link href={`/collection/${item.slug}`} className="block">
-            <div className="relative h-[300px] overflow-hidden">
-              <Image
-                src={getCollectionImage(item)}
-                alt={getCollectionTitle(item)}
-                fill
-                sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
-                className="object-cover transition duration-500 group-hover:scale-105"
-              />
-            </div>
-          </Link>
+      {collections.map((item) => {
+        const categoryFilter = item.filters?.category;
+        const categorySlug = typeof categoryFilter === "object" ? categoryFilter?.slug : item.slug;
+        const categoryId = typeof categoryFilter === "object" ? categoryFilter?._id : categoryFilter;
 
-          <div className="pt-5">
-            <h2 className={`${lora.className} lora text-xl font-semibold tracking-tight text-[#12251a]`}>
-              {getCollectionTitle(item)}
-            </h2>
-            <p className="mt-2 line-clamp-3 text-sm leading-6 text-neutral-600">
-              {getCollectionDescription(item)}
-            </p>
-
+        return (
+          <article
+            key={item._id || item.slug}
+            className="group overflow-hidden"
+          >
             <Link
-              href={`/collection/${item.slug}`}
-              className="mt-4 inline-flex items-center underline gap-2 text-sm font-semibold text-[#12251a] transition group-hover:text-[#3f478b]"
+              href={`/category/${categorySlug}?filterCategory=${categoryId || ""}`}
+              className="block"
             >
-              Explore Designs
+              <div className="relative h-[300px] overflow-hidden">
+                <Image
+                  src={getCollectionImage(item)}
+                  alt={getCollectionTitle(item)}
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
+                  className="object-cover transition duration-500 group-hover:scale-105"
+                />
+              </div>
             </Link>
-          </div>
-        </article>
-      ))}
+
+            <div className="pt-5">
+              <h2 className={`${lora.className} lora text-xl font-semibold tracking-tight text-[#12251a]`}>
+                {getCollectionTitle(item)}
+              </h2>
+              <p className="mt-2 line-clamp-3 text-sm leading-6 text-neutral-600">
+                {getCollectionDescription(item)}
+              </p>
+
+              <Link
+                href={`/category/${categorySlug}?filterCategory=${categoryId || ""}`}
+                className="mt-4 inline-flex items-center underline gap-2 text-sm font-semibold text-[#12251a] transition group-hover:text-[#3f478b]"
+              >
+                Explore Designs
+              </Link>
+            </div>
+          </article>
+        );
+      })}
     </div>
   );
 };

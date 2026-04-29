@@ -36,6 +36,20 @@ const defaultForm: CollectionFormState = {
   isActive: true,
 };
 
+function getCategoryIdFromFilter(
+  category: any
+): string {
+  if (typeof category === "string") {
+    return category;
+  }
+
+  if (category && typeof category === "object") {
+    return category._id;
+  }
+
+  return "";
+}
+
 export default function CollectionForm({ initialData, onSubmit }: Props) {
   const router = useRouter();
   const { categories, fetchCategories } = useCategoryStore();
@@ -67,7 +81,7 @@ export default function CollectionForm({ initialData, onSubmit }: Props) {
       description: initialData.description || "",
       bannerImage,
       filters: {
-        category: initialData.filters?.category || "",
+        category: getCategoryIdFromFilter(initialData.filters?.category),
         type: initialData.filters?.type || "",
         tags: initialData.filters?.tags || [],
         priceRange: {
@@ -173,6 +187,11 @@ export default function CollectionForm({ initialData, onSubmit }: Props) {
       return false;
     }
 
+    if (!form.filters.category) {
+      toast.error("Primary category is required");
+      return false;
+    }
+
     const { min, max } = form.filters.priceRange;
     if (
       typeof min === "number" &&
@@ -264,6 +283,35 @@ export default function CollectionForm({ initialData, onSubmit }: Props) {
             </div>
 
             <div>
+              <label className="text-sm font-medium text-slate-700">
+                Primary Category
+              </label>
+              <select
+                value={form.filters.category}
+                onChange={(event) =>
+                  setForm((prev) => ({
+                    ...prev,
+                    filters: {
+                      ...prev.filters,
+                      category: event.target.value,
+                    },
+                  }))
+                }
+                className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
+              >
+                <option value="">Select a category...</option>
+                {categories.map((category) => (
+                  <option key={category._id} value={category._id}>
+                    {category.name}
+                  </option>
+                ))}
+              </select>
+              <p className="mt-2 text-xs text-slate-500">
+                This collection will be linked to this category's page.
+              </p>
+            </div>
+
+            <div>
               <label className="text-sm font-medium text-slate-700">Slug</label>
               <input
                 type="text"
@@ -350,33 +398,7 @@ export default function CollectionForm({ initialData, onSubmit }: Props) {
 
         <div className="mt-6 grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
           <div className="space-y-6">
-            <div className="grid gap-5 md:grid-cols-2">
-              <div>
-                <label className="text-sm font-medium text-slate-700">
-                  Category
-                </label>
-                <select
-                  value={form.filters.category}
-                  onChange={(event) =>
-                    setForm((prev) => ({
-                      ...prev,
-                      filters: {
-                        ...prev.filters,
-                        category: event.target.value,
-                      },
-                    }))
-                  }
-                  className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
-                >
-                  <option value="">All categories</option>
-                  {categories.map((category) => (
-                    <option key={category._id} value={category._id}>
-                      {category.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
+            <div className="grid gap-5 md:grid-cols-1">
               <div>
                 <label className="text-sm font-medium text-slate-700">
                   Type

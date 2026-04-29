@@ -165,8 +165,12 @@ export default function CollectionPage({ params }: CollectionPageProps) {
   useEffect(() => {
     if (!collection) return;
 
+    const categoryId = typeof collection.filters?.category === "object" 
+      ? (collection.filters?.category as any)?._id 
+      : collection.filters?.category;
+
     setActiveFilters({
-      category: collection.filters?.category,
+      category: categoryId,
       type: collection.filters?.type,
       tags: collection.filters?.tags || [],
       brands: [],
@@ -333,14 +337,14 @@ export default function CollectionPage({ params }: CollectionPageProps) {
           </aside>
 
           <div className="space-y-6">
-            <ExploreHeader
+            {/* <ExploreHeader
               title={collectionTitle}
               description={collectionDescription}
               bannerImage={bannerImage}
               productCount={products.length}
               typeLabel="Curated collection"
               activeChips={activeChips}
-            />
+            /> */}
 
             <ExploreControls
               sortBy={sortBy}
