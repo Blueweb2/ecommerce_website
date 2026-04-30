@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { Playfair_Display } from 'next/font/google';
+import { Playfair_Display, Inter } from 'next/font/google';
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Search, Heart, User, ShoppingCart } from "lucide-react";
@@ -14,6 +14,12 @@ import { useWishlistStore } from '@/store/user/wishlist/useWishlistStore';
 const playfair = Playfair_Display({
   subsets: ['latin'],
   weight: ['400', '600'],
+});
+
+
+const inter = Inter({
+  subsets: ['latin'],
+  weight: ['100','200','300'],
 });
 
 const messages = [
@@ -36,7 +42,7 @@ export default function Navbar() {
 
   const linkClass = (path: string) => {
     return (
-      `${pathname === path ? "text-[#D4AF37] font-semibold" : "text-white hover:text-[#D4AF37]"}`
+      `whitespace-nowrap ${pathname === path ? "text-[#D4AF37] font-semibold" : "text-white hover:text-[#D4AF37]"}`
     );
   };
 
@@ -55,7 +61,7 @@ export default function Navbar() {
         {messages[index]}
       </div>
 
-      <div className="max-w-[2000px] mx-auto px-4 md:px-20 py-2 flex items-center justify-between">
+      <div className="max-w-[2000px] mx-auto px-4 md:px-20 py-2 md:py-4 flex items-center justify-between">
 
         {/* LOGO FOR MOBILE DEVICE */}
         <div className={`${playfair.className} text-2xl font-semibold tracking-wide text-white md:hidden`}>
@@ -82,7 +88,7 @@ export default function Navbar() {
           </div>
 
           <nav
-            className="flex items-center gap-8 text-sm"
+            className={`flex items-center gap-8 text-sm ${inter.className}`}
             aria-label="Main navigation"
           >
             <Link href="/" aria-label="Go to Home page" className={linkClass("/")}>
@@ -172,6 +178,7 @@ export default function Navbar() {
         </div>
 
       </div>
+
     </header>
   );
 };
