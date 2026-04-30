@@ -139,8 +139,12 @@ export default function Navbar() {
 
         {/* ICONS */}
         <div className="flex items-center gap-4 text-white justify-end flex-1">
-          <button className="transition-colors duration-300 hover:text-[#D4AF37]">
-            <Search size={18} />
+          <button 
+            className={`transition-colors duration-300 hover:text-[#D4AF37] 
+            flex items-center justify-center gap-x-1.5 text-sm
+            ${inter.className}`}
+          >
+            <Search size={18} /> Search
           </button>
           <Link
             href="/wishlist"
