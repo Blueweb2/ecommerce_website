@@ -79,10 +79,10 @@ export default function Navbar() {
         <div className='hidden md:flex flex-col items-center justify-center flex-1'>
 
           {/* LOGO FOR MOBILE LARGE DEVICE */}
-          <div className={`${playfair.className} text-2xl font-semibold tracking-wide text-white`}>
+          <div className={`${playfair.className} text-3xl font-semibold tracking-wide text-white`}>
             <Link href="/" aria-label="Go to homepage - GOLDLAND">
               FA
-              <span className="script text-5xl p-0.5">zz</span>
+              <span className="script text-6xl p-0.5">zz</span>
               MI
             </Link>
           </div>
