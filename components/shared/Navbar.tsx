@@ -61,7 +61,7 @@ export default function Navbar() {
         {messages[index]}
       </div>
 
-      <div className="max-w-[2000px] mx-auto px-4 md:px-20 py-2 md:py-4 flex items-center justify-between">
+      <div className="max-w-[2000px] mx-auto px-4 md:px-32 py-2 md:py-4 flex items-center justify-between">
 
         {/* LOGO FOR MOBILE DEVICE */}
         <div className={`${playfair.className} text-2xl font-semibold tracking-wide text-white md:hidden`}>
