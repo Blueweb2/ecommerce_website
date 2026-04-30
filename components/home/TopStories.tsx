@@ -82,15 +82,15 @@ export default function TopStories() {
 
   return (
     <section className="bg-[#f5f5f5] py-12">
-      <div className="max-w-[2000px] mx-auto px-4 md:px-20">
+      <div className="max-w-[2000px] mx-auto px-4 md:px-32">
 
         {/* TITLE */}
-        <h2 className="text-2xl font-semibold border-t-2 py-5 border-gray-300">
+        <h2 className="text-2xl font-semibold border-t-2 py-5 text-[#8D8B9D]">
           TOP STORIES ON
         </h2>
 
         {/* STORIES */}
-        <div className="flex gap-6 overflow-x-auto scrollbar-hide scroll-smooth pb-14 border-b-2 border-gray-300">
+        <div className="flex gap-6 overflow-x-auto scrollbar-hide scroll-smooth pb-14 border-b-2 text-[#8D8B9D]">
           {stories.map((story) => (
             <div
               key={story._id}

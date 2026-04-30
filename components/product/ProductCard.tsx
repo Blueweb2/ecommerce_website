@@ -26,7 +26,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       </div>
 
       <div className="text-center">
-        <h3 className="font-medium group-hover:text-neutral-600 transition-colors">
+        <h3 className="font-medium text-[#8D8B9D] group-hover:text-neutral-600 transition-colors">
           SHOP EARRINGS
         </h3>
       </div>

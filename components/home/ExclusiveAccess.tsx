@@ -48,12 +48,12 @@ export default function ExclusiveAccess() {
     <section className="bg-[#f5f5f5] pb-3 lg:pb-16 lg:pt-5">
       <div className="max-w-2xl mx-auto px-4 text-center">
         {/* TITLE */}
-        <h2 className="text-2xl font-semibold mb-3 font-serif">
+        <h2 className="text-2xl text-[#8D8B9D] font-semibold mb-3 font-serif">
           Exclusive Access
         </h2>
 
         {/* DESCRIPTION */}
-        <p className="text-sm text-gray-600 mb-6">
+        <p className="text-sm text-[#8D8B9D] mb-6">
           Get updates on new designs, trends, and special offers straight to
           your inbox.
         </p>

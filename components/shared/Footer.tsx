@@ -34,7 +34,7 @@ export default function Footer() {
   return (
     <footer>
       <div className="bg-[#e7e7e7] py-12 text-sm text-gray-700">
-        <div className="max-w-[2000px] mx-auto px-4 md:px-20 grid grid-cols-2 md:grid-cols-4 gap-10">
+        <div className="max-w-[2000px] mx-auto px-4 md:px-32 grid grid-cols-2 md:grid-cols-4 gap-10">
 
           {/* SHOP */}
           <div>
@@ -98,7 +98,7 @@ export default function Footer() {
             </div>
 
             {/* PAYMENTS */}
-            <p className="text-xs text-gray-500 mb-2">We accepts</p>
+            <p className="text-xs text-[#8D8B9D] mb-2">We accepts</p>
             <div className="flex items-center gap-2">
               <img src="/home/footer/visa.png" alt="visa" className="h-3.5 md:h-4.5" />
               <img src="/home/footer/master.png" alt="mastercard" className="h-3.5 md:h-4.5" />
@@ -111,7 +111,7 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="bg-[#f5f5f5] py-5">
+      <div className="bg-[#f5f5f5] py-5 text-[#8D8B9D]">
         <p className="max-w-7xl mx-auto pl-4">@ 2026 Your Brand Name All right recived</p>
       </div>
     </footer>

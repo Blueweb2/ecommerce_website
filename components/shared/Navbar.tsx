@@ -19,7 +19,7 @@ const playfair = Playfair_Display({
 
 const inter = Inter({
   subsets: ['latin'],
-  weight: ['100','200','300'],
+  weight: ['100'],
 });
 
 const messages = [
@@ -42,7 +42,7 @@ export default function Navbar() {
 
   const linkClass = (path: string) => {
     return (
-      `whitespace-nowrap ${pathname === path ? "text-[#D4AF37] font-semibold" : "text-white hover:text-[#D4AF37]"}`
+      `whitespace-nowrap ${pathname === path ? "text-[#D4AF37] " : "text-white hover:text-[#D4AF37]"}`
     );
   };
 
@@ -78,13 +78,14 @@ export default function Navbar() {
         {/* NAV LINKS */}
         <div className='hidden md:flex flex-col items-center justify-center flex-1'>
 
-          {/* LOGO FOR MOBILE LARGE DEVICE */}
+          {/* LOGO FOR LARGE DEVICE */}
           <div className={`${playfair.className} text-3xl font-semibold tracking-wide text-white`}>
-            <Link href="/" aria-label="Go to homepage - GOLDLAND">
+            {/* <Link href="/" aria-label="Go to homepage - GOLDLAND">
               FA
               <span className="script text-6xl p-0.5">zz</span>
               MI
-            </Link>
+            </Link> */}
+            <img src="/home/navigation/zenfaz.svg" alt="logo" className='h-7 mb-2'/>
           </div>
 
           <nav
@@ -142,7 +143,7 @@ export default function Navbar() {
           <button 
             className={`transition-colors duration-300 hover:text-[#D4AF37] 
             flex items-center justify-center gap-x-1.5 text-sm
-            ${inter.className}`}
+            ${inter.className} text-[13px]`}
           >
             <Search size={18} /> Search
           </button>

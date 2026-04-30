@@ -129,7 +129,7 @@ export default function TopCollections() {
             </Link>
 
             <div className="pt-5">
-              <h2 className={`${lora.className} lora text-xl font-semibold tracking-tight text-[#12251a]`}>
+              <h2 className={`${lora.className} lora text-xl font-semibold tracking-tight text-[#8D8B9D]`}>
                 {getCollectionTitle(item)}
               </h2>
               <p className="mt-2 line-clamp-3 text-sm leading-6 text-neutral-600">
@@ -138,7 +138,7 @@ export default function TopCollections() {
 
               <Link
                 href={`/category/${categorySlug}?filterCategory=${categoryId || ""}`}
-                className="mt-4 inline-flex items-center underline gap-2 text-sm font-semibold text-[#12251a] transition group-hover:text-[#3f478b]"
+                className="mt-4 inline-flex items-center underline gap-2 text-sm font-semibold text-[#8D8B9D] transition group-hover:text-[#3f478b]"
               >
                 Explore Designs
               </Link>
