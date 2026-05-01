@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Lora, Poppins } from 'next/font/google';
+import { Lora, Poppins, Bodoni_Moda, Inter } from 'next/font/google';
 import { useProductStore } from "@/store/user/product/useProductStore";
 import { Product } from "@/types/product";
 import ProductCard from "@/components/product/ProductCard";
@@ -13,9 +13,18 @@ const lora = Lora({
   weight: ['400', '700'],
 });
 
+const inter = Inter({
+  subsets: ['latin'],
+});
+
 const poppins = Poppins({
   subsets: ['latin'],
   weight: ['400', '700'],
+});
+
+const bodoni = Bodoni_Moda({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"], // choose what you need
 });
 
 export default function NewInSection() {
@@ -73,11 +82,11 @@ export default function NewInSection() {
         {/* Left Info Panel   {`${lora.className} tracking-tight text-[#8D8B9D] lora text-[25px] font-normal`}  */}
         <div className="md:w-96 flex-shrink-0 flex flex-col justify-center text-[#8D8B9D] pr-3">
           <h2
-            className={`${lora.className} tracking-tight mb-3 lora text-[25px] font-normal`}
+            className={`${bodoni.className} tracking-tight mb-3 lora text-[30px] font-normal`}
           >
             New In
           </h2>
-          <p className={`${poppins.className} text-[16px] font-normal text-sm leading-relaxed mb-6`}>
+          <p className={`${inter.className} text-[14px] font-normal text-sm leading-relaxed mb-6`}>
             Discover the latest and greatest arrivals, new designers to know, exclusive capsules and more style inspiration.
           </p>
           <div className="flex gap-4">

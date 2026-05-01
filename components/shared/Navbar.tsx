@@ -18,9 +18,10 @@ const playfair = Playfair_Display({
 
 const inter = Inter({
   subsets: ['latin'],
-  
 });
-// 2 100 weight: ['200'],
+
+
+
 const messages = [
   'New arrivals, now dropping five days a week - discover now',
   'Enjoy Free Standard Delivery on orders over €400',
@@ -40,7 +41,7 @@ export default function Navbar() {
   const cartCount = items.reduce((acc, item) => acc + item.quantity, 0);
 
   const linkClass = (path: string) => {
-    return `whitespace-nowrap border-b-2 transition-all duration-200 ${
+    return `whitespace-nowrap border-b-2 transition-all duration-200 pb-3 ${
       pathname === path
         ? "text-white border-white"
         : "text-white border-transparent hover:border-white"
@@ -93,10 +94,10 @@ export default function Navbar() {
           </Link>
 
           <nav
-            className={`flex items-center gap-8 text-sm tracking-[3px] text-white ${inter.className}`}
+            className={`flex items-center gap-8 text-sm tracking-[2px] text-white ${inter.className}`}
             aria-label="Main navigation"
           >
-            <Link href="/" aria-label="Go to Home page" className={linkClass("/")}>
+            <Link href="/new-in" aria-label="Go to Home page" className={linkClass("/new-in")}>
               New In
             </Link>
 
