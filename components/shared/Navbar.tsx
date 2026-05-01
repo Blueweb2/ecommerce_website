@@ -83,7 +83,7 @@ export default function Navbar() {
 
           {/* LOGO FOR LARGE DEVICE */}
           <Link href="/">
-            <div className={`${playfair.className} text-3xl font-semibold tracking-wide text-white cursor-pointer`}>
+            <div className={`${playfair.className} text-3xl font-semibold tracking-wide mb-5 text-white cursor-pointer`}>
               <img 
                 src="/home/navigation/zenfaz.svg" 
                 alt="logo" 
