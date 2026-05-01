@@ -64,7 +64,7 @@ export default function ShopSection() {
       <div className="max-w-[2000px] mx-auto px-4 md:px-32">
 
         {/* TITLE */}
-        <h2 className={`${lora.className} text-center text-[25px] font-normal tracking-tight text-[#8D8B9D] mb-6 border-t-2 border-gray-300 pt-8`}>
+        <h2 className={`${lora.className} text-center text-[25px] font-normal tracking-tight text-neutral-600 mb-6 border-t-2 border-gray-300 pt-8`}>
           Shop ZENFAZ
         </h2>
 
@@ -76,8 +76,8 @@ export default function ShopSection() {
               onClick={() => setActiveTab(tab)}
               className={`pb-1 border-b transition ${
                 activeTab === tab
-                  ? "border-black text-black"
-                  : "border-transparent text-gray-500 hover:text-black"
+                  ? "border-neutral-600 text-neutral-600"
+                  : "border-transparent text-[#8D8B9D] hover:text-neutral-600"
               }`}
             >
               {tab}
@@ -114,7 +114,7 @@ export default function ShopSection() {
 
                 {/* CONTENT */}
                 <div>
-                  <h3 className="text-sm font-semibold mb-2">
+                  <h3 className="text-sm font-semibold mb-2 text-neutral-600">
                     {product.name}
                   </h3>
 

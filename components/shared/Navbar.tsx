@@ -94,7 +94,7 @@ export default function Navbar() {
           </Link>
 
           <nav
-            className={`flex items-center gap-8 text-sm tracking-[2px] text-white ${inter.className}`}
+            className={`flex items-center gap-8 text-sm tracking-[1.5px] text-white ${inter.className}`}
             aria-label="Main navigation"
           >
             <Link href="/new-in" aria-label="Go to Home page" className={linkClass("/new-in")}>

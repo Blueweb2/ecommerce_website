@@ -85,7 +85,7 @@ export default function TopStories() {
       <div className="max-w-[2000px] mx-auto px-4 md:px-32">
 
         {/* TITLE */}
-        <h2 className={`${lora.className} tracking-tight text-[#8D8B9D] lora text-[25px] font-normal border-t-2 py-5 `}>
+        <h2 className={`${lora.className} tracking-tight text-neutral-600 lora text-[25px] font-normal border-t-2 py-5 `}>
           TOP STORIES ON
         </h2>
 
@@ -112,7 +112,7 @@ export default function TopStories() {
 
               {/* CONTENT */}
               <div className="mr-8">
-                <h3 className="text-sm font-semibold mb-2 text-gray-500 uppercase">
+                <h3 className="text-sm font-semibold mb-2 uppercase">
                   {story.category}
                 </h3>
                 <div className="text-xs space-y-2">

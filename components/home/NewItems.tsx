@@ -2,29 +2,19 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Lora, Poppins, Bodoni_Moda, Inter } from 'next/font/google';
+import { Bodoni_Moda, Inter } from 'next/font/google';
 import { useProductStore } from "@/store/user/product/useProductStore";
 import { Product } from "@/types/product";
 import ProductCard from "@/components/product/ProductCard";
 import ProductCardSkeleton from "@/components/ui/ProductCardSkeleton";
 
-const lora = Lora({
-  subsets: ['latin'],
-  weight: ['400', '700'],
-});
-
 const inter = Inter({
   subsets: ['latin'],
 });
 
-const poppins = Poppins({
-  subsets: ['latin'],
-  weight: ['400', '700'],
-});
-
 const bodoni = Bodoni_Moda({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"], // choose what you need
+  weight: ["400", "500", "600", "700"],
 });
 
 export default function NewInSection() {
@@ -82,7 +72,7 @@ export default function NewInSection() {
         {/* Left Info Panel    */}
         <div className="md:w-96 flex-shrink-0 flex flex-col justify-center pr-3">
           <h2
-            className={`${bodoni.className} tracking-tight mb-3 lora text-[30px] font-normal text-neutral-600`}
+            className={`${bodoni.className} tracking-tight mb-3 text-[30px] font-normal text-neutral-600`}
           >
             New In
           </h2>

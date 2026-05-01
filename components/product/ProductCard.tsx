@@ -31,7 +31,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       </div>
 
       <div className="text-center">
-        <h3 className={`${inter.className}font-medium text-[#8D8B9D] group-hover:text-neutral-600 transition-colors`}>
+        <h3 className={`${inter.className} text-[14px] font-normal text-[#8D8B9D] group-hover:text-neutral-600 transition-colors`}>
           SHOP EARRINGS
         </h3>
       </div>

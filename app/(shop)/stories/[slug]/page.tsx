@@ -8,7 +8,7 @@ type Props = {
 };
 
 export async function generateMetadata({ params }: Props) {
-  const { slug } = await params; // ✅ FIX
+  const { slug } = await params;
 
   try {
     const story = await getStoryBySlug(slug);
@@ -29,16 +29,15 @@ export async function generateMetadata({ params }: Props) {
 
 
 export default async function StoryDetailPage({ params }: Props) {
-  const { slug } = await params; // ✅ FIX
-
-  console.log("Slug from URL:", slug); // 👈 ADD HERE
+  const { slug } = await params;
+  console.log("Slug from URL:", slug);
 
   let story = null;
 
   try {
     story = await getStoryBySlug(slug);
   } catch (error) {
-    console.log("API Error:", error); // 👈 optional debug
+    console.log("API Error:", error);
     story = null;
   }
 
