@@ -18,9 +18,9 @@ const playfair = Playfair_Display({
 
 const inter = Inter({
   subsets: ['latin'],
-  weight: ['100'],
+  
 });
-
+// 2 100 weight: ['200'],
 const messages = [
   'New arrivals, now dropping five days a week - discover now',
   'Enjoy Free Standard Delivery on orders over €400',
@@ -62,7 +62,7 @@ export default function Navbar() {
         {messages[index]}
       </div>
 
-      <div className="max-w-[2000px] mx-auto px-4 md:px-32 py-2 md:py-4 flex items-center justify-between">
+      <div className="max-w-[2000px] mx-auto px-4 md:px-32 py-2 lg:pb-0 md:pt-4 flex items-center justify-between">
 
         {/* LOGO FOR MOBILE DEVICE */}
         <Link href="/">
@@ -93,7 +93,7 @@ export default function Navbar() {
           </Link>
 
           <nav
-            className={`flex items-center gap-8 text-sm text-white ${inter.className}`}
+            className={`flex items-center gap-8 text-sm tracking-[3px] text-white ${inter.className}`}
             aria-label="Main navigation"
           >
             <Link href="/" aria-label="Go to Home page" className={linkClass("/")}>
