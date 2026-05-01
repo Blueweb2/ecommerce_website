@@ -64,8 +64,8 @@ export default function ShopSection() {
       <div className="max-w-[2000px] mx-auto px-4 md:px-32">
 
         {/* TITLE */}
-        <h2 className={`${lora.className} text-center text-[40px] font-normal tracking-tight text-[#8D8B9D] mb-6 border-t-2 border-gray-300 pt-8`}>
-          Shop Fazzmi
+        <h2 className={`${lora.className} text-center text-[25px] font-normal tracking-tight text-[#8D8B9D] mb-6 border-t-2 border-gray-300 pt-8`}>
+          Shop ZENFAZ
         </h2>
 
         {/* TABS */}

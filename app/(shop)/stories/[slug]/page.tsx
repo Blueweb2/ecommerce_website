@@ -51,7 +51,7 @@ export default async function StoryDetailPage({ params }: Props) {
   }
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-10 mt-10">
+    <div className="max-w-5xl mx-auto px-4 py-10 mt-14">
 
       {/* CATEGORY */}
       <p className="text-xs uppercase text-gray-500 mb-2">

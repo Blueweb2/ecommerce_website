@@ -65,7 +65,7 @@ export default function CategoriesSlider() {
       {/* HEADER */}
       <div className="flex items-center justify-between mb-6">
         
-        <h2 className={`${lora.className} tracking-tight text-[#8D8B9D] lora text-[40px] font-normal`}>Shop by Categories</h2>
+        <h2 className={`${lora.className} tracking-tight text-[#8D8B9D] lora text-[25px] font-normal`}>Shop by Categories</h2>
 
         <div className="flex gap-2">
           <button onClick={() => scroll("left")}>
