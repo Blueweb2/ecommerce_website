@@ -40,9 +40,11 @@ export default function Navbar() {
   const cartCount = items.reduce((acc, item) => acc + item.quantity, 0);
 
   const linkClass = (path: string) => {
-    return (
-      `whitespace-nowrap ${pathname === path ? "text-[#D4AF37]" : "hover:text-[#D4AF37]"}`
-    );
+    return `whitespace-nowrap border-b-2 transition-all duration-200 ${
+      pathname === path
+        ? "text-white border-white"
+        : "text-white border-transparent hover:border-white"
+    }`;
   };
 
   useEffect(() => {
