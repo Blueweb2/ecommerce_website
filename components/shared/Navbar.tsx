@@ -16,7 +16,6 @@ const playfair = Playfair_Display({
   weight: ['400', '600'],
 });
 
-
 const inter = Inter({
   subsets: ['latin'],
   weight: ['100'],
@@ -42,7 +41,7 @@ export default function Navbar() {
 
   const linkClass = (path: string) => {
     return (
-      `whitespace-nowrap ${pathname === path ? "text-[#D4AF37] " : "text-white hover:text-[#D4AF37]"}`
+      `whitespace-nowrap ${pathname === path ? "text-[#D4AF37]" : "hover:text-[#D4AF37]"}`
     );
   };
 
@@ -64,13 +63,15 @@ export default function Navbar() {
       <div className="max-w-[2000px] mx-auto px-4 md:px-32 py-2 md:py-4 flex items-center justify-between">
 
         {/* LOGO FOR MOBILE DEVICE */}
-        <div className={`${playfair.className} text-2xl font-semibold tracking-wide text-white md:hidden`}>
-          <Link href="/" aria-label="Go to homepage - GOLDLAND">
-            FA
-            <span className="script text-5xl p-0.5">zz</span>
-            MI
-          </Link>
-        </div>
+        <Link href="/">
+          <div className={`${playfair.className} text-2xl font-semibold tracking-wide text-white md:hidden`}>
+            <img 
+              src="/home/navigation/zenfaz.svg" 
+              alt="logo" 
+              className="h-4 mb-2 mt-3"
+            />
+          </div>
+        </Link>
 
         {/* EMPTY SPACE */}
         <div className="flex-1 hidden md:block"></div>
@@ -79,17 +80,18 @@ export default function Navbar() {
         <div className='hidden md:flex flex-col items-center justify-center flex-1'>
 
           {/* LOGO FOR LARGE DEVICE */}
-          <div className={`${playfair.className} text-3xl font-semibold tracking-wide text-white`}>
-            {/* <Link href="/" aria-label="Go to homepage - GOLDLAND">
-              FA
-              <span className="script text-6xl p-0.5">zz</span>
-              MI
-            </Link> */}
-            <img src="/home/navigation/zenfaz.svg" alt="logo" className='h-7 mb-2'/>
-          </div>
+          <Link href="/">
+            <div className={`${playfair.className} text-3xl font-semibold tracking-wide text-white cursor-pointer`}>
+              <img 
+                src="/home/navigation/zenfaz.svg" 
+                alt="logo" 
+                className="h-7 mb-2 mt-3"
+              />
+            </div>
+          </Link>
 
           <nav
-            className={`flex items-center gap-8 text-sm ${inter.className}`}
+            className={`flex items-center gap-8 text-sm text-white ${inter.className}`}
             aria-label="Main navigation"
           >
             <Link href="/" aria-label="Go to Home page" className={linkClass("/")}>
