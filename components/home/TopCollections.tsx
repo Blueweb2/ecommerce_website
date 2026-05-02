@@ -3,13 +3,17 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Lora } from 'next/font/google';
+import { Inter, Bodoni_Moda } from 'next/font/google';
 import { collectionAPI } from "@/lib/api/collection.api";
 import { Collection } from "@/types/collection";
 
-const lora = Lora({
+const inter = Inter({
   subsets: ['latin'],
-  weight: ['400', '700'],
+});
+
+const bodoni = Bodoni_Moda({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
 const FALLBACK_IMAGE = "/home/herosection/hero-right-top.png";
@@ -129,16 +133,16 @@ export default function TopCollections() {
             </Link>
 
             <div className="pt-5">
-              <h2 className={`${lora.className} lora text-xl font-semibold tracking-tight text-[#12251a]`}>
+              <h2 className={`${bodoni.className} lora text-xl font-semibold tracking-tight text-neutral-600`}>
                 {getCollectionTitle(item)}
               </h2>
-              <p className="mt-2 line-clamp-3 text-sm leading-6 text-neutral-600">
+              <p className={`${inter.className} mt-2 line-clamp-3 text-sm leading-6 text-[#8D8B9D]`}>
                 {getCollectionDescription(item)}
               </p>
 
               <Link
                 href={`/category/${categorySlug}?filterCategory=${categoryId || ""}`}
-                className="mt-4 inline-flex items-center underline gap-2 text-sm font-semibold text-[#12251a] transition group-hover:text-[#3f478b]"
+                className="mt-4 inline-flex items-center underline gap-2 text-sm font-semibold text-[#8D8B9D] transition group-hover:text-[#3f478b]"
               >
                 Explore Designs
               </Link>

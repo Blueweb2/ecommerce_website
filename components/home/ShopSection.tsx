@@ -61,11 +61,11 @@ export default function ShopSection() {
 
   return (
     <section className="bg-[#f5f5f5] pt-6 md:pt-0 md:py-12">
-      <div className="max-w-[2000px] mx-auto px-4 md:px-20">
+      <div className="max-w-[2000px] mx-auto px-4 md:px-32">
 
         {/* TITLE */}
-        <h2 className={`${lora.className} text-center text-[40px] font-normal tracking-tight text-neutral-900 mb-6 border-t-2 border-gray-300 pt-8`}>
-          Shop Fazzmi
+        <h2 className={`${lora.className} text-center text-[25px] font-normal tracking-tight text-neutral-600 mb-6 border-t-2 border-gray-300 pt-8`}>
+          Shop ZENFAZ
         </h2>
 
         {/* TABS */}
@@ -76,8 +76,8 @@ export default function ShopSection() {
               onClick={() => setActiveTab(tab)}
               className={`pb-1 border-b transition ${
                 activeTab === tab
-                  ? "border-black text-black"
-                  : "border-transparent text-gray-500 hover:text-black"
+                  ? "border-neutral-600 text-neutral-600"
+                  : "border-transparent text-[#8D8B9D] hover:text-neutral-600"
               }`}
             >
               {tab}
@@ -114,15 +114,15 @@ export default function ShopSection() {
 
                 {/* CONTENT */}
                 <div>
-                  <h3 className="text-sm font-semibold mb-2">
+                  <h3 className="text-sm font-semibold mb-2 text-neutral-600">
                     {product.name}
                   </h3>
 
-                  <p className="text-xs text-gray-500 mb-3 h-[45px]">
+                  <p className="text-xs text-[#8D8B9D] mb-3 h-[45px]">
                     {product.description}
                   </p>
 
-                  <p className="text-sm font-medium mb-4">
+                  <p className="text-sm font-medium text-[#8D8B9D] mb-4">
                     ₹{product.price}
                   </p>
                 </div>

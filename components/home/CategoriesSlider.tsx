@@ -4,7 +4,7 @@ import { useRef, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { Lora } from 'next/font/google';
+import { Bodoni_Moda } from 'next/font/google';
 import { categoryAPI } from "@/lib/api/category.api";
 
 type Category = {
@@ -16,9 +16,9 @@ type Category = {
   };
 };
 
-const lora = Lora({
-  subsets: ['latin'],
-  weight: ['400', '700'],
+const bodoni = Bodoni_Moda({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
 export default function CategoriesSlider() {
@@ -64,8 +64,7 @@ export default function CategoriesSlider() {
     <div>
       {/* HEADER */}
       <div className="flex items-center justify-between mb-6">
-        
-        <h2 className={`${lora.className} tracking-tight text-neutral-900 lora text-[40px] font-normal`}>Shop by Categories</h2>
+        <h2 className={`${bodoni.className} tracking-tight text-neutral-600 lora text-[30px] font-normal`}>Shop by Categories</h2>
 
         <div className="flex gap-2">
           <button onClick={() => scroll("left")}>
@@ -78,7 +77,7 @@ export default function CategoriesSlider() {
       </div>
 
       {/* SLIDER */}
-      <div ref={scrollRef} className="flex gap-4 overflow-x-auto">
+      <div ref={scrollRef} className="flex gap-4 overflow-x-auto scrollbar-hide">
         {loading ? (
           <p>Loading...</p>
         ) : (

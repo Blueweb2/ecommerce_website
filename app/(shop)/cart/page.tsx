@@ -31,7 +31,7 @@ export default function CartPage() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto p-6 grid md:grid-cols-3 gap-8">
+    <div className="max-w-6xl mx-auto p-6 grid md:grid-cols-3 mt-7 md:mt-20 gap-8">
       
       {/* ================= LEFT: ITEMS ================= */}
       <div className="md:col-span-2 space-y-6">
@@ -103,7 +103,7 @@ export default function CartPage() {
       </div>
 
       {/* ================= RIGHT: SUMMARY ================= */}
-      <div className="border p-6 rounded-lg h-fit space-y-4">
+      <div className="border p-6 rounded-lg h-fit space-y-4 md:mt-14">
         <h2 className="text-lg font-semibold">Order Summary</h2>
 
         <div className="flex justify-between">

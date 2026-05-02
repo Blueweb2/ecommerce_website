@@ -8,7 +8,7 @@ type Props = {
 };
 
 export async function generateMetadata({ params }: Props) {
-  const { slug } = await params; // ✅ FIX
+  const { slug } = await params;
 
   try {
     const story = await getStoryBySlug(slug);
@@ -29,16 +29,15 @@ export async function generateMetadata({ params }: Props) {
 
 
 export default async function StoryDetailPage({ params }: Props) {
-  const { slug } = await params; // ✅ FIX
-
-  console.log("Slug from URL:", slug); // 👈 ADD HERE
+  const { slug } = await params;
+  console.log("Slug from URL:", slug);
 
   let story = null;
 
   try {
     story = await getStoryBySlug(slug);
   } catch (error) {
-    console.log("API Error:", error); // 👈 optional debug
+    console.log("API Error:", error);
     story = null;
   }
 
@@ -51,34 +50,36 @@ export default async function StoryDetailPage({ params }: Props) {
   }
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-10">
+    <section className="w-full bg-[#f5f5f5]">
+      <div className="max-w-[2000px] mx-auto px-4 md:px-32 py-10 mt-14">
 
-      {/* CATEGORY */}
-      <p className="text-xs uppercase text-gray-500 mb-2">
-        {story.category}
-      </p>
+        {/* CATEGORY */}
+        <p className="text-xs uppercase text-gray-500 mb-2">
+          {story.category}
+        </p>
 
-      {/* TITLE */}
-      <h1 className="text-3xl font-semibold mb-6">
-        {story.title}
-      </h1>
+        {/* TITLE */}
+        <h1 className="text-3xl font-semibold mb-6">
+          {story.title}
+        </h1>
 
-      {/* IMAGE */}
-      <div className="relative w-full h-[400px] mb-6 rounded-xl overflow-hidden">
-        <Image
-          src={story.image.url}
-          alt={story.image.alt || story.title}
-          fill
-          sizes="(max-width: 1024px) 100vw, 960px"
-          className="object-cover"
+        {/* IMAGE */}
+        <div className="relative w-full h-[400px] mb-6 rounded-xl overflow-hidden">
+          <Image
+            src={story.image.url}
+            alt={story.image.alt || story.title}
+            fill
+            sizes="(max-width: 1024px) 100vw, 960px"
+            className="object-cover"
+          />
+        </div>
+
+        {/* DESCRIPTION */}
+        <div
+          className="prose prose-lg prose-slate max-w-none"
+          dangerouslySetInnerHTML={{ __html: story.description }}
         />
       </div>
-
-      {/* DESCRIPTION */}
-      <div
-        className="prose prose-lg prose-slate max-w-none"
-        dangerouslySetInnerHTML={{ __html: story.description }}
-      />
-    </div>
+    </section>
   );
 }

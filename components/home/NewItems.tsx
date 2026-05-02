@@ -2,20 +2,19 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Lora, Poppins } from 'next/font/google';
+import { Bodoni_Moda, Inter } from 'next/font/google';
 import { useProductStore } from "@/store/user/product/useProductStore";
 import { Product } from "@/types/product";
 import ProductCard from "@/components/product/ProductCard";
 import ProductCardSkeleton from "@/components/ui/ProductCardSkeleton";
 
-const lora = Lora({
+const inter = Inter({
   subsets: ['latin'],
-  weight: ['400', '700'],
 });
 
-const poppins = Poppins({
-  subsets: ['latin'],
-  weight: ['400', '700'],
+const bodoni = Bodoni_Moda({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
 export default function NewInSection() {
@@ -68,16 +67,16 @@ export default function NewInSection() {
 
   return (
     <section className="w-full bg-[#f5f5f5] py-10 font-sans">
-      <div className="max-w-[2000px] mx-auto flex flex-col md:flex-row gap-6 md:gap-0 items-stretch px-4 md:px-20">
+      <div className="max-w-[2000px] mx-auto flex flex-col md:flex-row gap-6 md:gap-0 items-stretch px-4 md:px-32">
 
-        {/* Left Info Panel */}
+        {/* Left Info Panel    */}
         <div className="md:w-96 flex-shrink-0 flex flex-col justify-center pr-3">
           <h2
-            className={`${lora.className} tracking-tight text-neutral-900 mb-3 lora text-[40px] font-normal`}
+            className={`${bodoni.className} tracking-tight mb-3 text-[30px] font-normal text-neutral-600`}
           >
             New In
           </h2>
-          <p className={`${poppins.className} text-[16px] font-normal text-sm leading-relaxed mb-6`}>
+          <p className={`${inter.className} text-[14px] font-normal text-sm leading-relaxed mb-6 text-[#8D8B9D]`}>
             Discover the latest and greatest arrivals, new designers to know, exclusive capsules and more style inspiration.
           </p>
           <div className="flex gap-4">

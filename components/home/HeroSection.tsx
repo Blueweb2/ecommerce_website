@@ -60,13 +60,13 @@ export default function HeroSection() {
   if (!banners) return <div>Loading...</div>;
 
   return (
-    <section className="w-full bg-[#f5f5f5] py-8 mt-22">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 h-[calc(100vh-130px)]">
+    <section className="w-full bg-[#f5f5f5] py-8 mt-20">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 h-[calc(100vh-120px)]">
 
         {/* LEFT SLIDER */}
         <Link
           href={banners.hero[current]?.link || "/"}
-          className="relative overflow-hidden flex justify-center items-end p-6 text-white border"
+          className="relative overflow-hidden flex justify-center items-end p-6 text-white"
         >
           {banners.hero.map((hero: any, index: number) => (
             <div

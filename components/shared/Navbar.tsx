@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { Playfair_Display } from 'next/font/google';
+import { Playfair_Display, Inter } from 'next/font/google';
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Search, Heart, User, ShoppingCart } from "lucide-react";
@@ -15,6 +15,12 @@ const playfair = Playfair_Display({
   subsets: ['latin'],
   weight: ['400', '600'],
 });
+
+const inter = Inter({
+  subsets: ['latin'],
+});
+
+
 
 const messages = [
   'New arrivals, now dropping five days a week - discover now',
@@ -35,9 +41,11 @@ export default function Navbar() {
   const cartCount = items.reduce((acc, item) => acc + item.quantity, 0);
 
   const linkClass = (path: string) => {
-    return (
-      `${pathname === path ? "text-[#D4AF37] font-semibold" : "text-white hover:text-[#D4AF37]"}`
-    );
+    return `whitespace-nowrap border-b-2 transition-all duration-200 pb-3 ${
+      pathname === path
+        ? "text-white border-white"
+        : "text-white border-transparent hover:border-white"
+    }`;
   };
 
   useEffect(() => {
@@ -55,16 +63,18 @@ export default function Navbar() {
         {messages[index]}
       </div>
 
-      <div className="max-w-[2000px] mx-auto px-4 md:px-20 py-2 flex items-center justify-between">
+      <div className="max-w-[2000px] mx-auto px-4 md:px-32 py-2 lg:pb-0 md:pt-4 flex items-start justify-between">
 
         {/* LOGO FOR MOBILE DEVICE */}
-        <div className={`${playfair.className} text-2xl font-semibold tracking-wide text-white md:hidden`}>
-          <Link href="/" aria-label="Go to homepage - GOLDLAND">
-            FA
-            <span className="script text-5xl p-0.5">zz</span>
-            MI
-          </Link>
-        </div>
+        <Link href="/">
+          <div className={`${playfair.className} text-2xl font-semibold tracking-wide text-white md:hidden`}>
+            <img 
+              src="/home/navigation/zenfaz.svg" 
+              alt="logo" 
+              className="h-4 mb-2 mt-3"
+            />
+          </div>
+        </Link>
 
         {/* EMPTY SPACE */}
         <div className="flex-1 hidden md:block"></div>
@@ -72,20 +82,22 @@ export default function Navbar() {
         {/* NAV LINKS */}
         <div className='hidden md:flex flex-col items-center justify-center flex-1'>
 
-          {/* LOGO FOR MOBILE LARGE DEVICE */}
-          <div className={`${playfair.className} text-2xl font-semibold tracking-wide text-white`}>
-            <Link href="/" aria-label="Go to homepage - GOLDLAND">
-              FA
-              <span className="script text-5xl p-0.5">zz</span>
-              MI
-            </Link>
-          </div>
+          {/* LOGO FOR LARGE DEVICE */}
+          <Link href="/">
+            <div className={`${playfair.className} text-3xl font-semibold tracking-wide mb-5 text-white cursor-pointer`}>
+              <img 
+                src="/home/navigation/zenfaz.svg" 
+                alt="logo" 
+                className="h-7 mb-2 mt-3"
+              />
+            </div>
+          </Link>
 
           <nav
-            className="flex items-center gap-8 text-sm"
+            className={`flex items-center gap-8 text-sm tracking-[1.5px] text-white ${inter.className}`}
             aria-label="Main navigation"
           >
-            <Link href="/" aria-label="Go to Home page" className={linkClass("/")}>
+            <Link href="/new-in" aria-label="Go to Home page" className={linkClass("/new-in")}>
               New In
             </Link>
 
@@ -132,9 +144,13 @@ export default function Navbar() {
         </div>
 
         {/* ICONS */}
-        <div className="flex items-center gap-4 text-white justify-end flex-1">
-          <button className="transition-colors duration-300 hover:text-[#D4AF37]">
-            <Search size={18} />
+        <div className="flex items-center gap-6 text-white justify-end flex-1 mt-5">
+          <button 
+            className={`transition-colors duration-300 hover:text-[#D4AF37] 
+            flex items-center justify-center gap-x-1.5 text-sm
+            ${inter.className} text-[13px]`}
+          >
+            <Search size={18} /> Search
           </button>
           <Link
             href="/wishlist"
@@ -172,6 +188,7 @@ export default function Navbar() {
         </div>
 
       </div>
+
     </header>
   );
 };

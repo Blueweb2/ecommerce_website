@@ -1,10 +1,15 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { Inter } from 'next/font/google';
 import { Product } from '@/types/product';
 
 interface ProductCardProps {
   product: Product;
 }
+
+const inter = Inter({
+  subsets: ['latin'],
+});
 
 export default function ProductCard({ product }: ProductCardProps) {
 
@@ -26,7 +31,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       </div>
 
       <div className="text-center">
-        <h3 className="font-medium group-hover:text-neutral-600 transition-colors">
+        <h3 className={`${inter.className} text-[14px] font-normal text-[#8D8B9D] group-hover:text-neutral-600 transition-colors`}>
           SHOP EARRINGS
         </h3>
       </div>
