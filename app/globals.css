@@ -2,7 +2,6 @@
 
 @import "tailwindcss";
 
-/* ✅ Typography plugin (THIS FIXES YOUR ISSUE) */
 @plugin "@tailwindcss/typography";
 
 body {

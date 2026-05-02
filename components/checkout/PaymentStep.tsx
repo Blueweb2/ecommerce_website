@@ -47,6 +47,10 @@ interface RazorpayOptions {
   currency: string;
   order_id: string;
   handler: (response: RazorpaySuccessResponse) => Promise<void>;
+
+  modal?: {
+    ondismiss?: () => void;
+  };
 }
 
 type RazorpayConstructor = new (options: RazorpayOptions) => RazorpayInstance;
@@ -109,18 +113,30 @@ export default function PaymentStep({
 
       const rzp = new Razorpay({
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
-        amount: order.totalPrice * 100,
+        amount: Math.round(order.totalPrice * 100),
         currency: "INR",
         order_id: order.razorpayOrderId,
-        handler: async (response) => {
-          await orderAPI.verifyPayment({
-            razorpayOrderId: response.razorpay_order_id,
-            paymentId: response.razorpay_payment_id,
-            signature: response.razorpay_signature,
-            orderId: order._id,
-          });
 
-          await onPaymentSuccess();
+        handler: async (response) => {
+          try {
+            await orderAPI.verifyPayment({
+              razorpayOrderId: response.razorpay_order_id,
+              paymentId: response.razorpay_payment_id,
+              signature: response.razorpay_signature,
+              orderId: order._id,
+            });
+
+            toast.success("Payment successful!");
+            await onPaymentSuccess();
+          } catch (err) {
+            toast.error("Payment verification failed");
+          }
+        },
+
+        modal: {
+          ondismiss: () => {
+            toast.error("Payment cancelled");
+          },
         },
       });
 
@@ -189,9 +205,8 @@ export default function PaymentStep({
       <div className="space-y-3">
         <div
           onClick={() => setMethod("cod")}
-          className={`border p-4 rounded cursor-pointer flex justify-between ${
-            method === "cod" ? "border-black bg-gray-100" : ""
-          }`}
+          className={`border p-4 rounded cursor-pointer flex justify-between ${method === "cod" ? "border-black bg-gray-100" : ""
+            }`}
         >
           <span>Cash on Delivery</span>
           {method === "cod" && <span>✓</span>}
@@ -199,9 +214,8 @@ export default function PaymentStep({
 
         <div
           onClick={() => setMethod("razorpay")}
-          className={`border p-4 rounded cursor-pointer flex justify-between ${
-            method === "razorpay" ? "border-black bg-gray-100" : ""
-          }`}
+          className={`border p-4 rounded cursor-pointer flex justify-between ${method === "razorpay" ? "border-black bg-gray-100" : ""
+            }`}
         >
           <span>Pay with Razorpay</span>
           {method === "razorpay" && <span>✓</span>}
