@@ -8,8 +8,15 @@ type Product = {
   _id: string;
   name: string;
   price: number;
-  images: string[];
+  images: ImageType[];
   description: string;
+};
+
+type ImageType = {
+  url: string;
+  altText?: string;
+  public_id?: string;
+  isPrimary?: boolean;
 };
 
 type Props = {
@@ -17,44 +24,49 @@ type Props = {
 };
 
 export default function RelatedProducts({ product }: Props) {
+
   const [activeTab, setActiveTab] = useState<"like" | "recent">("like");
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
 
   // 🔥 Fetch data
-useEffect(() => {
-  let isMounted = true;
+  useEffect(() => {
+    let isMounted = true;
 
-  const fetchProducts = async () => {
-    try {
-      if (activeTab === "like" && !product?._id) return;
+    const fetchProducts = async () => {
+      try {
+        if (activeTab === "like" && !product?._id) return;
 
-      setLoading(true);
+        setLoading(true);
 
-      let res;
+        let res;
 
-      if (activeTab === "like") {
-        res = await api.get(`/products/${product._id}/related`);
-      } else {
-        res = await api.get("/products/recent");
+        if (activeTab === "like") {
+          res = await api.get(`/products/${product._id}/related`);
+        } else {
+          res = await api.get("/products/recent");
+        }
+
+        if (isMounted) {
+          setProducts(res.data?.data || []);
+        }
+      } catch (error: any) {
+        console.error("❌ API ERROR:", error);
+      } finally {
+        if (isMounted) setLoading(false);
       }
+    };
 
-      if (isMounted) {
-        setProducts(res.data?.data || []);
-      }
-    } catch (error: any) {
-      console.error("❌ API ERROR:", error);
-    } finally {
-      if (isMounted) setLoading(false);
-    }
-  };
+    fetchProducts();
 
-  fetchProducts();
+    return () => {
+      isMounted = false;
+    };
+  }, [activeTab, product?._id]);
 
-  return () => {
-    isMounted = false;
-  };
-}, [activeTab, product?._id]);
+  useEffect(()=>{
+    console.log(products);
+  },[products])
 
   return (
     <section className="max-w-7xl lg:mx-auto pb-10 pl-5 lg:pl-0">
@@ -91,7 +103,7 @@ useEffect(() => {
 
       {/* Products */}
       <div className="flex overflow-x-auto gap-6 scrollbar-hide">
-        {products.map((item) => (
+        {products?.map((item) => (
           <div
             key={item._id}
             className="group cursor-pointer flex-shrink-0 w-[150px] lg:w-[290px]"
@@ -99,7 +111,7 @@ useEffect(() => {
             {/* Image */}
             <div className="bg-gray-100 relative">
               <img
-                src={item.images?.[0]}
+                src={item.images?.[0]?.url}
                 alt={item.name}
                 className="object-cover w-full h-[150px] lg:h-[190px]"
               />
