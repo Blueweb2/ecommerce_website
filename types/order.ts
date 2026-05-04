@@ -36,6 +36,8 @@ export interface OrderUser {
 }
 
 export interface Order {
+  paymentId: any;
+  razorpayOrderId: any;
   _id: string;
   user: string | OrderUser; // String ID or populated User object
   items: OrderItem[];

@@ -218,6 +218,22 @@ export default function AdminOrderDetailPage() {
                       <span>{new Date(order.paidAt).toLocaleString()}</span>
                    </p>
                  )}
+                 {order.paymentMethod === "razorpay" && (
+                   <div className="mt-3 space-y-2 border-t border-slate-100 pt-3">
+                     {order.razorpayOrderId && (
+                       <p className="flex flex-col">
+                         <span className="text-xs text-slate-400">Razorpay Order ID</span>
+                         <span className="text-xs font-mono bg-slate-50 p-1 rounded mt-1">{order.razorpayOrderId}</span>
+                       </p>
+                     )}
+                     {order.paymentId && (
+                       <p className="flex flex-col">
+                         <span className="text-xs text-slate-400">Transaction ID</span>
+                         <span className="text-xs font-mono bg-slate-50 p-1 rounded mt-1">{order.paymentId}</span>
+                       </p>
+                     )}
+                   </div>
+                 )}
               </div>
            </div>
 
