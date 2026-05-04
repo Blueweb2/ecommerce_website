@@ -70,7 +70,7 @@ export default function NewInSection() {
       <div className="max-w-[2000px] mx-auto flex flex-col md:flex-row gap-6 md:gap-0 items-stretch px-4 md:px-32">
 
         {/* Left Info Panel    */}
-        <div className="md:w-96 flex-shrink-0 flex flex-col justify-center pr-3">
+        <div className="md:w-80 flex-shrink-0 flex flex-col justify-center pr-3">
           <h2
             className={`${bodoni.className} tracking-tight mb-3 text-[30px] font-normal text-neutral-600`}
           >

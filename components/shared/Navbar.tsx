@@ -63,7 +63,7 @@ export default function Navbar() {
         {messages[index]}
       </div>
 
-      <div className="max-w-[2000px] mx-auto px-4 md:px-32 py-2 lg:pb-0 md:pt-4 flex items-start justify-between">
+      <div className="max-w-[2000px] mx-auto px-4 md:px-32 py-2 lg:pb-0 md:pt-4 flex items-center md:items-start justify-between">
 
         {/* LOGO FOR MOBILE DEVICE */}
         <Link href="/">
@@ -144,7 +144,7 @@ export default function Navbar() {
         </div>
 
         {/* ICONS */}
-        <div className="flex items-center gap-6 text-white justify-end flex-1 mt-5">
+        <div className="flex items-center gap-6 text-white justify-end flex-1 md:mt-5">
           <button 
             className={`transition-colors duration-300 hover:text-[#D4AF37] 
             flex items-center justify-center gap-x-1.5 text-sm

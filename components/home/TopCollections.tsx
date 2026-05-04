@@ -106,7 +106,7 @@ export default function TopCollections() {
   }
 
   return (
-    <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+    <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
       {collections.map((item) => {
         const categoryFilter = item.filters?.category;
         const categorySlug = typeof categoryFilter === "object" ? categoryFilter?.slug : item.slug;
@@ -121,7 +121,7 @@ export default function TopCollections() {
               href={`/category/${categorySlug}?filterCategory=${categoryId || ""}`}
               className="block"
             >
-              <div className="relative h-[300px] overflow-hidden">
+              <div className="relative h-[300px] lg:h-screen overflow-hidden">
                 <Image
                   src={getCollectionImage(item)}
                   alt={getCollectionTitle(item)}
