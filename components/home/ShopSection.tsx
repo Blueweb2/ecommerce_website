@@ -60,7 +60,7 @@ export default function ShopSection() {
   }, [activeTab]);
 
   return (
-    <section className="bg-[#f5f5f5] pt-6 md:pt-0 md:py-12">
+    <section className="bg-[#f5f5f5] pt-6 md:pt-14 md:py-0">
       <div className="max-w-[2000px] mx-auto px-4 md:px-32">
 
         {/* TITLE */}

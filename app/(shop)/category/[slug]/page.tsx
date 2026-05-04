@@ -8,12 +8,12 @@ import { productAPI } from "@/lib/api/product.api";
 import { Category } from "@/types/category";
 import { Product } from "@/types/product";
 
-import ExploreHeader from "@/components/explore/ExploreHeader";
+// import ExploreHeader from "@/components/explore/ExploreHeader";
 import ExploreFilters from "@/components/explore/ExploreFilters";
 import ExploreGrid from "@/components/explore/ExploreGrid";
 import ExploreControls from "@/components/explore/ExploreControls";
 
-const FALLBACK_BANNER = "/home/herosection/hero-center.png";
+// const FALLBACK_BANNER = "/home/herosection/hero-center.png";
 const FALLBACK_PRODUCT_IMAGE = "/home/categorysection/category-one.png";
 
 type CategoryPageProps = {
@@ -24,11 +24,11 @@ type CategoryPageProps = {
 
 type SortOption = "recommended" | "price-low" | "price-high" | "name";
 
-type ActiveFilters = {
-  brands: string[];
-  minPrice?: number;
-  maxPrice?: number;
-};
+// type ActiveFilters = {
+//   brands: string[];
+//   minPrice?: number;
+//   maxPrice?: number;
+// };
 
 function formatFilterLabel(value?: string) {
   if (!value) return "All";
@@ -283,10 +283,10 @@ export default function CategoryPage({ params }: CategoryPageProps) {
   }, [activeFilters, allCategories]);
 
   const categoryTitle = category?.name || formatFilterLabel(slug);
-  const categoryDescription =
-    category?.description ||
-    `Explore our curated selection of products in ${categoryTitle}.`;
-  const bannerImage = category?.image?.url || FALLBACK_BANNER;
+  // const categoryDescription =
+  //   category?.description ||
+  //   `Explore our curated selection of products in ${categoryTitle}.`;
+  // const bannerImage = category?.image?.url || FALLBACK_BANNER;
 
   const handleHideAside = () => {
     setHideAside(prev => !prev);
