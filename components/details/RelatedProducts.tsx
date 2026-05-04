@@ -8,7 +8,8 @@ type Product = {
   _id: string;
   name: string;
   price: number;
-  images: string[];
+  gstPercentage?: number;
+  images: { url: string }[];
   description: string;
 };
 
@@ -36,7 +37,7 @@ useEffect(() => {
       if (activeTab === "like") {
         res = await api.get(`/products/${product._id}/related`);
       } else {
-        res = await api.get("/products/recent");
+        res = await api.get("/products/new");
       }
 
       if (isMounted) {
@@ -97,27 +98,32 @@ useEffect(() => {
             className="group cursor-pointer flex-shrink-0 w-[150px] lg:w-[290px]"
           >
             {/* Image */}
-            <div className="bg-gray-100 relative">
+            <div className="bg-gray-100 relative overflow-hidden aspect-[4/5]">
               <img
-                src={item.images?.[0]}
+                src={item.images?.[0]?.url || "/placeholder.png"}
                 alt={item.name}
-                className="object-cover w-full h-[150px] lg:h-[190px]"
+                className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500"
               />
 
-              <div className="absolute bottom-0 right-0 w-7 h-7 flex items-center justify-center bg-white/30 backdrop-blur-md text-white">
-                <Handbag size={16} />
+              <div className="absolute bottom-4 right-4 w-10 h-10 rounded-full flex items-center justify-center bg-white/80 backdrop-blur-sm text-black shadow-sm opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+                <Handbag size={18} />
               </div>
             </div>
 
             {/* Content */}
-            <div className="mt-3">
-              <h3 className="text-xs font-semibold tracking-wide">
+            <div className="mt-4 space-y-1">
+              <h3 className="text-xs font-black uppercase tracking-widest text-gray-900 group-hover:text-emerald-600 transition-colors">
                 {item.name}
               </h3>
-              <p className="text-xs text-gray-500">
+              <p className="text-[10px] text-gray-400 font-medium line-clamp-1">
                 {item.description}
               </p>
-              <p className="text-sm mt-2">₹{item.price}</p>
+              <div className="flex items-center gap-2 pt-1">
+                <p className="text-sm font-black text-gray-900">
+                  ₹{Math.round(item.price * (1 + (item.gstPercentage || 0) / 100))}
+                </p>
+                <span className="text-[10px] text-gray-400 font-bold uppercase tracking-tighter">Incl. GST</span>
+              </div>
             </div>
           </div>
         ))}

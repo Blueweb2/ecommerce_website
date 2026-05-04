@@ -78,7 +78,7 @@ export default function ProductCard({
           )}
         </div>
 
-        {/* Stock Status */}
+        {/* Status & GST */}
         <div className="flex items-center justify-between text-sm">
           <span className={`px-2 py-1 rounded text-xs font-medium ${
             product.stock === 0
@@ -88,6 +88,9 @@ export default function ProductCard({
               : 'bg-green-100 text-green-800'
           }`}>
             {product.stock === 0 ? 'Out of Stock' : product.stock <= 5 ? `Low: ${product.stock}` : `In Stock: ${product.stock}`}
+          </span>
+          <span className="bg-slate-100 text-slate-600 px-2 py-1 rounded text-xs font-medium">
+            GST: {product.gstPercentage || 0}%
           </span>
         </div>
 

@@ -54,6 +54,7 @@ export const useCategoryStore = create<CategoryState>((set, get) => ({
       }));
     } catch (err) {
       console.error("Create category error:", err);
+      throw err;
     }
   },
 
@@ -69,6 +70,7 @@ export const useCategoryStore = create<CategoryState>((set, get) => ({
       }));
     } catch (err) {
       console.error("Update category error:", err);
+      throw err;
     }
   },
 
@@ -82,6 +84,7 @@ export const useCategoryStore = create<CategoryState>((set, get) => ({
       }));
     } catch (err) {
       console.error("Delete category error:", err);
+      throw err;
     }
   },
 

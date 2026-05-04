@@ -19,6 +19,8 @@ export interface CartItem {
 
   price: number;
   quantity: number;
+  gstPercentage?: number;
+  gstAmount?: number;
 
   variantId?: string;
   selectedOptions?: SelectedOption[];
@@ -27,6 +29,7 @@ export interface CartItem {
 interface CartState {
   items: CartItem[];
   totalPrice: number;
+  totalGstAmount: number;
 
   addItem: (item: CartItem) => Promise<void>;
   updateQuantity: (item: CartItem, quantity: number) => Promise<void>;
@@ -42,8 +45,18 @@ interface CartState {
 
 /* ================= HELPERS ================= */
 
-const calculateTotal = (items: CartItem[]) =>
-  items.reduce((total, item) => total + item.price * item.quantity, 0);
+const calculateTotals = (items: CartItem[]) =>
+  items.reduce(
+    (acc, item) => {
+      const price = item.price * item.quantity;
+      const gstAmount = ((item.price * (item.gstPercentage || 0)) / 100) * item.quantity;
+      return {
+        totalPrice: acc.totalPrice + price,
+        totalGstAmount: acc.totalGstAmount + gstAmount,
+      };
+    },
+    { totalPrice: 0, totalGstAmount: 0 }
+  );
 
 const normalizeOptions = (options: SelectedOption[] = []) =>
   [...options].sort((a, b) =>
@@ -66,6 +79,7 @@ export const useCartStore = create<CartState>()(
     (set, get) => ({
       items: [],
       totalPrice: 0,
+      totalGstAmount: 0,
 
       /* ================= SYNC CART ================= */
       syncCart: async () => {
@@ -82,11 +96,14 @@ export const useCartStore = create<CartState>()(
             quantity: i.quantity,
             variantId: i.variantId,
             selectedOptions: i.selectedOptions || [],
+            gstPercentage: i.gstPercentage || 0,
+            gstAmount: i.gstAmount || 0,
           }));
 
           set({
             items: mappedItems,
             totalPrice: data.totalPrice,
+            totalGstAmount: data.totalGstAmount,
           });
         } catch (err) {
           console.error("Sync cart failed", err);
@@ -113,7 +130,7 @@ export const useCartStore = create<CartState>()(
           });
 
           // ✅ clear guest cart after merge
-          set({ items: [], totalPrice: 0 });
+          set({ items: [], totalPrice: 0, totalGstAmount: 0 });
 
           await get().syncCart();
         } catch (err) {
@@ -166,9 +183,11 @@ export const useCartStore = create<CartState>()(
             newItems = [...state.items, normalizedItem];
           }
 
+          const { totalPrice, totalGstAmount } = calculateTotals(newItems);
           return {
             items: newItems,
-            totalPrice: calculateTotal(newItems),
+            totalPrice,
+            totalGstAmount,
           };
         });
       },
@@ -180,15 +199,18 @@ export const useCartStore = create<CartState>()(
         // 🟢 LOCAL UPDATE (Optimistic)
         const previousItems = get().items;
         const previousTotal = get().totalPrice;
+        const previousGst = get().totalGstAmount;
 
         if (quantity <= 0) {
           const newItems = get().items.filter((i) => !isSameItem(i, item));
-          set({ items: newItems, totalPrice: calculateTotal(newItems) });
+          const { totalPrice, totalGstAmount } = calculateTotals(newItems);
+          set({ items: newItems, totalPrice, totalGstAmount });
         } else {
           const newItems = get().items.map((i) =>
             isSameItem(i, item) ? { ...i, quantity } : i
           );
-          set({ items: newItems, totalPrice: calculateTotal(newItems) });
+          const { totalPrice, totalGstAmount } = calculateTotals(newItems);
+          set({ items: newItems, totalPrice, totalGstAmount });
         }
 
         // 🔐 LOGGED-IN SYNC
@@ -208,7 +230,7 @@ export const useCartStore = create<CartState>()(
             await get().syncCart(); // get final truth from server
           } catch (err) {
             console.error("Update quantity failed, rolling back", err);
-            set({ items: previousItems, totalPrice: previousTotal });
+            set({ items: previousItems, totalPrice: previousTotal, totalGstAmount: previousGst });
           }
         }
       },
@@ -220,9 +242,11 @@ export const useCartStore = create<CartState>()(
         // 🟢 LOCAL UPDATE (Optimistic)
         const previousItems = get().items;
         const previousTotal = get().totalPrice;
+        const previousGst = get().totalGstAmount;
 
         const newItems = get().items.filter((i) => !isSameItem(i, item));
-        set({ items: newItems, totalPrice: calculateTotal(newItems) });
+        const { totalPrice, totalGstAmount } = calculateTotals(newItems);
+        set({ items: newItems, totalPrice, totalGstAmount });
 
         // 🔐 LOGGED-IN SYNC
         if (isLoggedIn) {
@@ -236,34 +260,37 @@ export const useCartStore = create<CartState>()(
             await get().syncCart();
           } catch (err) {
             console.error("Remove item failed, rolling back", err);
-            set({ items: previousItems, totalPrice: previousTotal });
+            set({ items: previousItems, totalPrice: previousTotal, totalGstAmount: previousGst });
           }
         }
       },
 
-clearCartAsync: async () => {
-  const isLoggedIn = useAuthStore.getState().isAuthenticated;
+      clearCartAsync: async () => {
+        const isLoggedIn = useAuthStore.getState().isAuthenticated;
 
-  try {
-    if (isLoggedIn) {
-      await cartAPI.clearCart(); // 🔐 backend clear
-    }
+        try {
+          if (isLoggedIn) {
+            await cartAPI.clearCart(); // 🔐 backend clear
+          }
 
-    set({ items: [], totalPrice: 0 }); // 🟢 local clear
-  } catch (err) {
-    console.error("Clear cart failed", err);
-  }
-},
+          set({ items: [], totalPrice: 0, totalGstAmount: 0 }); // 🟢 local clear
+        } catch (err) {
+          console.error("Clear cart failed", err);
+        }
+      },
 
       /* ================= SET CART ================= */
-      setCart: (items) =>
+      setCart: (items) => {
+        const { totalPrice, totalGstAmount } = calculateTotals(items);
         set({
           items,
-          totalPrice: calculateTotal(items),
-        }),
+          totalPrice,
+          totalGstAmount,
+        });
+      },
 
       /* ================= CLEAR ================= */
-      clearCart: () => set({ items: [], totalPrice: 0 }),
+      clearCart: () => set({ items: [], totalPrice: 0, totalGstAmount: 0 }),
     }),
     {
       name: "cart-storage",

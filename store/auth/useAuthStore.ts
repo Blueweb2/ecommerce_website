@@ -20,6 +20,7 @@ interface AuthState {
   setInitialized: (initialized: boolean) => void;
   resetAuth: () => void;
   logout: () => Promise<void>;
+  updateUser: (userData: Partial<User>) => void;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -63,4 +64,9 @@ export const useAuthStore = create<AuthState>((set) => ({
       initialized: true,
     });
   },
+
+  updateUser: (userData) =>
+    set((state) => ({
+      user: state.user ? { ...state.user, ...userData } : null,
+    })),
 }));

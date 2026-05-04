@@ -27,22 +27,33 @@ export default function CategoryItem({ category, level = 0 }: Props) {
     try {
       await deleteCategory(category._id);
       toast.success("Category deleted");
-    } catch {
-      toast.error("Delete failed");
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message || "Delete failed");
     }
   };
 
   return (
-    <div>
+    <div className="relative">
+      {/* HIERARCHY LINE */}
+      {level > 0 && (
+        <div
+          className="absolute left-0 top-0 bottom-0 w-px bg-slate-200"
+          style={{ left: `${(level - 1) * 24 + 20}px` }}
+        />
+      )}
+
       {/* ROW */}
       <div
-        className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-gray-100 transition"
-        style={{ paddingLeft: `${level * 16}px` }}
+        className="group flex items-center justify-between py-3 px-4 rounded-2xl hover:bg-slate-50 border border-transparent hover:border-slate-100 transition-all duration-200 relative z-10"
+        style={{ paddingLeft: `${level * 24 + 16}px` }}
       >
         {/* LEFT */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           {hasChildren ? (
-            <button onClick={() => setOpen(!open)}>
+            <button
+              onClick={() => setOpen(!open)}
+              className="p-1 rounded-md hover:bg-slate-200 text-slate-500 transition-colors"
+            >
               {open ? (
                 <ChevronDown className="w-4 h-4" />
               ) : (
@@ -50,23 +61,27 @@ export default function CategoryItem({ category, level = 0 }: Props) {
               )}
             </button>
           ) : (
-            <span className="w-4" />
+            <span className="w-6" /> // spacer for alignment
           )}
 
           {/* NAME */}
-          <span className="font-medium text-gray-800">
+          <span className="font-semibold text-slate-700 group-hover:text-emerald-700 transition-colors">
             {category.name}
+          </span>
+          <span className="text-xs text-slate-400 font-medium px-2 py-0.5 bg-slate-100 rounded-full hidden group-hover:inline-block">
+            {hasChildren ? `${category.children!.length} subcategories` : 'Leaf'}
           </span>
         </div>
 
         {/* ACTIONS */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
           {/* EDIT */}
           <button
             onClick={() =>
               router.push(`/admin/categories/${category._id}/edit`)
             }
-            className="p-1 text-blue-600 hover:bg-blue-100 rounded"
+            className="p-2 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-xl transition-colors"
+            title="Edit Category"
           >
             <Pencil className="w-4 h-4" />
           </button>
@@ -74,7 +89,8 @@ export default function CategoryItem({ category, level = 0 }: Props) {
           {/* DELETE */}
           <button
             onClick={handleDelete}
-            className="p-1 text-red-600 hover:bg-red-100 rounded"
+            className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-colors"
+            title="Delete Category"
           >
             <Trash2 className="w-4 h-4" />
           </button>

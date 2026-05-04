@@ -17,6 +17,8 @@ export interface OrderItem {
   };
   quantity: number;
   price: number;
+  gstPercentage?: number;
+  gstAmount?: number;
   variantId?: string;
   selectedOptions?: OrderSelectedOption[];
 }
@@ -42,6 +44,8 @@ export interface Order {
   user: string | OrderUser; // String ID or populated User object
   items: OrderItem[];
   totalPrice: number;
+  totalGstAmount: number;
+  grandTotal: number;
   totalQuantity: number;
   status: "pending" | "processing" | "shipped" | "delivered" | "cancelled";
   shippingAddress: ShippingAddress;

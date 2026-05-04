@@ -10,6 +10,7 @@ import type {
   SelectedOption,
 } from "@/store/user/cart/useCartStore";
 import type { Address } from "@/types/address";
+import { useCartStore } from "@/store/user/cart/useCartStore";
 
 type PaymentMethod = "cod" | "razorpay";
 type DeliveryMethod = "standard" | "express";
@@ -26,7 +27,7 @@ interface PaymentStepProps {
 
 interface RazorpayOrder {
   _id: string;
-  totalPrice: number;
+  grandTotal: number;
   razorpayOrderId: string;
 }
 
@@ -77,9 +78,10 @@ export default function PaymentStep({
 }: PaymentStepProps) {
   const [method, setMethod] = useState<PaymentMethod>("cod");
   const [loading, setLoading] = useState(false);
+  const { totalGstAmount } = useCartStore();
 
   const deliveryCharge = deliveryMethod === "express" ? 50 : 0;
-  const finalTotal = total + deliveryCharge;
+  const finalTotal = total + totalGstAmount + deliveryCharge;
 
   const handlePayment = async () => {
     try {
@@ -113,7 +115,7 @@ export default function PaymentStep({
 
       const rzp = new Razorpay({
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
-        amount: Math.round(order.totalPrice * 100),
+        amount: Math.round(order.grandTotal * 100),
         currency: "INR",
         order_id: order.razorpayOrderId,
 
@@ -191,13 +193,23 @@ export default function PaymentStep({
 
         <hr />
 
-        <div className="flex justify-between text-sm">
-          <span>Delivery</span>
-          <span>{deliveryCharge === 0 ? "Free" : `₹${deliveryCharge}`}</span>
+        <div className="space-y-2 text-sm">
+          <div className="flex justify-between">
+            <span className="text-gray-500">Subtotal</span>
+            <span>₹{total}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-gray-500">GST (Tax)</span>
+            <span>₹{totalGstAmount}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-gray-500">Delivery</span>
+            <span>{deliveryCharge === 0 ? "Free" : `₹${deliveryCharge}`}</span>
+          </div>
         </div>
 
-        <div className="flex justify-between font-semibold text-lg">
-          <span>Total</span>
+        <div className="flex justify-between font-semibold text-lg border-t pt-2">
+          <span>Total Amount</span>
           <span>₹{finalTotal}</span>
         </div>
       </div>

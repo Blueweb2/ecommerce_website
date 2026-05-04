@@ -1,6 +1,6 @@
 "use client";
 
-import { Info, Tag } from "lucide-react";
+import { Info, Tag, ChevronDown } from "lucide-react";
 import { useEffect, useState } from "react";
 
 type Props = {
@@ -159,6 +159,28 @@ export default function PricingSection({
                             )}
                         </div>
                     )}
+                </div>
+
+                {/* GST PERCENTAGE */}
+                <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm space-y-4">
+                    <label className="text-lg font-bold text-slate-800">GST Slab (%)</label>
+                    <div className="relative">
+                        <select
+                            value={form.gstPercentage || 0}
+                            onChange={(e) => setForm((prev: any) => ({ ...prev, gstPercentage: Number(e.target.value) }))}
+                            className="w-full px-4 py-4 bg-slate-50 border-2 border-transparent rounded-2xl text-xl font-bold focus:border-emerald-500 focus:bg-white outline-none transition-all appearance-none cursor-pointer"
+                        >
+                            <option value={0}>0% (Exempted)</option>
+                            <option value={5}>5% (Essential Items)</option>
+                            <option value={12}>12% (Standard)</option>
+                            <option value={18}>18% (Standard Plus)</option>
+                            <option value={28}>28% (Luxury/De-merit)</option>
+                        </select>
+                        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                             <ChevronDown size={24} />
+                        </div>
+                    </div>
+                    <p className="text-sm text-slate-500">Select the government-defined tax slab for this category.</p>
                 </div>
 
             </div>

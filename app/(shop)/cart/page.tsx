@@ -5,7 +5,7 @@ import { useCartStore } from "@/store/user/cart/useCartStore";
 import { ShoppingCart } from "lucide-react";
 
 export default function CartPage() {
-  const { items, totalPrice, removeItem, updateQuantity } = useCartStore();
+  const { items, totalPrice, totalGstAmount, removeItem, updateQuantity } = useCartStore();
 
   if (items.length === 0) {
     return (
@@ -106,9 +106,19 @@ export default function CartPage() {
       <div className="border p-6 rounded-lg h-fit space-y-4 md:mt-14">
         <h2 className="text-lg font-semibold">Order Summary</h2>
 
-        <div className="flex justify-between">
-          <span>Total</span>
-          <span className="font-semibold">₹{totalPrice}</span>
+        <div className="space-y-2 text-sm">
+          <div className="flex justify-between text-gray-600">
+            <span>Subtotal</span>
+            <span>₹{totalPrice}</span>
+          </div>
+          <div className="flex justify-between text-gray-600">
+            <span>GST</span>
+            <span>₹{totalGstAmount}</span>
+          </div>
+          <div className="flex justify-between font-bold text-lg border-t pt-2 mt-4">
+            <span>Total</span>
+            <span>₹{totalPrice + totalGstAmount}</span>
+          </div>
         </div>
 
         <Link

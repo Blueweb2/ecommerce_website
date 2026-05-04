@@ -141,9 +141,8 @@ className={`w-8 h-8 mx-auto rounded-full flex items-center justify-center ${
         deliveryMethod={deliveryMethod}
         onBack={() => setStep(2)}
         onPlaceOrder={handlePlaceOrder}
-        shippingAddress={selectedAddress} onPaymentSuccess={function (): Promise<void> {
-          throw new Error("Function not implemented.");
-        } }      />
+        shippingAddress={selectedAddress} 
+        onPaymentSuccess={showCompleteStep}      />
     )}
 
     {step === 4 && <CompleteStep />}

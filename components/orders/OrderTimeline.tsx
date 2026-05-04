@@ -16,10 +16,11 @@ export default function OrderTimeline({ status }: { status: string }) {
     <div className="space-y-6">
 
       {/* 🔥 Progress Bar */}
-      <div className="w-full bg-gray-200 h-2 rounded">
+      <div className="w-full h-2 rounded" style={{ backgroundColor: '#e5e7eb' }}>
         <div
-          className="bg-green-500 h-2 rounded transition-all duration-500"
+          className="h-2 rounded transition-all duration-500"
           style={{
+            backgroundColor: '#22c55e',
             width: `${((currentIndex + 1) / steps.length) * 100}%`,
           }}
         />
@@ -35,21 +36,20 @@ export default function OrderTimeline({ status }: { status: string }) {
 
               {/* Circle */}
               <div
-                className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300
-                ${
-                  isCompleted
-                    ? "bg-green-500 text-white scale-110"
-                    : "bg-gray-300"
-                }`}
+                className="w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300"
+                style={{
+                  backgroundColor: isCompleted ? '#22c55e' : '#d1d5db',
+                  color: isCompleted ? '#ffffff' : 'transparent',
+                  transform: isCompleted ? 'scale(1.1)' : 'scale(1)',
+                }}
               >
                 {isCompleted ? "✓" : ""}
               </div>
 
               {/* Label */}
               <p
-                className={`text-xs mt-2 ${
-                  isCompleted ? "text-black" : "text-gray-400"
-                }`}
+                className="text-xs mt-2"
+                style={{ color: isCompleted ? '#000000' : '#9ca3af' }}
               >
                 {labels[step]}
               </p>

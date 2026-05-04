@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Heart, ChevronDown } from "lucide-react";
+import { Heart, ChevronDown, Truck } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { useCartStore } from "@/store/user/cart/useCartStore";
 import { useWishlistStore } from "@/store/user/wishlist/useWishlistStore";
@@ -153,6 +153,7 @@ const RightSide = ({ product }: Props) => {
       image: product.images?.[0]?.url,
       price,
       quantity: 1,
+      gstPercentage: product.gstPercentage || 0,
 
       variantId: selectedVariant?.sku,
       selectedOptions,
@@ -286,8 +287,8 @@ const RightSide = ({ product }: Props) => {
 
         {product?.keyFeatures?.length > 0 && (
           <div>
-            <h3 className="text-sm font-semibold mb-1">
-              KEY FEATURES
+            <h3 className="text-sm font-semibold mb-1 uppercase tracking-wider">
+              Key Features
             </h3>
             <ul className="text-xs text-gray-600 space-y-1 list-disc pl-4">
               {product.keyFeatures.map((feature: string, index: number) => (
@@ -297,12 +298,35 @@ const RightSide = ({ product }: Props) => {
           </div>
         )}
 
-        {product?.deliveryDetails && (
-          <div>
-            <h3 className="text-sm font-semibold mb-1">
-              DELIVERY DETAILS
+        {/* TECHNICAL SPECIFICATIONS */}
+        {product?.specifications?.length > 0 && (
+          <div className="pt-4 border-t border-slate-100">
+            <h3 className="text-sm font-semibold mb-3 uppercase tracking-wider">
+              Technical Specifications
             </h3>
-            <p className="text-xs text-gray-600">
+            <div className="grid grid-cols-1 gap-y-2">
+              {product.specifications.map((spec: any, index: number) => (
+                <div key={index} className="flex justify-between py-2 border-b border-slate-50 last:border-0">
+                  <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">{spec.name}</span>
+                  <span className="text-[11px] font-black text-slate-900">{spec.value}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {product?.deliveryDetails && (
+          <div className="pt-4 border-t border-slate-100">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="p-1.5 bg-emerald-50 rounded-lg text-emerald-600">
+                <Truck className="h-4 w-4" />
+              </div>
+
+              <h3 className="text-sm font-bold text-slate-800 uppercase tracking-tight">
+                Delivery Details
+              </h3>
+            </div>
+            <p className="text-xs text-slate-600 leading-relaxed pl-9">
               {product.deliveryDetails}
             </p>
           </div>

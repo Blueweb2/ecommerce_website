@@ -151,9 +151,19 @@ export default function AdminOrderDetailPage() {
                })}
              </div>
              
-             <div className="border-t border-slate-200 p-5 bg-slate-50 flex justify-between items-center rounded-b-[24px]">
-                <span className="font-semibold text-slate-700">Total Price</span>
-                <span className="text-xl font-bold text-slate-900">₹{order.totalPrice}</span>
+             <div className="border-t border-slate-200 p-5 bg-slate-50 space-y-2 rounded-b-[24px]">
+                <div className="flex justify-between items-center text-sm text-slate-600">
+                  <span>Subtotal</span>
+                  <span>₹{order.totalPrice}</span>
+                </div>
+                <div className="flex justify-between items-center text-sm text-slate-600">
+                  <span>GST</span>
+                  <span>₹{order.totalGstAmount}</span>
+                </div>
+                <div className="flex justify-between items-center border-t border-slate-200 pt-2">
+                   <span className="font-semibold text-slate-700">Total Price</span>
+                   <span className="text-xl font-bold text-slate-900">₹{order.grandTotal}</span>
+                </div>
              </div>
            </div>
         </div>

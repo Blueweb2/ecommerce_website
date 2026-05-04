@@ -101,8 +101,8 @@ export default function CategoryForm({ initialData, onSuccess }: Props) {
       }
 
       onSuccess?.();
-    } catch (err) {
-      toast.error("Something went wrong");
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message || "Something went wrong");
     } finally {
       setLoading(false);
     }

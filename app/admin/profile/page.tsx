@@ -1,8 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import api from "@/lib/api/axios";
 import { useAuthStore } from "@/store/auth/useAuthStore";
+import { authApi } from "@/lib/api/auth.api";
 import toast from "react-hot-toast";
 import {
   BadgeCheck,
@@ -11,13 +11,19 @@ import {
   ShieldCheck,
   Sparkles,
   UserRound,
+  Lock,
+  Phone,
+  ArrowRight,
+  Loader2,
+  CheckCircle2,
 } from "lucide-react";
 
 type AdminProfile = {
-  _id?: string;
+  id?: string;
   name: string;
   email: string;
   role: string;
+  phone?: string;
 };
 
 function getInitials(name: string) {
@@ -31,287 +37,402 @@ function getInitials(name: string) {
 
 function formatRole(role?: string) {
   if (!role) return "Admin";
-
   return role.charAt(0).toUpperCase() + role.slice(1);
 }
 
 export default function ProfilePage() {
-  const { user } = useAuthStore();
-  const [profile, setProfile] = useState<AdminProfile | null>(null);
+  const { user, updateUser } = useAuthStore();
   const [loading, setLoading] = useState(true);
+  const [updating, setUpdating] = useState(false);
+
+  // Profile Form
+  const [editMode, setEditMode] = useState(false);
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+
+  // Password Form
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  // Email Update Flow
+  const [newEmail, setNewEmail] = useState("");
+  const [otp, setOtp] = useState("");
+  const [emailStep, setEmailStep] = useState(1); // 1: request, 2: verify
 
   const fetchProfile = useCallback(async () => {
     setLoading(true);
-
     try {
-      const res = await api.get("/auth/me");
-      setProfile(res.data?.user ?? null);
+      const res = await authApi.getMe();
+      const userData = res.data?.user;
+      if (userData) {
+        updateUser(userData);
+        setName(userData.name);
+        setPhone(userData.phone || "");
+      }
     } catch {
-      setProfile(
-        user
-          ? {
-            _id: user.id,
-            name: user.name,
-            email: user.email,
-            role: user.role,
-          }
-          : null
-      );
       toast.error("Failed to refresh profile");
     } finally {
       setLoading(false);
     }
-  }, [user]);
+  }, [updateUser]);
 
   useEffect(() => {
     if (user) {
-      setProfile({
-        _id: user.id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-      });
-
-      fetchProfile(); // 🔥 only when user exists
+      setName(user.name);
+      setPhone((user as any).phone || "");
+      setLoading(false);
+    } else {
+      fetchProfile();
     }
-  }, [user]);
+  }, [user, fetchProfile]);
 
-  if (loading && !profile) {
+  const handleUpdateProfile = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setUpdating(true);
+    try {
+      const res = await authApi.updateProfile({ name, phone });
+      updateUser(res.data.user);
+      toast.success("Profile updated successfully");
+      setEditMode(false);
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message || "Failed to update profile");
+    } finally {
+      setUpdating(false);
+    }
+  };
+
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (newPassword !== confirmPassword) {
+      return toast.error("Passwords do not match");
+    }
+    setUpdating(true);
+    try {
+      await authApi.changePassword({ oldPassword, newPassword });
+      toast.success("Password changed successfully");
+      setOldPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message || "Failed to change password");
+    } finally {
+      setUpdating(false);
+    }
+  };
+
+  const handleRequestEmailChange = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setUpdating(true);
+    try {
+      await authApi.requestEmailChange(newEmail);
+      toast.success("OTP sent to your new email");
+      setEmailStep(2);
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message || "Failed to send OTP");
+    } finally {
+      setUpdating(false);
+    }
+  };
+
+  const handleVerifyEmailChange = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setUpdating(true);
+    try {
+      const res = await authApi.verifyEmailChange({ newEmail, otp });
+      updateUser(res.data.user);
+      toast.success("Email updated successfully");
+      setNewEmail("");
+      setOtp("");
+      setEmailStep(1);
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message || "Verification failed");
+    } finally {
+      setUpdating(false);
+    }
+  };
+
+  if (loading && !user) {
     return (
-      <div className="space-y-6">
-        <div className="rounded-[32px] bg-[#12251a] p-8 text-white shadow-xl">
-          <div className="h-5 w-28 animate-pulse rounded-full bg-white/10" />
-          <div className="mt-4 h-10 w-64 animate-pulse rounded-full bg-white/15" />
-          <div className="mt-6 h-20 animate-pulse rounded-[24px] bg-white/8" />
-        </div>
-        <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-          <div className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm">
-            <div className="space-y-4">
-              {[0, 1, 2].map((item) => (
-                <div
-                  key={item}
-                  className="h-16 animate-pulse rounded-2xl bg-slate-100"
-                />
-              ))}
-            </div>
-          </div>
-          <div className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm">
-            <div className="space-y-4">
-              {[0, 1, 2].map((item) => (
-                <div
-                  key={item}
-                  className="h-24 animate-pulse rounded-2xl bg-slate-100"
-                />
-              ))}
-            </div>
-          </div>
-        </div>
+      <div className="flex items-center justify-center min-h-[400px]">
+        <Loader2 className="h-8 w-8 animate-spin text-emerald-600" />
       </div>
     );
   }
 
-  if (!profile) {
-    return (
-      <div className="rounded-[28px] border border-rose-100 bg-white p-8 text-center shadow-sm ">
-        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-rose-50 text-rose-600">
-          <UserRound className="h-7 w-7" />
-        </div>
-        <h1 className="mt-5 text-2xl font-semibold text-slate-900">
-          <div className="text-center py-12">
-            <UserRound className="mx-auto h-10 w-10 text-gray-400" />
-            <p className="mt-4 text-gray-600 font-medium">
-              Unable to load profile
-            </p>
-            <button
-              onClick={fetchProfile}
-              className="mt-4 px-4 py-2 bg-gray-800 text-white rounded-lg"
-            >
-              Retry
-            </button>
-          </div>
-        </h1>
-        <p className="mt-2 text-sm text-slate-500">
-          We could not load the current admin profile right now.
-        </p>
-      </div>
-    );
-  }
+  if (!user) return null;
 
   return (
-    <div className="space-y-6 text-slate-900">
-      <section className="overflow-hidden rounded-[32px] bg-[#12251a] text-white shadow-xl">
-        <div className="flex flex-col gap-6 p-6 md:p-8">
-          <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
-            <div className="flex items-center gap-4">
-              <div className="relative">
-                <div className="h-28 w-full rounded-2xl bg-gradient-to-r from-emerald-600 to-green-400" />
-
-                <div className="absolute -bottom-8 left-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-white text-xl font-bold text-emerald-700 shadow-lg">
-                  {getInitials(profile.name || "A")}
-                </div>
+    <div className="space-y-8 pb-12">
+      {/* Premium Header */}
+      <section className="relative overflow-hidden rounded-[32px] bg-[#12251a] text-white shadow-2xl">
+        <div className="absolute top-0 right-0 -mr-16 -mt-16 h-64 w-64 rounded-full bg-emerald-500/10 blur-3xl" />
+        <div className="absolute bottom-0 left-0 -ml-16 -mb-16 h-64 w-64 rounded-full bg-green-500/10 blur-3xl" />
+        
+        <div className="relative flex flex-col gap-8 p-8 md:p-12">
+          <div className="flex flex-col md:flex-row md:items-center gap-6">
+            <div className="relative group">
+              <div className="h-24 w-24 flex items-center justify-center rounded-3xl bg-white text-3xl font-bold text-emerald-800 shadow-xl ring-4 ring-white/10 transition-transform group-hover:scale-105">
+                {getInitials(user.name)}
               </div>
-
-              <div className="mt-12 px-6">
-                <h1 className="text-2xl font-semibold">{profile.name}</h1>
-                <p className="text-sm text-gray-500">{profile.email}</p>
+              <div className="absolute -bottom-1 -right-1 h-8 w-8 rounded-full bg-emerald-500 flex items-center justify-center border-4 border-[#12251a]">
+                <CheckCircle2 className="h-4 w-4 text-white" />
               </div>
-
-              <div>
-                <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/8 px-3 py-1 text-xs font-medium uppercase tracking-[0.24em] text-emerald-100">
-                  <ShieldCheck className="h-3.5 w-3.5" />
-                  Admin profile
-                </div>
-                <h1 className="mt-3 text-3xl font-semibold tracking-tight md:text-4xl">
-                  {profile.name}
-                </h1>
-                <p className="mt-2 text-sm text-emerald-50/80">
-                  {profile.email}
-                </p>
+            </div>
+            
+            <div className="flex-1 space-y-2">
+              <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-emerald-300 ring-1 ring-white/20">
+                <ShieldCheck className="h-3 w-3" />
+                {formatRole(user.role)} Verified
               </div>
+              <h1 className="text-4xl font-bold tracking-tight">{user.name}</h1>
+              <p className="text-emerald-50/60 font-medium flex items-center gap-2">
+                <Mail className="h-4 w-4" />
+                {user.email}
+              </p>
             </div>
 
             <button
-              type="button"
               onClick={fetchProfile}
-              className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/8 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/12"
+              className="self-start md:self-center inline-flex items-center gap-2 rounded-2xl bg-white/10 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/20 active:scale-95"
             >
               <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
-              Refresh profile
+              Refresh
             </button>
-            <button className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 text-sm">
-              Edit Profile
-            </button>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 text-black">
-            <div className="p-5 rounded-2xl bg-white shadow-sm border">
-              <p className="text-sm text-gray-500">Role</p>
-              <p className="text-lg font-semibold mt-2">{formatRole(profile.role)}</p>
-            </div>
-
-            <div className="p-5 rounded-2xl bg-white shadow-sm border">
-              <p className="text-sm text-gray-500">Access</p>
-              <p className="text-lg font-semibold mt-2">Admin Panel</p>
-            </div>
-
-            <div className="p-5 rounded-2xl bg-white shadow-sm border">
-              <p className="text-sm text-gray-500">Status</p>
-              <p className="text-lg font-semibold mt-2 text-green-600">Active</p>
-            </div>
           </div>
         </div>
       </section>
 
-      <section className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
-        <article className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm">
-          <h2 className="text-xl font-semibold tracking-tight">
-            Identity details
-          </h2>
-          <p className="mt-1 text-sm text-slate-500">
-            Core information tied to this admin session.
-          </p>
+      <div className="grid gap-8 lg:grid-cols-3">
+        {/* Profile Details & Edit */}
+        <div className="lg:col-span-2 space-y-8">
+          <article className="rounded-[32px] border border-slate-200 bg-white p-8 shadow-sm transition-all hover:shadow-md">
+            <div className="flex items-center justify-between mb-8">
+              <div>
+                <h2 className="text-2xl font-bold text-slate-900">Personal Information</h2>
+                <p className="text-slate-500 mt-1">Manage your public profile details.</p>
+              </div>
+              <button
+                onClick={() => setEditMode(!editMode)}
+                className={`px-6 py-2.5 rounded-2xl font-bold transition-all ${
+                  editMode 
+                    ? "bg-slate-100 text-slate-600 hover:bg-slate-200" 
+                    : "bg-emerald-600 text-white hover:bg-emerald-700 shadow-lg shadow-emerald-200"
+                }`}
+              >
+                {editMode ? "Cancel" : "Edit Profile"}
+              </button>
+            </div>
 
-          <div className="mt-6 space-y-4">
-            <div className="rounded-[24px] border border-slate-200 bg-slate-50 p-4">
-              <div className="flex items-start gap-3">
-                <div className="rounded-2xl bg-white p-3 text-slate-700 shadow-sm">
-                  <UserRound className="h-5 w-5" />
+            {!editMode ? (
+              <div className="grid gap-6 md:grid-cols-2">
+                <div className="p-6 rounded-2xl bg-slate-50 border border-slate-100 flex items-center gap-4">
+                  <div className="h-12 w-12 rounded-xl bg-white flex items-center justify-center text-slate-600 shadow-sm">
+                    <UserRound className="h-6 w-6" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Full Name</p>
+                    <p className="text-lg font-bold text-slate-800">{user.name}</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm font-medium text-slate-500">
-                    Full name
-                  </p>
-                  <p className="mt-1 text-base font-semibold text-slate-900">
-                    {profile.name}
-                  </p>
+                <div className="p-6 rounded-2xl bg-slate-50 border border-slate-100 flex items-center gap-4">
+                  <div className="h-12 w-12 rounded-xl bg-white flex items-center justify-center text-slate-600 shadow-sm">
+                    <Phone className="h-6 w-6" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Phone Number</p>
+                    <p className="text-lg font-bold text-slate-800">{(user as any).phone || "Not set"}</p>
+                  </div>
                 </div>
+              </div>
+            ) : (
+              <form onSubmit={handleUpdateProfile} className="space-y-6 animate-in fade-in slide-in-from-top-4 duration-300">
+                <div className="grid gap-6 md:grid-cols-2">
+                  <div className="space-y-2">
+                    <label className="text-sm font-bold text-slate-700 ml-1">Full Name</label>
+                    <input
+                      type="text"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      className="w-full rounded-2xl border-slate-200 bg-slate-50 p-4 font-medium transition focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10 outline-none"
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-bold text-slate-700 ml-1">Phone Number</label>
+                    <input
+                      type="tel"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      className="w-full rounded-2xl border-slate-200 bg-slate-50 p-4 font-medium transition focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10 outline-none"
+                      placeholder="+1 (555) 000-0000"
+                    />
+                  </div>
+                </div>
+                <button
+                  type="submit"
+                  disabled={updating}
+                  className="w-full md:w-auto inline-flex items-center justify-center gap-2 rounded-2xl bg-emerald-600 px-8 py-4 text-sm font-bold text-white transition hover:bg-emerald-700 disabled:opacity-50"
+                >
+                  {updating ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
+                  Save Changes
+                </button>
+              </form>
+            )}
+          </article>
+
+          {/* Email Settings */}
+          <article className="rounded-[32px] border border-slate-200 bg-white p-8 shadow-sm transition-all hover:shadow-md">
+            <h2 className="text-2xl font-bold text-slate-900 mb-2 flex items-center gap-3">
+              <Mail className="h-6 w-6 text-emerald-600" />
+              Email Settings
+            </h2>
+            <p className="text-slate-500 mb-8">Change your primary login email address.</p>
+
+            <div className="p-6 rounded-2xl bg-emerald-50 border border-emerald-100 mb-8 flex items-center gap-4">
+              <div className="h-10 w-10 rounded-full bg-white flex items-center justify-center text-emerald-600">
+                <BadgeCheck className="h-5 w-5" />
+              </div>
+              <div>
+                <p className="text-xs font-bold text-emerald-700 uppercase tracking-wider">Current Email</p>
+                <p className="text-emerald-950 font-bold">{user.email}</p>
               </div>
             </div>
 
-            <div className="rounded-[24px] border border-slate-200 bg-slate-50 p-4">
-              <div className="flex items-start gap-3">
-                <div className="rounded-2xl bg-white p-3 text-slate-700 shadow-sm">
-                  <Mail className="h-5 w-5" />
+            {emailStep === 1 ? (
+              <form onSubmit={handleRequestEmailChange} className="space-y-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-bold text-slate-700 ml-1">New Email Address</label>
+                  <div className="flex gap-3 flex-col md:flex-row">
+                    <input
+                      type="email"
+                      value={newEmail}
+                      onChange={(e) => setNewEmail(e.target.value)}
+                      className="flex-1 rounded-2xl border-slate-200 bg-slate-50 p-4 font-medium transition focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10 outline-none"
+                      placeholder="Enter new email..."
+                      required
+                    />
+                    <button
+                      type="submit"
+                      disabled={updating || !newEmail}
+                      className="inline-flex items-center justify-center gap-2 rounded-2xl bg-slate-900 px-8 py-4 text-sm font-bold text-white transition hover:bg-black disabled:opacity-50"
+                    >
+                      {updating ? <Loader2 className="h-4 w-4 animate-spin" /> : <ArrowRight className="h-4 w-4" />}
+                      Send OTP
+                    </button>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm font-medium text-slate-500">
-                    Email address
-                  </p>
-                  <p className="mt-1 break-all text-base font-semibold text-slate-900">
-                    {profile.email}
-                  </p>
+              </form>
+            ) : (
+              <form onSubmit={handleVerifyEmailChange} className="space-y-6 animate-in zoom-in-95 duration-300">
+                <div className="p-4 rounded-2xl bg-blue-50 border border-blue-100 text-blue-800 text-sm font-medium">
+                  We&apos;ve sent an OTP to <span className="font-bold underline">{newEmail}</span>. Please enter it below.
                 </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-bold text-slate-700 ml-1">Verification Code (OTP)</label>
+                  <div className="flex gap-3 flex-col md:flex-row">
+                    <input
+                      type="text"
+                      maxLength={6}
+                      value={otp}
+                      onChange={(e) => setOtp(e.target.value)}
+                      className="flex-1 rounded-2xl border-slate-200 bg-slate-50 p-4 font-bold text-center text-2xl tracking-[0.5em] transition focus:border-emerald-500 focus:bg-white outline-none"
+                      placeholder="000000"
+                      required
+                    />
+                    <button
+                      type="submit"
+                      disabled={updating || otp.length < 6}
+                      className="inline-flex items-center justify-center gap-2 rounded-2xl bg-emerald-600 px-8 py-4 text-sm font-bold text-white transition hover:bg-emerald-700 disabled:opacity-50"
+                    >
+                      {updating ? <Loader2 className="h-4 w-4 animate-spin" /> : <BadgeCheck className="h-4 w-4" />}
+                      Verify & Change
+                    </button>
+                  </div>
+                </div>
+                <button 
+                  type="button" 
+                  onClick={() => setEmailStep(1)}
+                  className="text-sm font-bold text-slate-500 hover:text-slate-800 transition"
+                >
+                  Cancel Change
+                </button>
+              </form>
+            )}
+          </article>
+        </div>
+
+        {/* Security / Password */}
+        <div className="space-y-8">
+          <article className="rounded-[32px] border border-slate-200 bg-white p-8 shadow-sm transition-all hover:shadow-md sticky top-8">
+            <h2 className="text-2xl font-bold text-slate-900 mb-2 flex items-center gap-3">
+              <Lock className="h-6 w-6 text-rose-500" />
+              Security
+            </h2>
+            <p className="text-slate-500 mb-8">Update your password to keep your account secure.</p>
+
+            <form onSubmit={handleChangePassword} className="space-y-5">
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-slate-500 uppercase ml-1">Current Password</label>
+                <input
+                  type="password"
+                  value={oldPassword}
+                  onChange={(e) => setOldPassword(e.target.value)}
+                  className="w-full rounded-2xl border-slate-200 bg-slate-50 p-4 transition focus:border-rose-500 focus:bg-white outline-none"
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-slate-500 uppercase ml-1">New Password</label>
+                <input
+                  type="password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  className="w-full rounded-2xl border-slate-200 bg-slate-50 p-4 transition focus:border-emerald-500 focus:bg-white outline-none"
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-slate-500 uppercase ml-1">Confirm New Password</label>
+                <input
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className="w-full rounded-2xl border-slate-200 bg-slate-50 p-4 transition focus:border-emerald-500 focus:bg-white outline-none"
+                  required
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={updating || !newPassword || newPassword !== confirmPassword}
+                className="w-full inline-flex items-center justify-center gap-2 rounded-2xl bg-slate-900 py-4 text-sm font-bold text-white transition hover:bg-black disabled:opacity-50 shadow-lg"
+              >
+                {updating ? <Loader2 className="h-4 w-4 animate-spin" /> : "Update Password"}
+              </button>
+            </form>
+          </article>
+
+          {/* Quick Stats/Snapshot */}
+          <article className="rounded-[32px] bg-gradient-to-br from-emerald-600 to-green-700 p-8 text-white shadow-xl overflow-hidden relative group">
+            <Sparkles className="absolute top-4 right-4 h-12 w-12 text-white/10 transition-transform group-hover:scale-125" />
+            <h3 className="text-xl font-bold mb-4">Account Snapshot</h3>
+            <div className="space-y-4">
+              <div className="flex justify-between items-center py-3 border-b border-white/10">
+                <span className="text-emerald-100/80 text-sm font-medium">Role</span>
+                <span className="font-bold">{formatRole(user.role)}</span>
+              </div>
+              <div className="flex justify-between items-center py-3 border-b border-white/10">
+                <span className="text-emerald-100/80 text-sm font-medium">Status</span>
+                <span className="font-bold bg-emerald-400/20 px-2 py-0.5 rounded text-xs">Active</span>
+              </div>
+              <div className="flex justify-between items-center py-3 border-b border-white/10">
+                <span className="text-emerald-100/80 text-sm font-medium">Verified</span>
+                <CheckCircle2 className="h-4 w-4 text-emerald-300" />
               </div>
             </div>
-
-            <div className="rounded-[24px] border border-slate-200 bg-slate-50 p-4">
-              <div className="flex items-start gap-3">
-                <div className="rounded-2xl bg-white p-3 text-slate-700 shadow-sm">
-                  <BadgeCheck className="h-5 w-5" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-slate-500">Role</p>
-                  <p className="mt-1 text-base font-semibold text-slate-900">
-                    {formatRole(profile.role)}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </article>
-
-        <article className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm">
-          <h2 className="text-xl font-semibold tracking-tight">
-            Admin snapshot
-          </h2>
-          <p className="mt-1 text-sm text-slate-500">
-            A quick read on this account&apos;s current capabilities.
-          </p>
-
-          <div className="mt-6 space-y-4">
-            <div className="rounded-[24px] border border-emerald-100 bg-emerald-50 p-4">
-              <div className="flex items-start gap-3">
-                <div className="rounded-2xl bg-white p-3 text-emerald-700 shadow-sm">
-                  <ShieldCheck className="h-5 w-5" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-emerald-700">
-                    Admin access
-                  </p>
-                  <p className="mt-1 text-base font-semibold text-emerald-950">
-                    You can access protected admin routes.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="rounded-[24px] border border-sky-100 bg-sky-50 p-4">
-              <div className="flex items-start gap-3">
-                <div className="rounded-2xl bg-white p-3 text-sky-700 shadow-sm">
-                  <Sparkles className="h-5 w-5" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-sky-700">
-                    Experience
-                  </p>
-                  <p className="mt-1 text-base font-semibold text-sky-950">
-                    Profile page refreshed to match the new admin UI.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="rounded-[24px] border border-slate-200 bg-slate-50 p-4">
-              <p className="text-sm font-medium text-slate-500">
-                Admin ID
-              </p>
-              <p className="mt-2 break-all text-base font-semibold text-slate-900">
-                {profile._id || "Not available"}
-              </p>
-            </div>
-          </div>
-        </article>
-      </section>
+          </article>
+        </div>
+      </div>
     </div>
   );
 }

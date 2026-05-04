@@ -7,7 +7,7 @@ import { useCartStore } from "@/store/user/cart/useCartStore";
 
 export default function CartDrawer() {
   const { isOpen, closeCart } = useCartUIStore();
-  const { items, totalPrice, removeItem, updateQuantity } = useCartStore();
+  const { items, totalPrice, totalGstAmount, removeItem, updateQuantity } = useCartStore();
 
   return (
     <>
@@ -99,9 +99,19 @@ export default function CartDrawer() {
 
         {/* Footer */}
         <div className="absolute bottom-0 w-full p-4 border-t border-b border-gray-300 bg-white pb-20">
-          <div className="flex justify-between mb-3">
-            <span>Total</span>
-            <span className="font-semibold">₹{totalPrice}</span>
+          <div className="space-y-1 mb-4 text-sm">
+            <div className="flex justify-between text-gray-500">
+              <span>Subtotal</span>
+              <span>₹{totalPrice}</span>
+            </div>
+            <div className="flex justify-between text-gray-500">
+              <span>GST</span>
+              <span>₹{totalGstAmount}</span>
+            </div>
+            <div className="flex justify-between font-bold text-lg border-t pt-2 mt-2">
+              <span>Total</span>
+              <span>₹{totalPrice + totalGstAmount}</span>
+            </div>
           </div>
 
        <div className="space-y-2">

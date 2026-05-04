@@ -127,6 +127,25 @@ export default function CoreDetails({ form, setForm, errors }: Props) {
           )}
         </div>
 
+        {/* Delivery Details */}
+        <div className="space-y-2 md:col-span-2">
+          <label className="text-sm font-bold text-slate-700 uppercase tracking-wider">
+            Delivery Details
+          </label>
+          <textarea
+            rows={3}
+            placeholder="e.g. Ships within 2-3 business days. Free shipping on orders over ₹2000."
+            value={form.deliveryDetails}
+            onChange={(e) =>
+              setForm((prev: any) => ({
+                ...prev,
+                deliveryDetails: e.target.value,
+              }))
+            }
+            className="w-full rounded-2xl border border-slate-200 px-4 py-4 outline-none transition focus:border-emerald-500 focus:ring-4 focus:ring-emerald-50"
+          />
+        </div>
+
       </div>
     </section>
   );

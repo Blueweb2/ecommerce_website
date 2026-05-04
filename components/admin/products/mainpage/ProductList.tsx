@@ -173,6 +173,9 @@ export default function ProductList({
                     {product.sku && (
                       <span className="text-xs text-gray-500">SKU: {product.sku}</span>
                     )}
+                    <span className="bg-slate-100 text-slate-600 px-2 py-1 rounded text-xs font-medium">
+                      GST: {product.gstPercentage || 0}%
+                    </span>
                   </div>
                 </div>
                 <div className="flex gap-2">

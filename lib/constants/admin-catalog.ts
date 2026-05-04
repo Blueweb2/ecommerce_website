@@ -90,6 +90,7 @@ export type CatalogProduct = {
   price: number;
   discountPrice?: number; // ✅ ADD THIS
   isOnSale: boolean;
+  gstPercentage?: number;
 
   brand?: string; // ✅ ADD THIS
 
@@ -110,6 +111,10 @@ export type CatalogProduct = {
   variants?: ProductVariant[];
 
   customizable?: CustomizableConfig;
+  specifications?: {
+    name: string;
+    value: string;
+  }[];
 
   createdAt?: string;
   updatedAt?: string;
@@ -129,6 +134,7 @@ export type ProductPayload = {
   stock: number;
   isPublished: boolean;
   isOnSale: boolean;
+  gstPercentage?: number;
   discountPrice?: number;
 
    customizable?: CustomizableConfig;
@@ -139,6 +145,10 @@ export type ProductPayload = {
   }[]; 
 
   variants?: ProductVariant[];
+  specifications?: {
+    name: string;
+    value: string;
+  }[];
   primaryImageIndex?: number;
 };
 
@@ -161,6 +171,8 @@ export interface CartItem {
   variantId?: string; // ✅ FIXED
 
   selectedOptions?: SelectedOption[]; // ✅ FIXED
+  gstPercentage?: number;
+  gstAmount?: number;
 }
 // ✅ API ERROR TYPE
 export type ApiErrorResponse = {

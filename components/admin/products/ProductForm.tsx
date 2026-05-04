@@ -17,6 +17,7 @@ import MediaSection from "./MediaSection";
 import PreviewSection from "./PreviewSection";
 import AttributeBuilder from "./AttributeBuilder";
 import PricingSection from "./PricingSection";
+import SpecificationsSection from "./SpecificationsSection";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
@@ -33,6 +34,7 @@ type ProductFormValues = {
   stock: number | string;
   isPublished: boolean;
   isOnSale: boolean;
+  gstPercentage: number | string;
   primaryImageIndex?: number;
 
   variants: {
@@ -40,6 +42,10 @@ type ProductFormValues = {
     stock?: number | string;
     price?: number | string;
     discountPrice?: number | string;
+  }[];
+  specifications: {
+    name: string;
+    value: string;
   }[];
 };
 
@@ -61,7 +67,9 @@ const defaultValues: ProductFormValues = {
   stock: "",
   isPublished: true,
   isOnSale: false,
+  gstPercentage: 0,
   variants: [],
+  specifications: [],
   primaryImageIndex: 0,
 };
 
@@ -92,6 +100,7 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
         price: v.price ?? "",
         discountPrice: v.discountPrice ?? "",
       })) || [],
+    specifications: initialData?.specifications || [],
   });
 
   const [customizable, setCustomizable] = useState({
@@ -186,6 +195,7 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
         stock: Number(form.stock) || 0,
         isPublished: form.isPublished,
         isOnSale: Boolean(form.isOnSale),
+        gstPercentage: Number(form.gstPercentage) || 0,
         attributes:
           cleanedVariants.length > 0
             ? Object.keys(cleanedVariants[0].attributes).map((key) => ({
@@ -203,6 +213,7 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
         })),
         primaryImageIndex: form.primaryImageIndex || 0,
         customizable: customizable.isCustomizable ? customizable : undefined,
+        specifications: form.specifications.filter(s => s.name.trim() && s.value.trim()),
       };
 
       await onSubmit(payload, files);
@@ -274,6 +285,7 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
                 <button type="button" onClick={() => setForm((prev: any) => ({ ...prev, keyFeatures: [...prev.keyFeatures, ""] }))} className="text-emerald-600 text-sm font-bold">+ Add Feature</button>
               </div>
             </section>
+            <SpecificationsSection specifications={form.specifications} setForm={setForm} />
           </div>
         )}
         {currentStep === 2 && <MediaSection files={files} setFiles={setFiles} form={form} setForm={setForm} errors={errors} />}
