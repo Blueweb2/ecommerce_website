@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Heart, ChevronDown } from "lucide-react";
 import { toast } from "react-hot-toast";
+import { Bodoni_Moda, Inter } from 'next/font/google';
 import { useCartStore } from "@/store/user/cart/useCartStore";
 import { useWishlistStore } from "@/store/user/wishlist/useWishlistStore";
 import { wishlistAPI } from "@/lib/api/wishlist.api";
@@ -16,6 +17,15 @@ type CustomDataItem = {
   fieldName: string;
   value: string | number;
 };
+
+const inter = Inter({
+  subsets: ['latin'],
+});
+
+const bodoni = Bodoni_Moda({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
 
 const RightSide = ({ product }: Props) => {
 
@@ -168,7 +178,7 @@ const RightSide = ({ product }: Props) => {
 
       {/* TITLE */}
       <div>
-        <h1 className="text-2xl md:text-3xl font-serif">
+        <h1 className={`${bodoni.className} text-2xl md:text-3xl text-neutral-600`}>
           {product?.name}
         </h1>
       </div>
@@ -184,7 +194,7 @@ const RightSide = ({ product }: Props) => {
             </span>
           </>
         ) : (
-          <p className="text-2xl font-bold text-gray-900">₹{price}</p>
+          <p className={`${bodoni.className} text-2xl font-bold text-[#8D8B9D]`}>₹{price}</p>
         )}
       </div>
 
@@ -200,7 +210,7 @@ const RightSide = ({ product }: Props) => {
 
         return (
           <div>
-            <p className="text-xs text-gray-500 mb-2">SELECT SIZE:</p>
+            <p className="text-xs text-neutral-600 mb-2">SELECT SIZE:</p>
 
             <div className="flex gap-2">
               {sizes.map((size: string) => {
@@ -276,22 +286,22 @@ const RightSide = ({ product }: Props) => {
       <div className="space-y-4">
 
         <div>
-          <h3 className="text-sm font-semibold mb-1">
+          <h3 className={`${bodoni.className} text-sm font-semibold mb-1 text-neutral-600`}>
             PRODUCT DESCRIPTION
           </h3>
-          <p className="text-xs text-gray-600 leading-relaxed">
+          <p className={`${inter.className} text-xs text-[#8D8B9D] leading-relaxed`}>
             {product?.description || "No description available"}
           </p>
         </div>
 
         {product?.keyFeatures?.length > 0 && (
           <div>
-            <h3 className="text-sm font-semibold mb-1">
+            <h3 className={`${bodoni.className} text-sm font-semibold mb-1 text-neutral-600`}>
               KEY FEATURES
             </h3>
-            <ul className="text-xs text-gray-600 space-y-1 list-disc pl-4">
+            <ul className="text-xs space-y-1 list-disc pl-4 text-[#8D8B9D]">
               {product.keyFeatures.map((feature: string, index: number) => (
-                <li key={index}>{feature}</li>
+                <li key={index} className={`${inter.className}`}>{feature}</li>
               ))}
             </ul>
           </div>
@@ -299,10 +309,10 @@ const RightSide = ({ product }: Props) => {
 
         {product?.deliveryDetails && (
           <div>
-            <h3 className="text-sm font-semibold mb-1">
+            <h3 className={`${bodoni.className} text-sm font-semibold mb-1 text-neutral-600`}>
               DELIVERY DETAILS
             </h3>
-            <p className="text-xs text-gray-600">
+            <p className={`${inter.className} text-xs text-[#8D8B9D]`}>
               {product.deliveryDetails}
             </p>
           </div>
@@ -318,7 +328,7 @@ const RightSide = ({ product }: Props) => {
           <div key={index}>
             <button
               onClick={() => toggle(index)}
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 text-neutral-600"
             >
               <ChevronDown
                 className={`${activeIndex === index ? "rotate-180" : ""
@@ -328,7 +338,7 @@ const RightSide = ({ product }: Props) => {
             </button>
 
             {activeIndex === index && (
-              <p className="text-xs text-gray-500">
+              <p className={`${inter.className} text-xs text-[#8D8B9D]`}>
                 {item.content}
               </p>
             )}
