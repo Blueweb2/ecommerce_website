@@ -71,9 +71,9 @@ export default function NewInSection() {
       <div className="max-w-[2000px] mx-auto flex flex-col md:flex-row gap-6 md:gap-0 items-stretch px-4 md:px-32">
 
         {/* Left Info Panel    */}
-        <div className="md:w-80 flex-shrink-0 flex flex-col justify-center pr-3">
+        <div className="md:w-[25%] flex-shrink-0 flex flex-col justify-center pr-3">
           <h2
-            className={`${bodoni.className} mb-3 text-[30px] font-normal tracking-tight text-neutral-600`}
+            className={`${bodoni.className} mb-3 text-[45px] font-normal tracking-tight text-neutral-600`}
           >
             New In
           </h2>
@@ -125,7 +125,28 @@ export default function NewInSection() {
         <div className="relative flex-1 min-w-0 items-center hidden lg:flex">
 
           {/* left button */}
-          <button
+          {currentIndex !== 0 && (
+            <button
+              onClick={handlePrev}
+              aria-label="Scroll left"
+              className={`absolute left-0 z-10 bg-white border border-neutral-200 w-10 h-14 flex items-center justify-center shadow-sm hover:shadow-md transition-all duration-200 ${
+                currentIndex === 0 ? "opacity-30 cursor-not-allowed" : "hover:scale-105"
+              }`}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="w-full h-full m-0.5 text-neutral-700"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+          )}
+
+          {/* <button
             onClick={handlePrev}
             disabled={currentIndex === 0}
             aria-label="Scroll left"
@@ -143,7 +164,7 @@ export default function NewInSection() {
             >
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
             </svg>
-          </button>
+          </button> */}
           
           <div className="overflow-hidden w-full">
             <div
@@ -172,7 +193,29 @@ export default function NewInSection() {
           </div>
           
           {/* right button */}
-          <button
+          {currentIndex + itemsPerPage < products.length && (
+            <button
+              onClick={handleNext}
+              disabled={currentIndex + itemsPerPage >= products.length}
+              aria-label="Scroll right"
+              className={`absolute right-0 z-10 bg-white border border-neutral-200 w-10 h-14 flex items-center justify-center shadow-sm hover:shadow-md transition-all duration-200 ${
+                currentIndex + itemsPerPage >= products.length ? "opacity-30 cursor-not-allowed" : "hover:scale-105"
+              }`}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="w-full h-full m-0.5 text-neutral-700"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          )}
+          
+          {/* <button
             onClick={handleNext}
             disabled={currentIndex + itemsPerPage >= products.length}
             aria-label="Scroll right"
@@ -190,7 +233,8 @@ export default function NewInSection() {
             >
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
             </svg>
-          </button>
+          </button> */}
+
         </div>
 
       </div>
