@@ -116,18 +116,14 @@ export default function Navbar() {
             </Link>
 
             {categories.map((cat: any) => (
-              <div
-                key={cat._id}
+              <Link 
+                href="/sale" 
+                className={linkClass("/sale")} 
+                key={cat._id} 
                 onMouseEnter={() => setActiveCategory(cat._id)}
-                className="cursor-pointer"
               >
-                <Link
-                  href={`/category/${cat.slug}`}
-                  className={linkClass(`/category/${cat.slug}`)}
-                >
-                  {cat.name}
-                </Link>
-              </div>
+                {cat.name}
+              </Link>
             ))}
 
             <Link href="/sale" className={linkClass("/sale")}>
