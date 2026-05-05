@@ -3,8 +3,19 @@
 import { useState } from "react";
 import { newsletterAPI } from "@/lib/api/newsletter.api";
 import toast from "react-hot-toast";
+import { Bodoni_Moda, Inter } from 'next/font/google';
+
+const bodoni = Bodoni_Moda({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
+
+const inter = Inter({
+  subsets: ['latin'],
+});
 
 export default function ExclusiveAccess() {
+
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -48,12 +59,12 @@ export default function ExclusiveAccess() {
     <section className="bg-[#f5f5f5] pb-3 lg:pb-16 lg:pt-5">
       <div className="max-w-2xl mx-auto px-4 text-center">
         {/* TITLE */}
-        <h2 className="font-brand-display mb-3 text-2xl font-semibold text-neutral-600">
+        <h2 className={`${bodoni.className} mb-3 text-[30px] font-semibold text-neutral-600`}>
           Exclusive Access
         </h2>
 
         {/* DESCRIPTION */}
-        <p className="font-brand-sans mb-6 text-sm text-[#8D8B9D]">
+        <p className={`${inter.className} mb-6 text-sm text-[#8D8B9D]`}>
           Get updates on new designs, trends, and special offers straight to
           your inbox.
         </p>

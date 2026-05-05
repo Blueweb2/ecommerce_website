@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { Facebook, Instagram, Linkedin, X, Youtube } from "lucide-react";
 import { useEffect, useState } from "react";
+import { Bodoni_Moda, Inter } from 'next/font/google';
 import { categoryAPI } from "@/lib/api/category.api";
 
 interface Category {
@@ -11,6 +12,15 @@ interface Category {
   parent?: string | null;
   isActive: boolean;
 };
+
+const bodoni = Bodoni_Moda({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
+
+const inter = Inter({
+  subsets: ['latin'],
+});
 
 export default function Footer() {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -38,12 +48,12 @@ export default function Footer() {
 
           {/* SHOP */}
           <div>
-            <h3 className="font-brand-display mb-4 font-semibold text-neutral-600">Shop</h3>
+            <h3 className={`${bodoni.className} mb-4 font-semibold text-neutral-600`}>Shop</h3>
             <ul className="font-brand-sans space-y-2 text-[11px]">
               {categories.length > 0 ? (
                 categories.map((cat) => (
                   <li key={cat._id}>
-                    <Link href={`/category/${cat.slug}`} className="text-[#8D8B9D] hover:text-black transition-colors">
+                    <Link href={`/category/${cat.slug}`} className={`${inter.className} text-[#8D8B9D] hover:text-black transition-colors`}>
                       {cat.name}
                     </Link>
                   </li>
@@ -56,14 +66,14 @@ export default function Footer() {
                   <li><Link href="/category/bracelets">Bracelets</Link></li>
                 </>
               )}
-              <li><Link href="/collection/new-in" className="text-[#8D8B9D] hover:text-black transition-colors">New Arrivals</Link></li>
+              <li><Link href="/collection/new-in" className={`${inter.className} text-[#8D8B9D] hover:text-black transition-colors`}>New Arrivals</Link></li>
             </ul>
           </div>
 
           {/* SUPPORT */}
           <div>
-            <h3 className="font-brand-display mb-4 font-semibold text-neutral-600">Support</h3>
-            <ul className="font-brand-sans space-y-2 text-[11px] text-[#8D8B9D]">
+            <h3 className={`${bodoni.className} mb-4 font-semibold text-neutral-600`}>Support</h3>
+            <ul className={`${inter.className} space-y-2 text-[11px] text-[#8D8B9D]`}>
               <li><Link href="#" className="hover:text-black">Shipping & Delivery</Link></li>
               <li><Link href="#" className="hover:text-black">Returns & Exchanges</Link></li>
               <li><Link href="#" className="hover:text-black">FAQs</Link></li>
@@ -74,8 +84,8 @@ export default function Footer() {
 
           {/* COMPANY */}
           <div>
-            <h3 className="font-brand-display mb-4 font-semibold text-neutral-600">Company</h3>
-            <ul className="font-brand-sans space-y-2 text-[11px] text-[#8D8B9D]">
+            <h3 className={`${bodoni.className} mb-4 font-semibold text-neutral-600`}>Company</h3>
+            <ul className={`${inter.className} space-y-2 text-[11px] text-[#8D8B9D]`}>
               <li><Link href="#" className="hover:text-black">About Us</Link></li>
               <li><Link href="#" className="hover:text-black">Our Story</Link></li>
               <li><Link href="#" className="hover:text-black">Blog</Link></li>
@@ -86,7 +96,7 @@ export default function Footer() {
 
           {/* SOCIAL + PAYMENTS */}
           <div>
-            <h3 className="font-brand-display mb-4 font-semibold text-neutral-600">Follow us on</h3>
+            <h3 className={`${bodoni.className} mb-4 font-semibold text-neutral-600`}>Follow us on</h3>
 
             {/* SOCIAL ICONS */}
             <div className="flex items-center gap-4 mb-6 text-[#8D8B9D]">
@@ -98,7 +108,7 @@ export default function Footer() {
             </div>
 
             {/* PAYMENTS */}
-            <p className="text-xs text-neutral-600 mb-2">We accepts</p>
+            <p className={`${bodoni.className} text-xs text-neutral-600 mb-2`}>We accepts</p>
             <div className="flex items-center gap-2">
               <img src="/home/footer/visa.png" alt="visa" className="h-3.5 md:h-4" />
               <img src="/home/footer/master.png" alt="mastercard" className="h-3.5 md:h-4" />
@@ -112,7 +122,7 @@ export default function Footer() {
       </div>
 
       <div className="font-brand-display bg-[#f5f5f5] px-4 py-1 text-neutral-600 md:px-32">
-        <p className="max-w-[2000px] mx-auto pl-4">@ 2026 Your Brand Name All right recived</p>
+        <p className={`${bodoni.className} max-w-[2000px] mx-auto pl-4`}>@ 2026 Your Brand Name All right recived</p>
       </div>
     </footer>
   );

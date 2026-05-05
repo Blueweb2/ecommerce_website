@@ -1,11 +1,16 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { Inter } from 'next/font/google';
 import { Product } from '@/types/product';
 import { optimizeCloudinaryUrl } from '@/lib/constants/admin-catalog';
 
 interface ProductCardProps {
   product: Product;
 }
+
+const inter = Inter({
+  subsets: ['latin'],
+});
 
 export default function ProductCard({ product }: ProductCardProps) {
   const imageUrl = optimizeCloudinaryUrl(product.images?.[0]?.url) || '/placeholder.png';
@@ -36,7 +41,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       </div>
 
       <div className="space-y-1 px-1">
-        <h3 className="font-brand-sans line-clamp-1 text-[13px] font-semibold text-neutral-600 transition-colors group-hover:text-neutral-800 uppercase">
+        <h3 className={`${inter.className} line-clamp-1 text-[13px] font-semibold text-neutral-600 transition-colors group-hover:text-neutral-800 uppercase`}>
           {product.name}
         </h3>
       </div>

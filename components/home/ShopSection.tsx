@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import { Bodoni_Moda, Inter } from 'next/font/google';
 import { productAPI } from "@/lib/api/product.api";
 
 type Product = {
@@ -14,6 +15,15 @@ type Product = {
 };
 
 const tabs = ["Featured", "Best Sellers", "Top Rated"];
+
+const bodoni = Bodoni_Moda({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
+
+const inter = Inter({
+  subsets: ['latin'],
+});
 
 export default function ShopSection() {
 
@@ -58,7 +68,8 @@ export default function ShopSection() {
       <div className="max-w-[2000px] mx-auto px-4 md:px-32">
 
         {/* TITLE */}
-        <h2 className="font-brand-serif mb-6 border-t-2 border-gray-300 pt-8 text-center text-[25px] font-normal tracking-tight text-neutral-600">
+        <h2 className={`${bodoni.className} mb-6 border-t-2 border-gray-300 pt-8 text-center 
+        text-[30px] font-normal tracking-tight text-neutral-600`}>
           Shop ZENFAZ
         </h2>
 
@@ -108,15 +119,15 @@ export default function ShopSection() {
 
                 {/* CONTENT */}
                 <div>
-                  <h3 className="text-sm font-semibold mb-2 text-neutral-600">
+                  <h3 className={`${bodoni.className} text-sm font-semibold mb-2 text-neutral-600`}>
                     {product.name}
                   </h3>
 
-                  <p className="text-xs text-[#8D8B9D] mb-3 h-[45px]">
+                  <p className={`${inter.className} text-xs text-[#8D8B9D] mb-3 h-[45px]`}>
                     {product.description}
                   </p>
 
-                  <p className="text-sm font-medium text-[#8D8B9D] mb-4">
+                  <p className={`${inter.className}text-sm font-medium text-[#8D8B9D] mb-4`}>
                     ₹{product.price}
                   </p>
                 </div>
