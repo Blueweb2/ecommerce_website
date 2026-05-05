@@ -16,12 +16,6 @@ const Carousel = ({ images = [], setZooming, firstImage }: CarouselProps) => {
   const [leftPos, setLeftPos] = useState({ x: 0, y: 0 });
   const [hideCursor, setHideCursor] = useState(false);
 
-  // useEffect(() => {
-  //   if (typeof firstImage === "number") {
-  //     setIndex(firstImage);
-  //   }
-  // }, [firstImage]);
-
   useEffect(() => {
     setIndex(firstImage ?? 0);
   }, [firstImage]);
@@ -44,7 +38,7 @@ const Carousel = ({ images = [], setZooming, firstImage }: CarouselProps) => {
   };
 
   return (
-    <div className="w-full lg:max-w-6xl lg:my-auto mx-auto mt-[30px] lg:mt-24 lg:flex lg:flex-col lg:items-center lg:justify-center text-center">
+    <div className="w-full lg:max-w-full lg:my-auto mx-auto mt-[30px] lg:mt-24 lg:flex lg:flex-col lg:items-center lg:justify-center text-center">
 
       {/* MAIN IMAGE */}
       <div
@@ -61,7 +55,7 @@ const Carousel = ({ images = [], setZooming, firstImage }: CarouselProps) => {
         <img
           src={optimizeCloudinaryUrl(safeImages[index].url)}
           alt={safeImages[index].altText}
-          className="w-full h-[400px] md:h-[400px] object-fill rounded"
+          className="w-full h-[400px] md:h-[calc(100vh+300px)] object-cover"
         />
 
         {/* LEFT */}

@@ -19,7 +19,7 @@ const page = () => {
       <Categories />
       <ShopSection />
       <TopStoriesSection />
-      <ExclusiveAccess />
+      {/* <ExclusiveAccess /> */}
       <Footer />
       <CartDrawer />
     </>
