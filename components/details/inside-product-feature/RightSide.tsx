@@ -18,7 +18,6 @@ type CustomDataItem = {
 };
 
 const RightSide = ({ product }: Props) => {
-
   const [selectedVariant, setSelectedVariant] = useState<any>(null);
   const [activeIndex, setActiveIndex] = useState<number | null>(0);
   const isCustomizable = product?.customizable?.isCustomizable;
@@ -28,14 +27,11 @@ const RightSide = ({ product }: Props) => {
   const [customData, setCustomData] = useState<CustomDataItem[]>([]);
 
   const { toggleWishlist, isInWishlist } = useWishlistStore();
-
-
   const { user } = useAuthStore();
 
   const isWishlisted = isInWishlist(product._id);
 
   const handleWishlistToggle = async () => {
-    // ✅ Optimistic UI
     toggleWishlist({
       _id: product._id,
       name: product.name,
@@ -43,30 +39,28 @@ const RightSide = ({ product }: Props) => {
       image: product.images?.[0]?.url,
     });
 
-    // ✅ Backend sync if logged in
     if (user) {
       try {
         await wishlistAPI.toggle(product._id);
-      } catch (err) {
+      } catch {
         console.log("Wishlist sync failed");
       }
     }
 
-    // ✅ Toast feedback
     if (isWishlisted) {
       toast.success("Removed from wishlist");
     } else {
-      toast.success("Added to wishlist ❤️");
+      toast.success("Added to wishlist");
     }
   };
 
   const handleCustomChange = (name: string, value: string | number) => {
     setCustomData((prev) => {
-      const existing = prev.find(f => f.fieldName === name);
+      const existing = prev.find((field) => field.fieldName === name);
 
       if (existing) {
-        return prev.map(f =>
-          f.fieldName === name ? { ...f, value } : f
+        return prev.map((field) =>
+          field.fieldName === name ? { ...field, value } : field
         );
       }
 
@@ -74,10 +68,9 @@ const RightSide = ({ product }: Props) => {
     });
   };
 
-  const buildSelectedOptions = (variant: any, customData: any[]) => {
+  const buildSelectedOptions = (variant: any, nextCustomData: CustomDataItem[]) => {
     const options: { fieldName: string; value: string }[] = [];
 
-    // variant attributes → selectedOptions
     if (variant?.attributes) {
       Object.entries(variant.attributes).forEach(([key, value]) => {
         options.push({
@@ -87,23 +80,19 @@ const RightSide = ({ product }: Props) => {
       });
     }
 
-    // custom fields → selectedOptions
-    customData?.forEach((c) => {
+    nextCustomData.forEach((field) => {
       options.push({
-        fieldName: c.fieldName,
-        value: String(c.value),
+        fieldName: field.fieldName,
+        value: String(field.value),
       });
     });
 
     return options;
   };
 
-  // Initialize default variant
   useEffect(() => {
     if (product?.variants?.length > 0) {
-      const firstAvailable = product.variants.find(
-        (v: any) => v.stock > 0
-      );
+      const firstAvailable = product.variants.find((variant: any) => variant.stock > 0);
 
       if (firstAvailable) {
         setSelectedVariant(firstAvailable);
@@ -114,21 +103,19 @@ const RightSide = ({ product }: Props) => {
     }
   }, [product]);
 
-  const isValid = product?.customizable?.fields?.every((field: any) => {
-    if (!field.required) return true;
-    return customData.find((f) => f.fieldName === field.name);
-  }) ?? true;
+  const isValid =
+    product?.customizable?.fields?.every((field: any) => {
+      if (!field.required) return true;
+      return customData.find((item) => item.fieldName === field.name);
+    }) ?? true;
 
   const toggle = (index: number) => {
     setActiveIndex(activeIndex === index ? null : index);
   };
 
-  // Dynamic price
   const price = selectedVariant?.price || product?.price;
-  const discountPrice =
-    selectedVariant?.discountPrice || product?.discountPrice;
+  const discountPrice = selectedVariant?.discountPrice || product?.discountPrice;
 
-  // ADD TO CART
   const { addItem } = useCartStore();
 
   const handleAddToCart = () => {
@@ -147,49 +134,44 @@ const RightSide = ({ product }: Props) => {
       isCustomizable ? customData : []
     );
 
-    const cartItem = {
+    addItem({
       productId: product._id,
       name: product.name,
       image: product.images?.[0]?.url,
       price,
       quantity: 1,
       gstPercentage: product.gstPercentage || 0,
-
       variantId: selectedVariant?.sku,
       selectedOptions,
-    };
-
-    addItem(cartItem);
+    });
 
     toast.success("Added to cart");
   };
 
   return (
-    <div className="h-fit lg:sticky top-40 space-y-6 text-sm mx-4 lg:mx-10 mt-10 md:mt-20">
-
-      {/* TITLE */}
+    <div className="mx-4 mt-10 h-fit space-y-6 text-sm lg:sticky lg:top-40 lg:mx-10 md:mt-20">
       <div>
-        <h1 className="text-2xl md:text-3xl font-serif">
+        <h1 className="font-brand-display text-2xl text-neutral-600 md:text-3xl">
           {product?.name}
         </h1>
       </div>
 
-      {/* PRICE */}
       <div className="flex items-center gap-3">
         {discountPrice ? (
           <>
-            <p className="text-2xl font-bold text-red-600">₹{discountPrice}</p>
-            <p className="text-lg line-through text-gray-400">₹{price}</p>
-            <span className="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded tracking-wide">
+            <p className="text-2xl font-bold text-red-600">â‚¹{discountPrice}</p>
+            <p className="text-lg text-gray-400 line-through">â‚¹{price}</p>
+            <span className="rounded bg-red-600 px-2 py-1 text-xs font-bold tracking-wide text-white">
               {Math.round(((price - discountPrice) / price) * 100)}% OFF
             </span>
           </>
         ) : (
-          <p className="text-2xl font-bold text-gray-900">₹{price}</p>
+          <p className="font-brand-display text-2xl font-bold text-[#8D8B9D]">
+            â‚¹{price}
+          </p>
         )}
       </div>
 
-      {/* SIZE SELECTOR  */}
       {(() => {
         const sizeAttribute = product?.attributes?.find(
           (attr: any) => attr.name === "size"
@@ -201,13 +183,13 @@ const RightSide = ({ product }: Props) => {
 
         return (
           <div>
-            <p className="text-xs text-gray-500 mb-2">SELECT SIZE:</p>
+            <p className="mb-2 text-xs text-neutral-600">SELECT SIZE:</p>
 
             <div className="flex gap-2">
               {sizes.map((size: string) => {
                 const variant = product.variants.find(
-                  (v: any) =>
-                    v.attributes?.size?.toLowerCase() === size.toLowerCase()
+                  (item: any) =>
+                    item.attributes?.size?.toLowerCase() === size.toLowerCase()
                 );
 
                 const isOutOfStock = !variant || variant.stock === 0;
@@ -220,17 +202,14 @@ const RightSide = ({ product }: Props) => {
                       setSelectedSize(size);
                       setSelectedVariant(variant);
                     }}
-                    className={`px-3 py-1 border rounded transition
-                      ${selectedSize === size
+                    className={`rounded border px-3 py-1 transition ${
+                      selectedSize === size
                         ? "bg-black text-white"
                         : "bg-white hover:bg-black hover:text-white"
-                      }
-                      ${isOutOfStock ? "opacity-40 cursor-not-allowed" : ""}
-                    `}
+                    } ${isOutOfStock ? "cursor-not-allowed opacity-40" : ""}`}
                   >
                     {size}
                   </button>
-
                 );
               })}
             </div>
@@ -238,77 +217,77 @@ const RightSide = ({ product }: Props) => {
         );
       })()}
 
-      {/* BUTTONS */}
       <div className="flex flex-col gap-3">
-
         <button
           disabled={!isValid || (product?.variants?.length > 0 && !selectedVariant)}
           onClick={handleAddToCart}
-          className="bg-black text-white py-2 hover:bg-gray-800 disabled:bg-gray-400"
+          className="bg-black py-2 text-white hover:bg-gray-800 disabled:bg-gray-400"
         >
           Add To Cart
         </button>
+
         <button
           onClick={handleWishlistToggle}
-          className={`border py-2 flex items-center justify-center gap-2 transition
-    ${isWishlisted ? "bg-black text-white" : "bg-white"}
-  `}
+          className={`flex items-center justify-center gap-2 border py-2 transition ${
+            isWishlisted ? "bg-black text-white" : "bg-white"
+          }`}
         >
-          <Heart
-            size={16}
-            fill={isWishlisted ? "currentColor" : "none"}
-          />
+          <Heart size={16} fill={isWishlisted ? "currentColor" : "none"} />
           {isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
         </button>
 
-
-        {/* CUSTOM BUTTON */}
         {product?.customizable?.isCustomizable && (
           <button
             onClick={() => setShowCustom(true)}
-            className="border py-2 w-full mt-2 hover:bg-black hover:text-white transition"
+            className="mt-2 w-full border py-2 transition hover:bg-black hover:text-white"
           >
-            ✂ Customize Your Fit
+            Customize Your Fit
           </button>
         )}
       </div>
 
-      {/* PRODUCT INFO */}
       <div className="space-y-4">
-
         <div>
-          <h3 className="text-sm font-semibold mb-1">
+          <h3 className="font-brand-display mb-1 text-sm font-semibold text-neutral-600">
             PRODUCT DESCRIPTION
           </h3>
-          <p className="text-xs text-gray-600 leading-relaxed">
+          <p className="font-brand-sans text-xs leading-relaxed text-[#8D8B9D]">
             {product?.description || "No description available"}
           </p>
         </div>
 
         {product?.keyFeatures?.length > 0 && (
           <div>
-            <h3 className="text-sm font-semibold mb-1 uppercase tracking-wider">
-              Key Features
+            <h3 className="font-brand-display mb-1 text-sm font-semibold text-neutral-600">
+              KEY FEATURES
             </h3>
-            <ul className="text-xs text-gray-600 space-y-1 list-disc pl-4">
+            <ul className="list-disc space-y-1 pl-4 text-xs text-[#8D8B9D]">
               {product.keyFeatures.map((feature: string, index: number) => (
-                <li key={index}>{feature}</li>
+                <li key={index} className="font-brand-sans">
+                  {feature}
+                </li>
               ))}
             </ul>
           </div>
         )}
 
-        {/* TECHNICAL SPECIFICATIONS */}
         {product?.specifications?.length > 0 && (
-          <div className="pt-4 border-t border-slate-100">
-            <h3 className="text-sm font-semibold mb-3 uppercase tracking-wider">
+          <div className="border-t border-slate-100 pt-4">
+            <h3 className="font-brand-display mb-3 text-sm font-semibold uppercase tracking-wider text-neutral-600">
               Technical Specifications
             </h3>
             <div className="grid grid-cols-1 gap-y-2">
               {product.specifications.map((spec: any, index: number) => (
-                <div key={index} className="flex justify-between py-2 border-b border-slate-50 last:border-0">
-                  <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">{spec.name}</span>
-                  <span className="text-[11px] font-black text-slate-900">{spec.value}</span>
+                <div
+                  key={index}
+                  className="flex justify-between border-b border-slate-50 py-2 last:border-0"
+                >
+                  <span className="text-[11px] font-bold uppercase tracking-widest text-slate-400">
+                    {spec.name}
+                  </span>
+                  <span className="text-[11px] font-black text-slate-900">
+                    {spec.value}
+                  </span>
                 </div>
               ))}
             </div>
@@ -316,24 +295,23 @@ const RightSide = ({ product }: Props) => {
         )}
 
         {product?.deliveryDetails && (
-          <div className="pt-4 border-t border-slate-100">
-            <div className="flex items-center gap-2 mb-2">
-              <div className="p-1.5 bg-emerald-50 rounded-lg text-emerald-600">
+          <div className="border-t border-slate-100 pt-4">
+            <div className="mb-2 flex items-center gap-2">
+              <div className="rounded-lg bg-emerald-50 p-1.5 text-emerald-600">
                 <Truck className="h-4 w-4" />
               </div>
 
-              <h3 className="text-sm font-bold text-slate-800 uppercase tracking-tight">
+              <h3 className="font-brand-display text-sm font-bold uppercase tracking-tight text-slate-800">
                 Delivery Details
               </h3>
             </div>
-            <p className="text-xs text-slate-600 leading-relaxed pl-9">
+            <p className="font-brand-sans pl-9 text-xs leading-relaxed text-slate-600">
               {product.deliveryDetails}
             </p>
           </div>
         )}
       </div>
 
-      {/* ACCORDION */}
       <div>
         {[
           { title: "Size & Fit", content: "Standard fit" },
@@ -342,17 +320,16 @@ const RightSide = ({ product }: Props) => {
           <div key={index}>
             <button
               onClick={() => toggle(index)}
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 text-neutral-600"
             >
               <ChevronDown
-                className={`${activeIndex === index ? "rotate-180" : ""
-                  }`}
+                className={activeIndex === index ? "rotate-180" : ""}
               />
               {item.title}
             </button>
 
             {activeIndex === index && (
-              <p className="text-xs text-gray-500">
+              <p className="font-brand-sans text-xs text-[#8D8B9D]">
                 {item.content}
               </p>
             )}
@@ -360,14 +337,10 @@ const RightSide = ({ product }: Props) => {
         ))}
       </div>
 
-      {/* CUSTOMIZATION MODAL */}
       {showCustom && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
-          <div className="bg-white w-[90%] max-w-md p-6 rounded-lg space-y-4">
-
-            <h2 className="text-lg font-semibold">
-              Customize Your Fit
-            </h2>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="w-[90%] max-w-md space-y-4 rounded-lg bg-white p-6">
+            <h2 className="text-lg font-semibold">Customize Your Fit</h2>
 
             {product.customizable.fields.map((field: any, index: number) => (
               <div key={index}>
@@ -380,12 +353,12 @@ const RightSide = ({ product }: Props) => {
                     onChange={(e) =>
                       handleCustomChange(field.name, e.target.value)
                     }
-                    className="border p-2 w-full mt-1 rounded"
+                    className="mt-1 w-full rounded border p-2"
                   >
                     <option value="">Select</option>
-                    {field.options?.map((opt: string, i: number) => (
-                      <option key={i} value={opt}>
-                        {opt}
+                    {field.options?.map((option: string, optionIndex: number) => (
+                      <option key={optionIndex} value={option}>
+                        {option}
                       </option>
                     ))}
                   </select>
@@ -395,7 +368,7 @@ const RightSide = ({ product }: Props) => {
                     onChange={(e) =>
                       handleCustomChange(field.name, e.target.value)
                     }
-                    className="border p-2 w-full mt-1 rounded"
+                    className="mt-1 w-full rounded border p-2"
                   />
                 )}
               </div>
@@ -411,7 +384,7 @@ const RightSide = ({ product }: Props) => {
 
               <button
                 onClick={() => setShowCustom(false)}
-                className="flex-1 bg-black text-white py-2"
+                className="flex-1 bg-black py-2 text-white"
               >
                 Save
               </button>
@@ -419,7 +392,6 @@ const RightSide = ({ product }: Props) => {
           </div>
         </div>
       )}
-
     </div>
   );
 };

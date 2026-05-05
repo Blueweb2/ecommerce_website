@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Heart } from "lucide-react";
+import { Bodoni_Moda, Inter } from 'next/font/google';
 import { Product } from "@/types/product";
 
 type ExploreGridProps = {
@@ -11,11 +12,21 @@ type ExploreGridProps = {
   categoryTitle: string;
 };
 
+const inter = Inter({
+  subsets: ['latin'],
+});
+
+const bodoni = Bodoni_Moda({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
+
 export default function ExploreGrid({
   products,
   fallbackImage,
   categoryTitle,
 }: ExploreGridProps) {
+
   if (products.length === 0) {
     return (
       <div className="rounded-[28px] border border-dashed border-black/15 bg-white px-6 py-16 text-center">
@@ -25,7 +36,7 @@ export default function ExploreGrid({
         </p>
       </div>
     );
-  }
+  };
 
   return (
     <div className="grid grid-cols-2 gap-x-6 gap-y-10 lg:grid-cols-3 2xl:grid-cols-4">
@@ -54,12 +65,12 @@ export default function ExploreGrid({
             </Link>
 
             <div className="pt-4">
-              <p className="text-[13px] font-semibold uppercase tracking-[0.03em] text-black">
+              <p className={`${bodoni.className} text-[13px] font-semibold uppercase tracking-[0.03em] text-neutral-600`}>
                 {product.brand || categoryTitle}
               </p>
               <Link
                 href={`/product/${product.slug}`}
-                className="mt-2 line-clamp-2 block text-[15px] leading-6 text-black/72 underline-offset-4 transition hover:text-black hover:underline"
+                className={`${inter.className} mt-2 line-clamp-2 block text-[15px] leading-6 text-[#8D8B9D] underline-offset-4 transition hover:text-black hover:underline`}
               >
                 {product.name}
               </Link>
@@ -67,15 +78,15 @@ export default function ExploreGrid({
                 {product.discountPrice &&
                 product.discountPrice < product.price ? (
                   <>
-                    <span className="font-semibold text-black">
+                    <span className={`${inter.className} font-semibold text-[#8D8B9D]`}>
                       Rs. {product.discountPrice}
                     </span>
-                    <span className="text-black/40 line-through">
+                    <span className={`${inter.className} text-[#d82d2d] line-through`}>
                       Rs. {product.price}
                     </span>
                   </>
                 ) : (
-                  <span className="font-semibold text-black">
+                  <span className={`${inter.className} font-semibold text-[#8D8B9D]`}>
                     Rs. {product.price}
                   </span>
                 )}
@@ -86,4 +97,4 @@ export default function ExploreGrid({
       })}
     </div>
   );
-}
+};

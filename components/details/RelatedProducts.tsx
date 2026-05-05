@@ -119,10 +119,10 @@ export default function RelatedProducts({ product }: Props) {
             </div>
 
             <div className="mt-4 space-y-1">
-              <h3 className="text-xs font-black uppercase tracking-widest text-gray-900 transition-colors group-hover:text-emerald-600">
+              <h3 className="font-brand-display text-xs font-black uppercase tracking-widest text-gray-900 transition-colors group-hover:text-emerald-600">
                 {item.name}
               </h3>
-              <p className="line-clamp-1 text-[10px] font-medium text-gray-400">
+              <p className="font-brand-sans line-clamp-1 text-[10px] font-medium text-gray-400">
                 {item.description}
               </p>
               <div className="flex items-center gap-2 pt-1">
