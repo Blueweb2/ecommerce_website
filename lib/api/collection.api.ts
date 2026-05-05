@@ -1,6 +1,7 @@
 import api from "@/lib/api/axios";
 import {
   getCollectionBasePaths,
+  getCollectionByCategoryPath,
   getCollectionSlugPaths,
 } from "@/lib/api/collection-endpoints";
 import {
@@ -30,25 +31,14 @@ function normalizeCollections(payload: CollectionListResponse): Collection[] {
 }
 
 function getStatusCode(error: unknown) {
-  if (
-    typeof error === "object" &&
-    error !== null &&
-    "response" in error &&
-    typeof error.response === "object" &&
-    error.response !== null &&
-    "status" in error.response &&
-    typeof error.response.status === "number"
-  ) {
-    return error.response.status;
-  }
-
-  return undefined;
+  return (error as { response?: { status?: number } })?.response?.status;
 }
 
-async function requestWithFallback<T>(endpoints: string[]) {
+async function requestWithFallback<T>(endpoints: string[]): Promise<T> {
   for (const endpoint of endpoints) {
     try {
-      return await api.get<T>(endpoint);
+      const response = await api.get<T>(endpoint);
+      return response.data;
     } catch (error: unknown) {
       if (getStatusCode(error) !== 404) {
         throw error;
@@ -62,18 +52,25 @@ async function requestWithFallback<T>(endpoints: string[]) {
 }
 
 export const collectionAPI = {
-  getAll: async () => {
-    const response = await requestWithFallback<CollectionListResponse>(
+  getAll: async (): Promise<Collection[]> => {
+    const data = await requestWithFallback<CollectionListResponse>(
       getCollectionBasePaths()
     );
 
-    return normalizeCollections(response.data);
+    return normalizeCollections(data);
   },
 
-  getBySlug: async (slug: string) => {
+  getBySlug: async (slug: string): Promise<CollectionResponse> => {
     const encodedSlug = encodeURIComponent(slug);
-    const response = await requestWithFallback<CollectionResponse>(
+
+    return requestWithFallback<CollectionResponse>(
       getCollectionSlugPaths(encodedSlug)
+    );
+  },
+
+  getByCategory: async (categoryId: string): Promise<Collection[]> => {
+    const response = await api.get<Collection[]>(
+      getCollectionByCategoryPath(categoryId)
     );
 
     return response.data;

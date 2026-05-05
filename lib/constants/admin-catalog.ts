@@ -29,6 +29,7 @@ export type CatalogEntity = {
   description?: string;
   image?: CatalogImage;
   parent?: string | CatalogEntity | null; // 🔥 important
+  children?: CatalogEntity[];
   isActive?: boolean;
 };
 
@@ -120,6 +121,24 @@ export type CatalogProduct = {
   updatedAt?: string;
 };
 
+
+export type CatalogCollection = {
+  _id: string;
+
+  title: string;
+  slug: string;
+  description?: string;
+
+  category: CatalogEntity | string;
+
+  image?: CatalogImage;
+
+  cta?: string;
+  priority?: number;
+
+  isActive?: boolean;
+  createdAt?: string;
+};
 
 // ✅ PRODUCT PAYLOAD
 export type ProductPayload = {

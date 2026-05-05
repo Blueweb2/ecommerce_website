@@ -6,12 +6,11 @@ import Link from "next/link";
 import toast from "react-hot-toast";
 import { useCollectionStore } from "@/store/admin/useCollectionStore";
 import { useCategoryStore } from "@/store/admin/useCategoryStore";
+import { Collection } from "@/types/collection";
 
 const FALLBACK_IMAGE = "/home/herosection/hero-right-top.png";
 
-function resolveCollectionImage(
-  image?: string | { url?: string } | null
-) {
+function resolveCollectionImage(image?: Collection["image"]) {
   if (!image) return FALLBACK_IMAGE;
   if (typeof image === "string") return image || FALLBACK_IMAGE;
   return image.url || FALLBACK_IMAGE;
@@ -24,6 +23,7 @@ export default function CollectionsPage() {
     fetchCollections,
     deleteCollection,
   } = useCollectionStore();
+
   const { categories, fetchCategories } = useCategoryStore();
 
   useEffect(() => {
@@ -31,8 +31,9 @@ export default function CollectionsPage() {
     void fetchCategories();
   }, [fetchCollections, fetchCategories]);
 
+  // 🔥 category lookup
   const categoryLookup = useMemo(() => {
-    return new Map(categories.map((category) => [category._id, category.name]));
+    return new Map(categories.map((cat) => [cat._id, cat.name]));
   }, [categories]);
 
   const handleDelete = async (id?: string) => {
@@ -52,160 +53,127 @@ export default function CollectionsPage() {
 
   return (
     <div className="space-y-6">
+      {/* HEADER */}
       <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div>
-          <h1 className="text-3xl font-semibold tracking-tight text-slate-900">
+          <h1 className="text-3xl font-semibold text-slate-900">
             Collections
           </h1>
           <p className="mt-2 text-sm text-slate-500">
-            Create themed product collections and store the filters the backend
-            should use when building each page.
+            Manage collections and assign them to categories.
           </p>
         </div>
 
         <Link
           href="/admin/collections/create"
-          className="inline-flex items-center justify-center rounded-full bg-emerald-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-emerald-700"
+          className="rounded-full bg-emerald-600 px-5 py-3 text-sm font-semibold text-white hover:bg-emerald-700"
         >
           + Add Collection
         </Link>
       </div>
 
+      {/* LOADING */}
       {loading && !collections.length ? (
         <div className="grid gap-5 xl:grid-cols-2">
-          {Array.from({ length: 4 }).map((_, index) => (
-            <div
-              key={index}
-              className="overflow-hidden rounded-[28px] border border-slate-200 bg-white"
-            >
-              <div className="h-52 animate-pulse bg-slate-200" />
-              <div className="space-y-4 p-6">
-                <div className="h-6 w-1/3 animate-pulse rounded-full bg-slate-200" />
-                <div className="h-4 w-full animate-pulse rounded-full bg-slate-200" />
-                <div className="h-4 w-3/4 animate-pulse rounded-full bg-slate-200" />
-              </div>
-            </div>
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="h-52 bg-slate-200 animate-pulse rounded-xl" />
           ))}
         </div>
       ) : collections.length ? (
         <div className="grid gap-5 xl:grid-cols-2">
-          {collections.map((collection) => (
-            <article
-              key={collection._id || collection.slug}
-              className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm"
-            >
-              <div className="grid lg:grid-cols-[220px_minmax(0,1fr)]">
-                <div className="relative min-h-[220px] bg-slate-100">
-                  <Image
-                    src={resolveCollectionImage(
-                      collection.bannerImage || collection.image
-                    )}
-                    alt={collection.title || collection.name || "Collection"}
-                    fill
-                    sizes="(max-width: 1024px) 100vw, 220px"
-                    className="object-cover"
-                  />
-                </div>
+          {collections.map((collection) => {
+            const categoryId =
+              typeof collection.category === "string"
+                ? collection.category
+                : collection.category?._id;
 
-                <div className="space-y-5 p-6">
-                  <div className="flex flex-wrap items-start justify-between gap-3">
-                    <div>
-                      <h2 className="text-2xl font-semibold tracking-tight text-slate-900">
-                        {collection.title || collection.name || "Untitled collection"}
-                      </h2>
-                      <p className="mt-2 text-sm text-slate-500">
-                        /collection/{collection.slug}
-                      </p>
-                    </div>
+            const categoryName =
+              typeof collection.category === "object"
+                ? collection.category?.name
+                : categoryLookup.get(categoryId || "");
 
-                    <span
-                      className={`rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] ${
-                        collection.isActive === false
-                          ? "bg-slate-100 text-slate-500"
-                          : "bg-emerald-100 text-emerald-700"
-                      }`}
-                    >
-                      {collection.isActive === false ? "Inactive" : "Active"}
-                    </span>
+            return (
+              <article
+                key={collection._id}
+                className="rounded-2xl border bg-white shadow-sm overflow-hidden"
+              >
+                <div className="grid lg:grid-cols-[220px_1fr]">
+                  {/* IMAGE */}
+                  <div className="relative min-h-[220px] bg-gray-100">
+                    <Image
+                      src={resolveCollectionImage(collection.image)}
+                      alt={collection.title || collection.name || "Collection"}
+                      fill
+                      className="object-cover"
+                    />
                   </div>
 
-                  <p className="line-clamp-3 text-sm leading-6 text-slate-600">
-                    {collection.description || "No description added yet."}
-                  </p>
-
-                  <div className="grid gap-3 sm:grid-cols-2">
-                    <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                      <p className="text-xs uppercase tracking-[0.24em] text-slate-400">
-                        Category
-                      </p>
-                      <p className="mt-2 text-sm font-medium text-slate-900">
-                        {categoryLookup.get(
-                          typeof collection.filters?.category === "object"
-                            ? collection.filters.category._id
-                            : (collection.filters?.category || "")
-                        ) || "All categories"}
-                      </p>
-                    </div>
-                    <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                      <p className="text-xs uppercase tracking-[0.24em] text-slate-400">
-                        Type
-                      </p>
-                      <p className="mt-2 text-sm font-medium text-slate-900">
-                        {collection.filters?.type || "Any type"}
-                      </p>
-                    </div>
-                    <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:col-span-2">
-                      <p className="text-xs uppercase tracking-[0.24em] text-slate-400">
-                        Tags
-                      </p>
-                      <div className="mt-3 flex flex-wrap gap-2">
-                        {collection.filters?.tags?.length ? (
-                          collection.filters.tags.map((tag) => (
-                            <span
-                              key={tag}
-                              className="rounded-full bg-slate-900 px-3 py-1 text-xs font-medium text-white"
-                            >
-                              {tag}
-                            </span>
-                          ))
-                        ) : (
-                          <span className="text-sm text-slate-500">No tags selected</span>
-                        )}
+                  {/* CONTENT */}
+                  <div className="p-6 space-y-4">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <h2 className="text-xl font-semibold">
+                          {collection.title}
+                        </h2>
+                        <p className="text-xs text-gray-500">
+                          /collection/{collection.slug}
+                        </p>
                       </div>
-                    </div>
-                  </div>
 
-                  <div className="flex flex-wrap gap-3">
-                    {collection._id ? (
+                      <span
+                        className={`px-3 py-1 text-xs rounded-full ${
+                          collection.isActive
+                            ? "bg-green-100 text-green-700"
+                            : "bg-gray-100 text-gray-500"
+                        }`}
+                      >
+                        {collection.isActive ? "Active" : "Inactive"}
+                      </span>
+                    </div>
+
+                    <p className="text-sm text-gray-600 line-clamp-2">
+                      {collection.description || "No description"}
+                    </p>
+
+                    {/* CATEGORY */}
+                    <div className="text-sm">
+                      <span className="text-gray-400">Category: </span>
+                      <span className="font-medium">
+                        {categoryName || "Unknown"}
+                      </span>
+                    </div>
+
+                    {/* CTA + PRIORITY */}
+                    <div className="text-sm text-gray-600">
+                      <div>CTA: {collection.cta || "Shop now"}</div>
+                      <div>Priority: {collection.priority || 0}</div>
+                    </div>
+
+                    {/* ACTIONS */}
+                    <div className="flex gap-3">
                       <Link
                         href={`/admin/collections/${collection._id}/edit`}
-                        className="rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-800"
+                        className="px-4 py-2 text-sm bg-black text-white rounded-full"
                       >
                         Edit
                       </Link>
-                    ) : null}
-                    <button
-                      type="button"
-                      onClick={() => handleDelete(collection._id)}
-                      className="rounded-full border border-red-200 px-4 py-2 text-sm font-medium text-red-600 transition hover:bg-red-50"
-                    >
-                      Delete
-                    </button>
+
+                      <button
+                        onClick={() => handleDelete(collection._id)}
+                        className="px-4 py-2 text-sm border border-red-300 text-red-600 rounded-full"
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </article>
-          ))}
+              </article>
+            );
+          })}
         </div>
       ) : (
-        <div className="rounded-[28px] border border-dashed border-slate-300 bg-white px-6 py-16 text-center">
-          <h2 className="text-xl font-semibold text-slate-900">
-            No collections yet
-          </h2>
-          <p className="mt-2 text-sm text-slate-500">
-            Start by creating a collection and defining the filters your backend
-            should apply.
-          </p>
+        <div className="text-center text-gray-500 py-10">
+          No collections yet.
         </div>
       )}
     </div>

@@ -3,23 +3,32 @@ function normalizePath(value: string) {
   return withLeadingSlash.replace(/\/+$/, "");
 }
 
-export function getCollectionBasePaths() {
+// 🔥 BASE PATH
+export function getCollectionBasePath() {
   const configuredBase = process.env.NEXT_PUBLIC_COLLECTIONS_ENDPOINT;
 
-  if (configuredBase) {
-    return [normalizePath(configuredBase)];
-  }
-
-  return ["/collections", "/collection"];
+  return normalizePath(configuredBase || "/collections");
 }
 
+// 🔹 ALL collections
+export function getCollectionBasePaths() {
+  return [getCollectionBasePath()];
+}
+
+// 🔹 BY ID
 export function getCollectionIdPaths(id: string) {
-  return getCollectionBasePaths().map((basePath) => `${basePath}/${id}`);
+  const base = getCollectionBasePath();
+  return [`${base}/admin/${id}`]; // ✅ matches your backend
 }
 
+// 🔹 BY SLUG
 export function getCollectionSlugPaths(slug: string) {
-  return getCollectionBasePaths().flatMap((basePath) => [
-    `${basePath}/slug/${slug}`,
-    `${basePath}/${slug}`,
-  ]);
+  const base = getCollectionBasePath();
+  return [`${base}/${slug}`]; // ✅ clean & correct
+}
+
+// 🔥 NEW: BY CATEGORY (IMPORTANT)
+export function getCollectionByCategoryPath(categoryId: string) {
+  const base = getCollectionBasePath();
+  return `${base}/category/${categoryId}`;
 }
