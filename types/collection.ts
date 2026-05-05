@@ -24,6 +24,16 @@ export type CollectionFilters = {
   priceRange?: CollectionPriceRange;
 };
 
+export type CollectionCategory =
+  | string
+  | {
+      _id?: string;
+      slug: string;
+      name?: string;
+    }
+  | null
+  | undefined;
+
 export type Collection = {
   _id?: string;
   slug: string;
@@ -33,7 +43,10 @@ export type Collection = {
   excerpt?: string;
   bannerImage?: CollectionImage;
   image?: CollectionImage;
+  category?: CollectionCategory;
   filters?: CollectionFilters;
+  cta?: string;
+  priority?: number;
   isActive?: boolean;
   createdAt?: string;
   updatedAt?: string;
@@ -65,12 +78,16 @@ export type CollectionPayload = {
   title: string;
   slug: string;
   description?: string;
+  category: string;
+  image?: Exclude<CollectionImage, string | null | undefined>;
   bannerImage?: Exclude<CollectionImage, string | null | undefined>;
-  filters: {
+  cta?: string;
+  priority?: number;
+  isActive?: boolean;
+  filters?: {
     category?: string;
     type?: string;
     tags: string[];
     priceRange: CollectionPriceRange;
   };
-  isActive?: boolean;
 };

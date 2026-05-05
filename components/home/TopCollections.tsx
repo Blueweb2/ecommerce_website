@@ -16,16 +16,17 @@ function getCollectionTitle(collection: Collection) {
 function getCollectionDescription(collection: Collection) {
   return (
     collection.description ||
-    collection.excerpt ||
     "Discover a curated edit from this collection."
   );
 }
 
 function getCollectionImage(collection: Collection) {
-  const image = collection.bannerImage || collection.image;
+  const image = collection.image;
 
   if (!image) return FALLBACK_IMAGE;
-  if (typeof image === "string") return optimizeCloudinaryUrl(image) || FALLBACK_IMAGE;
+  if (typeof image === "string") {
+    return optimizeCloudinaryUrl(image) || FALLBACK_IMAGE;
+  }
 
   return optimizeCloudinaryUrl(image.url) || FALLBACK_IMAGE;
 }
@@ -42,7 +43,11 @@ export default function TopCollections() {
         setError("");
 
         const data = await collectionAPI.getAll();
-        setCollections(data.slice(0, 3));
+        const sorted = [...data].sort(
+          (a, b) => (b.priority || 0) - (a.priority || 0)
+        );
+
+        setCollections(sorted.slice(0, 3));
       } catch (err) {
         const message =
           err instanceof Error
@@ -97,21 +102,19 @@ export default function TopCollections() {
 
   return (
     <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
-      {collections.map((item) => {
-        const categoryFilter = item.filters?.category;
-        const categorySlug = typeof categoryFilter === "object" ? categoryFilter?.slug : item.slug;
-        const categoryId = typeof categoryFilter === "object" ? categoryFilter?._id : categoryFilter;
+      {collections.map((item, index) => {
+        const category =
+          item.category && typeof item.category !== "string"
+            ? item.category
+            : null;
+
+        const href = item.slug ? `/collection/${item.slug}` : "#";
+        const key = item._id || item.slug || `collection-${index}`;
 
         return (
-          <article
-            key={item._id || item.slug}
-            className="group overflow-hidden"
-          >
-            <Link
-              href={`/category/${categorySlug}?filterCategory=${categoryId || ""}`}
-              className="block"
-            >
-              <div className="relative h-[300px] lg:h-screen overflow-hidden">
+          <article key={key} className="group overflow-hidden">
+            <Link href={href} className="block">
+              <div className="relative h-[300px] overflow-hidden lg:h-screen">
                 <Image
                   src={getCollectionImage(item)}
                   alt={getCollectionTitle(item)}
@@ -126,15 +129,16 @@ export default function TopCollections() {
               <h2 className="font-brand-display lora text-xl font-semibold tracking-tight text-neutral-600">
                 {getCollectionTitle(item)}
               </h2>
+
               <p className="font-brand-sans mt-2 line-clamp-3 text-sm leading-6 text-[#8D8B9D]">
                 {getCollectionDescription(item)}
               </p>
 
               <Link
-                href={`/category/${categorySlug}?filterCategory=${categoryId || ""}`}
-                className="mt-4 inline-flex items-center underline gap-2 text-sm font-semibold text-[#8D8B9D] transition group-hover:text-[#3f478b]"
+                href={href}
+                className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-[#8D8B9D] underline transition hover:text-[#3f478b]"
               >
-                Explore Designs
+                {item.cta || "Explore Designs"}
               </Link>
             </div>
           </article>

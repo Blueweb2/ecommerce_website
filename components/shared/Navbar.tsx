@@ -37,6 +37,8 @@ export default function Navbar() {
 
   const [categories, setCategories] = useState<Category[]>([]);
 
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
+
 
   const cartCount = items.reduce((acc, item) => acc + item.quantity, 0);
 
@@ -55,19 +57,14 @@ export default function Navbar() {
     return () => clearInterval(interval);
   }, []);
 
+
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await categoryAPI.getAll();
-
-        // 👉 Only MAIN categories (no parent)
-        const mainCategories = res.data?.data?.filter(
-          (cat: Category) => !cat.parent
-        );
-
-        setCategories(mainCategories || []);
+        const res = await categoryAPI.getTree();
+        setCategories(res.data?.data || []);
       } catch (err) {
-        console.error("Failed to load categories", err);
+        console.error(err);
       }
     };
 
@@ -81,7 +78,7 @@ export default function Navbar() {
         {messages[index]}
       </div>
 
-      <div className="max-w-[2000px] mx-auto px-4 md:px-32 py-2 lg:pb-0 md:pt-4 flex items-center md:items-start justify-between">
+      <div className="w-full mx-auto px-4 md:px-32 py-2 lg:pb-0 md:pt-4 flex items-center md:items-start justify-between">
 
         {/* LOGO FOR MOBILE DEVICE */}
         <Link href="/">
@@ -111,32 +108,78 @@ export default function Navbar() {
             </div>
           </Link>
 
-          <nav
-            className="font-brand-sans flex items-center gap-8 text-sm tracking-[1.5px] text-white"
-            aria-label="Main navigation"
-          >
-            <Link href="/new-in" aria-label="Go to Home page" className={linkClass("/new-in")}>
+          <nav className="relative font-brand-sans flex items-center gap-8 text-sm tracking-[1.5px] text-white">
+
+            {/* LINKS */}
+            <Link href="/new-in" className={linkClass("/new-in")}>
               New In
             </Link>
 
-            {categories.map((cat) => (
-              <Link
+            {categories.map((cat: any) => (
+              <div
                 key={cat._id}
-                href={`/category/${cat.slug}`}
-                className={linkClass(`/category/${cat.slug}`)}
+                onMouseEnter={() => setActiveCategory(cat._id)}
+                className="cursor-pointer"
               >
-                {cat.name}
-              </Link>
+                <Link
+                  href={`/category/${cat.slug}`}
+                  className={linkClass(`/category/${cat.slug}`)}
+                >
+                  {cat.name}
+                </Link>
+              </div>
             ))}
 
-
-            <Link
-              href="/sale"
-              aria-label="View Sale items"
-              className={linkClass("/sale")}
-            >
+            <Link href="/sale" className={linkClass("/sale")}>
               Sale
             </Link>
+
+            {/* ✅ GLOBAL DROPDOWN */}
+            {activeCategory && (
+              <div
+                className="absolute top-full left-1/2 -translate-x-1/2 w-screen bg-white text-black shadow-xl z-50 py-10"
+                onMouseEnter={() => setActiveCategory(activeCategory)}
+                onMouseLeave={() => setActiveCategory(null)}
+              >
+                <div className="max-w-[1200px] mx-auto px-10">
+
+                  {/* FIND ACTIVE CATEGORY */}
+                  {categories
+                    .filter((cat) => cat._id === activeCategory)
+                    .map((cat: any) => (
+                      <div key={cat._id}>
+
+                        {/* HEADING */}
+                        <h2 className="text-xs tracking-widest text-gray-500 uppercase mb-6">
+                          {cat.name}
+                        </h2>
+
+                        {/* ITEMS */}
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-y-4 gap-x-16">
+
+                          {cat.children
+                            .flatMap((sub: any) => [
+                              { _id: sub._id, name: sub.name, slug: sub.slug },
+                              ...(sub.children || []),
+                            ])
+                            .map((item: any) => (
+                              <Link
+                                key={item._id}
+                                href={`/category/${item.slug}`}
+                                className="text-sm text-gray-800 hover:text-black"
+                              >
+                                {item.name}
+                              </Link>
+                            ))}
+
+                        </div>
+
+                      </div>
+                    ))}
+
+                </div>
+              </div>
+            )}
           </nav>
         </div>
 

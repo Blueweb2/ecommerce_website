@@ -13,28 +13,36 @@ export default function CreateCollectionPage() {
   const handleSubmit = async (data: CollectionPayload) => {
     try {
       await createCollection(data);
+
       toast.success("Collection created successfully");
+
       router.push("/admin/collections");
     } catch (error: unknown) {
       console.error(error);
+
       toast.error(
-        error instanceof Error ? error.message : "Failed to create collection"
+        error instanceof Error
+          ? error.message
+          : "Failed to create collection"
       );
     }
   };
 
   return (
     <div className="space-y-6">
+      {/* HEADER */}
       <div>
         <h1 className="text-3xl font-semibold tracking-tight text-slate-900">
           Create Collection
         </h1>
+
         <p className="mt-2 text-sm text-slate-500">
-          Build a new collection, attach the banner, and define the filters the
-          backend should use to populate it.
+          Create a collection and link it to a category. This will be used to
+          highlight curated product groups across your storefront.
         </p>
       </div>
 
+      {/* FORM */}
       <CollectionForm onSubmit={handleSubmit} />
     </div>
   );
