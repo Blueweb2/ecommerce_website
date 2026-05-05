@@ -146,6 +146,7 @@ export const uploadSingleImage = async (
     formData.append("timestamp", timestamp);
     formData.append("signature", signature);
     formData.append("folder", folder);
+    formData.append("format", "webp"); // ✅ Auto-convert to WebP
 
     const res = await fetch(
       `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
@@ -187,6 +188,7 @@ export const uploadMultipleImages = async (
       formData.append("timestamp", timestamp);
       formData.append("signature", signature);
       formData.append("folder", folder);
+      formData.append("format", "webp"); // ✅ Auto-convert to WebP
 
       const res = await fetch(
         `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,

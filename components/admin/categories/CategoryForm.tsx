@@ -63,7 +63,7 @@ export default function CategoryForm({ initialData, onSuccess }: Props) {
 
       const oldImage = form.image;
 
-      const img = await uploadSingleImage(file, "categories");
+      const img = await uploadSingleImage(file, "ecommerce/categories");
 
       // delete old image after new upload
       if (oldImage?.public_id) {

@@ -9,6 +9,14 @@ import { useCartUIStore } from "@/store/ui/useCartUIStore";
 import { useCartStore } from "@/store/user/cart/useCartStore";
 import { useAuthStore } from "@/store/auth/useAuthStore";
 import { useWishlistStore } from '@/store/user/wishlist/useWishlistStore';
+import { categoryAPI } from "@/lib/api/category.api";
+
+type Category = {
+  _id: string;
+  name: string;
+  slug: string;
+  parent?: string | null;
+};
 
 
 const messages = [
@@ -27,14 +35,16 @@ export default function Navbar() {
   const { user, loading } = useAuthStore();
   const wishlistItems = useWishlistStore((state) => state.items);
 
+  const [categories, setCategories] = useState<Category[]>([]);
+
+
   const cartCount = items.reduce((acc, item) => acc + item.quantity, 0);
 
   const linkClass = (path: string) => {
-    return `whitespace-nowrap border-b-2 transition-all duration-200 pb-3 ${
-      pathname === path
-        ? "text-white border-white"
-        : "text-white border-transparent hover:border-white"
-    }`;
+    return `whitespace-nowrap border-b-2 transition-all duration-200 pb-3 ${pathname === path
+      ? "text-white border-white"
+      : "text-white border-transparent hover:border-white"
+      }`;
   };
 
   useEffect(() => {
@@ -43,6 +53,25 @@ export default function Navbar() {
     }, 5000);
 
     return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await categoryAPI.getAll();
+
+        // 👉 Only MAIN categories (no parent)
+        const mainCategories = res.data?.data?.filter(
+          (cat: Category) => !cat.parent
+        );
+
+        setCategories(mainCategories || []);
+      } catch (err) {
+        console.error("Failed to load categories", err);
+      }
+    };
+
+    fetchCategories();
   }, []);
 
   return (
@@ -57,9 +86,9 @@ export default function Navbar() {
         {/* LOGO FOR MOBILE DEVICE */}
         <Link href="/">
           <div className="font-brand-serif text-2xl font-semibold tracking-wide text-white md:hidden">
-            <img 
-              src="/home/navigation/zenfaz.svg" 
-              alt="logo" 
+            <img
+              src="/home/navigation/zenfaz.svg"
+              alt="logo"
               className="h-4 mb-2 mt-3"
             />
           </div>
@@ -74,9 +103,9 @@ export default function Navbar() {
           {/* LOGO FOR LARGE DEVICE */}
           <Link href="/">
             <div className="font-brand-serif mb-5 cursor-pointer text-3xl font-semibold tracking-wide text-white">
-              <img 
-                src="/home/navigation/zenfaz.svg" 
-                alt="logo" 
+              <img
+                src="/home/navigation/zenfaz.svg"
+                alt="logo"
                 className="h-7 mb-2 mt-3"
               />
             </div>
@@ -90,37 +119,16 @@ export default function Navbar() {
               New In
             </Link>
 
-            <Link
-              href="/category/clothing"
-              aria-label="Browse Shop products"
-              className={linkClass("/category/clothing")}
-            >
-              Clothing
-            </Link>
+            {categories.map((cat) => (
+              <Link
+                key={cat._id}
+                href={`/category/${cat.slug}`}
+                className={linkClass(`/category/${cat.slug}`)}
+              >
+                {cat.name}
+              </Link>
+            ))}
 
-            <Link
-              href="/category/jewelry"
-              aria-label="Browse Jewelry products"
-              className={linkClass("/category/jewelry")}
-            >
-              Jewelry
-            </Link>
-
-            <Link
-              href="/category/shoes"
-              aria-label="Browse Shoes products"
-              className={linkClass("/category/shoes")}
-            >
-              Shoes
-            </Link>
-
-            <Link
-              href="/category/accessories"
-              aria-label="Browse Accessories products"
-              className={linkClass("/category/accessories")}
-            >
-              Accessories
-            </Link>
 
             <Link
               href="/sale"
@@ -134,7 +142,7 @@ export default function Navbar() {
 
         {/* ICONS */}
         <div className="flex items-center gap-6 text-white justify-end flex-1 md:mt-5">
-          <button 
+          <button
             className="font-brand-sans flex items-center justify-center gap-x-1.5 text-[13px] text-sm transition-colors duration-300 hover:text-[#D4AF37]"
           >
             <Search size={18} /> Search
