@@ -165,7 +165,7 @@ const RightSide = ({ product }: Props) => {
   };
 
   return (
-    <div className="h-fit lg:sticky top-20 space-y-6 text-sm mx-4 lg:mx-10 mt-10">
+    <div className="h-fit lg:sticky top-40 space-y-6 text-sm mx-4 lg:mx-10 mt-10 md:mt-20">
 
       {/* TITLE */}
       <div>

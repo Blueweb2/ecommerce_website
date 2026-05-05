@@ -3,18 +3,8 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Inter, Bodoni_Moda } from 'next/font/google';
 import { collectionAPI } from "@/lib/api/collection.api";
 import { Collection } from "@/types/collection";
-
-const inter = Inter({
-  subsets: ['latin'],
-});
-
-const bodoni = Bodoni_Moda({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
 
 const FALLBACK_IMAGE = "/home/herosection/hero-right-top.png";
 
@@ -106,7 +96,7 @@ export default function TopCollections() {
   }
 
   return (
-    <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+    <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
       {collections.map((item) => {
         const categoryFilter = item.filters?.category;
         const categorySlug = typeof categoryFilter === "object" ? categoryFilter?.slug : item.slug;
@@ -121,7 +111,7 @@ export default function TopCollections() {
               href={`/category/${categorySlug}?filterCategory=${categoryId || ""}`}
               className="block"
             >
-              <div className="relative h-[300px] overflow-hidden">
+              <div className="relative h-[300px] lg:h-screen overflow-hidden">
                 <Image
                   src={getCollectionImage(item)}
                   alt={getCollectionTitle(item)}
@@ -133,10 +123,10 @@ export default function TopCollections() {
             </Link>
 
             <div className="pt-5">
-              <h2 className={`${bodoni.className} lora text-xl font-semibold tracking-tight text-neutral-600`}>
+              <h2 className="font-brand-display lora text-xl font-semibold tracking-tight text-neutral-600">
                 {getCollectionTitle(item)}
               </h2>
-              <p className={`${inter.className} mt-2 line-clamp-3 text-sm leading-6 text-[#8D8B9D]`}>
+              <p className="font-brand-sans mt-2 line-clamp-3 text-sm leading-6 text-[#8D8B9D]">
                 {getCollectionDescription(item)}
               </p>
 

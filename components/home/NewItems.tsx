@@ -2,20 +2,10 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Bodoni_Moda, Inter } from 'next/font/google';
 import { useProductStore } from "@/store/user/product/useProductStore";
 import { Product } from "@/types/product";
 import ProductCard from "@/components/product/ProductCard";
 import ProductCardSkeleton from "@/components/ui/ProductCardSkeleton";
-
-const inter = Inter({
-  subsets: ['latin'],
-});
-
-const bodoni = Bodoni_Moda({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
 
 export default function NewInSection() {
   const { products, loading, error, fetchNewProducts } = useProductStore();
@@ -70,13 +60,13 @@ export default function NewInSection() {
       <div className="max-w-[2000px] mx-auto flex flex-col md:flex-row gap-6 md:gap-0 items-stretch px-4 md:px-32">
 
         {/* Left Info Panel    */}
-        <div className="md:w-96 flex-shrink-0 flex flex-col justify-center pr-3">
+        <div className="md:w-80 flex-shrink-0 flex flex-col justify-center pr-3">
           <h2
-            className={`${bodoni.className} tracking-tight mb-3 text-[30px] font-normal text-neutral-600`}
+            className="font-brand-display mb-3 text-[30px] font-normal tracking-tight text-neutral-600"
           >
             New In
           </h2>
-          <p className={`${inter.className} text-[14px] font-normal text-sm leading-relaxed mb-6 text-[#8D8B9D]`}>
+          <p className="font-brand-sans mb-6 text-[14px] text-sm font-normal leading-relaxed text-[#8D8B9D]">
             Discover the latest and greatest arrivals, new designers to know, exclusive capsules and more style inspiration.
           </p>
           <div className="flex gap-4">

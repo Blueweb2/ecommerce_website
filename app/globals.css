@@ -1,15 +1,41 @@
-@import url('https://fonts.googleapis.com/css2?family=Allura&display=swap');
-
 @import "tailwindcss";
 
 @plugin "@tailwindcss/typography";
+
+:root {
+  --font-brand-sans: "Segoe UI", Arial, Helvetica, sans-serif;
+  --font-brand-serif: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+  --font-brand-display: "Bodoni MT", Didot, "Times New Roman", serif;
+  --font-brand-mono: Consolas, "Courier New", monospace;
+  --font-brand-script: "Segoe Script", "Brush Script MT", cursive;
+}
+
+html {
+  font-family: var(--font-brand-sans);
+}
 
 body {
   overflow-x: hidden;
 }
 
+.font-brand-sans {
+  font-family: var(--font-brand-sans);
+}
+
+.font-brand-serif {
+  font-family: var(--font-brand-serif);
+}
+
+.font-brand-display {
+  font-family: var(--font-brand-display);
+}
+
+.font-brand-mono {
+  font-family: var(--font-brand-mono);
+}
+
 .script {
-  font-family: 'Allura', cursive;
+  font-family: var(--font-brand-script);
 }
 
 /* HERO SECTION ANIMATION */

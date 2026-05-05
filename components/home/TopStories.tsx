@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Lora } from 'next/font/google';
 import { getStories } from "@/lib/api/story.api";
 
 type Story = {
@@ -18,11 +17,6 @@ type Story = {
   };
   slug: string;
 };
-
-const lora = Lora({
-  subsets: ['latin'],
-  weight: ['400', '700'],
-});
 
 export default function TopStories() {
 
@@ -85,12 +79,12 @@ export default function TopStories() {
       <div className="max-w-[2000px] mx-auto px-4 md:px-32">
 
         {/* TITLE */}
-        <h2 className={`${lora.className} tracking-tight text-neutral-600 lora text-[25px] font-normal border-t-2 py-5 `}>
+        <h2 className="font-brand-serif lora border-t-2 border-gray-300 py-5 text-[25px] font-normal tracking-tight text-neutral-600">
           TOP STORIES ON
         </h2>
 
         {/* STORIES */}
-        <div className="flex gap-6 overflow-x-auto scrollbar-hide scroll-smooth pb-14 border-b-2 text-[#8D8B9D]">
+        <div className="flex gap-6 overflow-x-auto scrollbar-hide scroll-smooth pb-14 border-b-2 border-gray-300 text-[#8D8B9D]">
           {stories.map((story) => (
             <div
               key={story._id}
@@ -116,7 +110,7 @@ export default function TopStories() {
                   {story.category}
                 </h3>
                 <div className="text-xs space-y-2">
-                  <p className={`${lora.className} line-clamp-3 mt-3 min-h-[3rem]`}>
+                  <p className="font-brand-serif mt-3 min-h-[3rem] line-clamp-3">
                     {stripHtml(story.description)}
                   </p>
                 </div>

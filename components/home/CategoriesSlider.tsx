@@ -4,7 +4,6 @@ import { useRef, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { Bodoni_Moda } from 'next/font/google';
 import { categoryAPI } from "@/lib/api/category.api";
 
 type Category = {
@@ -15,11 +14,6 @@ type Category = {
     url: string;
   };
 };
-
-const bodoni = Bodoni_Moda({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
 
 export default function CategoriesSlider() {
 
@@ -64,7 +58,7 @@ export default function CategoriesSlider() {
     <div>
       {/* HEADER */}
       <div className="flex items-center justify-between mb-6">
-        <h2 className={`${bodoni.className} tracking-tight text-neutral-600 lora text-[30px] font-normal`}>Shop by Categories</h2>
+        <h2 className="font-brand-display lora text-[30px] font-normal tracking-tight text-neutral-600">Shop by Categories</h2>
 
         <div className="flex gap-2">
           <button onClick={() => scroll("left")}>

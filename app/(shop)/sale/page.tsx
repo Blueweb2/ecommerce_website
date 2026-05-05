@@ -4,14 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useProductStore } from "@/store/user/product/useProductStore";
-import { Lora } from "next/font/google";
 import { ChevronDown, SlidersHorizontal } from "lucide-react";
 import { CatalogProduct } from "@/lib/constants/admin-catalog";
-
-const lora = Lora({
-  subsets: ["latin"],
-  weight: ["400", "700"],
-});
 
 const SORT_OPTIONS = [
   { value: "createdAt-desc", label: "Newest" },
@@ -63,7 +57,7 @@ export default function SalePage() {
             Limited Time Offer
           </span>
           <h1
-            className={`${lora.className} text-5xl md:text-7xl text-white font-bold tracking-widest`}
+            className="font-brand-serif text-5xl font-bold tracking-widest text-white md:text-7xl"
           >
             SALE
           </h1>

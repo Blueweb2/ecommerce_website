@@ -1,6 +1,5 @@
 "use client";
 
-import { Lora } from 'next/font/google';
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { productAPI } from "@/lib/api/product.api";
@@ -13,11 +12,6 @@ type Product = {
   slug: string;
   images?: { url: string }[];
 };
-
-const lora = Lora({
-  subsets: ['latin'],
-  weight: ['400', '700'],
-});
 
 const tabs = ["Featured", "Best Sellers", "Top Rated"];
 
@@ -60,11 +54,11 @@ export default function ShopSection() {
   }, [activeTab]);
 
   return (
-    <section className="bg-[#f5f5f5] pt-6 md:pt-0 md:py-12">
+    <section className="bg-[#f5f5f5] pt-6 md:pt-14 md:py-0">
       <div className="max-w-[2000px] mx-auto px-4 md:px-32">
 
         {/* TITLE */}
-        <h2 className={`${lora.className} text-center text-[25px] font-normal tracking-tight text-neutral-600 mb-6 border-t-2 border-gray-300 pt-8`}>
+        <h2 className="font-brand-serif mb-6 border-t-2 border-gray-300 pt-8 text-center text-[25px] font-normal tracking-tight text-neutral-600">
           Shop ZENFAZ
         </h2>
 

@@ -1,15 +1,10 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { Inter } from 'next/font/google';
 import { Product } from '@/types/product';
 
 interface ProductCardProps {
   product: Product;
 }
-
-const inter = Inter({
-  subsets: ['latin'],
-});
 
 export default function ProductCard({ product }: ProductCardProps) {
   const imageUrl = product.images?.[0]?.url || '/placeholder.png';
@@ -45,7 +40,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       </div>
 
       <div className="space-y-1 px-1">
-        <h3 className={`${inter.className} text-[15px] font-semibold text-neutral-800 line-clamp-1 group-hover:text-emerald-600 transition-colors`}>
+        <h3 className="font-brand-sans line-clamp-1 text-[15px] font-semibold text-neutral-800 transition-colors group-hover:text-emerald-600">
           {product.name}
         </h3>
         

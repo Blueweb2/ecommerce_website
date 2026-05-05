@@ -60,7 +60,7 @@ export default function HeroSection() {
   if (!banners) return <div>Loading...</div>;
 
   return (
-    <section className="w-full bg-[#f5f5f5] py-8 mt-20">
+    <section className="w-full bg-[#f5f5f5] py-8 mt-12 md:mt-20">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 h-[calc(100vh-120px)]">
 
         {/* LEFT SLIDER */}
