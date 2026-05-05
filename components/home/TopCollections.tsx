@@ -108,8 +108,7 @@ export default function TopCollections() {
             ? item.category
             : null;
 
-        const categorySlug = category?.slug || item.slug || "";
-        const href = categorySlug ? `/category/${categorySlug}` : "#";
+        const href = item.slug ? `/collection/${item.slug}` : "#";
         const key = item._id || item.slug || `collection-${index}`;
 
         return (

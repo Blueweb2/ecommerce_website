@@ -63,9 +63,16 @@ export const collectionAPI = {
   getBySlug: async (slug: string): Promise<CollectionResponse> => {
     const encodedSlug = encodeURIComponent(slug);
 
-    return requestWithFallback<CollectionResponse>(
+    const response = await requestWithFallback<any>(
       getCollectionSlugPaths(encodedSlug)
     );
+
+    // ✅ extract from .data wrapper
+    return {
+      success: response.success,
+      collection: response.data?.collection,
+      products: response.data?.products || [],
+    };
   },
 
   getByCategory: async (categoryId: string): Promise<Collection[]> => {
