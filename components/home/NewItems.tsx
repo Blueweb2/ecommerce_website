@@ -2,12 +2,23 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { Bodoni_Moda, Inter } from 'next/font/google';
 import { useProductStore } from "@/store/user/product/useProductStore";
 import { Product } from "@/types/product";
 import ProductCard from "@/components/product/ProductCard";
 import ProductCardSkeleton from "@/components/ui/ProductCardSkeleton";
 
+const bodoni = Bodoni_Moda({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
+
+const inter = Inter({
+  subsets: ['latin'],
+});
+
 export default function NewInSection() {
+
   const { products, loading, error, fetchNewProducts } = useProductStore();
   const newProducts = products as Product[];
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -62,11 +73,11 @@ export default function NewInSection() {
         {/* Left Info Panel    */}
         <div className="md:w-80 flex-shrink-0 flex flex-col justify-center pr-3">
           <h2
-            className="font-brand-display mb-3 text-[30px] font-normal tracking-tight text-neutral-600"
+            className={`${bodoni.className} mb-3 text-[30px] font-normal tracking-tight text-neutral-600`}
           >
             New In
           </h2>
-          <p className="font-brand-sans mb-6 text-[14px] text-sm font-normal leading-relaxed text-[#8D8B9D]">
+          <p className={`${inter.className} mb-6 text-[14px] text-sm font-normal leading-relaxed text-[#8D8B9D]`}>
             Discover the latest and greatest arrivals, new designers to know, exclusive capsules and more style inspiration.
           </p>
           <div className="flex gap-4">

@@ -3,10 +3,20 @@
 import { useState, useEffect } from "react";
 import { Heart, ChevronDown, Truck } from "lucide-react";
 import { toast } from "react-hot-toast";
+import { Bodoni_Moda, Inter } from 'next/font/google';
 import { useCartStore } from "@/store/user/cart/useCartStore";
 import { useWishlistStore } from "@/store/user/wishlist/useWishlistStore";
 import { wishlistAPI } from "@/lib/api/wishlist.api";
 import { useAuthStore } from "@/store/auth/useAuthStore";
+
+const bodoni = Bodoni_Moda({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
+
+const inter = Inter({
+  subsets: ['latin'],
+});
 
 type Props = {
   product: any;
@@ -151,7 +161,7 @@ const RightSide = ({ product }: Props) => {
   return (
     <div className="mx-4 mt-10 h-fit space-y-6 text-sm lg:sticky lg:top-40 lg:mx-10 md:mt-20">
       <div>
-        <h1 className="font-brand-display text-2xl text-neutral-600 md:text-3xl">
+        <h1 className={`${bodoni.className} text-2xl text-neutral-600 md:text-3xl`}>
           {product?.name}
         </h1>
       </div>
@@ -159,15 +169,15 @@ const RightSide = ({ product }: Props) => {
       <div className="flex items-center gap-3">
         {discountPrice ? (
           <>
-            <p className="text-2xl font-bold text-red-600">â‚¹{discountPrice}</p>
-            <p className="text-lg text-gray-400 line-through">â‚¹{price}</p>
+            <p className="text-2xl font-bold text-[#8D8B9D]">₹{discountPrice}</p>
+            <p className="text-lg text-red-400 line-through">₹{price}</p>
             <span className="rounded bg-red-600 px-2 py-1 text-xs font-bold tracking-wide text-white">
               {Math.round(((price - discountPrice) / price) * 100)}% OFF
             </span>
           </>
         ) : (
           <p className="font-brand-display text-2xl font-bold text-[#8D8B9D]">
-            â‚¹{price}
+            {price}
           </p>
         )}
       </div>
@@ -248,22 +258,22 @@ const RightSide = ({ product }: Props) => {
 
       <div className="space-y-4">
         <div>
-          <h3 className="font-brand-display mb-1 text-sm font-semibold text-neutral-600">
+          <h3 className={`${bodoni.className} mb-1 text-sm font-semibold text-neutral-600`}>
             PRODUCT DESCRIPTION
           </h3>
-          <p className="font-brand-sans text-xs leading-relaxed text-[#8D8B9D]">
+          <p className={`${inter.className} text-xs leading-relaxed text-[#8D8B9D]`}>
             {product?.description || "No description available"}
           </p>
         </div>
 
         {product?.keyFeatures?.length > 0 && (
           <div>
-            <h3 className="font-brand-display mb-1 text-sm font-semibold text-neutral-600">
+            <h3 className={`${bodoni.className} mb-1 text-sm font-semibold text-neutral-600`}>
               KEY FEATURES
             </h3>
             <ul className="list-disc space-y-1 pl-4 text-xs text-[#8D8B9D]">
               {product.keyFeatures.map((feature: string, index: number) => (
-                <li key={index} className="font-brand-sans">
+                <li key={index} className={inter.className}>
                   {feature}
                 </li>
               ))}
@@ -273,14 +283,14 @@ const RightSide = ({ product }: Props) => {
 
         {product?.specifications?.length > 0 && (
           <div className="border-t border-slate-100 pt-4">
-            <h3 className="font-brand-display mb-3 text-sm font-semibold uppercase tracking-wider text-neutral-600">
+            <h3 className={`${bodoni.className} mb-3 text-sm font-semibold uppercase tracking-wider text-neutral-600`}>
               Technical Specifications
             </h3>
             <div className="grid grid-cols-1 gap-y-2">
               {product.specifications.map((spec: any, index: number) => (
                 <div
                   key={index}
-                  className="flex justify-between border-b border-slate-50 py-2 last:border-0"
+                  className={`${inter.className} flex justify-between border-b border-slate-50 py-2 last:border-0`}
                 >
                   <span className="text-[11px] font-bold uppercase tracking-widest text-slate-400">
                     {spec.name}
@@ -301,11 +311,11 @@ const RightSide = ({ product }: Props) => {
                 <Truck className="h-4 w-4" />
               </div>
 
-              <h3 className="font-brand-display text-sm font-bold uppercase tracking-tight text-slate-800">
+              <h3 className={`${bodoni.className} text-sm font-bold uppercase tracking-tight text-neutral-600`}>
                 Delivery Details
               </h3>
             </div>
-            <p className="font-brand-sans pl-9 text-xs leading-relaxed text-slate-600">
+            <p className={`${inter.className} pl-9 text-xs leading-relaxed text-[#8D8B9D]`}>
               {product.deliveryDetails}
             </p>
           </div>

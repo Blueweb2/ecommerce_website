@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { Bodoni_Moda, Inter } from 'next/font/google';
 import { getStories } from "@/lib/api/story.api";
 
 type Story = {
@@ -17,6 +18,15 @@ type Story = {
   };
   slug: string;
 };
+
+const bodoni = Bodoni_Moda({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
+
+const inter = Inter({
+  subsets: ['latin'],
+});
 
 export default function TopStories() {
 
@@ -45,7 +55,7 @@ export default function TopStories() {
     return (
       <section className="bg-[#f5f5f5] py-12">
         <div className="max-w-[2000px] mx-auto px-4 md:px-20">
-          <h2 className="text-2xl font-semibold border-t-2 py-5 border-gray-300">
+          <h2 className={`${bodoni.className} text-[30px] font-semibold border-t-2 py-5 border-gray-300`}>
             TOP STORIES ON
           </h2>
           <div className="flex gap-6 pb-14 border-b-2 border-gray-300">
@@ -79,7 +89,7 @@ export default function TopStories() {
       <div className="max-w-[2000px] mx-auto px-4 md:px-32">
 
         {/* TITLE */}
-        <h2 className="font-brand-serif lora border-t-2 border-gray-300 py-5 text-[25px] font-normal tracking-tight text-neutral-600">
+        <h2 className={`${bodoni.className} border-t-2 border-gray-300 py-5 text-[30px] font-normal tracking-tight text-neutral-600`}>
           TOP STORIES ON
         </h2>
 
@@ -106,11 +116,11 @@ export default function TopStories() {
 
               {/* CONTENT */}
               <div className="mr-8">
-                <h3 className="text-sm font-semibold mb-2 uppercase">
+                <h3 className={`${bodoni.className} text-sm font-semibold mb-2 uppercase`}>
                   {story.category}
                 </h3>
                 <div className="text-xs space-y-2">
-                  <p className="font-brand-serif mt-3 min-h-[3rem] line-clamp-3">
+                  <p className={`${inter.className} mt-3 min-h-[3rem] line-clamp-3`}>
                     {stripHtml(story.description)}
                   </p>
                 </div>
