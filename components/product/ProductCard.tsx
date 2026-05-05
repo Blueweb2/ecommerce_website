@@ -1,13 +1,14 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Product } from '@/types/product';
+import { optimizeCloudinaryUrl } from '@/lib/constants/admin-catalog';
 
 interface ProductCardProps {
   product: Product;
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
-  const imageUrl = product.images?.[0]?.url || '/placeholder.png';
+  const imageUrl = optimizeCloudinaryUrl(product.images?.[0]?.url) || '/placeholder.png';
   const hasSale = product.discountPrice && product.discountPrice < product.price;
 
   return (
@@ -57,4 +58,4 @@ export default function ProductCard({ product }: ProductCardProps) {
       </div>
     </Link>
   );
-};
+}

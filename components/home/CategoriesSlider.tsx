@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { categoryAPI } from "@/lib/api/category.api";
+import { optimizeCloudinaryUrl } from "@/lib/constants/admin-catalog";
 
 type Category = {
   _id: string;
@@ -79,7 +80,7 @@ export default function CategoriesSlider() {
             <Link key={cat._id} href={`/category/${cat.slug}`}>
               <div className="relative w-[200px] h-[250px] lg:w-[290px] lg:h-[330px]">
                 <Image
-                  src={cat.image?.url || "/placeholder.png"}
+                  src={optimizeCloudinaryUrl(cat.image?.url) || "/placeholder.png"}
                   alt={cat.name}
                   fill
                   sizes="(max-width: 768px) 200px, 290px"
@@ -93,6 +94,7 @@ export default function CategoriesSlider() {
           ))
         )}
       </div>
+
     </div>
   );
 };

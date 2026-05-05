@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { getBanners } from "@/lib/api/banner.api";
+import { optimizeCloudinaryUrl } from "@/lib/constants/admin-catalog";
 
 export default function HeroSection() {
 
@@ -76,7 +77,7 @@ export default function HeroSection() {
               }`}
             >
               <Image
-                src={hero.image?.url || "/placeholder.png"}
+                src={optimizeCloudinaryUrl(hero.image?.url) || "/placeholder.png"}
                 alt="Hero Banner"
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"
@@ -115,7 +116,7 @@ export default function HeroSection() {
               className="relative overflow-hidden h-full w-full"
             >
               <Image
-                src={banners.center.image?.url || "/placeholder.png"}
+                src={optimizeCloudinaryUrl(banners.center.image?.url) || "/placeholder.png"}
                 alt="Center Banner"
                 fill
                 sizes="(max-width: 1024px) 100vw, 30vw"
@@ -135,7 +136,7 @@ export default function HeroSection() {
                 className="relative h-full w-full"
               >
                 <Image
-                  src={banners.rightTop.image?.url || "/placeholder.png"}
+                  src={optimizeCloudinaryUrl(banners.rightTop.image?.url) || "/placeholder.png"}
                   alt="Right Top Banner"
                   fill
                   sizes="(max-width: 1024px) 100vw, 20vw"
@@ -152,7 +153,7 @@ export default function HeroSection() {
                 className="relative h-full w-full"
               >
                 <Image
-                  src={banners.rightBottom.image?.url || "/placeholder.png"}
+                  src={optimizeCloudinaryUrl(banners.rightBottom.image?.url) || "/placeholder.png"}
                   alt="Right Bottom Banner"
                   fill
                   sizes="(max-width: 1024px) 100vw, 20vw"

@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 import ImageUpload from "@/components/admin/ui/ImageUpload";
 import { uploadSingleImage } from "@/lib/cloudinary/upload";
 import { deleteImage } from "@/lib/cloudinary/delete";
+import { optimizeCloudinaryUrl } from "@/lib/constants/admin-catalog";
 
 interface Props {
   initialData?: CatalogEntity | null;
@@ -190,10 +191,7 @@ export default function CategoryForm({ initialData, onSuccess }: Props) {
         {form.image?.url && (
           <div className="mt-3">
             <img
-              src={form.image.url.replace(
-                "/upload/",
-                "/upload/f_auto,q_auto,w_300/"
-              )}
+              src={optimizeCloudinaryUrl(form.image.url)}
               alt={form.image?.altText || "preview"}
               className="w-32 h-32 object-cover rounded-lg border"
             />

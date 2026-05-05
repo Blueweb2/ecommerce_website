@@ -3,6 +3,7 @@
 import toast from "react-hot-toast";
 import { deleteBanner } from "@/lib/api/admin/banner.api";
 import { deleteImage } from "@/lib/cloudinary/delete";
+import { optimizeCloudinaryUrl } from "@/lib/constants/admin-catalog";
 
 export default function BannerList({ banners, refresh }: any) {
 
@@ -52,7 +53,7 @@ export default function BannerList({ banners, refresh }: any) {
         >
           {/* IMAGE */}
           <img
-            src={banner.image?.url}
+            src={optimizeCloudinaryUrl(banner.image?.url) || "/placeholder.png"}
             className="h-32 w-full object-cover"
           />
 

@@ -6,6 +6,7 @@ import { useCartStore } from "@/store/user/cart/useCartStore";
 import { useAuthStore } from "@/store/auth/useAuthStore";
 import { wishlistAPI } from "@/lib/api/wishlist.api";
 import { toast } from "react-hot-toast";
+import { optimizeCloudinaryUrl } from "@/lib/constants/admin-catalog";
 
 type WishlistItemType = {
   _id: string;
@@ -68,7 +69,7 @@ export default function WishlistItem({ item }: Props) {
       {/* IMAGE */}
       <div className="relative bg-gray-100 group">
         <img
-          src={item.image}
+          src={optimizeCloudinaryUrl(item.image) || "/placeholder.png"}
           alt={item.name}
           className="w-full h-[300px] object-cover"
         />

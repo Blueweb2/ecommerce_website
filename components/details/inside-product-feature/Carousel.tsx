@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { optimizeCloudinaryUrl } from "@/lib/constants/admin-catalog";
 
 type CarouselProps = {
   images: any[];
@@ -58,7 +59,7 @@ const Carousel = ({ images = [], setZooming, firstImage }: CarouselProps) => {
         onClick={() => setZooming(false)}
       >
         <img
-          src={safeImages[index].url}
+          src={optimizeCloudinaryUrl(safeImages[index].url)}
           alt={safeImages[index].altText}
           className="w-full h-[400px] md:h-[400px] object-fill rounded"
         />
@@ -103,7 +104,7 @@ const Carousel = ({ images = [], setZooming, firstImage }: CarouselProps) => {
         {safeImages.map((img, i) => (
           <img
             key={i}
-            src={img.url}
+            src={optimizeCloudinaryUrl(img.url)}
             onClick={() => setIndex(i)}
             className={`w-16 h-16 object-cover cursor-pointer border ${
               index === i ? "border-black" : "border-gray-300"

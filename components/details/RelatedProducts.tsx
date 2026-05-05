@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Handbag } from "lucide-react";
 import api from "@/lib/api/axios";
+import { optimizeCloudinaryUrl } from "@/lib/constants/admin-catalog";
 
 type ImageType = {
   url: string;
@@ -108,7 +109,7 @@ export default function RelatedProducts({ product }: Props) {
           >
             <div className="relative aspect-[4/5] overflow-hidden bg-gray-100">
               <img
-                src={item.images?.[0]?.url || "/placeholder.png"}
+                src={optimizeCloudinaryUrl(item.images?.[0]?.url) || "/placeholder.png"}
                 alt={item.name}
                 className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
               />

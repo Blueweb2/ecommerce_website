@@ -197,9 +197,29 @@ export function getSectionLabel(section: string) {
 }
 
 
+// ✅ CLOUDINARY URL OPTIMIZER (WebP + Auto Quality)
+export function optimizeCloudinaryUrl(url?: string): string {
+  if (!url) return "";
+  
+  // Only process Cloudinary URLs
+  if (!url.includes("res.cloudinary.com")) return url;
+
+  // If already has transformations, don't double inject (unless we want to replace)
+  // But a simple check: if it doesn't have /upload/, return as is
+  if (!url.includes("/upload/")) return url;
+
+  // Insert f_webp,q_auto after /upload/
+  // Replace /upload/v with /upload/f_webp,q_auto/v
+  // Or just /upload/ to /upload/f_webp,q_auto/
+  // Handle cases where transformations might already exist
+  if (url.includes("/upload/f_")) return url; // Already has format transformation
+
+  return url.replace("/upload/", "/upload/f_webp,q_auto/");
+}
+
 // ✅ SAFE (NO string case anymore)
 export function getProductImageUrl(image?: CatalogProductImage | null) {
-  return image?.url || "";
+  return optimizeCloudinaryUrl(image?.url || "");
 }
 
 

@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { collectionAPI } from "@/lib/api/collection.api";
 import { Collection } from "@/types/collection";
+import { optimizeCloudinaryUrl } from "@/lib/constants/admin-catalog";
 
 const FALLBACK_IMAGE = "/home/herosection/hero-right-top.png";
 
@@ -24,13 +25,12 @@ function getCollectionImage(collection: Collection) {
   const image = collection.bannerImage || collection.image;
 
   if (!image) return FALLBACK_IMAGE;
-  if (typeof image === "string") return image || FALLBACK_IMAGE;
+  if (typeof image === "string") return optimizeCloudinaryUrl(image) || FALLBACK_IMAGE;
 
-  return image.url || FALLBACK_IMAGE;
+  return optimizeCloudinaryUrl(image.url) || FALLBACK_IMAGE;
 }
 
 export default function TopCollections() {
-
   const [collections, setCollections] = useState<Collection[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -142,4 +142,4 @@ export default function TopCollections() {
       })}
     </div>
   );
-};
+}

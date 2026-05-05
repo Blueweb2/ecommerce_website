@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { useState, useEffect } from "react";
+import { optimizeCloudinaryUrl } from "@/lib/constants/admin-catalog";
 
 const Carousel = dynamic(() => import("./inside-product-feature/Carousel"),{
   loading: () => <p className="text-center py-10">Loading...</p>,
@@ -56,7 +57,7 @@ const ProductFeature = ({ onToggleLayout, product }: ProductFeatureProps) => {
 
   // fallback image (important)
   const mainImage =
-    product?.images?.[0]?.url || "/placeholder.png";
+    optimizeCloudinaryUrl(product?.images?.[0]?.url) || "/placeholder.png";
 
 
   // display only product images
@@ -126,7 +127,7 @@ const ProductFeature = ({ onToggleLayout, product }: ProductFeatureProps) => {
             product.images.slice(1).map((img: any, index: number) => (
               <img
                 key={index}
-                src={img.url}
+                src={optimizeCloudinaryUrl(img.url)}
                 alt={img.altText || product.name}
                 className="h-[600px] w-full object-cover mb-2"
                 onClick={() => {
