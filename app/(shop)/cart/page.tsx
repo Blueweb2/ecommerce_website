@@ -1,32 +1,39 @@
 "use client";
 
 import Link from "next/link";
+import { Bodoni_Moda } from 'next/font/google';
 import { useCartStore } from "@/store/user/cart/useCartStore";
 import { ShoppingCart } from "lucide-react";
 
+const bodoni = Bodoni_Moda({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
+
 export default function CartPage() {
+
   const { items, totalPrice, totalGstAmount, removeItem, updateQuantity } = useCartStore();
 
   if (items.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 space-y-4">
-  <ShoppingCart className="w-12 h-12 text-gray-400" />
-  
-  <h2 className="text-xl font-semibold">
-    Your cart is empty
-  </h2>
+      <div className="flex flex-col items-center justify-center pt-36 pb-20 space-y-4">
+        <ShoppingCart className="w-12 h-12 text-gray-400" />
+        
+        <h2 className="text-xl font-semibold">
+          Your cart is empty
+        </h2>
 
-  <p className="text-gray-500 text-sm">
-    Looks like you haven’t added anything yet
-  </p>
+        <p className="text-gray-500 text-sm">
+          Looks like you haven’t added anything yet
+        </p>
 
-  <Link
-    href="/"
-    className="mt-2 px-6 py-2 border rounded hover:bg-black hover:text-white transition"
-  >
-    Continue Shopping
-  </Link>
-</div>
+        <Link
+          href="/"
+          className="mt-2 px-6 py-2 border rounded hover:bg-black hover:text-white transition"
+        >
+          Continue Shopping
+        </Link>
+      </div>
     );
   }
 
@@ -35,18 +42,18 @@ export default function CartPage() {
       
       {/* ================= LEFT: ITEMS ================= */}
       <div className="md:col-span-2 space-y-6">
-        <h1 className="text-2xl font-semibold">Shopping Cart</h1>
+        <h1 className={`${bodoni.className} text-[30px] text-neutral-600 font-semibold border-b border-gray-300 pb-5`}>Shopping Cart</h1>
 
         {items.map((item, index) => (
           <div
             key={`${item.productId}-${item.variantId || "base"}-${index}`}
-            className="flex gap-4 border p-4 rounded-lg"
+            className="flex gap-4"
           >
             {/* Image */}
             <img
               src={item.image || "/placeholder.png"}
               alt={item.name}
-              className="w-24 h-24 object-cover rounded"
+              className="w-30 h-33 object-cover rounded"
             />
 
             {/* Details */}
@@ -65,7 +72,7 @@ export default function CartPage() {
               )}
 
               {/* PRICE */}
-              <p className="font-semibold">₹{item.price}</p>
+              <p className="font-semibold text-[#8D8B9D]">₹{item.price}</p>
 
               {/* QUANTITY */}
               <div className="flex items-center gap-2">
@@ -93,9 +100,9 @@ export default function CartPage() {
               {/* REMOVE */}
               <button
                 onClick={() => removeItem(item)}
-                className="text-red-500 text-sm"
+                className="text-[#8D8B9D] text-sm"
               >
-                Remove
+                Remove from cart
               </button>
             </div>
           </div>
