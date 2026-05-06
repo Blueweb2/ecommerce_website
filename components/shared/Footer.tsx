@@ -2,8 +2,8 @@
 import Link from "next/link";
 import { Facebook, Instagram, Linkedin, X, Youtube } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Bodoni_Moda, Inter } from 'next/font/google';
 import { categoryAPI } from "@/lib/api/category.api";
+import { bodoni, inter } from "@/lib/fonts";
 
 interface Category {
   _id: string;
@@ -12,15 +12,6 @@ interface Category {
   parent?: string | null;
   isActive: boolean;
 };
-
-const bodoni = Bodoni_Moda({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
-
-const inter = Inter({
-  subsets: ['latin'],
-});
 
 export default function Footer() {
   const [categories, setCategories] = useState<Category[]>([]);

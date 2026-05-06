@@ -1,18 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { Bodoni_Moda, Inter } from 'next/font/google';
 import { useCartStore } from "@/store/user/cart/useCartStore";
 import { ShoppingCart } from "lucide-react";
-
-const bodoni = Bodoni_Moda({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
-
-const inter = Inter({
-  subsets: ['latin'],
-});
+import { bodoni, inter } from "@/lib/fonts";
 
 export default function CartPage() {
 

@@ -1,16 +1,12 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { Inter } from 'next/font/google';
 import { Product } from '@/types/product';
 import { optimizeCloudinaryUrl } from '@/lib/constants/admin-catalog';
+import { inter } from '@/lib/fonts';
 
 interface ProductCardProps {
   product: Product;
 }
-
-const inter = Inter({
-  subsets: ['latin'],
-});
 
 export default function ProductCard({ product }: ProductCardProps) {
   const imageUrl = optimizeCloudinaryUrl(product.images?.[0]?.url) || '/placeholder.png';

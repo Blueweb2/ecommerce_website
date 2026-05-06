@@ -3,23 +3,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Heart } from "lucide-react";
-import { Bodoni_Moda, Inter } from 'next/font/google';
 import { Product } from "@/types/product";
+import { bodoni, inter } from "@/lib/fonts";
 
 type ExploreGridProps = {
   products: Product[];
   fallbackImage: string;
   categoryTitle: string;
 };
-
-const inter = Inter({
-  subsets: ['latin'],
-});
-
-const bodoni = Bodoni_Moda({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
 
 export default function ExploreGrid({
   products,

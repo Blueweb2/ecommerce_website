@@ -3,16 +3,7 @@
 import { useState } from "react";
 import { newsletterAPI } from "@/lib/api/newsletter.api";
 import toast from "react-hot-toast";
-import { Bodoni_Moda, Inter } from 'next/font/google';
-
-const bodoni = Bodoni_Moda({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
-
-const inter = Inter({
-  subsets: ['latin'],
-});
+import { bodoni, inter } from "@/lib/fonts";
 
 export default function ExclusiveAccess() {
 

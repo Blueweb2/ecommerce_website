@@ -3,8 +3,8 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Bodoni_Moda, Inter } from 'next/font/google';
 import { getStories } from "@/lib/api/story.api";
+import { bodoni, inter } from "@/lib/fonts";
 
 type Story = {
   _id: string;
@@ -18,15 +18,6 @@ type Story = {
   };
   slug: string;
 };
-
-const bodoni = Bodoni_Moda({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
-
-const inter = Inter({
-  subsets: ['latin'],
-});
 
 export default function TopStories() {
 

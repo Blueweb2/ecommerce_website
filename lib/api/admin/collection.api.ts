@@ -30,12 +30,21 @@ function normalizeCollections(payload: CollectionListResponse): Collection[] {
   return [];
 }
 
+function isCollection(value: unknown): value is Collection {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    !Array.isArray(value) &&
+    "slug" in value
+  );
+}
+
 function normalizeCollection(payload: CollectionDetailResponse): Collection | null {
   if (!payload) {
     return null;
   }
 
-  if ("slug" in payload) {
+  if (isCollection(payload)) {
     return payload;
   }
 
@@ -43,7 +52,7 @@ function normalizeCollection(payload: CollectionDetailResponse): Collection | nu
     return payload.collection;
   }
 
-  if (payload.data && !Array.isArray(payload.data) && "slug" in payload.data) {
+  if (isCollection(payload.data)) {
     return payload.data;
   }
 

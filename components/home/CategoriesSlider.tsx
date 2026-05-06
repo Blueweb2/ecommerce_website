@@ -3,9 +3,9 @@
 import { useRef, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Bodoni_Moda } from 'next/font/google';
 import { categoryAPI } from "@/lib/api/category.api";
 import { optimizeCloudinaryUrl } from "@/lib/constants/admin-catalog";
+import { bodoni } from "@/lib/fonts";
 
 type Category = {
   _id: string;
@@ -15,11 +15,6 @@ type Category = {
     url: string;
   };
 };
-
-const bodoni = Bodoni_Moda({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
 
 export default function CategoriesSlider() {
 
