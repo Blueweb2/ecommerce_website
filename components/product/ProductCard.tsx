@@ -8,14 +8,24 @@ interface ProductCardProps {
   product: Product;
 }
 
-export default function ProductCard({ product }: ProductCardProps) {
+export default function ProductCard({ product, index, isAnimating, direction }: any) {
+
   const imageUrl = optimizeCloudinaryUrl(product.images?.[0]?.url) || '/placeholder.png';
-  // const hasSale = product.discountPrice && product.discountPrice < product.price;
 
   return (
     <Link
       href={`/product/${product.slug}`}
       className="flex flex-col gap-3 relative"
+      style={{
+        transition: "transform 0.4s ease, opacity 0.4s ease",
+        transitionDelay: `${index * 100}ms`,
+        transform: isAnimating
+          ? direction === 1
+            ? "translateX(-50px)"
+            : "translateX(50px)"
+          : "translateX(0)",
+        opacity: isAnimating ? 0 : 1,
+      }}
     >
       <div className="w-full aspect-[3/4] bg-neutral-100 overflow-hidden relative">
         <Image
@@ -45,4 +55,4 @@ export default function ProductCard({ product }: ProductCardProps) {
       <div className='absolute inset-0 hover:bg-white/20'></div>
     </Link>
   );
-}
+};

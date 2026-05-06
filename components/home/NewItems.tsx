@@ -136,17 +136,9 @@ export default function NewInSection() {
               </svg>
             </button>
           )}
-          
+
           <div className="overflow-hidden w-full">
-            <div
-              className={`grid grid-cols-4 gap-3 transition-transform duration-300 ${
-                isAnimating
-                  ? direction === 1
-                    ? "-translate-x-full"
-                    : "translate-x-full"
-                  : "translate-x-0"
-              }`}
-            >
+            <div className="grid grid-cols-4 gap-3">
               {loading ? (
                 Array.from({ length: 4 }).map((_, index) => (
                   <ProductCardSkeleton key={index} />
@@ -157,7 +149,13 @@ export default function NewInSection() {
                 </div>
               ) : (
                 visibleProducts.map((product, index) => (
-                  <ProductCard key={product._id} product={product} />
+                  <ProductCard
+                    key={product._id}
+                    product={product}
+                    index={index}
+                    isAnimating={isAnimating}
+                    direction={direction}
+                  />
                 ))
               )}
             </div>
