@@ -115,9 +115,6 @@ export default function CollectionsPage() {
                         <h2 className="text-xl font-semibold">
                           {collection.title}
                         </h2>
-                        <p className="text-xs text-gray-500">
-                          /collection/{collection.slug}
-                        </p>
                       </div>
 
                       <span
