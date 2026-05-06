@@ -23,7 +23,6 @@ export default function CollectionForm({ initialData, onSubmit }: Props) {
 
   const [form, setForm] = useState<CollectionPayload>({
     title: "",
-    slug: "",
     description: "",
     category: "",
     image: undefined,
@@ -43,7 +42,6 @@ export default function CollectionForm({ initialData, onSubmit }: Props) {
 
     setForm({
       title: initialData.title || "",
-      slug: initialData.slug || "",
       description: initialData.description || "",
       category:
         typeof initialData.category === "string"
@@ -89,11 +87,6 @@ export default function CollectionForm({ initialData, onSubmit }: Props) {
       return false;
     }
 
-    if (!form.slug.trim()) {
-      toast.error("Slug required");
-      return false;
-    }
-
     if (!form.category) {
       toast.error("Category required");
       return false;
@@ -114,7 +107,6 @@ export default function CollectionForm({ initialData, onSubmit }: Props) {
       await onSubmit({
         ...form,
         title: form.title.trim(),
-        slug: form.slug.trim(),
         description: form.description?.trim(),
       });
     } finally {
@@ -182,32 +174,6 @@ export default function CollectionForm({ initialData, onSubmit }: Props) {
                 <p className="mt-1.5 text-xs text-slate-500">
                   This text will appear on the button linking to this collection.
                 </p>
-              </div>
-            </div>
-          </div>
-
-          {/* SEO / URL */}
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-            <h2 className="mb-5 text-lg font-semibold text-slate-800">
-              Search Engine Optimization
-            </h2>
-            <div>
-              <label className="mb-1.5 block text-sm font-medium text-slate-700">
-                URL Slug
-              </label>
-              <div className="flex items-center overflow-hidden rounded-xl border border-slate-300 bg-slate-50 transition focus-within:border-emerald-500 focus-within:bg-white focus-within:ring-4 focus-within:ring-emerald-500/10">
-                <span className="select-none border-r border-slate-300 bg-slate-100 px-4 py-2.5 text-sm text-slate-500">
-                  /collection/
-                </span>
-                <input
-                  type="text"
-                  placeholder="summer-essentials"
-                  value={form.slug}
-                  onChange={(e) =>
-                    setForm((prev) => ({ ...prev, slug: e.target.value }))
-                  }
-                  className="w-full bg-transparent px-4 py-2.5 text-sm outline-none"
-                />
               </div>
             </div>
           </div>

@@ -36,7 +36,6 @@ export type CollectionCategory =
 
 export type Collection = {
   _id?: string;
-  slug: string;
   title?: string;
   name?: string;
   description?: string;
@@ -76,7 +75,6 @@ export type CollectionDetailResponse =
 
 export type CollectionPayload = {
   title: string;
-  slug: string;
   description?: string;
   category: string;
   image?: Exclude<CollectionImage, string | null | undefined>;
