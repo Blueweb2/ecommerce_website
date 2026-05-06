@@ -58,7 +58,13 @@ export default function HeroSection() {
   };
 
   // Loading fallback
-  if (!banners) return <div>Loading...</div>;
+  if (!banners) {
+    return (
+      <div className="h-screen flex items-center justify-center">
+        <div className="w-10 h-10 border-4 border-gray-300 border-t-black rounded-full animate-spin"></div>
+      </div>
+    );
+  };
 
   return (
     <section className="w-full bg-[#f5f5f5] py-8 mt-12 md:mt-20">
