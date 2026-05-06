@@ -99,12 +99,12 @@ export default function ShopSection() {
                 {/* IMAGE */}
                 <Link
                   href={`/product/${product.slug}`}
-                  className="flex justify-center mb-4"
+                  className="flex justify-center items-center mb-4"
                 >
                   <img
                     src={product.images?.[0]?.url || "/placeholder.png"}
                     alt={product.name}
-                    className="h-40 md:h-60 object-cover w-full"
+                    className="h-40 md:h-90 object-fill w-full"
                   />
                 </Link>
 

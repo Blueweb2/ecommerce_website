@@ -10,11 +10,12 @@ import { bodoni, inter } from "@/lib/fonts";
 
 export default function NewInSection() {
 
-  const { products, loading, error, fetchNewProducts } = useProductStore();
+  const { products, loading, fetchNewProducts } = useProductStore();
   const newProducts = products as Product[];
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   const [direction, setDirection] = useState(0);
+  const [isEntering, setIsEntering] = useState(false);
   const itemsPerPage = 4;
 
   useEffect(() => {
@@ -30,7 +31,14 @@ export default function NewInSection() {
       } else {
         setCurrentIndex((prev) => prev - itemsPerPage);
       }
+
       setIsAnimating(false);
+      setIsEntering(true);
+
+      setTimeout(() => {
+        setIsEntering(false);
+      }, 400);
+
     }, 600);
 
     return () => clearTimeout(timer);
@@ -64,7 +72,7 @@ export default function NewInSection() {
         {/* Left Info Panel */}
         <div className="md:w-[25%] flex-shrink-0 flex flex-col justify-center pr-3">
           <h2
-            className={`${bodoni.className} mb-3 text-[clamp(25px,2.5vw,42px)] font-normal tracking-tight text-neutral-600`}
+            className={`${bodoni.className} mb-3 text-[clamp(25px,2.5vw,32px)] font-normal tracking-tight text-neutral-600`}
           >
             New In
           </h2>
@@ -154,6 +162,7 @@ export default function NewInSection() {
                     product={product}
                     index={index}
                     isAnimating={isAnimating}
+                    isEntering={isEntering}
                     direction={direction}
                   />
                 ))

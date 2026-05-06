@@ -1,14 +1,14 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { Product } from '@/types/product';
+// import { Product } from '@/types/product';
 import { optimizeCloudinaryUrl } from '@/lib/constants/admin-catalog';
 import { inter } from '@/lib/fonts';
 
-interface ProductCardProps {
-  product: Product;
-}
+// interface ProductCardProps {
+//   product: Product;
+// }
 
-export default function ProductCard({ product, index, isAnimating, direction }: any) {
+export default function ProductCard({ product, index, isAnimating, isEntering, direction }: any) {
 
   const imageUrl = optimizeCloudinaryUrl(product.images?.[0]?.url) || '/placeholder.png';
 
@@ -19,12 +19,18 @@ export default function ProductCard({ product, index, isAnimating, direction }: 
       style={{
         transition: "transform 0.4s ease, opacity 0.4s ease",
         transitionDelay: `${index * 100}ms`,
+
         transform: isAnimating
           ? direction === 1
             ? "translateX(-50px)"
             : "translateX(50px)"
+          : isEntering
+          ? direction === 1
+            ? "translateX(50px)"
+            : "translateX(-50px)"
           : "translateX(0)",
-        opacity: isAnimating ? 0 : 1,
+
+        opacity: isAnimating ? 0 : isEntering ? 0 : 1,
       }}
     >
       <div className="w-full aspect-[3/4] bg-neutral-100 overflow-hidden relative">
