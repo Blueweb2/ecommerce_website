@@ -108,8 +108,9 @@ export default function TopCollections() {
             ? item.category
             : null;
 
-        const href = item.slug ? `/collection/${item.slug}` : "#";
-        const key = item._id || item.slug || `collection-${index}`;
+        const categorySlug = category?.slug || "";
+        const href = categorySlug ? `/category/${categorySlug}` : "#";
+        const key = item._id || `collection-${index}`;
 
         return (
           <article key={key} className="overflow-hidden">
