@@ -34,11 +34,10 @@ export default function Navbar() {
   const { items } = useCartStore();
   const { user, loading } = useAuthStore();
   const wishlistItems = useWishlistStore((state) => state.items);
-
   const [categories, setCategories] = useState<Category[]>([]);
-
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
-
+  const [showNavbar, setShowNavbar] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
 
   const cartCount = items.reduce((acc, item) => acc + item.quantity, 0);
 
@@ -71,8 +70,33 @@ export default function Navbar() {
     fetchCategories();
   }, []);
 
+  // navbar hide and show during the scroll time
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+
+      if (currentScrollY > lastScrollY) {
+        // scrolling DOWN = hide navbar
+        setShowNavbar(false);
+      } else {
+        // scrolling UP = show navbar
+        setShowNavbar(true);
+      }
+
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [lastScrollY]);
+
   return (
-    <header className="w-full bg-black fixed top-0 z-9999">
+    <header
+      className={`w-full bg-black fixed top-0 z-9999 transition-transform duration-300 ${
+        showNavbar ? "translate-y-0" : "-translate-y-full"
+      }`}
+    >
 
       <div className='h-8 bg-gray-300 flex items-center justify-center text-xs text-center'>
         {messages[index]}
