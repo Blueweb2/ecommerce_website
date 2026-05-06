@@ -9,13 +9,13 @@ export default function ShopLayout({
   children: ReactNode;
 }) {
   return (
-    <div className="min-h-screen flex flex-col bg-white">
+    <section className="bg-[#f5f5f5]">
       
       {/* NAVBAR */}
       <Navbar />
 
       {/* CONTENT */}
-      <main className="flex-1 max-w-[2000px] mx-auto py-14 w-full">
+      <main className="flex-1 max-w-[2000px] mx-auto pt-14 w-full">
         {children}
       </main>
 
@@ -24,6 +24,6 @@ export default function ShopLayout({
 
       {/* CART DRAWER */}
       <CartDrawer />
-    </div>
+    </section>
   );
 }

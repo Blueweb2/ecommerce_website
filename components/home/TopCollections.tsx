@@ -113,7 +113,7 @@ export default function TopCollections() {
         const key = item._id || item.slug || `collection-${index}`;
 
         return (
-          <article key={key} className="group overflow-hidden">
+          <article key={key} className="overflow-hidden">
             <Link href={href} className="block">
               <div className="relative h-[300px] overflow-hidden lg:h-screen">
                 <Image
@@ -121,7 +121,7 @@ export default function TopCollections() {
                   alt={getCollectionTitle(item)}
                   fill
                   sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
-                  className="object-cover transition duration-500 group-hover:scale-105"
+                  className="object-cover transition duration-500"
                 />
               </div>
             </Link>

@@ -177,7 +177,7 @@ const RightSide = ({ product }: Props) => {
           </>
         ) : (
           <p className="font-brand-display text-2xl font-bold text-[#8D8B9D]">
-            {price}
+            ₹{price}
           </p>
         )}
       </div>

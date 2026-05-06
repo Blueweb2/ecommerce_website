@@ -88,7 +88,7 @@ const ProductFeature = ({ onToggleLayout, product }: ProductFeatureProps) => {
 
         {/* ================= LEFT IMAGE ================= */}
         <div
-          className="sticky top-14 h-[600px] group cursor-none hidden lg:block"
+          className="sticky top-14 h-screen group cursor-none hidden lg:block"
           onMouseMove={(e) => {
             const rect = e.currentTarget.getBoundingClientRect();
             setLeftPos({
@@ -129,7 +129,7 @@ const ProductFeature = ({ onToggleLayout, product }: ProductFeatureProps) => {
                 key={index}
                 src={optimizeCloudinaryUrl(img.url)}
                 alt={img.altText || product.name}
-                className="h-[600px] w-full object-cover mb-2"
+                className="h-screen w-full object-cover mb-2"
                 onClick={() => {
                   setCarouselImageIndex(() => index + 1 )
                   setZooming(true)
@@ -140,7 +140,7 @@ const ProductFeature = ({ onToggleLayout, product }: ProductFeatureProps) => {
             <img
               src="/placeholder.png"
               alt="no image"
-              className="h-[600px] w-full object-cover"
+              className="h-screen w-full object-cover"
             />
           )}
 
