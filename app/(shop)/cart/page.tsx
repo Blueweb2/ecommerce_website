@@ -43,7 +43,7 @@ export default function CartPage() {
 
   return (
     <section className="w-full bg-[#f5f5f5] py-10 font-sans">
-      <div className="max-w-[2000px] mx-auto p-6 grid md:grid-cols-3 mt-7 md:mt-20 gap-8 px-4 md:px-32">
+      <div className="max-w-[2000px] mx-auto p-6 grid md:grid-cols-3 md:mt-20 gap-8 px-4 md:px-32">
       
         {/* ================= LEFT: ITEMS ================= */}
         <div className="md:col-span-2 space-y-6">
@@ -63,13 +63,13 @@ export default function CartPage() {
 
               {/* Details */}
               <div className="flex-1 space-y-2">
-                <h2 className="font-medium text-neutral-600">{item.name}</h2>
+                <h2 className={`${bodoni.className} font-medium text-neutral-600`}>{item.name}</h2>
 
                 {/* ✅ SELECTED OPTIONS */}
                 {item.selectedOptions && item.selectedOptions.length > 0 && (
                   <div className="text-sm text-gray-500 space-y-1">
                     {item.selectedOptions.map((opt, i) => (
-                      <p key={i}>
+                      <p key={i} className={inter.className}>
                         {opt.fieldName}: {opt.value}
                       </p>
                     ))}
@@ -77,7 +77,7 @@ export default function CartPage() {
                 )}
 
                 {/* PRICE */}
-                <p className="font-semibold text-[#8D8B9D]">₹{item.price}</p>
+                <p className={`${inter.className} font-semibold text-[#8D8B9D]`}>₹{item.price}</p>
 
                 {/* QUANTITY */}
                 <div className="flex items-center gap-2">
@@ -90,7 +90,7 @@ export default function CartPage() {
                     -
                   </button>
 
-                  <span>{item.quantity}</span>
+                  <span className={bodoni.className}>{item.quantity}</span>
 
                   <button
                     onClick={() =>
@@ -122,17 +122,17 @@ export default function CartPage() {
             ORDER SUMMERY
           </h2>
 
-          <div className="space-y-2 text-sm">
-            <div className="flex justify-between text-gray-600">
-              <span>Subtotal</span>
+          <div className="text-sm">
+            <div className="flex justify-between text-gray-600 pb-3 border-b border-gray-300">
+              <span>Item subtotal</span>
               <span>₹{totalPrice}</span>
             </div>
-            <div className="flex justify-between text-gray-600">
+            <div className="flex justify-between text-gray-600 py-3 border-b border-gray-300">
               <span>GST</span>
               <span>₹{totalGstAmount}</span>
             </div>
-            <div className="flex justify-between font-bold text-lg border-t pt-2 mt-4">
-              <span>Total</span>
+            <div className='flex justify-between font-bold pt-6 text-lg text-neutral-600'>
+              <span className={bodoni.className} >Total</span>
               <span>₹{totalPrice + totalGstAmount}</span>
             </div>
           </div>
