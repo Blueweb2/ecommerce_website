@@ -1,133 +1,150 @@
 "use client";
 
 import Link from "next/link";
+import { Bodoni_Moda, Inter } from 'next/font/google';
 import { useCartStore } from "@/store/user/cart/useCartStore";
 import { ShoppingCart } from "lucide-react";
 
+const bodoni = Bodoni_Moda({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
+
+const inter = Inter({
+  subsets: ['latin'],
+});
+
 export default function CartPage() {
+
   const { items, totalPrice, totalGstAmount, removeItem, updateQuantity } = useCartStore();
 
   if (items.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 space-y-4">
-  <ShoppingCart className="w-12 h-12 text-gray-400" />
-  
-  <h2 className="text-xl font-semibold">
-    Your cart is empty
-  </h2>
+      <div className="flex flex-col items-center justify-center pt-36 pb-20 space-y-4">
+        <ShoppingCart className="w-12 h-12 text-gray-400" />
+        
+        <h2 className="text-xl font-semibold">
+          Your cart is empty
+        </h2>
 
-  <p className="text-gray-500 text-sm">
-    Looks like you haven’t added anything yet
-  </p>
+        <p className="text-gray-500 text-sm">
+          Looks like you haven’t added anything yet
+        </p>
 
-  <Link
-    href="/"
-    className="mt-2 px-6 py-2 border rounded hover:bg-black hover:text-white transition"
-  >
-    Continue Shopping
-  </Link>
-</div>
+        <Link
+          href="/"
+          className="mt-2 px-6 py-2 border rounded hover:bg-black hover:text-white transition"
+        >
+          Continue Shopping
+        </Link>
+      </div>
     );
   }
 
   return (
-    <div className="max-w-6xl mx-auto p-6 grid md:grid-cols-3 mt-7 md:mt-20 gap-8">
+    <section className="w-full bg-[#f5f5f5] py-10 font-sans">
+      <div className="max-w-[2000px] mx-auto p-6 grid md:grid-cols-3 mt-7 md:mt-20 gap-8 px-4 md:px-32">
       
-      {/* ================= LEFT: ITEMS ================= */}
-      <div className="md:col-span-2 space-y-6">
-        <h1 className="text-2xl font-semibold">Shopping Cart</h1>
+        {/* ================= LEFT: ITEMS ================= */}
+        <div className="md:col-span-2 space-y-6">
+          <h1 className={`${bodoni.className} text-[30px] text-neutral-600 font-semibold border-b border-gray-300 pb-5`}>Shopping Cart</h1>
 
-        {items.map((item, index) => (
-          <div
-            key={`${item.productId}-${item.variantId || "base"}-${index}`}
-            className="flex gap-4 border p-4 rounded-lg"
-          >
-            {/* Image */}
-            <img
-              src={item.image || "/placeholder.png"}
-              alt={item.name}
-              className="w-24 h-24 object-cover rounded"
-            />
+          {items.map((item, index) => (
+            <div
+              key={`${item.productId}-${item.variantId || "base"}-${index}`}
+              className="flex gap-4"
+            >
+              {/* Image */}
+              <img
+                src={item.image || "/placeholder.png"}
+                alt={item.name}
+                className="w-30 h-33 object-cover"
+              />
 
-            {/* Details */}
-            <div className="flex-1 space-y-2">
-              <h2 className="font-medium">{item.name}</h2>
+              {/* Details */}
+              <div className="flex-1 space-y-2">
+                <h2 className="font-medium text-neutral-600">{item.name}</h2>
 
-              {/* ✅ SELECTED OPTIONS */}
-              {item.selectedOptions && item.selectedOptions.length > 0 && (
-                <div className="text-sm text-gray-500 space-y-1">
-                  {item.selectedOptions.map((opt, i) => (
-                    <p key={i}>
-                      {opt.fieldName}: {opt.value}
-                    </p>
-                  ))}
+                {/* ✅ SELECTED OPTIONS */}
+                {item.selectedOptions && item.selectedOptions.length > 0 && (
+                  <div className="text-sm text-gray-500 space-y-1">
+                    {item.selectedOptions.map((opt, i) => (
+                      <p key={i}>
+                        {opt.fieldName}: {opt.value}
+                      </p>
+                    ))}
+                  </div>
+                )}
+
+                {/* PRICE */}
+                <p className="font-semibold text-[#8D8B9D]">₹{item.price}</p>
+
+                {/* QUANTITY */}
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() =>
+                      updateQuantity(item, item.quantity - 1)
+                    }
+                    className="px-2 border rounded-[50%] border-[#8D8B9D] text-[#8D8B9D]"
+                  >
+                    -
+                  </button>
+
+                  <span>{item.quantity}</span>
+
+                  <button
+                    onClick={() =>
+                      updateQuantity(item, item.quantity + 1)
+                    }
+                    className="px-2 border rounded-[50%] border-[#8D8B9D] text-[#8D8B9D]"
+                  >
+                    +
+                  </button>
                 </div>
-              )}
 
-              {/* PRICE */}
-              <p className="font-semibold">₹{item.price}</p>
-
-              {/* QUANTITY */}
-              <div className="flex items-center gap-2">
+                {/* REMOVE */}
                 <button
-                  onClick={() =>
-                    updateQuantity(item, item.quantity - 1)
-                  }
-                  className="px-2 border"
+                  onClick={() => removeItem(item)}
+                  className="text-[#8D8B9D] text-sm"
                 >
-                  -
-                </button>
-
-                <span>{item.quantity}</span>
-
-                <button
-                  onClick={() =>
-                    updateQuantity(item, item.quantity + 1)
-                  }
-                  className="px-2 border"
-                >
-                  +
+                  Remove from cart
                 </button>
               </div>
-
-              {/* REMOVE */}
-              <button
-                onClick={() => removeItem(item)}
-                className="text-red-500 text-sm"
-              >
-                Remove
-              </button>
             </div>
-          </div>
-        ))}
-      </div>
-
-      {/* ================= RIGHT: SUMMARY ================= */}
-      <div className="border p-6 rounded-lg h-fit space-y-4 md:mt-14">
-        <h2 className="text-lg font-semibold">Order Summary</h2>
-
-        <div className="space-y-2 text-sm">
-          <div className="flex justify-between text-gray-600">
-            <span>Subtotal</span>
-            <span>₹{totalPrice}</span>
-          </div>
-          <div className="flex justify-between text-gray-600">
-            <span>GST</span>
-            <span>₹{totalGstAmount}</span>
-          </div>
-          <div className="flex justify-between font-bold text-lg border-t pt-2 mt-4">
-            <span>Total</span>
-            <span>₹{totalPrice + totalGstAmount}</span>
-          </div>
+          ))}
         </div>
 
-        <Link
-          href="/checkout"
-          className="block w-full text-center bg-black text-white py-2 rounded hover:bg-gray-800"
-        >
-          Proceed to Checkout →
-        </Link>
+        {/* ================= RIGHT: SUMMARY ================= */}
+        <div className="h-fit space-y-4 md:mt-14">
+          <h2
+            className={`${bodoni.className} mb-3 font-normal tracking-tight text-neutral-600`}
+          >
+            ORDER SUMMERY
+          </h2>
+
+          <div className="space-y-2 text-sm">
+            <div className="flex justify-between text-gray-600">
+              <span>Subtotal</span>
+              <span>₹{totalPrice}</span>
+            </div>
+            <div className="flex justify-between text-gray-600">
+              <span>GST</span>
+              <span>₹{totalGstAmount}</span>
+            </div>
+            <div className="flex justify-between font-bold text-lg border-t pt-2 mt-4">
+              <span>Total</span>
+              <span>₹{totalPrice + totalGstAmount}</span>
+            </div>
+          </div>
+
+          <Link
+            href="/checkout"
+            className="block w-full text-center bg-black text-white py-2 hover:bg-gray-800"
+          >
+            Proceed to Checkout →
+          </Link>
+        </div>
       </div>
-    </div>
+    </section>
   );
 }

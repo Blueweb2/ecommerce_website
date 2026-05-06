@@ -67,13 +67,13 @@ export default function NewInSection() {
   );
 
   return (
-    <section className="w-full bg-[#f5f5f5] py-10 font-sans">
+    <section className="w-full bg-[#f5f5f5] py-10">
       <div className="max-w-[2000px] mx-auto flex flex-col md:flex-row gap-6 md:gap-0 items-stretch px-4 md:px-32">
 
-        {/* Left Info Panel    */}
+        {/* Left Info Panel */}
         <div className="md:w-[25%] flex-shrink-0 flex flex-col justify-center pr-3">
           <h2
-            className={`${bodoni.className} mb-3 text-[45px] font-normal tracking-tight text-neutral-600`}
+            className={`${bodoni.className} mb-3 text-[clamp(25px,2.5vw,42px)] font-normal tracking-tight text-neutral-600`}
           >
             New In
           </h2>
