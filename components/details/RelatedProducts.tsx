@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Handbag } from "lucide-react";
 import api from "@/lib/api/axios";
-import { optimizeCloudinaryUrl, getPrimaryProductImage } from "@/lib/constants/admin-catalog";
+import { optimizeCloudinaryUrl } from "@/lib/constants/admin-catalog";
 import { bodoni, inter } from "@/lib/fonts";
 
 type ImageType = {
@@ -104,44 +104,49 @@ export default function RelatedProducts({ product }: Props) {
       {loading && <div className="text-center text-gray-500">Loading...</div>}
 
       <div className="flex gap-6 overflow-x-auto scrollbar-hide">
-        {products.map((item) => (
-          <div
-            key={item._id}
-            className="group w-[150px] flex-shrink-0 cursor-pointer lg:w-[290px]"
-          >
-            <div className="relative aspect-[4/5] overflow-hidden bg-gray-100">
-              <img
-                src={optimizeCloudinaryUrl(getPrimaryProductImage(item.images)?.url) || "/placeholder.png"}
-                alt={item.name}
-                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-              />
+        {products.map((item) => {
+          const primaryImage =
+            item.images?.find((image) => image.isPrimary) || item.images?.[0];
 
-              <div className="absolute right-4 bottom-4 flex h-10 w-10 translate-y-2 items-center justify-center rounded-full bg-white/80 text-black opacity-0 shadow-sm backdrop-blur-sm transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
-                <Handbag size={18} />
+          return (
+            <div
+              key={item._id}
+              className="group w-[150px] flex-shrink-0 cursor-pointer lg:w-[290px]"
+            >
+              <div className="relative aspect-[4/5] overflow-hidden bg-gray-100">
+                <img
+                  src={optimizeCloudinaryUrl(primaryImage?.url) || "/placeholder.png"}
+                  alt={item.name}
+                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+
+                <div className="absolute right-4 bottom-4 flex h-10 w-10 translate-y-2 items-center justify-center rounded-full bg-white/80 text-black opacity-0 shadow-sm backdrop-blur-sm transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+                  <Handbag size={18} />
+                </div>
               </div>
-            </div>
 
-            <div className="mt-4 space-y-1">
-              <h3 className={`${bodoni.className} text-xs font-black uppercase tracking-widest text-neutral-600`}>
-                {item.name}
-              </h3>
-              <p className={`${inter.className} line-clamp-1 text-[10px] font-medium text-gray-400`}>
-                {item.description}
-              </p>
-              <div className="flex items-center gap-2 pt-1">
-                <p className={`${inter.className} text-sm font-black text-[#8D8B9D]`}>
-                  Rs.
-                  {Math.round(
-                    item.price * (1 + (item.gstPercentage || 0) / 100)
-                  )}
+              <div className="mt-4 space-y-1">
+                <h3 className={`${bodoni.className} text-xs font-black uppercase tracking-widest text-neutral-600`}>
+                  {item.name}
+                </h3>
+                <p className={`${inter.className} line-clamp-1 text-[10px] font-medium text-gray-400`}>
+                  {item.description}
                 </p>
-                <span className="text-[10px] font-bold uppercase tracking-tighter text-gray-400">
-                  Incl. GST
-                </span>
+                <div className="flex items-center gap-2 pt-1">
+                  <p className={`${inter.className} text-sm font-black text-[#8D8B9D]`}>
+                    Rs.
+                    {Math.round(
+                      item.price * (1 + (item.gstPercentage || 0) / 100)
+                    )}
+                  </p>
+                  <span className="text-[10px] font-bold uppercase tracking-tighter text-gray-400">
+                    Incl. GST
+                  </span>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {!loading && products.length === 0 && (

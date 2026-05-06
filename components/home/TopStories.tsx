@@ -76,32 +76,32 @@ export default function TopStories() {
   };
 
   return (
-    <section className="bg-[#f5f5f5] py-12">
+    <section className="bg-[#f5f5f5] pt-12">
       <div className="max-w-[2000px] mx-auto px-4 md:px-32">
 
         {/* TITLE */}
-        <h2 className={`${bodoni.className} border-t-2 border-gray-300 py-5 text-[30px] font-normal tracking-tight text-neutral-600`}>
+        <h2 className={`${bodoni.className} border-t-2 border-gray-300 py-5 text-[clamp(25px,2.5vw,32px)] font-normal tracking-tight text-neutral-600`}>
           TOP STORIES ON
         </h2>
 
         {/* STORIES */}
-        <div className="flex gap-6 overflow-x-auto scrollbar-hide scroll-smooth pb-14 border-b-2 border-gray-300 text-[#8D8B9D]">
+        <div className="flex gap-6 overflow-x-auto scrollbar-hide scroll-smooth pb-14 text-[#8D8B9D]">
           {stories.map((story) => (
             <div
               key={story._id}
-              className="w-[200px] flex flex-col justify-between flex-shrink-0"
+              className="w-[250px] flex flex-col justify-between flex-shrink-0"
             >
               {/* IMAGE */}
               <Link
                 href={`/stories/${story.slug}`}
-                className="flex justify-center h-56 mb-4 relative overflow-hidden"
+                className="flex justify-center h-70 mb-4 relative overflow-hidden"
               >
                 <Image
                   src={story.image.url}
                   alt={story.image.alt || story.title}
                   fill
                   sizes="200px"
-                  className="object-cover"
+                  className="object-fill"
                 />
               </Link>
 

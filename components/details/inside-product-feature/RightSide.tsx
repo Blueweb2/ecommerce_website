@@ -38,13 +38,15 @@ const RightSide = ({ product }: Props) => {
   const { user } = useAuthStore();
 
   const isWishlisted = isInWishlist(product._id);
+  const primaryImageUrl =
+    getPrimaryProductImage(product.images)?.url || "/placeholder.png";
 
   const handleWishlistToggle = async () => {
     toggleWishlist({
       _id: product._id,
       name: product.name,
       price: product.price,
-      image: getPrimaryProductImage(product.images)?.url,
+      image: primaryImageUrl,
     });
 
     if (user) {
@@ -145,7 +147,7 @@ const RightSide = ({ product }: Props) => {
     addItem({
       productId: product._id,
       name: product.name,
-      image: getPrimaryProductImage(product.images)?.url,
+      image: primaryImageUrl,
       price,
       quantity: quantity,
       gstPercentage: product.gstPercentage || 0,

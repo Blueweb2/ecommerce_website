@@ -60,7 +60,7 @@ export default function ShopSection() {
 
         {/* TITLE */}
         <h2 className={`${bodoni.className} mb-6 border-t-2 border-gray-300 pt-8 text-center 
-        text-[30px] font-normal tracking-tight text-neutral-600`}>
+        text-[clamp(25px,2.5vw,32px)] font-normal tracking-tight text-neutral-600`}>
           Discover ZENFAZ Collection
         </h2>
 
@@ -99,12 +99,12 @@ export default function ShopSection() {
                 {/* IMAGE */}
                 <Link
                   href={`/product/${product.slug}`}
-                  className="flex justify-center mb-4"
+                  className="flex justify-center items-center mb-4"
                 >
                   <img
                     src={product.images?.[0]?.url || "/placeholder.png"}
                     alt={product.name}
-                    className="h-40 md:h-60 object-cover w-full"
+                    className="h-40 md:h-90 object-fill w-full"
                   />
                 </Link>
 
