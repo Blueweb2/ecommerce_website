@@ -3,20 +3,11 @@
 import { useState, useEffect } from "react";
 import { Heart, ChevronDown, Truck } from "lucide-react";
 import { toast } from "react-hot-toast";
-import { Bodoni_Moda, Inter } from 'next/font/google';
 import { useCartStore } from "@/store/user/cart/useCartStore";
 import { useWishlistStore } from "@/store/user/wishlist/useWishlistStore";
 import { wishlistAPI } from "@/lib/api/wishlist.api";
 import { useAuthStore } from "@/store/auth/useAuthStore";
-
-const bodoni = Bodoni_Moda({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
-
-const inter = Inter({
-  subsets: ['latin'],
-});
+import { bodoni, inter } from "@/lib/fonts";
 
 type Props = {
   product: any;

@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { Handbag } from "lucide-react";
-import { Bodoni_Moda, Inter } from 'next/font/google';
 import api from "@/lib/api/axios";
 import { optimizeCloudinaryUrl } from "@/lib/constants/admin-catalog";
+import { bodoni, inter } from "@/lib/fonts";
 
 type ImageType = {
   url: string;
@@ -27,15 +27,6 @@ type Props = {
     _id?: string;
   };
 };
-
-const bodoni = Bodoni_Moda({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
-
-const inter = Inter({
-  subsets: ['latin'],
-});
 
 export default function RelatedProducts({ product }: Props) {
 

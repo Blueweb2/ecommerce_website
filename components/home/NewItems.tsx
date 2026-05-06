@@ -2,20 +2,11 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Bodoni_Moda, Inter } from 'next/font/google';
 import { useProductStore } from "@/store/user/product/useProductStore";
 import { Product } from "@/types/product";
 import ProductCard from "@/components/product/ProductCard";
 import ProductCardSkeleton from "@/components/ui/ProductCardSkeleton";
-
-const bodoni = Bodoni_Moda({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
-
-const inter = Inter({
-  subsets: ['latin'],
-});
+import { bodoni, inter } from "@/lib/fonts";
 
 export default function NewInSection() {
 

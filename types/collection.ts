@@ -38,6 +38,7 @@ export type Collection = {
   _id?: string;
   title?: string;
   name?: string;
+  slug?: string;
   description?: string;
   excerpt?: string;
   bannerImage?: CollectionImage;

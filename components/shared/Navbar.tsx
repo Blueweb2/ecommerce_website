@@ -108,71 +108,81 @@ export default function Navbar() {
             </div>
           </Link>
 
-          <nav className="relative font-brand-sans flex items-center gap-8 text-sm tracking-[1.5px] text-white">
-
-            {/* LINKS */}
+          <nav
+            className="relative font-brand-sans flex items-center gap-8 text-sm tracking-[1.5px] text-white"
+            onMouseLeave={() => setActiveCategory(null)}
+          >
+            {/* NEW IN */}
             <Link href="/new-in" className={linkClass("/new-in")}>
               New In
             </Link>
 
+            {/* DYNAMIC CATEGORIES */}
             {categories.map((cat: any) => (
-              <Link 
-                href="/sale" 
-                className={linkClass("/sale")} 
-                key={cat._id} 
-                onMouseEnter={() => setActiveCategory(cat._id)}
-              >
-                {cat.name}
+          
+               <Link href={`/category/${cat.slug}`} className={linkClass(`/category/${cat.slug}`)}  onMouseEnter={() => setActiveCategory(cat._id)} key={cat._id}>
+                 {cat.name}
               </Link>
             ))}
 
+            {/* SALE */}
             <Link href="/sale" className={linkClass("/sale")}>
               Sale
             </Link>
 
-            {/* ✅ GLOBAL DROPDOWN */}
+            {/* GLOBAL DROPDOWN */}
             {activeCategory && (
               <div
-                className="absolute top-full left-1/2 -translate-x-1/2 w-screen bg-white text-black shadow-xl z-50 py-10"
+                className="absolute top-full left-1/2 -translate-x-1/2 w-screen bg-white text-black shadow-2xl border-t border-gray-200 z-50 py-10"
                 onMouseEnter={() => setActiveCategory(activeCategory)}
                 onMouseLeave={() => setActiveCategory(null)}
               >
-                <div className="max-w-[1200px] mx-auto px-10">
-
-                  {/* FIND ACTIVE CATEGORY */}
+                <div className="max-w-[1300px] mx-auto px-10">
                   {categories
-                    .filter((cat) => cat._id === activeCategory)
+                    .filter((cat: any) => cat._id === activeCategory)
                     .map((cat: any) => (
                       <div key={cat._id}>
 
-                        {/* HEADING */}
-                        <h2 className="text-xs tracking-widest text-gray-500 uppercase mb-6">
-                          {cat.name}
-                        </h2>
-
-                        {/* ITEMS */}
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-y-4 gap-x-16">
-
-                          {cat.children
-                            .flatMap((sub: any) => [
-                              { _id: sub._id, name: sub.name, slug: sub.slug },
-                              ...(sub.children || []),
-                            ])
-                            .map((item: any) => (
-                              <Link
-                                key={item._id}
-                                href={`/category/${item.slug}`}
-                                className="text-sm text-gray-800 hover:text-black"
-                              >
-                                {item.name}
-                              </Link>
-                            ))}
-
+                        {/* MAIN CATEGORY TITLE */}
+                        <div className="mb-8">
+                          <Link
+                            href={`/category/${cat.slug}`}
+                            className="text-lg font-semibold uppercase tracking-wider hover:underline"
+                          >
+                            {cat.name}
+                          </Link>
                         </div>
 
+                        {/* SUBCATEGORY GRID */}
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-x-16 gap-y-10">
+                          {cat.children?.map((sub: any) => (
+                            <div key={sub._id} className="space-y-3">
+
+                              {/* SUB CATEGORY */}
+                              <Link
+                                href={`/category/${sub.slug}`}
+                                className="block text-sm font-semibold uppercase tracking-wide text-black hover:text-gray-600"
+                              >
+                                {sub.name}
+                              </Link>
+
+                              {/* CHILD CATEGORIES */}
+                              <div className="flex flex-col gap-2">
+                                {sub.children?.map((child: any) => (
+                                  <Link
+                                    key={child._id}
+                                    href={`/category/${child.slug}`}
+                                    className="text-sm text-gray-600 hover:text-black transition-colors"
+                                  >
+                                    {child.name}
+                                  </Link>
+                                ))}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     ))}
-
                 </div>
               </div>
             )}

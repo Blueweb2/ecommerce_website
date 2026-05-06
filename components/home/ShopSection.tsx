@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { Bodoni_Moda, Inter } from 'next/font/google';
 import { productAPI } from "@/lib/api/product.api";
+import { bodoni, inter } from "@/lib/fonts";
 
 type Product = {
   _id: string;
@@ -15,15 +15,6 @@ type Product = {
 };
 
 const tabs = ["Featured", "Best Sellers", "Top Rated"];
-
-const bodoni = Bodoni_Moda({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
-
-const inter = Inter({
-  subsets: ['latin'],
-});
 
 export default function ShopSection() {
 
