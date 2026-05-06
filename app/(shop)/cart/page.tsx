@@ -68,25 +68,34 @@ export default function CartPage() {
                 )}
 
                 {/* PRICE */}
-                <p className="font-semibold text-[#8D8B9D]">₹{item.price}</p>
+                <p className="font-semibold text-[#8D8B9D]">
+                  ₹{item.price} {item.isFabric && <span className="text-xs">/ {item.unit || "meter"}</span>}
+                </p>
 
                 {/* QUANTITY */}
                 <div className="flex items-center gap-2">
                   <button
-                    onClick={() =>
-                      updateQuantity(item, item.quantity - 1)
-                    }
+                    onClick={() => {
+                      const step = item.isFabric ? (item.stepQty || 1) : 1;
+                      const min = item.isFabric ? (item.minOrderQty || 1) : 1;
+                      const newQty = Math.max(min, Number((item.quantity - step).toFixed(2)));
+                      updateQuantity(item, newQty);
+                    }}
                     className="px-2 border rounded-[50%] border-[#8D8B9D] text-[#8D8B9D]"
                   >
                     -
                   </button>
 
-                  <span>{item.quantity}</span>
+                  <span className="text-sm font-medium">
+                    {item.quantity} {item.isFabric && (item.unit || "meters")}
+                  </span>
 
                   <button
-                    onClick={() =>
-                      updateQuantity(item, item.quantity + 1)
-                    }
+                    onClick={() => {
+                      const step = item.isFabric ? (item.stepQty || 1) : 1;
+                      const newQty = Number((item.quantity + step).toFixed(2));
+                      updateQuantity(item, newQty);
+                    }}
                     className="px-2 border rounded-[50%] border-[#8D8B9D] text-[#8D8B9D]"
                   >
                     +

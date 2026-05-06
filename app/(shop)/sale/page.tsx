@@ -138,7 +138,7 @@ export default function SalePage() {
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-4 gap-y-10">
             {products.map((product: CatalogProduct) => {
               const imageUrl =
-                product.images?.[0]?.url || "/placeholder.png";
+                (product.images?.find((img: any) => img.isPrimary) || product.images?.[0])?.url || "/placeholder.png";
               const discount = getDiscountPercent(
                 product.price,
                 product.discountPrice ?? 0

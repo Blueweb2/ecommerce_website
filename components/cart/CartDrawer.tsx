@@ -59,27 +59,34 @@ export default function CartDrawer() {
                   )}
 
                   <p className="text-sm text-gray-500">
-                    ₹{item.price}
+                    ₹{item.price} {item.isFabric && <span className="text-xs">/ {item.unit || "meter"}</span>}
                   </p>
 
                   {/* Quantity */}
                   <div className="flex items-center gap-2 mt-2">
                     <button
-                      onClick={() =>
-                        updateQuantity(item, item.quantity - 1)
-                      }
-                      className="px-2 border"
+                      onClick={() => {
+                        const step = item.isFabric ? (item.stepQty || 1) : 1;
+                        const min = item.isFabric ? (item.minOrderQty || 1) : 1;
+                        const newQty = Math.max(min, Number((item.quantity - step).toFixed(2)));
+                        updateQuantity(item, newQty);
+                      }}
+                      className="px-2 border text-gray-600 hover:bg-gray-50"
                     >
                       -
                     </button>
 
-                    <span>{item.quantity}</span>
+                    <span className="text-sm">
+                      {item.quantity} {item.isFabric && (item.unit || "meters")}
+                    </span>
 
                     <button
-                      onClick={() =>
-                        updateQuantity(item, item.quantity + 1)
-                      }
-                      className="px-2 border"
+                      onClick={() => {
+                        const step = item.isFabric ? (item.stepQty || 1) : 1;
+                        const newQty = Number((item.quantity + step).toFixed(2));
+                        updateQuantity(item, newQty);
+                      }}
+                      className="px-2 border text-gray-600 hover:bg-gray-50"
                     >
                       +
                     </button>

@@ -63,7 +63,7 @@ export default function CollectionForm({ initialData, onSubmit }: Props) {
       setLoading(true);
 
       const previous = form.image;
-      const uploaded = await uploadSingleImage(file, "collections");
+      const uploaded = await uploadSingleImage(file, "ecommerce/collections");
 
       if (previous?.public_id) {
         await deleteImage(previous.public_id);

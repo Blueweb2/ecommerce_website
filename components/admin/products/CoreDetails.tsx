@@ -48,6 +48,77 @@ export default function CoreDetails({ form, setForm, errors }: Props) {
           </p>
         </div>
 
+        {/* PRODUCT TYPE (Fabric vs Normal) */}
+        <div className="space-y-2 md:col-span-2">
+          <label className="text-sm font-bold text-slate-700 uppercase tracking-wider">
+            Product Type
+          </label>
+          <div className="flex items-center gap-4">
+            <button
+              type="button"
+              onClick={() => setForm((prev: any) => ({ ...prev, isFabric: false }))}
+              className={`flex-1 rounded-2xl border px-4 py-3 font-bold transition ${
+                !form.isFabric
+                  ? "border-emerald-500 bg-emerald-50 text-emerald-700 ring-2 ring-emerald-500/20"
+                  : "border-slate-200 bg-white text-slate-500 hover:bg-slate-50"
+              }`}
+            >
+              Normal Product
+            </button>
+            <button
+              type="button"
+              onClick={() => setForm((prev: any) => ({ ...prev, isFabric: true }))}
+              className={`flex-1 rounded-2xl border px-4 py-3 font-bold transition ${
+                form.isFabric
+                  ? "border-emerald-500 bg-emerald-50 text-emerald-700 ring-2 ring-emerald-500/20"
+                  : "border-slate-200 bg-white text-slate-500 hover:bg-slate-50"
+              }`}
+            >
+              Fabric (Length-based)
+            </button>
+          </div>
+        </div>
+
+        {/* FABRIC CONFIGURATION */}
+        {form.isFabric && (
+          <div className="md:col-span-2 grid gap-6 md:grid-cols-3 rounded-2xl border border-blue-100 bg-blue-50/50 p-6">
+            <div className="space-y-2">
+              <label className="text-sm font-bold text-slate-700 uppercase tracking-wider">
+                Unit (e.g. meter)
+              </label>
+              <input
+                value={form.unit}
+                onChange={(e) => setForm((prev: any) => ({ ...prev, unit: e.target.value }))}
+                className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-50"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-bold text-slate-700 uppercase tracking-wider">
+                Min. Order Qty
+              </label>
+              <input
+                type="number"
+                step="0.1"
+                value={form.minOrderQty}
+                onChange={(e) => setForm((prev: any) => ({ ...prev, minOrderQty: e.target.value }))}
+                className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-50"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-bold text-slate-700 uppercase tracking-wider">
+                Step Qty (Increments)
+              </label>
+              <input
+                type="number"
+                step="0.1"
+                value={form.stepQty}
+                onChange={(e) => setForm((prev: any) => ({ ...prev, stepQty: e.target.value }))}
+                className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-50"
+              />
+            </div>
+          </div>
+        )}
+
         {/* Product Name */}
         <div className="space-y-2 md:col-span-2">
           <label className="text-sm font-bold text-slate-700 uppercase tracking-wider">

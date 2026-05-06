@@ -13,4 +13,9 @@ export type Product = {
   sections?: string[];
   isOnSale?: boolean;
   gstPercentage?: number;
+  
+  isFabric?: boolean;
+  unit?: string;
+  minOrderQty?: number;
+  stepQty?: number;
 };

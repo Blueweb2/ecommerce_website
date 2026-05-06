@@ -184,7 +184,7 @@ export default function PaymentStep({
                 </p>
               )}
 
-              <p className="text-xs text-gray-500">Qty: {item.quantity}</p>
+              <p className="text-xs text-gray-500">Qty: {item.quantity} {item.isFabric && (item.unit || "meters")}</p>
             </div>
 
             <p className="font-medium text-sm">₹{item.price * item.quantity}</p>

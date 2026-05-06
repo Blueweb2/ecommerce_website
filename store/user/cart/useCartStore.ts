@@ -24,6 +24,11 @@ export interface CartItem {
 
   variantId?: string;
   selectedOptions?: SelectedOption[];
+
+  isFabric?: boolean;
+  unit?: string;
+  minOrderQty?: number;
+  stepQty?: number;
 }
 
 interface CartState {
@@ -98,6 +103,10 @@ export const useCartStore = create<CartState>()(
             selectedOptions: i.selectedOptions || [],
             gstPercentage: i.gstPercentage || 0,
             gstAmount: i.gstAmount || 0,
+            isFabric: i.product.isFabric,
+            unit: i.product.unit,
+            minOrderQty: i.product.minOrderQty,
+            stepQty: i.product.stepQty,
           }));
 
           set({

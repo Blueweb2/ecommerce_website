@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Product } from '@/types/product';
-import { optimizeCloudinaryUrl } from '@/lib/constants/admin-catalog';
+import { optimizeCloudinaryUrl, getPrimaryProductImage } from '@/lib/constants/admin-catalog';
 import { inter } from '@/lib/fonts';
 
 interface ProductCardProps {
@@ -9,7 +9,8 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
-  const imageUrl = optimizeCloudinaryUrl(product.images?.[0]?.url) || '/placeholder.png';
+  const primaryImg = getPrimaryProductImage(product.images);
+  const imageUrl = optimizeCloudinaryUrl(primaryImg?.url) || '/placeholder.png';
   // const hasSale = product.discountPrice && product.discountPrice < product.price;
 
   return (

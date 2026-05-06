@@ -8,6 +8,7 @@ import { useWishlistStore } from "@/store/user/wishlist/useWishlistStore";
 import { wishlistAPI } from "@/lib/api/wishlist.api";
 import { useAuthStore } from "@/store/auth/useAuthStore";
 import { bodoni, inter } from "@/lib/fonts";
+import { getPrimaryProductImage } from "@/lib/constants/admin-catalog";
 
 type Props = {
   product: any;
@@ -27,6 +28,12 @@ const RightSide = ({ product }: Props) => {
 
   const [customData, setCustomData] = useState<CustomDataItem[]>([]);
 
+  // Fabric / Quantity State
+  const isFabric = product?.isFabric;
+  const stepQty = isFabric ? product?.stepQty || 1 : 1;
+  const minQty = isFabric ? product?.minOrderQty || 1 : 1;
+  const [quantity, setQuantity] = useState<number>(minQty);
+
   const { toggleWishlist, isInWishlist } = useWishlistStore();
   const { user } = useAuthStore();
 
@@ -37,7 +44,7 @@ const RightSide = ({ product }: Props) => {
       _id: product._id,
       name: product.name,
       price: product.price,
-      image: product.images?.[0]?.url,
+      image: getPrimaryProductImage(product.images)?.url,
     });
 
     if (user) {
@@ -138,12 +145,16 @@ const RightSide = ({ product }: Props) => {
     addItem({
       productId: product._id,
       name: product.name,
-      image: product.images?.[0]?.url,
+      image: getPrimaryProductImage(product.images)?.url,
       price,
-      quantity: 1,
+      quantity: quantity,
       gstPercentage: product.gstPercentage || 0,
       variantId: selectedVariant?.sku,
       selectedOptions,
+      isFabric: product.isFabric,
+      unit: product.unit,
+      minOrderQty: product.minOrderQty,
+      stepQty: product.stepQty,
     });
 
     toast.success("Added to cart");
@@ -160,7 +171,9 @@ const RightSide = ({ product }: Props) => {
       <div className="flex items-center gap-3">
         {discountPrice ? (
           <>
-            <p className="text-2xl font-bold text-[#8D8B9D]">₹{discountPrice}</p>
+            <p className="text-2xl font-bold text-[#8D8B9D]">
+              ₹{discountPrice}{isFabric && <span className="text-sm font-normal text-gray-400 ml-1">/ {product.unit || "meter"}</span>}
+            </p>
             <p className="text-lg text-red-400 line-through">₹{price}</p>
             <span className="rounded bg-red-600 px-2 py-1 text-xs font-bold tracking-wide text-white">
               {Math.round(((price - discountPrice) / price) * 100)}% OFF
@@ -168,7 +181,7 @@ const RightSide = ({ product }: Props) => {
           </>
         ) : (
           <p className="font-brand-display text-2xl font-bold text-[#8D8B9D]">
-            ₹{price}
+            ₹{price}{isFabric && <span className="text-sm font-normal text-gray-400 ml-1">/ {product.unit || "meter"}</span>}
           </p>
         )}
       </div>
@@ -219,6 +232,29 @@ const RightSide = ({ product }: Props) => {
       })()}
 
       <div className="flex flex-col gap-3">
+        {/* QUANTITY SELECTOR */}
+        <div>
+          <p className="mb-2 text-xs text-neutral-600 uppercase">Quantity {isFabric && `(${product.unit || "meter"})`}:</p>
+          <div className="flex items-center gap-4 w-fit border border-gray-300 rounded px-2 py-1">
+            <button
+              onClick={() => setQuantity((q) => Math.max(minQty, Number((q - stepQty).toFixed(2))))}
+              disabled={quantity <= minQty}
+              className="px-2 text-xl hover:text-black text-gray-500 disabled:opacity-50"
+            >
+              -
+            </button>
+            <span className="w-12 text-center font-medium text-black">
+              {quantity}
+            </span>
+            <button
+              onClick={() => setQuantity((q) => Number((q + stepQty).toFixed(2)))}
+              className="px-2 text-xl hover:text-black text-gray-500"
+            >
+              +
+            </button>
+          </div>
+        </div>
+
         <button
           disabled={!isValid || (product?.variants?.length > 0 && !selectedVariant)}
           onClick={handleAddToCart}

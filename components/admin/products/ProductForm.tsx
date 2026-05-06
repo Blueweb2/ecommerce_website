@@ -47,6 +47,11 @@ type ProductFormValues = {
     name: string;
     value: string;
   }[];
+
+  isFabric: boolean;
+  unit: string;
+  minOrderQty: number | string;
+  stepQty: number | string;
 };
 
 type Props = {
@@ -71,6 +76,10 @@ const defaultValues: ProductFormValues = {
   variants: [],
   specifications: [],
   primaryImageIndex: 0,
+  isFabric: false,
+  unit: "meter",
+  minOrderQty: 1,
+  stepQty: 0.5,
 };
 
 const normalize = (obj: Record<string, string>) =>
@@ -101,6 +110,10 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
         discountPrice: v.discountPrice ?? "",
       })) || [],
     specifications: initialData?.specifications || [],
+    isFabric: initialData?.isFabric ?? false,
+    unit: initialData?.unit || "meter",
+    minOrderQty: initialData?.minOrderQty ?? 1,
+    stepQty: initialData?.stepQty ?? 0.5,
   });
 
   const [customizable, setCustomizable] = useState({
@@ -214,6 +227,10 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
         primaryImageIndex: form.primaryImageIndex || 0,
         customizable: customizable.isCustomizable ? customizable : undefined,
         specifications: form.specifications.filter(s => s.name.trim() && s.value.trim()),
+        isFabric: form.isFabric,
+        unit: form.isFabric ? form.unit.trim() : "piece",
+        minOrderQty: form.isFabric ? Number(form.minOrderQty) || 1 : 1,
+        stepQty: form.isFabric ? Number(form.stepQty) || 1 : 1,
       };
 
       await onSubmit(payload, files);

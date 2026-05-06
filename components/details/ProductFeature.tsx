@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { useState, useEffect } from "react";
-import { optimizeCloudinaryUrl } from "@/lib/constants/admin-catalog";
+import { optimizeCloudinaryUrl, getPrimaryProductImage } from "@/lib/constants/admin-catalog";
 
 const Carousel = dynamic(() => import("./inside-product-feature/Carousel"),{
   loading: () => <p className="text-center py-10">Loading...</p>,
@@ -56,8 +56,8 @@ const ProductFeature = ({ onToggleLayout, product }: ProductFeatureProps) => {
   
 
   // fallback image (important)
-  const mainImage =
-    optimizeCloudinaryUrl(product?.images?.[0]?.url) || "/placeholder.png";
+  const primaryImg = getPrimaryProductImage(product?.images);
+  const mainImage = optimizeCloudinaryUrl(primaryImg?.url) || "/placeholder.png";
 
 
   // display only product images
