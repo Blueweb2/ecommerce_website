@@ -37,24 +37,6 @@ export default function CategoriesSlider() {
     fetchCategories();
   }, []);
 
-  const scroll = (direction: "left" | "right") => {
-    if (scrollRef.current) {
-
-      if(direction === 'right'){
-        scrollRef.current.scrollBy({
-          left: scrollRef.current.offsetWidth * 0.7,
-          behavior: "smooth",
-        });
-      } else if (direction === 'left'){
-        scrollRef.current.scrollBy({
-          left: -scrollRef.current.offsetWidth * 0.7,
-          behavior: "smooth",
-        });
-      }
-      
-    }
-  };
-
   return (
     <div>
       {/* HEADER */}
@@ -64,9 +46,7 @@ export default function CategoriesSlider() {
 
       {/* SLIDER */}
       <div ref={scrollRef} className="flex gap-4 overflow-x-auto scrollbar-hide">
-        {loading ? (
-          <p>Loading...</p>
-        ) : (
+        {!loading && (
           categories.map((cat) => (
             <Link key={cat._id} href={`/category/${cat.slug}`}>
               <div className="relative w-[200px] h-[250px] lg:w-[290px] lg:h-[330px]">
