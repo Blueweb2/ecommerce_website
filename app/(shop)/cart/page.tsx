@@ -49,7 +49,7 @@ export default function CartPage() {
               <img
                 src={item.image || "/placeholder.png"}
                 alt={item.name}
-                className="w-30 h-33 object-cover"
+                className="w-25 h-33 object-cover"
               />
 
               {/* Details */}
@@ -81,7 +81,7 @@ export default function CartPage() {
                     -
                   </button>
 
-                  <span className={bodoni.className}>{item.quantity}</span>
+                  <span className={`${bodoni.className} text-neutral-600`}>{item.quantity}</span>
 
                   <button
                     onClick={() =>
@@ -97,6 +97,7 @@ export default function CartPage() {
                 <button
                   onClick={() => removeItem(item)}
                   className="text-[#8D8B9D] text-sm"
+                  title="remove from cart"
                 >
                   Remove from cart
                 </button>
