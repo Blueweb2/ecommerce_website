@@ -82,7 +82,7 @@ export default function ShopSection() {
         </div>
 
         {/* PRODUCTS */}
-        <div className="flex gap-6 overflow-x-auto scrollbar-hide scroll-smooth">
+        <div className="flex gap-2 overflow-x-auto scrollbar-hide scroll-smooth">
 
           {loading ? (
             <div className="w-full h-[300px] md:h-[377px] lg:h-[455px] flex items-center justify-center">

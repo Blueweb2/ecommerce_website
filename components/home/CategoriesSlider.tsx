@@ -45,7 +45,7 @@ export default function CategoriesSlider() {
       </div>
 
       {/* SLIDER */}
-      <div ref={scrollRef} className="flex gap-4 overflow-x-auto scrollbar-hide">
+      <div ref={scrollRef} className="flex gap-2 overflow-x-auto scrollbar-hide">
         {!loading && (
           categories.map((cat) => (
             <Link key={cat._id} href={`/category/${cat.slug}`}>
