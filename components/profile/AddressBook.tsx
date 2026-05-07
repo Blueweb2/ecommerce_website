@@ -1,44 +1,3 @@
-// "use client";
-
-// import Link from "next/link";
-
-// const AddressBook = () => {
-//   return (
-//     <div className="w-full flex items-center justify-center mt-6 md:mt-0">
-//       <div className="text-center max-w-md px-6">
-
-//         {/* ICON */}
-//         <div className="flex justify-center mb-6">
-//           <div className="w-14 h-14 flex items-center justify-center border border-black rounded-full text-xl">
-//             !
-//           </div>
-//         </div>
-
-//         {/* TITLE */}
-//         <h2 className="text-xl md:text-2xl font-medium mb-3">
-//          You don’t have any saved addresses
-//         </h2>
-
-//         {/* DESCRIPTION */}
-//         <p className="text-gray-600 text-sm md:text-base mb-6 leading-relaxed">
-//          Add an address to check out more quickly
-//         </p>
-
-//         {/* CTA */}
-//         <Link
-//           href="/"
-//           className="text-sm underline underline-offset-4 hover:text-gray-800 transition"
-//         >
-//           Add an address
-//         </Link>
-
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default AddressBook;
-
 "use client";
 
 import axios from "axios";
@@ -47,6 +6,7 @@ import toast from "react-hot-toast";
 import { useAddressStore } from "@/store/user/address/useAddressStore";
 import { useAuthStore } from "@/store/auth/useAuthStore";
 import type { Address } from "@/types/address";
+import { bodoni, inter } from "@/lib/fonts";
 
 const emptyForm = {
   fullName: "",
@@ -69,14 +29,13 @@ const fieldLabels: Record<string, string> = {
 };
 
 const AddressBook = () => {
+
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState(emptyForm);
-
   const { user, loading: authLoading } = useAuthStore();
 
   const {
     addresses,
-    loading,
     fetchAddresses,
     addAddress,
     updateAddress,
@@ -142,7 +101,7 @@ const AddressBook = () => {
 
   return (
     <div className="max-w-3xl mx-auto">
-      <h2 className="text-xl font-semibold mb-4">My Addresses</h2>
+      <h2 className={`${bodoni.className} text-xl font-semibold mb-4 text-neutral-600`}>My Addresses</h2>
 
       {/* LIST */}
       <div className="space-y-4">
@@ -154,7 +113,7 @@ const AddressBook = () => {
           addresses.map((addr) => (
             <div
               key={addr._id}
-              className="border p-4 rounded flex justify-between"
+              className={`${inter.className} text-[#8D8B9D] border border-[#8D8B9D] p-4 flex justify-between`}
             >
               <div>
                 <p className="font-medium">{addr.fullName}</p>
@@ -165,12 +124,12 @@ const AddressBook = () => {
               </div>
 
               <div className="flex flex-col gap-2 text-sm">
-                <button onClick={() => handleEdit(addr)}>Edit</button>
-                <button onClick={() => handleDelete(addr._id!)}>
+                <button onClick={() => handleEdit(addr)} className="hover:text-black">Edit</button>
+                <button onClick={() => handleDelete(addr._id!)} className="hover:text-black">
                   Delete
                 </button>
                 {!addr.isDefault && (
-                  <button onClick={() => setDefault(addr._id!)}>
+                  <button onClick={() => setDefault(addr._id!)} className="hover:text-black">
                     Set Default
                   </button>
                 )}
@@ -182,9 +141,9 @@ const AddressBook = () => {
 
       {/* FORM */}
       <div className="mt-6 space-y-3">
-        <h3 className="font-semibold">
+        <h2 className={`${bodoni.className} text-xl font-semibold mb-4 text-neutral-600`}>
           {editingId ? "Edit Address" : "Add Address"}
-        </h3>
+        </h2>
 
         {Object.keys(emptyForm).map((key) => (
           <input
@@ -194,13 +153,13 @@ const AddressBook = () => {
             onChange={(e) =>
               setForm({ ...form, [key]: e.target.value })
             }
-            className="w-full border p-2 rounded"
+            className="w-full border p-2 outline-none border-[#8D8B9D] text-[#8D8B9D]"
           />
         ))}
 
         <button
           onClick={handleSubmit}
-          className="bg-black text-white px-4 py-2 rounded"
+          className="bg-black text-white px-4 py-2"
         >
           {editingId ? "Update" : "Add"}
         </button>

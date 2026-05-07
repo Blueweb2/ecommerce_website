@@ -7,6 +7,7 @@ import MyOrders from "@/components/profile/MyOrders";
 import AddressBook from "@/components/profile/AddressBook";
 import { useRouter } from "next/navigation";
 import PrivacySettings from "@/components/profile/PrivacySettings";
+import { bodoni, inter } from "@/lib/fonts";
 
 type TabType =
   | "Account-Details"
@@ -41,14 +42,14 @@ export default function ProfilePage() {
   };
 
 return (
-  <section className="px-4 md:px-20 mt-16">
+  <section className="px-4 md:px-20 mt-10 md:mt-20">
 
     {/* HEADER */}
     <div className="flex flex-col items-center justify-center border-b py-5 border-gray-300">
       <h5 className="text-gray-400 tracking-widest text-xs">
         MY ACCOUNT
       </h5>
-      <h2 className="font-medium text-2xl md:font-bold md:text-3xl">
+      <h2 className={`${bodoni.className} text-[clamp(25px,2.5vw,32px)] font-normal tracking-tight text-neutral-600`}>
         {components[state].heading}
       </h2>
     </div>
@@ -57,7 +58,7 @@ return (
     <div className="max-w-[2000px] mx-auto flex flex-col md:flex-row my-5">
 
       {/* SIDEBAR */}
-      <div className="md:w-[30%] w-full flex md:flex-col md:items-start md:justify-start gap-6">
+      <div className={`${inter.className} md:w-[30%] w-full flex md:flex-col md:items-start md:justify-start gap-6`}>
 
         <h3
           className={`pl-2 border-b md:border-b-0 md:border-l-2 cursor-pointer hover:text-black

@@ -19,6 +19,7 @@ import { loadRazorpay } from "@/lib/utils/loadRazorpay";
 import { orderAPI } from "@/lib/api/order.api";
 import { Order } from "@/types/order";
 import { getOrderTotals } from "@/lib/utils/orderTotals";
+import { bodoni } from "@/lib/fonts";
 
 interface RazorpaySuccessResponse {
   razorpay_order_id: string;
@@ -204,11 +205,11 @@ const MyOrders = () => {
 
   if (!loading && orders.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center rounded-3xl border-2 border-dashed border-gray-200 bg-gray-50 py-20 text-center">
+      <div className="flex flex-col items-center justify-center border-2 border-dashed border-gray-200 bg-gray-50 py-20 text-center">
         <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-white text-3xl shadow-sm">
           📦
         </div>
-        <h2 className="text-xl font-bold text-gray-900">No orders found</h2>
+        <h2 className={`${bodoni.className} text-xl font-bold text-neutral-600`}>No orders found</h2>
         <p className="mt-2 max-w-sm px-6 text-sm text-gray-500">
           You haven&apos;t placed any orders yet. Start shopping to see your
           order history here!
@@ -217,13 +218,13 @@ const MyOrders = () => {
           onClick={() => {
             window.location.href = "/";
           }}
-          className="mt-8 rounded-full bg-black px-8 py-3 font-bold text-white shadow-lg transition hover:bg-gray-800"
+          className="mt-8  bg-black px-8 py-3 font-bold text-white shadow-lg transition hover:bg-gray-800"
         >
           Start Shopping
         </button>
       </div>
     );
-  }
+  };
 
   return (
     <div className="space-y-6">
