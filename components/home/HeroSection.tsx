@@ -68,12 +68,13 @@ export default function HeroSection() {
 
   return (
     <section className="w-full bg-[#f5f5f5] py-8 mt-12 md:mt-20">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 h-[calc(100vh-120px)]">
+      
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 md:h-[calc(100vh-120px)]">
 
         {/* LEFT SLIDER */}
         <Link
           href={banners.hero[current]?.link || "/"}
-          className="relative overflow-hidden flex justify-center items-end p-6 text-white"
+          className="relative overflow-hidden flex justify-center items-end p-6 text-white h-[400px] sm:h-[500px] md:h-full"
         >
           {banners.hero.map((hero: any, index: number) => (
             <div
@@ -119,7 +120,7 @@ export default function HeroSection() {
           {banners.center && (
             <Link
               href={banners.center.link || "/"}
-              className="relative overflow-hidden h-full w-full"
+              className="relative overflow-hidden w-full h-[320px] md:h-full"
             >
               <Image
                 src={optimizeCloudinaryUrl(banners.center.image?.url) || "/placeholder.png"}
@@ -133,7 +134,7 @@ export default function HeroSection() {
           )}
 
           {/* RIGHT */}
-          <div className="flex lg:flex-col gap-3 lg:w-[60%] h-full">
+          <div className="flex lg:flex-col gap-3 lg:w-[60%] h-[150px] md:h-full">
 
             {/* TOP */}
             {banners.rightTop && (
