@@ -20,9 +20,9 @@ type Category = {
 
 
 const messages = [
-  'New arrivals, now dropping five days a week - discover now',
-  'Enjoy Free Standard Delivery on orders over €400',
-  "Subscribe to our emails to hear about our exclusive launches, new arrivals and more"
+  "Discover the latest ZENFAZ collections crafted for modern style",
+  "Enjoy Free Standard Delivery on all ZENFAZ orders over ₹40,000",
+  "Subscribe to ZENFAZ updates for exclusive drops and new arrivals"
 ];
 
 export default function Navbar() {
