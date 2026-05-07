@@ -58,8 +58,9 @@ return (
     <div className="max-w-[2000px] mx-auto flex flex-col md:flex-row my-5">
 
       {/* SIDEBAR */}
-      <div className={`${inter.className} md:w-[30%] w-full flex md:flex-col md:items-start md:justify-start gap-6`}>
-
+      <div
+        className={`${inter.className} md:w-[30%] w-full flex md:flex-col md:items-start md:justify-start gap-6 overflow-x-auto md:overflow-visible whitespace-nowrap pb-2 mb-5 custom-scrollbar`}
+      >
         <h3
           className={`pl-2 border-b md:border-b-0 md:border-l-2 cursor-pointer hover:text-black
           ${state === "Account-Details"

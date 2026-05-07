@@ -22,7 +22,6 @@ export default function WishlistPage() {
     ? `${user.name.split(" ")[0]}'s`
     : "My";
 
-    // className={`${bodoni.className} mb-3 text-[clamp(25px,2.5vw,32px)] font-normal tracking-tight text-neutral-600`}
   return (
     <section className="w-full">
       <div className="max-[2000] mx-auto py-10 mt-3  md:mt-20 px-4 md:px-32">
