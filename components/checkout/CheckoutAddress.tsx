@@ -93,14 +93,14 @@ export default function CheckoutAddress({
         <>
           <div className={`${inter.className} space-y-4`}>
             {addresses.length === 0 ? (
-              <div className="rounded-lg border-2 border-dashed py-6 text-center">
+              <div className="border-2 border-dashed border-[#8D8B9D] py-6 text-center">
                 <p className="mb-3 text-gray-500">
                   No addresses found.
                 </p>
 
                 <Link
                   href="/profile"
-                  className="text-sm font-medium underline"
+                  className="text-sm font-medium underline text-gray-500"
                 >
                   Add an address in your profile
                 </Link>

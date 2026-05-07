@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useCartUIStore } from "@/store/ui/useCartUIStore";
 import { useCartStore } from "@/store/user/cart/useCartStore";
 import { optimizeCloudinaryUrl } from "@/lib/constants/admin-catalog";
+import { bodoni, inter } from "@/lib/fonts";
 
 export default function CartDrawer() {
   const { isOpen, closeCart } = useCartUIStore();
@@ -27,17 +28,17 @@ export default function CartDrawer() {
       >
         {/* Header */}
         <div className="flex justify-between items-center p-4 border-b border-gray-300">
-          <Link href='/'>
+          <Link href='/' className="text-neutral-600">
             <ShoppingCart />
           </Link>
-          <h2 className="text-lg font-semibold">Your Cart</h2>
-          <button onClick={closeCart}>
+          <h2 className={`${bodoni.className} text-lg font-semibold text-neutral-600`}>Your Cart</h2>
+          <button onClick={closeCart} className="text-neutral-600">
             <X />
           </button>
         </div>
 
         {/* Items */}
-        <div className="p-4 space-y-4 overflow-y-auto h-[70%]">
+        <div className="p-4 space-y-4 overflow-y-auto h-[45%]">
           {items.length === 0 ? (
             <p className="text-gray-500">Cart is empty</p>
           ) : (
@@ -46,11 +47,11 @@ export default function CartDrawer() {
                 <img
                   src={optimizeCloudinaryUrl(item.image) || "/placeholder.png"}
                   alt={item.name}
-                  className="w-16 h-16 object-cover rounded"
+                  className="w-16 h-full object-cover"
                 />
 
                 <div className="flex-1">
-                  <p className="font-medium">{item.name}</p>
+                  <p className={`${bodoni.className} font-medium text-neutral-600`}>{item.name}</p>
                   
                   {item.selectedOptions && item.selectedOptions.length > 0 && (
                     <p className="text-xs text-gray-500">
@@ -71,7 +72,7 @@ export default function CartDrawer() {
                         const newQty = Math.max(min, Number((item.quantity - step).toFixed(2)));
                         updateQuantity(item, newQty);
                       }}
-                      className="px-2 border text-gray-600 hover:bg-gray-50"
+                      className="px-2 border rounded-[50%] text-gray-600 hover:bg-gray-50"
                     >
                       -
                     </button>
@@ -86,7 +87,7 @@ export default function CartDrawer() {
                         const newQty = Number((item.quantity + step).toFixed(2));
                         updateQuantity(item, newQty);
                       }}
-                      className="px-2 border text-gray-600 hover:bg-gray-50"
+                      className="px-2 border rounded-[50%] text-gray-600 hover:bg-gray-50"
                     >
                       +
                     </button>
@@ -95,7 +96,7 @@ export default function CartDrawer() {
                   {/* Remove */}
                   <button
                     onClick={() => removeItem(item)}
-                    className="text-red-500 text-sm mt-1"
+                    className={`${inter.className} text-red-500 text-sm mt-1`}
                   >
                     Remove
                   </button>
@@ -106,7 +107,7 @@ export default function CartDrawer() {
         </div>
 
         {/* Footer */}
-        <div className="absolute bottom-0 w-full p-4 border-t border-b border-gray-300 bg-white pb-20">
+        <div className="absolute bottom-0 w-full p-4 border-t border-gray-300 bg-white pb-20">
           <div className="space-y-1 mb-4 text-sm">
             <div className="flex justify-between text-gray-500">
               <span>Subtotal</span>
@@ -116,7 +117,7 @@ export default function CartDrawer() {
               <span>GST</span>
               <span>₹{totalGstAmount}</span>
             </div>
-            <div className="flex justify-between font-bold text-lg border-t pt-2 mt-2">
+            <div className={`${bodoni.className} text-neutral-600 flex justify-between font-bold text-lg border-t border-gray-300 pt-2 mt-2`}>
               <span>Total</span>
               <span>₹{totalPrice + totalGstAmount}</span>
             </div>
@@ -127,7 +128,7 @@ export default function CartDrawer() {
   <Link
     href="/cart"
     onClick={closeCart}
-    className="block text-center w-full border py-2 rounded 
+    className="block text-center w-full border border-neutral-600 py-2 
               hover:bg-gray-100 transition"
   >
     View Cart →
@@ -137,7 +138,7 @@ export default function CartDrawer() {
   <Link
     href="/checkout"
     onClick={closeCart}
-    className="block text-center w-full bg-black text-white py-2 rounded 
+    className="block text-center w-full bg-black text-white py-2 
               hover:bg-gray-800 transition"
   >
     Checkout →
