@@ -71,7 +71,7 @@ export default function WishlistItem({ item }: Props) {
         <img
           src={optimizeCloudinaryUrl(item.image) || "/placeholder.png"}
           alt={item.name}
-          className="w-full h-[300px] object-cover"
+          className="w-full h-[200px] md:h-[330px] object-cover"
         />
 
         {/* REMOVE BUTTON */}
@@ -93,15 +93,11 @@ export default function WishlistItem({ item }: Props) {
 
       {/* DETAILS */}
       <div className="mt-4 space-y-1">
-        <h3 className="text-xs tracking-wide font-semibold uppercase">
-          PRODUCT
-        </h3>
-
-        <p className="text-sm text-gray-700 line-clamp-2">
+        <p className="text-sm text-neutral-600 line-clamp-2">
           {item.name}
         </p>
 
-        <p className="text-sm mt-2 font-medium">₹{item.price}</p>
+        <p className="text-sm mt-2 font-medium text-gray-500">₹{item.price}</p>
 
         <p className="text-xs text-gray-500 uppercase tracking-wide">
           In Stock
