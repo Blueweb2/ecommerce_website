@@ -55,7 +55,7 @@ const Carousel = ({ images = [], setZooming, firstImage }: CarouselProps) => {
         <img
           src={optimizeCloudinaryUrl(safeImages[index].url)}
           alt={safeImages[index].altText}
-          className="w-full h-[400px] md:h-[calc(100vh+300px)] object-cover"
+          className="w-full h-[400px] md:h-[calc(100vh+100vh+600px)] object-cover"
         />
 
         {/* LEFT */}

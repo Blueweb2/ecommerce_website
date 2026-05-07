@@ -83,7 +83,7 @@ const ProductFeature = ({ onToggleLayout, product }: ProductFeatureProps) => {
 
   // only in large large divice 
   return (
-    <section className="py-10">
+    <section className="pb-10 pt-20">
       <div className="lg:grid grid-cols-3">
 
         {/* ================= LEFT IMAGE ================= */}

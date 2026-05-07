@@ -36,7 +36,7 @@ export default function ExploreGrid({
         const productImage = primaryImg?.url || fallbackImage;
 
         return (
-          <article key={product._id} className="group">
+          <article key={product._id}>
             <Link href={`/product/${product.slug}`} className="block">
               <div className="relative aspect-[0.92] overflow-hidden bg-[#f1eee8]">
                 <Image
@@ -44,7 +44,7 @@ export default function ExploreGrid({
                   alt={product.name}
                   fill
                   sizes="(max-width: 768px) 48vw, (max-width: 1536px) 30vw, 22vw"
-                  className="object-cover transition duration-500 group-hover:scale-[1.03]"
+                  className="object-fill h-40 md:h-90 transition duration-500"
                 />
                 <button
                   type="button"
@@ -62,7 +62,7 @@ export default function ExploreGrid({
               </p>
               <Link
                 href={`/product/${product.slug}`}
-                className={`${inter.className} mt-2 line-clamp-2 block text-[15px] leading-6 text-[#8D8B9D] underline-offset-4 transition hover:text-black hover:underline`}
+                className={`${inter.className} mt-2 line-clamp-2 block text-[13px] leading-6 text-[#8D8B9D]`}
               >
                 {product.name}
               </Link>
@@ -70,7 +70,7 @@ export default function ExploreGrid({
                 {product.discountPrice &&
                 product.discountPrice < product.price ? (
                   <>
-                    <span className={`${inter.className} font-semibold text-[#8D8B9D]`}>
+                    <span className={`${inter.className} text-[#8D8B9D]`}>
                       Rs. {product.discountPrice}
                     </span>
                     <span className={`${inter.className} text-[#d82d2d] line-through`}>
@@ -78,7 +78,7 @@ export default function ExploreGrid({
                     </span>
                   </>
                 ) : (
-                  <span className={`${inter.className} font-semibold text-[#8D8B9D]`}>
+                  <span className={`${inter.className} text-[#8D8B9D]`}>
                     Rs. {product.price}
                   </span>
                 )}

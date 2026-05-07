@@ -30,7 +30,7 @@ export default function ExploreFilters({
   toggleTag,
 }: ExploreFiltersProps) {
   return (
-    <div className="rounded-[32px] border border-black/10 bg-white px-6 py-4">
+    <div className="border border-black/10 bg-white px-6 py-4">
       {allCategories.length > 0 && (
         <FilterSection
           title="Category"
