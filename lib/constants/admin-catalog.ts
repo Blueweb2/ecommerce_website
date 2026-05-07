@@ -98,6 +98,11 @@ export type CatalogProduct = {
   stock?: number;
   isPublished?: boolean;
 
+  isFabric?: boolean;
+  unit?: string;
+  minOrderQty?: number;
+  stepQty?: number;
+
   images?: CatalogProductImage[];
 
   category?: CatalogEntity | string | null;
@@ -156,6 +161,11 @@ export type ProductPayload = {
   gstPercentage?: number;
   discountPrice?: number;
 
+  isFabric: boolean;
+  unit: string;
+  minOrderQty: number;
+  stepQty: number;
+
    customizable?: CustomizableConfig;
 
   attributes?: {
@@ -192,6 +202,11 @@ export interface CartItem {
   selectedOptions?: SelectedOption[]; // ✅ FIXED
   gstPercentage?: number;
   gstAmount?: number;
+
+  isFabric?: boolean;
+  unit?: string;
+  minOrderQty?: number;
+  stepQty?: number;
 }
 // ✅ API ERROR TYPE
 export type ApiErrorResponse = {

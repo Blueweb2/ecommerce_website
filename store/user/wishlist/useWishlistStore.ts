@@ -125,7 +125,7 @@ export const useWishlistStore = create<WishlistStore>()(
             _id: i.product._id,
             name: i.product.name,
             price: i.product.price,
-            image: i.product.images?.[0]?.url,
+            image: (i.product.images?.find((img: any) => img.isPrimary) || i.product.images?.[0])?.url,
           }));
 
           set({ items: backendItems });

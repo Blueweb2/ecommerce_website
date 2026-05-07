@@ -32,7 +32,8 @@ export default function ExploreGrid({
   return (
     <div className="grid grid-cols-2 gap-x-6 gap-y-10 lg:grid-cols-3 2xl:grid-cols-4">
       {products.map((product) => {
-        const productImage = product.images?.[0]?.url || fallbackImage;
+        const primaryImg = product.images?.find((img: any) => img.isPrimary) || product.images?.[0];
+        const productImage = primaryImg?.url || fallbackImage;
 
         return (
           <article key={product._id}>
