@@ -20,8 +20,8 @@ export default function ExploreGrid({
 
   if (products.length === 0) {
     return (
-      <div className="rounded-[28px] border border-dashed border-black/15 bg-white px-6 py-16 text-center">
-        <h2 className="text-xl font-semibold text-black">No products found</h2>
+      <div className="border border-dashed border-black/15 bg-gray-50 px-6 py-16 text-center">
+        <h2 className={`${bodoni.className} text-xl font-semibold text-neutral-600`}>No products found</h2>
         <p className="mt-2 text-sm text-black/55">
           Try changing or clearing the selected filters.
         </p>

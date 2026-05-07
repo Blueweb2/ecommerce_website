@@ -1,6 +1,7 @@
 "use client";
 
 import { ChevronDown } from "lucide-react";
+import { bodoni, inter } from "@/lib/fonts";
 
 type FilterSectionProps = {
   title: string;
@@ -25,7 +26,7 @@ export default function FilterSection({
         className="flex w-full items-start justify-between gap-4 text-left"
       >
         <div>
-          <p className="text-[15px] font-semibold uppercase tracking-[0.02em] text-black">
+          <p className={`${bodoni.className} text-[15px] font-semibold uppercase tracking-[0.02em] text-neutral-600`}>
             {title}
           </p>
           <p className="mt-1 text-[15px] text-black/55">{summary}</p>

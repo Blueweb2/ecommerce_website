@@ -1,5 +1,6 @@
 "use client";
 
+import { inter } from "@/lib/fonts";
 import FilterSection from "./FilterSection";
 
 type ExploreFiltersProps = {
@@ -30,7 +31,7 @@ export default function ExploreFilters({
   toggleTag,
 }: ExploreFiltersProps) {
   return (
-    <div className="border border-black/10 bg-white px-6 py-4">
+    <div className="border border-black/10 bg-gray-50 px-6 py-4">
       {allCategories.length > 0 && (
         <FilterSection
           title="Category"
@@ -48,8 +49,8 @@ export default function ExploreFilters({
             }))
           }
         >
-          <div className="space-y-2 max-h-48 overflow-y-auto pr-2 custom-scrollbar">
-            <label className="flex items-center gap-3 text-sm text-black/80 cursor-pointer">
+          <div className={`${inter.className} text-[#8D8B9D] space-y-2 max-h-48 overflow-y-auto pr-2 custom-scrollbar`}>
+            <label className="flex items-center gap-3 text-sm cursor-pointer">
               <input
                 type="radio"
                 name="category"
@@ -67,7 +68,7 @@ export default function ExploreFilters({
             {allCategories.map((cat) => (
               <label
                 key={cat._id}
-                className="flex items-center gap-3 text-sm text-black/80 cursor-pointer"
+                className="flex items-center gap-3 text-sm cursor-pointer"
               >
                 <input
                   type="radio"
@@ -230,7 +231,7 @@ export default function ExploreFilters({
               }))
             }
             placeholder="Min"
-            className="rounded-[10px] border border-black/12 px-3 py-2 text-sm outline-none transition focus:border-black"
+            className="border border-gray-300 px-3 py-2 text-sm outline-none transition focus:border-gray-500"
           />
           <input
             type="number"
@@ -246,7 +247,7 @@ export default function ExploreFilters({
               }))
             }
             placeholder="Max"
-            className="rounded-[10px] border border-black/12 px-3 py-2 text-sm outline-none transition focus:border-black"
+            className="border border-gray-300 px-3 py-2 text-sm outline-none transition focus:border-gray-500"
           />
         </div>
       </FilterSection>

@@ -28,20 +28,20 @@ export default function ExploreControls({
           <button
             type="button"
             onClick={onMobileFilterOpen}
-            className="inline-flex items-center gap-3 rounded-[4px] border border-black/15 bg-white px-4 py-3 text-[15px] text-black xl:hidden"
+            className="inline-flex items-center gap-3 rounded-[4px] border border-black/15 bg-gray-50 px-4 py-3 text-[15px] text-black xl:hidden"
           >
             <SlidersHorizontal className="h-4 w-4" />
             Filter
           </button>
 
-          <div className="inline-flex items-center gap-3 rounded-[4px] border border-black/15 bg-white px-4 py-3 text-[15px] text-black">
+          <div className="inline-flex items-center gap-3 border border-black/15 bg-gray-50 px-4 py-3 text-[15px] text-black">
             <div 
               onClick={onHideAside}
               className="flex h-5 w-5 items-center justify-center rounded-full bg-black text-white"
             >
               <span className="text-[10px]">−</span>
             </div>
-            <span>Filter</span>
+            <span className="text-black/65">Filter</span>
             <span className="text-black/45">|</span>
             <span className="text-black/65">{resultCount} Results</span>
           </div>
@@ -51,7 +51,7 @@ export default function ExploreControls({
           <select
             value={sortBy}
             onChange={(event) => onSortChange(event.target.value)}
-            className="w-full appearance-none rounded-[4px] border border-black/15 bg-white px-4 py-3 pr-11 text-[15px] text-black outline-none transition focus:border-black"
+            className="w-full appearance-none border border-black/15 bg-gray-50 px-4 py-3 pr-11 text-[15px] text-black outline-none transition "
           >
             <option value="recommended">Recommended</option>
             <option value="price-low">Price low to high</option>
@@ -69,7 +69,7 @@ export default function ExploreControls({
               key={chip.key}
               type="button"
               onClick={() => onRemoveChip(chip.onRemove, chip.value)}
-              className="inline-flex items-center gap-3 rounded-[4px] border border-black/15 bg-white px-4 py-3 text-[15px] text-black transition hover:border-black"
+              className="inline-flex items-center gap-3 border border-black/15 bg-gray-50 px-4 py-3 text-[15px] text-gray-400 transition"
             >
               {chip.label}
               <X className="h-4 w-4" />
