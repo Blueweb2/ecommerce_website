@@ -89,7 +89,9 @@ export default function CartPage() {
                     -
                   </button>
 
-                  <span className={`${bodoni.className} text-sm font-medium`}>
+                  <span
+                    className={`${bodoni.className} text-sm font-medium text-neutral-600`}
+                  >
                     {item.quantity}
                     {item.isFabric && ` ${item.unit || "meters"}`}
                   </span>
@@ -109,6 +111,7 @@ export default function CartPage() {
                 <button
                   onClick={() => removeItem(item)}
                   className="text-sm text-[#8D8B9D]"
+                  title="remove from cart"
                 >
                   Remove from cart
                 </button>
