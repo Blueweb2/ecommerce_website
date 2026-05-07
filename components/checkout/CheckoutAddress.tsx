@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 import { useAddressStore } from "@/store/user/address/useAddressStore";
 import { useAuthStore } from "@/store/auth/useAuthStore";
 import type { Address } from "@/types/address";
+import { bodoni, inter } from "@/lib/fonts";
 
 interface CheckoutAddressProps {
   onSelect: (address: Address) => void;
@@ -80,17 +81,17 @@ export default function CheckoutAddress({
 
   return (
     <div className="mt-6 w-full">
-      <h2 className="mb-4 text-xl font-semibold">
+      <h2 className={`${bodoni.className} text-neutral-600 mb-4 text-[clamp(25px,2.5vw,32px)] font-normal`}>
         Select Delivery Address
       </h2>
 
       {loading && addresses.length === 0 ? (
         <div className="flex justify-center p-6">
-          <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-black" />
+          <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-[#8D8B9D]" />
         </div>
       ) : (
         <>
-          <div className="space-y-4">
+          <div className={`${inter.className} space-y-4`}>
             {addresses.length === 0 ? (
               <div className="rounded-lg border-2 border-dashed py-6 text-center">
                 <p className="mb-3 text-gray-500">
@@ -113,13 +114,13 @@ export default function CheckoutAddress({
                       setSelectedId(addr._id);
                     }
                   }}
-                  className={`cursor-pointer rounded-lg border p-4 transition ${
+                  className={`cursor-pointer border p-4 transition ${
                     selectedAddress?._id === addr._id
-                      ? "border-black bg-gray-50 ring-1 ring-black"
-                      : "hover:border-gray-400"
+                      ? "border-[#8D8B9D] bg-gray-50 ring-1 ring-[#52515c]"
+                      : "border-[#8D8B9D] hover:border-[#494852]"
                   }`}
                 >
-                  <div className="flex items-start justify-between">
+                  <div className="flex items-start justify-between text-neutral-600">
                     <div>
                       <p className="font-medium">
                         {addr.fullName}
@@ -146,7 +147,7 @@ export default function CheckoutAddress({
                     <div
                       className={`flex h-5 w-5 items-center justify-center rounded-full border ${
                         selectedAddress?._id === addr._id
-                          ? "border-black"
+                          ? "border-[#8D8B9D] hover:border-[#494852]"
                           : "border-gray-300"
                       }`}
                     >
@@ -163,15 +164,15 @@ export default function CheckoutAddress({
           <div className="mt-4">
             <button
               onClick={() => setShowForm(true)}
-              className="text-sm font-medium underline"
+              className="text-sm font-medium underline text-neutral-600"
             >
               + Add New Address
             </button>
           </div>
 
           {showForm && (
-            <div className="mt-4 space-y-3 rounded-lg border bg-gray-50 p-4">
-              <h3 className="font-semibold">Add New Address</h3>
+            <div className={`${inter.className} mt-4 space-y-3 border border-[#8D8B9D] bg-gray-50 p-4`}>
+              <h3 className={`${bodoni.className} text-neutral-600 text-[clamp(25px,2.5vw,32px)] font-normal`}>Add New Address</h3>
 
               <input
                 placeholder="Full Name"
@@ -179,7 +180,7 @@ export default function CheckoutAddress({
                 onChange={(e) =>
                   setForm({ ...form, fullName: e.target.value })
                 }
-                className="w-full rounded border p-2"
+                className="w-full border border-[#8D8B9D] text-[#8D8B9D] outline-none p-2"
               />
 
               <input
@@ -188,7 +189,7 @@ export default function CheckoutAddress({
                 onChange={(e) =>
                   setForm({ ...form, phone: e.target.value })
                 }
-                className="w-full rounded border p-2"
+                className="w-full border border-[#8D8B9D] text-[#8D8B9D] outline-none p-2"
               />
 
               <input
@@ -197,7 +198,7 @@ export default function CheckoutAddress({
                 onChange={(e) =>
                   setForm({ ...form, street: e.target.value })
                 }
-                className="w-full rounded border p-2"
+                className="w-full border-[#8D8B9D] text-[#8D8B9D] outline-none border p-2"
               />
 
               <div className="flex gap-2">
@@ -207,7 +208,7 @@ export default function CheckoutAddress({
                   onChange={(e) =>
                     setForm({ ...form, city: e.target.value })
                   }
-                  className="w-full rounded border p-2"
+                  className="w-full border-[#8D8B9D] text-[#8D8B9D] outline-none border p-2"
                 />
                 <input
                   placeholder="State"
@@ -215,7 +216,7 @@ export default function CheckoutAddress({
                   onChange={(e) =>
                     setForm({ ...form, state: e.target.value })
                   }
-                  className="w-full rounded border p-2"
+                  className="w-full border-[#8D8B9D] text-[#8D8B9D] outline-none border p-2"
                 />
               </div>
 
@@ -226,7 +227,7 @@ export default function CheckoutAddress({
                   onChange={(e) =>
                     setForm({ ...form, postalCode: e.target.value })
                   }
-                  className="w-full rounded border p-2"
+                  className="w-full border-[#8D8B9D] text-[#8D8B9D] outline-none border p-2"
                 />
                 <input
                   placeholder="Country"
@@ -234,7 +235,7 @@ export default function CheckoutAddress({
                   onChange={(e) =>
                     setForm({ ...form, country: e.target.value })
                   }
-                  className="w-full rounded border p-2"
+                  className="w-full border-[#8D8B9D] text-[#8D8B9D] outline-none border p-2"
                 />
               </div>
 
@@ -248,7 +249,7 @@ export default function CheckoutAddress({
 
                 <button
                   onClick={handleSave}
-                  className="rounded bg-black px-4 py-2 text-white"
+                  className="bg-black px-4 py-2 text-white"
                 >
                   Save Address
                 </button>

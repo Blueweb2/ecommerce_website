@@ -15,7 +15,7 @@ export default function AddressStep({
         <button
           disabled={!selectedAddress}
           onClick={onNext}
-          className="bg-black text-white px-6 py-2 rounded disabled:opacity-50"
+          className="bg-black text-white px-6 py-2 disabled:opacity-50"
         >
           Continue →
         </button>

@@ -103,7 +103,7 @@ return;
 
 };
 
-return ( <div className="max-w-5xl mx-auto p-6 mt-20"> <div className="flex relative justify-between mb-8">
+return ( <div className="max-w-5xl mx-auto p-6 mt-10 md:mt-20"> <div className="flex relative justify-between mb-8">
 {["Address", "Delivery", "Payment", "Complete"].map((label, i) => ( <div key={label} className="flex-1 text-center z-10">
 <div
 className={`w-8 h-8 mx-auto rounded-full flex items-center justify-center ${
@@ -117,7 +117,7 @@ className={`w-8 h-8 mx-auto rounded-full flex items-center justify-center ${
     <div className="absolute top-4 left-0 w-full h-1 bg-blue-500/20 rounded-full"></div>
   </div>
 
-  <div className="border p-6 rounded-lg">
+  <div className="border border-[#8D8B9D] p-6">
     {step === 1 && (
       <AddressStep
         onNext={() => setStep(2)}
