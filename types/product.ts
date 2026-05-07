@@ -18,4 +18,15 @@ export type Product = {
   unit?: string;
   minOrderQty?: number;
   stepQty?: number;
+
+  customizable?: {
+    isCustomizable: boolean;
+    fields: {
+      name: string;
+      type: "text" | "number" | "select";
+      required?: boolean;
+      options?: string[];
+      unit?: string;
+    }[];
+  };
 };

@@ -52,6 +52,17 @@ type ProductFormValues = {
   unit: string;
   minOrderQty: number | string;
   stepQty: number | string;
+
+  customizable?: {
+    isCustomizable: boolean;
+    fields: {
+      name: string;
+      type: "text" | "number" | "select";
+      required?: boolean;
+      options?: string[];
+      unit?: string;
+    }[];
+  };
 };
 
 type Props = {
@@ -117,8 +128,8 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
   });
 
   const [customizable, setCustomizable] = useState({
-    isCustomizable: false,
-    fields: [] as {
+    isCustomizable: initialData?.customizable?.isCustomizable || false,
+    fields: initialData?.customizable?.fields || [] as {
       name: string;
       type: "text" | "number" | "select";
       required?: boolean;
@@ -169,6 +180,13 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
         values: [...new Set(initialData.variants!.map((v) => v.attributes[key]))],
       }));
       setAttributes(attrs);
+    }
+
+    if (initialData?.customizable) {
+      setCustomizable({
+        isCustomizable: initialData.customizable.isCustomizable,
+        fields: initialData.customizable.fields || [],
+      });
     }
   }, [initialData]);
 
@@ -340,7 +358,38 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
                       <option value="number">Number</option>
                       <option value="select">Dropdown</option>
                     </select>
-                    <button type="button" onClick={() => setCustomizable({ ...customizable, fields: customizable.fields.filter((_, i) => i !== idx) })} className="text-red-500 text-xs font-bold uppercase">Remove</button>
+
+                    {field.type === "select" && (
+                      <div className="space-y-2">
+                        <label className="text-xs font-bold text-slate-500 uppercase">Options (comma separated)</label>
+                        <input
+                          placeholder="Small, Medium, Large"
+                          value={field.options?.join(", ") || ""}
+                          onChange={(e) => {
+                            const updated = [...customizable.fields];
+                            updated[idx].options = e.target.value.split(",").map(o => o.trim()).filter(Boolean);
+                            setCustomizable({ ...customizable, fields: updated });
+                          }}
+                          className="w-full rounded-xl border border-slate-200 px-4 py-2"
+                        />
+                      </div>
+                    )}
+
+                    <div className="flex items-center gap-4">
+                      <label className="flex items-center gap-2 text-xs font-bold text-slate-500 uppercase">
+                        <input
+                          type="checkbox"
+                          checked={field.required}
+                          onChange={(e) => {
+                            const updated = [...customizable.fields];
+                            updated[idx].required = e.target.checked;
+                            setCustomizable({ ...customizable, fields: updated });
+                          }}
+                        />
+                        Required
+                      </label>
+                      <button type="button" onClick={() => setCustomizable({ ...customizable, fields: customizable.fields.filter((_, i) => i !== idx) })} className="text-red-500 text-xs font-bold uppercase">Remove</button>
+                    </div>
                   </div>
                 ))}
                 <button type="button" onClick={() => setCustomizable({ ...customizable, fields: [...customizable.fields, { name: "", type: "text" }] })} className="w-full py-4 border-2 border-dashed border-slate-200 rounded-2xl text-slate-400 font-bold hover:bg-slate-50 hover:border-emerald-200 hover:text-emerald-600 transition-all">+ Add custom field</button>
