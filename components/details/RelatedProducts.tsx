@@ -101,7 +101,7 @@ export default function RelatedProducts({ product }: Props) {
         </button>
       </div>
 
-      {loading && <div className="text-center text-gray-500">Loading...</div>}
+      {/* {loading && <div className="text-center text-gray-500">Loading...</div>} */}
 
       <div className="flex gap-6 overflow-x-auto scrollbar-hide">
         {products.map((item) => {
@@ -126,14 +126,14 @@ export default function RelatedProducts({ product }: Props) {
               </div>
 
               <div className="mt-4 space-y-1">
-                <h3 className={`${bodoni.className} text-xs font-black uppercase tracking-widest text-neutral-600`}>
+                <h3 className={`${bodoni.className} text-xs font-normal uppercase tracking-widest text-neutral-600`}>
                   {item.name}
                 </h3>
                 <p className={`${inter.className} line-clamp-1 text-[10px] font-medium text-gray-400`}>
                   {item.description}
                 </p>
                 <div className="flex items-center gap-2 pt-1">
-                  <p className={`${inter.className} text-sm font-black text-[#8D8B9D]`}>
+                  <p className={`${inter.className} text-sm text-[13px] font-black text-[#8D8B9D]`}>
                     Rs.
                     {Math.round(
                       item.price * (1 + (item.gstPercentage || 0) / 100)

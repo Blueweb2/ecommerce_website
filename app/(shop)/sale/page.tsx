@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useProductStore } from "@/store/user/product/useProductStore";
 import { ChevronDown, SlidersHorizontal } from "lucide-react";
 import { CatalogProduct } from "@/lib/constants/admin-catalog";
+import { bodoni, inter } from "@/lib/fonts";
 
 const SORT_OPTIONS = [
   { value: "createdAt-desc", label: "Newest" },
@@ -40,7 +41,7 @@ export default function SalePage() {
   }, [sort]);
 
   return (
-    <div className="bg-[#fafafa] text-black min-h-screen mt-16">
+    <div className="bg-[#fafafa] text-black min-h-screen mt-6 md:mt-16">
 
       {/* ─── HERO BANNER ─── */}
       <section className="relative w-full h-[280px] md:h-[400px] overflow-hidden">
@@ -68,20 +69,20 @@ export default function SalePage() {
       </section>
 
       {/* ─── PROMO STRIP ─── */}
-      <div className="text-center py-6 border-b bg-white">
-        <h2 className="text-base font-semibold tracking-wide text-neutral-800">
+      <div className="text-center py-6 bg-white">
+        <h2 className={`${bodoni.className} text-base font-semibold tracking-wide text-neutral-600`}>
           Promotion
         </h2>
-        <p className="text-sm text-gray-500 mt-1">
+        <p className={`${inter.className} text-sm text-gray-500 mt-1`}>
           All promotion items are listed at the lowest price in 30 days
         </p>
       </div>
 
       {/* ─── SORT BAR ─── */}
-      <div className="max-w-[2000px] mx-auto flex flex-col md:flex-row justify-between items-center px-4 md:px-20 py-5 border-b bg-white gap-4">
+      <div className="max-w-[2000px] mx-auto flex flex-col md:flex-row justify-between items-center px-4 md:px-20 py-5 bg-white gap-4">
         <div className="flex items-center gap-2">
           <div className="h-2 w-2 rounded-full bg-red-500 animate-pulse" />
-          <p className="text-sm font-medium text-neutral-600">
+          <p className={`${inter.className} text-sm font-medium text-gray-500`}>
             {loading ? "Discovering offers..." : `Showing ${products.length} exclusive deals`}
           </p>
         </div>
@@ -95,7 +96,7 @@ export default function SalePage() {
             <select
               value={sort}
               onChange={(e) => setSort(e.target.value)}
-              className="appearance-none bg-transparent border-b border-neutral-200 pr-8 py-1 text-sm font-medium focus:outline-none focus:border-black transition-colors cursor-pointer"
+              className={`${inter.className} appearance-none bg-transparent border p-3 border-neutral-200 pr-8 py-1 text-sm font-medium focus:outline-none focus:border-neutral-400 transition-colors cursor-pointer text-neutral-600`}
             >
               {SORT_OPTIONS.map((opt) => (
                 <option key={opt.value} value={opt.value}>
@@ -157,7 +158,7 @@ export default function SalePage() {
                       alt={product.name}
                       fill
                       sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                      className="object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+                      className="object-cover transition-transform duration-500 ease-out"
                     />
 
                     {/* DISCOUNT BADGE */}
@@ -175,7 +176,7 @@ export default function SalePage() {
                         {product.brand}
                       </p>
                     )}
-                    <h3 className="text-sm font-medium text-neutral-800 line-clamp-1 group-hover:text-black transition">
+                    <h3 className="text-sm font-medium text-neutral-600 line-clamp-1 group-hover:text-neutral-800 transition">
                       {product.name}
                     </h3>
 
