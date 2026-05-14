@@ -1,5 +1,3 @@
-// app/stories/[slug]/page.tsx
-
 import Image from "next/image";
 import { getStoryBySlug } from "@/lib/api/story.api";
 
@@ -8,6 +6,7 @@ type Props = {
 };
 
 export async function generateMetadata({ params }: Props) {
+
   const { slug } = await params;
 
   try {
@@ -29,6 +28,7 @@ export async function generateMetadata({ params }: Props) {
 
 
 export default async function StoryDetailPage({ params }: Props) {
+
   const { slug } = await params;
   console.log("Slug from URL:", slug);
 
@@ -82,4 +82,4 @@ export default async function StoryDetailPage({ params }: Props) {
       </div>
     </section>
   );
-}
+};

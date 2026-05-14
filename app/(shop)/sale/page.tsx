@@ -17,7 +17,7 @@ const SORT_OPTIONS = [
 function getDiscountPercent(price: number, discountPrice: number) {
   if (!price || !discountPrice || discountPrice >= price) return 0;
   return Math.round(((price - discountPrice) / price) * 100);
-}
+};
 
 function SkeletonCard() {
   return (

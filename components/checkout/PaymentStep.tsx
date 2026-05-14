@@ -5,10 +5,7 @@ import Image from "next/image";
 import { loadRazorpay } from "@/lib/utils/loadRazorpay";
 import { orderAPI } from "@/lib/api/order.api";
 import toast from "react-hot-toast";
-import type {
-  CartItem,
-  SelectedOption,
-} from "@/store/user/cart/useCartStore";
+import type { CartItem, SelectedOption } from "@/store/user/cart/useCartStore";
 import type { Address } from "@/types/address";
 import { useCartStore } from "@/store/user/cart/useCartStore";
 import { bodoni } from "@/lib/fonts";

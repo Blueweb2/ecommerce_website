@@ -6,8 +6,8 @@ import { ShoppingCart } from "lucide-react";
 import { bodoni, inter } from "@/lib/fonts";
 
 export default function CartPage() {
-  const { items, totalPrice, totalGstAmount, removeItem, updateQuantity } =
-    useCartStore();
+  
+  const { items, totalPrice, totalGstAmount, removeItem, updateQuantity } = useCartStore();
 
   if (items.length === 0) {
     return (

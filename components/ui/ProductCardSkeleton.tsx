@@ -1,5 +1,3 @@
-import React from 'react';
-
 export default function ProductCardSkeleton() {
   return (
     <div className="flex flex-col items-center gap-2">
@@ -8,4 +6,4 @@ export default function ProductCardSkeleton() {
       <div className="w-1/2 h-4 bg-neutral-200 animate-pulse rounded" />
     </div>
   );
-}
+};

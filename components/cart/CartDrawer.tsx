@@ -8,6 +8,7 @@ import { optimizeCloudinaryUrl } from "@/lib/constants/admin-catalog";
 import { bodoni, inter } from "@/lib/fonts";
 
 export default function CartDrawer() {
+
   const { isOpen, closeCart } = useCartUIStore();
   const { items, totalPrice, totalGstAmount, removeItem, updateQuantity } = useCartStore();
 
@@ -123,27 +124,27 @@ export default function CartDrawer() {
             </div>
           </div>
 
-       <div className="space-y-2">
-  {/* Go to Cart Page */}
-  <Link
-    href="/cart"
-    onClick={closeCart}
-    className="block text-center w-full border border-neutral-600 py-2 
-              hover:bg-gray-100 transition"
-  >
-    View Cart →
-  </Link>
+          <div className="space-y-2">
+            {/* Go to Cart Page */}
+            <Link
+              href="/cart"
+              onClick={closeCart}
+              className="block text-center w-full border border-neutral-600 py-2 
+                        hover:bg-gray-100 transition"
+            >
+              View Cart →
+            </Link>
 
-  {/* Checkout */}
-  <Link
-    href="/checkout"
-    onClick={closeCart}
-    className="block text-center w-full bg-black text-white py-2 
-              hover:bg-gray-800 transition"
-  >
-    Checkout →
-  </Link>
-</div>
+            {/* Checkout */}
+            <Link
+              href="/checkout"
+              onClick={closeCart}
+              className="block text-center w-full bg-black text-white py-2 
+                        hover:bg-gray-800 transition"
+            >
+              Checkout →
+            </Link>
+          </div>
         </div>
       </div>
     </>

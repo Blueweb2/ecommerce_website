@@ -18,7 +18,6 @@ type Category = {
   parent?: string | null;
 };
 
-
 const messages = [
   "Discover the latest ZENFAZ collections crafted for modern style",
   "Enjoy Free Standard Delivery on all ZENFAZ orders over ₹40,000",

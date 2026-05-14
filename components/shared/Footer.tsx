@@ -1,4 +1,5 @@
 "use client";
+
 import Link from "next/link";
 import { Facebook, Instagram, Linkedin, X, Youtube } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -14,6 +15,7 @@ interface Category {
 };
 
 export default function Footer() {
+  
   const [categories, setCategories] = useState<Category[]>([]);
 
   useEffect(() => {

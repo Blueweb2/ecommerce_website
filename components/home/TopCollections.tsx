@@ -32,6 +32,7 @@ function getCollectionImage(collection: Collection) {
 }
 
 export default function TopCollections() {
+  
   const [collections, setCollections] = useState<Collection[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");

@@ -7,6 +7,7 @@ import { useAuthStore } from "@/store/auth/useAuthStore";
 import { bodoni } from "@/lib/fonts";
 
 export default function WishlistPage() {
+  
   const router = useRouter();
   const { user, loading } = useAuthStore();
 

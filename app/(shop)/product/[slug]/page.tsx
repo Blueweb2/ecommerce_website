@@ -11,8 +11,8 @@ const ProductFeature = dynamic(() => import("@/components/details/ProductFeature
 const RelatedProducts = dynamic(() => import("@/components/details/RelatedProducts"));
 
 export default function Page() {
-  const [isLayoutVisible, setIsLayoutVisible] = useState(false);
 
+  const [isLayoutVisible, setIsLayoutVisible] = useState(false);
   const { product, loading, error, fetchProductBySlug } = useProductStore();
 
   const params = useParams();
@@ -22,18 +22,18 @@ export default function Page() {
     setIsLayoutVisible(visible);
   };
 
-  // ✅ Fetch product using Zustand
+  // Fetch product using Zustand
   useEffect(() => {
     if (!slug) return;
     fetchProductBySlug(slug);
   }, [slug, fetchProductBySlug]);
 
-  // 🔄 Loading state
+  // Loading state
   if (loading) {
     return <Loading />;
   }
 
-  // ❌ Error state
+  // Error state
   if (error) {
     return (
       <div className="p-10 text-center text-red-500">
@@ -42,14 +42,14 @@ export default function Page() {
     );
   }
 
-  // 🚫 Not found
+  // Not found
   if (!product) {
     return (
       <div className="p-10 text-center">
         Product not found
       </div>
     );
-  }
+  };
 
   return (
     <>

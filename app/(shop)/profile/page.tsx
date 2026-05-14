@@ -41,88 +41,88 @@ export default function ProfilePage() {
 
   };
 
-return (
-  <section className="px-4 md:px-20 mt-10 md:mt-20">
+  return (
+    <section className="px-4 md:px-20 mt-10 md:mt-20">
 
-    {/* HEADER */}
-    <div className="flex flex-col items-center justify-center border-b py-5 border-gray-300">
-      <h5 className="text-gray-400 tracking-widest text-xs">
-        MY ACCOUNT
-      </h5>
-      <h2 className={`${bodoni.className} text-[clamp(25px,2.5vw,32px)] font-normal tracking-tight text-neutral-600`}>
-        {components[state].heading}
-      </h2>
-    </div>
+      {/* HEADER */}
+      <div className="flex flex-col items-center justify-center border-b py-5 border-gray-300">
+        <h5 className="text-gray-400 tracking-widest text-xs">
+          MY ACCOUNT
+        </h5>
+        <h2 className={`${bodoni.className} text-[clamp(25px,2.5vw,32px)] font-normal tracking-tight text-neutral-600`}>
+          {components[state].heading}
+        </h2>
+      </div>
 
-    {/* USER DETAILS */}
-    <div className="max-w-[2000px] mx-auto flex flex-col md:flex-row my-5">
+      {/* USER DETAILS */}
+      <div className="max-w-[2000px] mx-auto flex flex-col md:flex-row my-5">
 
-      {/* SIDEBAR */}
-      <div
-        className={`${inter.className} md:w-[30%] w-full flex md:flex-col md:items-start md:justify-start gap-6 overflow-x-auto md:overflow-visible whitespace-nowrap pb-2 mb-5 custom-scrollbar`}
-      >
-        <h3
-          className={`pl-2 border-b md:border-b-0 md:border-l-2 cursor-pointer hover:text-black
-          ${state === "Account-Details"
-              ? "border-black text-black"
-              : "border-transparent text-gray-500"
-            } hover:border-black`}
-          onClick={() => setState("Account-Details")}
+        {/* SIDEBAR */}
+        <div
+          className={`${inter.className} md:w-[30%] w-full flex md:flex-col md:items-start md:justify-start gap-6 overflow-x-auto md:overflow-visible whitespace-nowrap pb-2 mb-5 custom-scrollbar`}
         >
-          Account Details
-        </h3>
+          <h3
+            className={`pl-2 border-b md:border-b-0 md:border-l-2 cursor-pointer hover:text-black
+            ${state === "Account-Details"
+                ? "border-black text-black"
+                : "border-transparent text-gray-500"
+              } hover:border-black`}
+            onClick={() => setState("Account-Details")}
+          >
+            Account Details
+          </h3>
 
-        <h3
-          className={`pl-2 border-b md:border-b-0 md:border-l-2 cursor-pointer hover:text-black
-          ${state === "My-Orders"
-              ? "border-black text-black"
-              : "border-transparent text-gray-500"
-            } hover:border-black`}
-          onClick={() => setState("My-Orders")}
-        >
-          My Orders
-        </h3>
+          <h3
+            className={`pl-2 border-b md:border-b-0 md:border-l-2 cursor-pointer hover:text-black
+            ${state === "My-Orders"
+                ? "border-black text-black"
+                : "border-transparent text-gray-500"
+              } hover:border-black`}
+            onClick={() => setState("My-Orders")}
+          >
+            My Orders
+          </h3>
 
-        <h3
-          className="pl-2 border-b md:border-b-0 md:border-l-2 border-transparent cursor-pointer text-gray-500 hover:text-black hover:border-black"
-          onClick={() => router.push("/wishlist")}
-        >
-          Wish List
-        </h3>
+          <h3
+            className="pl-2 border-b md:border-b-0 md:border-l-2 border-transparent cursor-pointer text-gray-500 hover:text-black hover:border-black"
+            onClick={() => router.push("/wishlist")}
+          >
+            Wish List
+          </h3>
 
-        <h3
-          className={`pl-2 border-b md:border-b-0 md:border-l-2 cursor-pointer hover:text-black
-          ${state === "Address-Book"
-              ? "border-black text-black"
-              : "border-transparent text-gray-500"
-            } hover:border-black`}
-          onClick={() => setState("Address-Book")}
-        >
-          Address Book
-        </h3>
+          <h3
+            className={`pl-2 border-b md:border-b-0 md:border-l-2 cursor-pointer hover:text-black
+            ${state === "Address-Book"
+                ? "border-black text-black"
+                : "border-transparent text-gray-500"
+              } hover:border-black`}
+            onClick={() => setState("Address-Book")}
+          >
+            Address Book
+          </h3>
 
- 
+  
 
-        <h3
-          className={`pl-2 border-b md:border-b-0 md:border-l-2 cursor-pointer hover:text-black
-          ${state === "Privacy-Settings"
-              ? "border-black text-black"
-              : "border-transparent text-gray-500"
-            } hover:border-black`}
-          onClick={() => setState("Privacy-Settings")}
-        >
-          Privacy Settings
-        </h3>
+          <h3
+            className={`pl-2 border-b md:border-b-0 md:border-l-2 cursor-pointer hover:text-black
+            ${state === "Privacy-Settings"
+                ? "border-black text-black"
+                : "border-transparent text-gray-500"
+              } hover:border-black`}
+            onClick={() => setState("Privacy-Settings")}
+          >
+            Privacy Settings
+          </h3>
+
+        </div>
+
+        {/* CONTENT */}
+        <div className="w-full md:w-[70%]">
+          {components[state].page}
+        </div>
 
       </div>
 
-      {/* CONTENT */}
-      <div className="w-full md:w-[70%]">
-        {components[state].page}
-      </div>
-
-    </div>
-
-  </section>
-);
+    </section>
+  );
 };

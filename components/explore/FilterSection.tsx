@@ -1,7 +1,7 @@
 "use client";
 
 import { ChevronDown } from "lucide-react";
-import { bodoni, inter } from "@/lib/fonts";
+import { bodoni } from "@/lib/fonts";
 
 type FilterSectionProps = {
   title: string;

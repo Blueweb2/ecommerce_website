@@ -19,9 +19,11 @@ export default function ProductCard({
   isEntering = false,
   direction = 0,
 }: ProductCardProps) {
+
   const primaryImg =
     product.images?.find((image) => "isPrimary" in image && image.isPrimary) ||
     product.images?.[0];
+    
   const imageUrl = optimizeCloudinaryUrl(primaryImg?.url) || "/placeholder.png";
 
   return (

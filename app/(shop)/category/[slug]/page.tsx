@@ -8,12 +8,10 @@ import { productAPI } from "@/lib/api/product.api";
 import { Category } from "@/types/category";
 import { Product } from "@/types/product";
 
-// import ExploreHeader from "@/components/explore/ExploreHeader";
 import ExploreFilters from "@/components/explore/ExploreFilters";
 import ExploreGrid from "@/components/explore/ExploreGrid";
 import ExploreControls from "@/components/explore/ExploreControls";
 
-// const FALLBACK_BANNER = "/home/herosection/hero-center.png";
 const FALLBACK_PRODUCT_IMAGE = "/home/categorysection/category-one.png";
 
 type CategoryPageProps = {
@@ -24,12 +22,6 @@ type CategoryPageProps = {
 
 type SortOption = "recommended" | "price-low" | "price-high" | "name";
 
-// type ActiveFilters = {
-//   brands: string[];
-//   minPrice?: number;
-//   maxPrice?: number;
-// };
-
 function formatFilterLabel(value?: string) {
   if (!value) return "All";
   return value
@@ -39,14 +31,13 @@ function formatFilterLabel(value?: string) {
 }
 
 export default function CategoryPage({ params }: CategoryPageProps) {
+  
   const { slug } = use(params);
-
   const [category, setCategory] = useState<Category | null>(null);
   const [allCategories, setAllCategories] = useState<any[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const searchParams = useSearchParams();
   const filterCategory = searchParams?.get("filterCategory");
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [hideAside, setHideAside] = useState(false);
@@ -68,7 +59,6 @@ export default function CategoryPage({ params }: CategoryPageProps) {
 
   const loadData = useCallback(async () => {
     try {
-      setLoading(true);
       setError("");
 
       const [catRes, prodRes, allCatsRes] = await Promise.all([
@@ -86,8 +76,6 @@ export default function CategoryPage({ params }: CategoryPageProps) {
           ? err.message
           : "Unable to load this category right now.";
       setError(message);
-    } finally {
-      setLoading(false);
     }
   }, [slug]);
 
@@ -283,10 +271,6 @@ export default function CategoryPage({ params }: CategoryPageProps) {
   }, [activeFilters, allCategories]);
 
   const categoryTitle = category?.name || formatFilterLabel(slug);
-  // const categoryDescription =
-  //   category?.description ||
-  //   `Explore our curated selection of products in ${categoryTitle}.`;
-  // const bannerImage = category?.image?.url || FALLBACK_BANNER;
 
   const handleHideAside = () => {
     setHideAside(prev => !prev);
@@ -316,14 +300,6 @@ export default function CategoryPage({ params }: CategoryPageProps) {
           )}
 
           <div className="space-y-6">
-            {/* <ExploreHeader
-              title={categoryTitle}
-              description={categoryDescription}
-              bannerImage={bannerImage}
-              productCount={products.length}
-              typeLabel="Category Explore"
-              activeChips={activeChips}
-            /> */}
 
             <ExploreControls
               sortBy={sortBy}
@@ -390,4 +366,4 @@ export default function CategoryPage({ params }: CategoryPageProps) {
       )}
     </section>
   );
-}
+};

@@ -19,8 +19,8 @@ type CollectionPageProps = {
 };
 
 export default function CollectionPage({ params }: CollectionPageProps) {
+  
   const { slug } = use(params);
-
   const [collection, setCollection] = useState<Collection | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);

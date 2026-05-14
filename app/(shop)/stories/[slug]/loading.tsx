@@ -4,4 +4,4 @@ export default function Loading() {
       Loading story...
     </div>
   );
-}
+};

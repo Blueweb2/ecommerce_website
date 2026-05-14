@@ -7,6 +7,7 @@ import ProductCardSkeleton from "@/components/ui/ProductCardSkeleton";
 import { useProductStore } from "@/store/user/product/useProductStore";
 
 export default function NewInPage() {
+  
   const { products, loading, error, fetchNewProducts } = useProductStore();
 
   useEffect(() => {

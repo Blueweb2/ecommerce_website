@@ -26,8 +26,8 @@ const emptyForm = {
 export default function CheckoutAddress({
   onSelect,
 }: CheckoutAddressProps) {
-  const { addresses, loading, fetchAddresses, addAddress } =
-    useAddressStore();
+
+  const { addresses, loading, fetchAddresses, addAddress } = useAddressStore();
   const { user, loading: authLoading } = useAuthStore();
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
