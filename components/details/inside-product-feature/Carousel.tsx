@@ -2,19 +2,20 @@
 
 import React, { useState, useEffect } from "react";
 import { optimizeCloudinaryUrl } from "@/lib/constants/admin-catalog";
+import { useProductStore } from "@/store/user/product/useProductStore";
 
 type CarouselProps = {
   images: any[];
-  setZooming: React.Dispatch<React.SetStateAction<boolean>>;
+  
   firstImage?: number;
 };
 
-const Carousel = ({ images = [], setZooming, firstImage }: CarouselProps) => {
+const Carousel = ({ images = [], firstImage }: CarouselProps) => {
 
-  // const [index, setIndex] = useState(0);
   const [index, setIndex] = useState(firstImage ?? 0);
   const [leftPos, setLeftPos] = useState({ x: 0, y: 0 });
   const [hideCursor, setHideCursor] = useState(false);
+  const { setZooming } = useProductStore();
 
   useEffect(() => {
     setIndex(firstImage ?? 0);
@@ -38,7 +39,7 @@ const Carousel = ({ images = [], setZooming, firstImage }: CarouselProps) => {
   };
 
   return (
-    <div className="w-full lg:max-w-full lg:my-auto mx-auto mt-[30px] lg:mt-24 lg:flex lg:flex-col lg:items-center lg:justify-center text-center">
+    <div className="w-full lg:max-w-full lg:my-auto mx-auto mt-[30px] lg:mt-0 lg:flex lg:flex-col lg:items-center lg:justify-center text-center">
 
       {/* MAIN IMAGE */}
       <div

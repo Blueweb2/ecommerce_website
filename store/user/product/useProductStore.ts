@@ -9,6 +9,9 @@ type ProductState = {
   loading: boolean;
   error: string;
 
+  zooming: boolean;
+  setZooming: (value: boolean) => void;
+
   fetchProducts: () => Promise<void>;
   fetchProductBySlug: (slug: string) => Promise<void>;
   fetchSaleProducts: (sort?: string) => Promise<void>;
@@ -20,6 +23,13 @@ export const useProductStore = create<ProductState>((set) => ({
   product: null,
   loading: false,
   error: "",
+
+  zooming: false,
+
+  setZooming: (value) =>
+    set({
+      zooming: value,
+    }),
 
   fetchProducts: async () => {
     try {

@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useParams } from "next/navigation";
 import { useProductStore } from "@/store/user/product/useProductStore";
 
@@ -12,15 +12,10 @@ const RelatedProducts = dynamic(() => import("@/components/details/RelatedProduc
 
 export default function Page() {
 
-  const [isLayoutVisible, setIsLayoutVisible] = useState(false);
-  const { product, loading, error, fetchProductBySlug } = useProductStore();
+  const { product, loading, error, zooming,  fetchProductBySlug } = useProductStore();
 
   const params = useParams();
   const slug = params?.slug as string;
-
-  const handleLayoutVisibility = (visible: boolean) => {
-    setIsLayoutVisible(visible);
-  };
 
   // Fetch product using Zustand
   useEffect(() => {
@@ -56,11 +51,10 @@ export default function Page() {
       {/* Product Section */}
       <ProductFeature
         product={product}
-        onToggleLayout={handleLayoutVisibility}
       />
 
       {/* Related Products */}
-      {isLayoutVisible && (
+      {!zooming && (
         <RelatedProducts product={product} />
       )}
     </>

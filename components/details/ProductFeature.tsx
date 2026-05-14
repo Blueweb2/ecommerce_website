@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import { useState, useEffect } from "react";
 import { optimizeCloudinaryUrl, getPrimaryProductImage } from "@/lib/constants/admin-catalog";
+import { useProductStore } from "@/store/user/product/useProductStore";
 
 const Carousel = dynamic(() => import("./inside-product-feature/Carousel"),{
   loading: () => <p className="text-center py-10">Loading...</p>,
@@ -12,17 +13,16 @@ const RightSide = dynamic<{ product: any }>(() => import("./inside-product-featu
 });
 
 type ProductFeatureProps = {
-  onToggleLayout: (visible: boolean) => void;
   product: any;
 };
 
-const ProductFeature = ({ onToggleLayout, product }: ProductFeatureProps) => {
+const ProductFeature = ({ product }: ProductFeatureProps) => {
 
   const [leftPos, setLeftPos] = useState({ x: 0, y: 0 });
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const [zooming, setZooming] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [carouselImageIndex, setCarouselImageIndex] = useState<number>(0)
+  const { zooming, setZooming } = useProductStore();
 
   // detect screen size
   useEffect(() => {
@@ -49,23 +49,15 @@ const ProductFeature = ({ onToggleLayout, product }: ProductFeatureProps) => {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
-  // notify parent about zoom state
-  useEffect(() => {
-    onToggleLayout(!zooming);
-  }, [zooming, onToggleLayout]);
-  
-
   // fallback image (important)
   const primaryImg = getPrimaryProductImage(product?.images);
   const mainImage = optimizeCloudinaryUrl(primaryImg?.url) || "/placeholder.png";
-
 
   // display only product images
   if (zooming) {
     return (
       <Carousel
-        images={product?.images || []}
-        setZooming={setZooming}
+        images={product?.images || []}   
         firstImage={carouselImageIndex}
       />
     );
@@ -75,7 +67,7 @@ const ProductFeature = ({ onToggleLayout, product }: ProductFeatureProps) => {
   if (isMobile) {
     return (
       <>
-        <Carousel images={product?.images || []} setZooming={setZooming} />
+        <Carousel images={product?.images || []}  />
         <RightSide product={product} />
       </>
     );
