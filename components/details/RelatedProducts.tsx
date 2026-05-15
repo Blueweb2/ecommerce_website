@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { Handbag } from "lucide-react";
 import api from "@/lib/api/axios";
 import { optimizeCloudinaryUrl } from "@/lib/constants/admin-catalog";
@@ -20,6 +21,7 @@ type Product = {
   gstPercentage?: number;
   images?: ImageType[];
   description: string;
+  slug: string;
 };
 
 type Props = {
@@ -101,15 +103,14 @@ export default function RelatedProducts({ product }: Props) {
         </button>
       </div>
 
-      {/* {loading && <div className="text-center text-gray-500">Loading...</div>} */}
-
       <div className="flex gap-6 overflow-x-auto scrollbar-hide">
         {products.map((item) => {
           const primaryImage =
             item.images?.find((image) => image.isPrimary) || item.images?.[0];
 
           return (
-            <div
+            <Link
+              href={`/product/${item.slug}`}
               key={item._id}
               className="group w-[150px] flex-shrink-0 cursor-pointer lg:w-[290px]"
             >
@@ -144,7 +145,7 @@ export default function RelatedProducts({ product }: Props) {
                   </span>
                 </div>
               </div>
-            </div>
+            </Link>
           );
         })}
       </div>
