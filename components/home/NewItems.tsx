@@ -76,7 +76,9 @@ export default function NewInSection() {
           >
             New In
           </h2>
-          <p className={`${inter.className} mb-6 text-[14px] text-sm font-normal leading-relaxed text-[#8D8B9D]`}>
+         {/* text-[#8D8B9D] */}
+          <p className={`${inter.className} mb-6 text-[14px] text-sm font-normal leading-relaxed  
+          text-[#5C5A58]`}>
             Discover the latest and greatest arrivals, new designers to know, exclusive capsules and more style inspiration.
           </p>
           <div className="flex gap-4">
