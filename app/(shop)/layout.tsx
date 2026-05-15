@@ -15,13 +15,12 @@ export default function ShopLayout({
   const { zooming } = useProductStore();
 
   return (
-    <section className="bg-[#f5f5f5]">
-      
+    <section>
       {/* NAVBAR */}
       {!zooming && <Navbar />}
 
-      {/* CONTENT */}
-      <main className="flex-1 max-w-[2000px] mx-auto pt-14 w-full">
+      {/* CONTENT  max-w-[2000px] mx-auto */}
+      <main className="flex-1 pt-14 w-full">
         {children}
       </main>
 

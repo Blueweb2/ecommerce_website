@@ -132,13 +132,13 @@ export default function TopCollections() {
                 {getCollectionTitle(item)}
               </h2>
 
-              <p className="font-brand-sans mt-2 line-clamp-3 text-sm leading-6 text-[#8D8B9D]">
+              <p className="font-brand-sans mt-2 line-clamp-3 text-sm leading-6 text-[#5C5A58]">
                 {getCollectionDescription(item)}
               </p>
 
               <Link
                 href={href}
-                className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-[#8D8B9D] underline transition hover:text-[#3f478b]"
+                className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-[#5C5A58] underline transition hover:text-[#3f478b]"
               >
                 {item.cta || "Explore Designs"}
               </Link>

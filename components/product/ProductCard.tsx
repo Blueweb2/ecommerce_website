@@ -65,7 +65,7 @@ export default function ProductCard({
 
       <div className="space-y-1 px-1">
         <h3
-          className={`${inter.className} line-clamp-1 text-[13px] font-semibold uppercase text-neutral-600 transition-colors group-hover:text-neutral-800`}
+          className={`${inter.className} line-clamp-1 text-[13px] font-semibold uppercase text-[#5C5A58] transition-colors group-hover:text-neutral-800`}
         >
           {product.name}
         </h3>
