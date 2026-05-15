@@ -115,7 +115,7 @@ export default function Footer() {
       </div>
 
       <div className="px-4 py-1 text-neutral-600 md:px-32">
-        <p className={`${inter.className} max-w-[2000px] mx-auto pl-4`}>@ 2026 Your Brand Name All right recived</p>
+        <p className={`${inter.className} max-w-[2000px] mx-auto pl-4`}>© Zenfaz 2026. All rights reserved.</p>
       </div>
     </footer>
   );
