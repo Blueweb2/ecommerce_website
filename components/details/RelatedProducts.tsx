@@ -3,9 +3,12 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Handbag } from "lucide-react";
+import { toast } from "react-hot-toast";
 import api from "@/lib/api/axios";
 import { optimizeCloudinaryUrl } from "@/lib/constants/admin-catalog";
 import { bodoni, inter } from "@/lib/fonts";
+import { getPrimaryProductImage } from "@/lib/constants/admin-catalog";
+import { useCartStore } from "@/store/user/cart/useCartStore";
 
 type ImageType = {
   url: string;
@@ -35,6 +38,7 @@ export default function RelatedProducts({ product }: Props) {
   const [activeTab, setActiveTab] = useState<"like" | "recent">("like");
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
+  const { addItem } = useCartStore();
 
   useEffect(() => {
     let isMounted = true;
@@ -76,6 +80,32 @@ export default function RelatedProducts({ product }: Props) {
       isMounted = false;
     };
   }, [activeTab, product?._id]);
+
+  const handleAddToCart = (product:any) => {
+    const primaryImageUrl = getPrimaryProductImage(product.images)?.url || "/placeholder.png";
+
+    let selectedVariant ;
+
+    if(product?.variants?.length > 0){
+      selectedVariant = product.variants.find((variant: any) => variant.stock > 0);
+    }
+    
+    addItem({
+      productId: product._id,
+      name: product.name,
+      image: primaryImageUrl,
+      price: product.price,
+      quantity: 1,
+      gstPercentage: product.gstPercentage || 0,
+      variantId: selectedVariant?.sku,
+      isFabric: product.isFabric,
+      unit: product.unit,
+      minOrderQty: product.minOrderQty,
+      stepQty: product.stepQty,
+    });
+
+    toast.success("Added to cart");
+  };
 
   return (
     <section className="max-w-7xl pb-10 pl-5 lg:mx-auto lg:pl-0">
@@ -121,7 +151,13 @@ export default function RelatedProducts({ product }: Props) {
                   className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
 
-                <div className="absolute right-4 bottom-4 flex h-10 w-10 translate-y-2 items-center justify-center rounded-full bg-white/80 text-black opacity-0 shadow-sm backdrop-blur-sm transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+                <div 
+                onClick={(e) => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                  handleAddToCart(item)
+                }}
+                className="absolute right-4 bottom-4 flex h-10 w-10 translate-y-2 items-center justify-center rounded-full bg-white/80 text-black opacity-0 shadow-sm backdrop-blur-sm transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
                   <Handbag size={18} />
                 </div>
               </div>
