@@ -21,7 +21,6 @@ export default function ExploreControls({
   activeChips,
   onRemoveChip,
 }: ExploreControlsProps) {
-  
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -36,12 +35,14 @@ export default function ExploreControls({
           </button>
 
           <div className="inline-flex items-center gap-3 border border-black/15 bg-gray-50 px-4 py-3 text-[15px] text-black">
-            <div 
+            <button
+              type="button"
               onClick={onHideAside}
               className="flex h-5 w-5 items-center justify-center rounded-full bg-black text-white"
+              aria-label="Toggle filters"
             >
-              <span className="text-[10px]">−</span>
-            </div>
+              <span className="text-[10px]">-</span>
+            </button>
             <span className="text-black/65">Filter</span>
             <span className="text-black/45">|</span>
             <span className="text-black/65">{resultCount} Results</span>

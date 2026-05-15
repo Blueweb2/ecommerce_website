@@ -354,6 +354,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
               setActiveFilters={setActiveFilters}
               openSections={openSections}
               setOpenSections={setOpenSections}
+              allCategories={allCategories}
               availableTypes={availableTypes}
               availableTags={availableTags}
               availableBrands={availableBrands}

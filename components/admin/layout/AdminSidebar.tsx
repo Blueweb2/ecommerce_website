@@ -3,6 +3,7 @@
 import Link from "next/link";
 import {
   BookOpen,
+  Sparkles,
   Image as ImageIcon,
   LayoutDashboard,
   LayoutGrid,
@@ -41,6 +42,11 @@ export default function AdminSidebar() {
       name: "Collections",
       href: "/admin/collections",
       icon: LayoutGrid,
+    },
+    {
+      name: "Designers",
+      href: "/admin/designers",
+      icon: Sparkles,
     },
     {
       name: "Banners",

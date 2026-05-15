@@ -10,6 +10,7 @@ import { useCartStore } from "@/store/user/cart/useCartStore";
 import { useAuthStore } from "@/store/auth/useAuthStore";
 import { useWishlistStore } from '@/store/user/wishlist/useWishlistStore';
 import { categoryAPI } from "@/lib/api/category.api";
+import { getDesigners } from "@/lib/api/designer.api";
 
 type Category = {
   _id: string;
@@ -34,8 +35,13 @@ export default function Navbar() {
   const { user, loading } = useAuthStore();
   const wishlistItems = useWishlistStore((state) => state.items);
   const [categories, setCategories] = useState<Category[]>([]);
-  const [activeCategory, setActiveCategory] = useState<string | null>(null);
-  const [showNavbar, setShowNavbar] = useState(true);
+  const [designers, setDesigners] = useState<any[]>([]);
+  const [activeMenu, setActiveMenu] = useState<{
+    type: "category" | "designer" | null;
+    id?: string;
+  }>({
+    type: null,
+  }); const [showNavbar, setShowNavbar] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const isProductPage = pathname.startsWith("/product");
 
@@ -56,6 +62,21 @@ export default function Navbar() {
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    const fetchDesigners = async () => {
+      try {
+        const res = await getDesigners({
+          isActive: true,
+        });
+
+        setDesigners(res || []);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchDesigners();
+  }, []);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -140,40 +161,81 @@ export default function Navbar() {
           </Link>
 
           <nav
-            className="relative font-brand-sans flex items-center gap-8 text-sm tracking-[1.5px] text-white"
-            onMouseLeave={() => setActiveCategory(null)}
+            className="relative flex items-center gap-8 font-brand-sans text-sm tracking-[1.5px] text-white"
+            onMouseLeave={() =>
+              setActiveMenu({
+                type: null,
+              })
+            }
           >
             {/* NEW IN */}
-            <Link href="/new-in" className={linkClass("/new-in")}>
+            <Link
+              href="/new-in"
+              className={linkClass("/new-in")}
+            >
               New In
             </Link>
 
+            {/* DESIGNERS */}
+          
+              <Link
+               onMouseEnter={() =>
+                setActiveMenu({
+                  type: "designer",
+                })
+              }
+                href="/designers"
+                className={linkClass("/designers")}
+              >
+                Designers
+              </Link>
+         
+
             {/* DYNAMIC CATEGORIES */}
             {categories.map((cat: any) => (
-          
-               <Link href={`/category/${cat.slug}`} className={linkClass(`/category/${cat.slug}`)}  onMouseEnter={() => setActiveCategory(cat._id)} key={cat._id}>
-                 {cat.name}
+              <Link
+                key={cat._id}
+                href={`/category/${cat.slug}`}
+                className={linkClass(`/category/${cat.slug}`)}
+                onMouseEnter={() =>
+                  setActiveMenu({
+                    type: "category",
+                    id: cat._id,
+                  })
+                }
+              >
+                {cat.name}
               </Link>
             ))}
 
             {/* SALE */}
-            <Link href="/sale" className={linkClass("/sale")}>
+            <Link
+              href="/sale"
+              className={linkClass("/sale")}
+            >
               Sale
             </Link>
 
-            {/* GLOBAL DROPDOWN */}
-            {activeCategory && (
+            {/* CATEGORY DROPDOWN */}
+            {activeMenu.type === "category" && (
               <div
-                className="absolute top-full left-1/2 -translate-x-1/2 w-screen bg-white text-black shadow-2xl border-t border-gray-200 z-50 py-10"
-                onMouseEnter={() => setActiveCategory(activeCategory)}
-                onMouseLeave={() => setActiveCategory(null)}
+                className="absolute left-1/2 top-full z-50 w-screen -translate-x-1/2 border-t border-gray-200 bg-white py-10 text-black shadow-2xl"
+                onMouseEnter={() =>
+                  setActiveMenu(activeMenu)
+                }
+                onMouseLeave={() =>
+                  setActiveMenu({
+                    type: null,
+                  })
+                }
               >
-                <div className="max-w-[1300px] mx-auto px-10">
+                <div className="mx-auto max-w-[1300px] px-10">
                   {categories
-                    .filter((cat: any) => cat._id === activeCategory)
+                    .filter(
+                      (cat: any) => cat._id === activeMenu.id
+                    )
                     .map((cat: any) => (
                       <div key={cat._id}>
-
                         {/* MAIN CATEGORY TITLE */}
                         <div className="mb-8">
                           <Link
@@ -185,11 +247,13 @@ export default function Navbar() {
                         </div>
 
                         {/* SUBCATEGORY GRID */}
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-x-16 gap-y-10">
+                        <div className="grid grid-cols-2 gap-x-16 gap-y-10 md:grid-cols-4">
                           {cat.children?.map((sub: any) => (
-                            <div key={sub._id} className="space-y-3">
-
-                              {/* SUB CATEGORY */}
+                            <div
+                              key={sub._id}
+                              className="space-y-3"
+                            >
+                              {/* SUBCATEGORY */}
                               <Link
                                 href={`/category/${sub.slug}`}
                                 className="block text-sm font-semibold uppercase tracking-wide text-black hover:text-gray-600"
@@ -203,7 +267,7 @@ export default function Navbar() {
                                   <Link
                                     key={child._id}
                                     href={`/category/${child.slug}`}
-                                    className="text-sm text-gray-600 hover:text-black transition-colors"
+                                    className="text-sm text-gray-600 transition-colors hover:text-black"
                                   >
                                     {child.name}
                                   </Link>
@@ -214,6 +278,118 @@ export default function Navbar() {
                         </div>
                       </div>
                     ))}
+                </div>
+              </div>
+            )}
+
+            {/* DESIGNER DROPDOWN */}
+            {activeMenu.type === "designer" && (
+              <div
+                className="absolute left-1/2 top-full z-50 w-screen -translate-x-1/2 border-t border-gray-200 bg-white py-10 text-black shadow-2xl"
+                onMouseEnter={() =>
+                  setActiveMenu({
+                    type: "designer",
+                  })
+                }
+                onMouseLeave={() =>
+                  setActiveMenu({
+                    type: null,
+                  })
+                }
+              >
+                <div className="mx-auto grid max-w-[1300px] grid-cols-4 gap-16 px-10">
+
+                  {/* FEATURED DESIGNERS */}
+                  <div>
+                    <h3 className="mb-6 text-xs uppercase tracking-[3px] text-gray-500">
+                      Featured Designers
+                    </h3>
+
+                    <div className="space-y-4">
+                      {designers
+                        .filter((designer) => designer.isFavorite)
+                        .slice(0, 6)
+                        .map((designer) => (
+                          <Link
+                            key={designer._id}
+                            href={`/designers/${designer.slug}`}
+                            className="block text-sm hover:opacity-60"
+                          >
+                            {designer.name}
+                          </Link>
+                        ))}
+                    </div>
+                  </div>
+
+                  {/* OUR PICKS */}
+                  <div>
+                    <h3 className="mb-6 text-xs uppercase tracking-[3px] text-gray-500">
+                      Our Picks
+                    </h3>
+
+                    <div className="space-y-4">
+                      {designers
+                        .slice(0, 5)
+                        .map((designer) => (
+                          <Link
+                            key={designer._id}
+                            href={`/designers/${designer.slug}`}
+                            className="block text-sm hover:opacity-60"
+                          >
+                            {designer.name}
+                          </Link>
+                        ))}
+                    </div>
+                  </div>
+
+                  {/* A-Z */}
+                  <div>
+                    <h3 className="mb-6 text-xs uppercase tracking-[3px] text-gray-500">
+                      Browse A–Z
+                    </h3>
+
+                    <div className="flex flex-wrap gap-4">
+                      {"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                        .split("")
+                        .map((letter) => (
+                          <a
+                            key={letter}
+                            href={`/designers#${letter}`}
+                            className="text-sm hover:underline"
+                          >
+                            {letter}
+                          </a>
+                        ))}
+                    </div>
+                  </div>
+
+                  {/* EDITORIAL */}
+                  <div>
+                    <div className="overflow-hidden rounded-xl">
+                      <img
+                        src="https://images.unsplash.com/photo-1496747611176-843222e1e57c"
+                        alt="Designer Editorial"
+                        className="h-[300px] w-full object-cover"
+                      />
+                    </div>
+
+                    <div className="mt-5">
+                      <h3 className="text-2xl font-light">
+                        Discover luxury fashion houses
+                      </h3>
+
+                      <p className="mt-2 text-sm text-gray-600">
+                        Explore curated designer collections
+                      </p>
+
+                      <Link
+                        href="/designers"
+                        className="mt-4 inline-block text-sm underline"
+                      >
+                        Explore now
+                      </Link>
+                    </div>
+                  </div>
                 </div>
               </div>
             )}
