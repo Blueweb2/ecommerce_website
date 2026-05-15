@@ -80,7 +80,7 @@ export default function TopStories() {
       <div className="max-w-[2000px] mx-auto px-4 md:px-32">
 
         {/* TITLE */}
-        <h2 className={`${bodoni.className} border-t-2 border-gray-300 py-5 text-[clamp(25px,2.5vw,32px)] font-normal tracking-tight text-neutral-600`}>
+        <h2 className={`${bodoni.className} border-t-[2px] border-[#e5e5e5] py-5 text-[clamp(25px,2.5vw,32px)] font-normal tracking-tight text-neutral-600`}>
           TOP STORIES ON
         </h2>
 

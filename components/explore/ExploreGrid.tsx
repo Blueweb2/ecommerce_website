@@ -30,7 +30,7 @@ export default function ExploreGrid({
   };
 
   return (
-    <div className="grid grid-cols-2 gap-x-6 gap-y-10 lg:grid-cols-3 2xl:grid-cols-4">
+    <div className="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-10 lg:grid-cols-4">
       {products.map((product) => {
         const primaryImg = product.images?.find((img: any) => img.isPrimary) || product.images?.[0];
         const productImage = primaryImg?.url || fallbackImage;
@@ -38,7 +38,7 @@ export default function ExploreGrid({
         return (
           <article key={product._id}>
             <Link href={`/product/${product.slug}`} className="block">
-              <div className="relative aspect-[0.92] overflow-hidden bg-[#f1eee8]">
+              <div className="relative aspect-[4/5] 2xl:aspect-[4/6] overflow-hidden">
                 <Image
                   src={productImage}
                   alt={product.name}
@@ -57,12 +57,12 @@ export default function ExploreGrid({
             </Link>
 
             <div className="pt-4">
-              <p className={`${bodoni.className} text-[13px] font-semibold uppercase tracking-[0.03em] text-neutral-600`}>
+              <p className={`${inter.className} text-[13px] font-semibold uppercase tracking-[0.03em] text-neutral-600`}>
                 {product.brand || categoryTitle}
               </p>
               <Link
                 href={`/product/${product.slug}`}
-                className={`${inter.className} mt-2 line-clamp-2 block text-[13px] leading-6 text-[#8D8B9D]`}
+                className={`${inter.className} mt-2 line-clamp-2 block text-[13px] leading-6 text-[#5C5A58]`}
               >
                 {product.name}
               </Link>
@@ -70,16 +70,16 @@ export default function ExploreGrid({
                 {product.discountPrice &&
                 product.discountPrice < product.price ? (
                   <>
-                    <span className={`${inter.className} text-[#8D8B9D]`}>
-                      Rs. {product.discountPrice}
+                    <span className={`${inter.className} text-[#5C5A58]`}>
+                      ₹{product.discountPrice}
                     </span>
                     <span className={`${inter.className} text-[#d82d2d] line-through`}>
-                      Rs. {product.price}
+                      ₹{product.price}
                     </span>
                   </>
                 ) : (
-                  <span className={`${inter.className} text-[#8D8B9D]`}>
-                    Rs. {product.price}
+                  <span className={`${inter.className} text-neutral-600`}>
+                    ₹{product.price}
                   </span>
                 )}
               </div>
