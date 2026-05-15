@@ -19,8 +19,8 @@ export default function ShopLayout({
       {/* NAVBAR */}
       {!zooming && <Navbar />}
 
-      {/* CONTENT  max-w-[2000px] mx-auto */}
-      <main className="flex-1 pt-14 w-full">
+      {/* CONTENT */}
+      <main className="flex-1 w-full">
         {children}
       </main>
 

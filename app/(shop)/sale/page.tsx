@@ -44,7 +44,7 @@ export default function SalePage() {
   return (
     <>
       {/* ─── HERO SECTION ─── */}
-      <div className="relative left-1/2 right-1/2 w-screen -translate-x-1/2 h-[380px] md:h-[calc(100vh-120px)] overflow-hidden mt-6 md:mt-20">
+      <div className="relative left-1/2 right-1/2 w-screen -translate-x-1/2 h-[380px] md:h-[calc(100vh-120px)] overflow-hidden mt-20 md:mt-32">
         <Image
           src="/sale-banner.jpg"
           alt="Sale Banner"
@@ -67,7 +67,7 @@ export default function SalePage() {
         </div>
       </div>
 
-      <section className="w-full bg-[#f5f5f5] max-w-[2000px] mx-auto px-4 md:px-32">
+      <section className="w-full max-w-[2000px] mx-auto px-4 md:px-32">
         {/* ─── PROMO STRIP ─── */}
         <div className="text-center py-6 ">
           <h2 className={`${bodoni.className} text-base font-semibold tracking-wide text-neutral-600`}>

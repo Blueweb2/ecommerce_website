@@ -102,7 +102,7 @@ const handlePlaceOrder = async (method: PaymentMethod) => {
 };
 
   return ( 
-    <div className="max-w-5xl mx-auto p-6 mt-10 md:mt-20"> 
+    <div className="max-w-5xl mx-auto p-6 mt-20 md:mt-36"> 
 
       <div className="flex relative justify-between mb-8">
         {["Address", "Delivery", "Payment", "Complete"].map((label, i) => ( 

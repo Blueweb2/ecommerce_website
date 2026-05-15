@@ -31,7 +31,7 @@ export default function CartPage() {
   }
 
   return (
-    <section className="w-full bg-[#f5f5f5] py-10 font-sans">
+    <section className="w-full bg-[#f5f5f5] py-10 font-sans mt-8">
       <div className="mx-auto grid max-w-[2000px] gap-8 px-4 p-6 md:mt-20 md:grid-cols-3 md:px-32">
         <div className="space-y-6 md:col-span-2">
           <h1

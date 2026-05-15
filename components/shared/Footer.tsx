@@ -114,7 +114,7 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="font-brand-display px-4 py-1 text-neutral-600 md:px-32">
+      <div className="px-4 py-1 text-neutral-600 md:px-32">
         <p className={`${inter.className} max-w-[2000px] mx-auto pl-4`}>@ 2026 Your Brand Name All right recived</p>
       </div>
     </footer>

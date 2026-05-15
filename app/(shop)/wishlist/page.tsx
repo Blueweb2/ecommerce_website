@@ -24,7 +24,7 @@ export default function WishlistPage() {
     : "My";
 
   return (
-    <section className="w-full">
+    <section className="w-full mt-14 md:mt-32">
       <div className="max-[2000] mx-auto py-10 mt-3  md:mt-20 px-4 md:px-32">
         <h1 className={`${bodoni.className} mb-3 text-[clamp(25px,2.5vw,32px)] font-normal tracking-tight text-neutral-600`}>
           {username} Wishlist

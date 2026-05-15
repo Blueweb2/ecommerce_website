@@ -37,6 +37,7 @@ export default function Navbar() {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [showNavbar, setShowNavbar] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const isProductPage = pathname.startsWith("/product");
 
   const cartCount = items.reduce((acc, item) => acc + item.quantity, 0);
 
@@ -71,6 +72,12 @@ export default function Navbar() {
 
   // navbar hide and show during the scroll time
   useEffect(() => {
+
+    if (isProductPage) {
+      setShowNavbar(true);
+      return;
+    };
+
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
 
@@ -88,13 +95,14 @@ export default function Navbar() {
     window.addEventListener("scroll", handleScroll);
 
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastScrollY]);
+  }, [lastScrollY, isProductPage]);
 
   return (
     <header
-      className={`w-full bg-black fixed top-0 z-9999 transition-transform duration-300 ${
-        showNavbar ? "translate-y-0" : "-translate-y-full"
-      }`}
+      className={`w-full bg-black z-[9999] transition-transform duration-300
+        ${isProductPage ? "relative" : "fixed top-0"}
+        ${showNavbar ? "translate-y-0" : "-translate-y-full"}
+      `}
     >
 
       <div className='h-8 bg-gray-300 flex items-center justify-center text-xs text-center'>
