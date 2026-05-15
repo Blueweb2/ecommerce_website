@@ -67,7 +67,7 @@ export default function HeroSection() {
   };
 
   return (
-    <section className="w-full bg-[#f5f5f5] py-8 mt-12 md:mt-20">
+    <section className="w-full py-8 mt-12 md:mt-20">
       
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 md:h-[calc(100vh-120px)]">
 
@@ -96,15 +96,15 @@ export default function HeroSection() {
 
           {/* DOTS */}
           <div className="relative z-10">
-            <div className="flex gap-3 justify-center mt-6 h-6">
+            <div className="flex justify-center gap-2 mt-6">
               {banners.hero.map((_: any, index: number) => (
                 <button
                   key={index}
                   onClick={(e) => handleClick(e, index)}
-                  className={`rounded-full transition ${
+                  className={`transition-all duration-300 rounded-full ${
                     current === index
-                      ? "w-4 h-4 bg-black"
-                      : "w-2.5 h-2.5 bg-gray-400"
+                      ? "w-10 h-2 bg-black"
+                      : "w-2 h-2 bg-black hover:bg-white"
                   }`}
                 />
               ))}

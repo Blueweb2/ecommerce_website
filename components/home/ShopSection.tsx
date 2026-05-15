@@ -55,7 +55,7 @@ export default function ShopSection() {
   }, [activeTab]);
 
   return (
-    <section className="bg-[#f5f5f5] pt-6 md:pt-14 md:py-0">
+    <section className="pt-6 md:pt-14 md:py-0">
       <div className="max-w-[2000px] mx-auto px-4 md:px-32">
 
         {/* TITLE */}
@@ -114,11 +114,11 @@ export default function ShopSection() {
                     {product.name}
                   </h3>
 
-                  <p className={`${inter.className} text-xs text-[#8D8B9D] mb-3 h-[45px]`}>
+                  <p className={`${inter.className} text-xs text-[#5C5A58] mb-3 h-[45px]`}>
                     {product.description}
                   </p>
 
-                  <p className={`${inter.className}text-sm font-medium text-[#8D8B9D] mb-4`}>
+                  <p className={`${inter.className}text-sm font-medium text-[#5C5A58] mb-4`}>
                     ₹{product.price}
                   </p>
                 </div>

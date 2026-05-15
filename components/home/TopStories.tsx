@@ -44,7 +44,7 @@ export default function TopStories() {
 
   if (loading) {
     return (
-      <section className="bg-[#f5f5f5] py-12">
+      <section className="py-12">
         <div className="max-w-[2000px] mx-auto px-4 md:px-20">
           <h2 className={`${bodoni.className} text-[30px] font-semibold border-t-2 py-5 border-gray-300`}>
             TOP STORIES ON
@@ -76,7 +76,7 @@ export default function TopStories() {
   };
 
   return (
-    <section className="bg-[#f5f5f5] pt-12">
+    <section className="pt-12">
       <div className="max-w-[2000px] mx-auto px-4 md:px-32">
 
         {/* TITLE */}
@@ -85,7 +85,7 @@ export default function TopStories() {
         </h2>
 
         {/* STORIES */}
-        <div className="flex gap-6 overflow-x-auto scrollbar-hide scroll-smooth pb-14 text-[#8D8B9D]">
+        <div className="flex gap-6 overflow-x-auto scrollbar-hide scroll-smooth pb-14 text-[#5C5A58]">
           {stories.map((story) => (
             <div
               key={story._id}
