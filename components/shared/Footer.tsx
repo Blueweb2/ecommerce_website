@@ -35,7 +35,7 @@ export default function Footer() {
   }, []);
 
   return (
-    <footer className="bg-[#cbcbcb]">
+    <footer className="bg-[#f0f0f0]">
       <div className="py-12">
         <div className="max-w-[2000px] mx-auto px-4 md:px-32 grid grid-cols-2 md:grid-cols-4 gap-10">
 
@@ -98,19 +98,18 @@ export default function Footer() {
               <Youtube size={20} className="cursor-pointer hover:text-black h-4" />
             </div>
           </div>
-
         </div>
       </div>
 
-      <div className="px-4 py-1 text-neutral-600  flex justify-between max-w-[2000px] mx-auto px-4 md:px-32">
-        <p className={`${inter.className}`}>© Zenfaz 2026. All rights reserved.</p>
+      <div className="px-4 py-1 text-neutral-600  flex flex-col md:flex-row justify-between max-w-[2000px] mx-auto px-4 md:px-32">
+        <p className={`${inter.className} text-[11px]`}>© Zenfaz 2026. All rights reserved.</p>
         {/* PAYMENTS */}
-        <div className="flex items-center gap-2">
-          <img src="/home/footer/visa.png" alt="visa" className="h-3.5 md:h-4" />
+        <div className="mt-3 md:mt-0">
+          {/* <img src="/home/footer/visa.png" alt="visa" className="h-3.5 md:h-4" />
           <img src="/home/footer/master.png" alt="mastercard" className="h-3.5 md:h-4" />
           <img src="/home/footer/apple-pay.png" alt="paypal" className="h-3.5 md:h-4" />
-          <img src="/home/footer/discover.png" alt="amex" className="h-3.5 md:h-4" />
-          <img src="/home/footer/maestro.png" alt="maestro" className="h-3.5 md:h-4" />
+          <img src="/home/footer/discover.png" alt="amex" className="h-3.5 md:h-4" /> */}
+          <img src="/home/footer/payment-method-69e7ec.svg" alt="maestro" />
         </div>
       </div>
     </footer>
