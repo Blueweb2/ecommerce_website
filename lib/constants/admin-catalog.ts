@@ -106,6 +106,7 @@ export type CatalogProduct = {
   images?: CatalogProductImage[];
 
   category?: CatalogEntity | string | null;
+  designer?: CatalogEntity | string | null; // ✅ ADD THIS
 
   sections?: string[];
 
@@ -153,6 +154,8 @@ export type ProductPayload = {
   deliveryDetails: string;   // ✅ ADD
   keyFeatures: string[];
   category: string;
+  designer?: string; // ✅ ADD THIS
+  brand?: string;    // ✅ ADD THIS
   sections: string[];
   images: CatalogImage[];
   stock: number;

@@ -177,8 +177,8 @@ const RightSide = ({ product }: Props) => {
             <p className="text-2xl font-bold text-[#8D8B9D]">
               ₹{discountPrice}{isFabric && <span className="text-sm font-normal text-gray-400 ml-1">/ {product.unit || "meter"}</span>}
             </p>
-            <p className="text-lg text-red-400 line-through">₹{price}</p>
-            <span className="rounded bg-red-600 px-2 py-1 text-xs font-bold tracking-wide text-white">
+            <p className="text-lg text-[#BE5555] line-through">₹{price}</p>
+            <span className="rounded bg-[#BE5555] px-2 py-1 text-xs font-bold tracking-wide text-white">
               {Math.round(((price - discountPrice) / price) * 100)}% OFF
             </span>
           </>

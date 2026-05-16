@@ -55,6 +55,11 @@ export default function ProductCard({
         />
 
         <div className="absolute top-3 left-3 flex flex-col gap-2">
+          {product.stock === 0 && (
+            <span className="rounded-full border border-black/5 bg-white/90 backdrop-blur-sm px-2.5 py-1 text-[10px] font-bold text-red-500 shadow-sm uppercase tracking-wider">
+              SOLD OUT
+            </span>
+          )}
           {product.sections?.includes("new-arrival") && (
             <span className="rounded-full border border-black/5 bg-white px-2.5 py-1 text-[10px] font-bold text-black shadow-lg">
               NEW

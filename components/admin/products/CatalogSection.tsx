@@ -8,6 +8,7 @@ type Props = {
   form: any;
   setForm: (updater: any) => void;
   categories: any[];
+  designers?: any[]; // ✅ Added
   errors: Record<string, string>;
 };
 
@@ -15,6 +16,7 @@ export default function CatalogSection({
   form,
   setForm,
   categories,
+  designers = [], // ✅ Added
   errors,
 }: Props) {
   
@@ -69,6 +71,32 @@ export default function CatalogSection({
           {errors.category && (
             <p className="text-sm text-rose-600">{errors.category}</p>
           )}
+        </div>
+
+        {/* Designer / Brand */}
+        <div className="grid gap-2">
+          <label className="text-sm font-medium text-slate-700">
+            Designer / Brand
+          </label>
+
+          <select
+            value={form.designer}
+            onChange={(e) =>
+              setForm((prev: any) => ({
+                ...prev,
+                designer: e.target.value,
+              }))
+            }
+            className="rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none transition focus:border-slate-400"
+          >
+            <option value="">Select Designer</option>
+
+            {designers.map((designer) => (
+              <option key={designer._id} value={designer._id}>
+                {designer.name} {designer.brandName ? `(${designer.brandName})` : ''}
+              </option>
+            ))}
+          </select>
         </div>
 
         {/* Sections */}
