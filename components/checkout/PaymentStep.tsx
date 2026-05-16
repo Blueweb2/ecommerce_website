@@ -79,75 +79,20 @@ export default function PaymentStep({
   const { totalGstAmount } = useCartStore();
 
   const deliveryCharge = deliveryMethod === "express" ? 50 : 0;
-  const finalTotal = total + totalGstAmount + deliveryCharge;
+  const grandTotal = total + totalGstAmount + deliveryCharge;
 
   const handlePayment = async () => {
     try {
       setLoading(true);
-
-      if (method === "cod") {
-        await onPlaceOrder("cod");
-        return;
-      }
 
       if (!shippingAddress) {
         toast.error("Please select a delivery address before payment.");
         return;
       }
 
-      const isLoaded = await loadRazorpay();
-      if (!isLoaded) {
-        toast.error("Razorpay failed to load.");
-        return;
-      }
-
-      const res = await orderAPI.createOrder({
-        shippingAddress: buildShippingAddress(shippingAddress),
-        paymentMethod: "razorpay",
-      });
-      const order = res.data.data as RazorpayOrder;
-
-      const Razorpay = (
-        window as Window & typeof globalThis & { Razorpay: RazorpayConstructor }
-      ).Razorpay;
-
-      const rzp = new Razorpay({
-        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
-        amount: Math.round(order.grandTotal * 100),
-        currency: "INR",
-        order_id: order.razorpayOrderId,
-
-        handler: async (response) => {
-          try {
-            await orderAPI.verifyPayment({
-              razorpayOrderId: response.razorpay_order_id,
-              paymentId: response.razorpay_payment_id,
-              signature: response.razorpay_signature,
-              orderId: order._id,
-            });
-
-            toast.success("Payment successful!");
-            await onPaymentSuccess();
-          } catch (err) {
-            toast.error("Payment verification failed");
-          }
-        },
-
-        modal: {
-          ondismiss: () => {
-            toast.error("Payment cancelled");
-          },
-        },
-      });
-
-      rzp.on("payment.failed", () => {
-        toast.error("Payment failed. You can retry from orders.");
-      });
-
-      rzp.open();
+      await onPlaceOrder(method);
     } catch (err) {
       console.error("Payment failed", err);
-      toast.error("Something went wrong");
     } finally {
       setLoading(false);
     }
@@ -208,8 +153,8 @@ export default function PaymentStep({
         </div>
 
         <div className={`${bodoni.className} flex justify-between font-semibold text-lg border-t border-[#8D8B9D] pt-2 text-neutral-600`}>
-          <span>Total Amount</span>
-          <span>₹{finalTotal}</span>
+          <span>Grand Total</span>
+          <span>₹{grandTotal}</span>
         </div>
       </div>
 

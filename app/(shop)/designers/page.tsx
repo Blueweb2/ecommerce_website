@@ -72,7 +72,7 @@ export default async function DesignersPage({
     <section className="min-h-screen bg-[#f7f4ee] pb-20 pt-20">
       <div className="mx-auto max-w-[2000px] px-4 md:px-20">
         <div className="overflow-hidden rounded-[36px] bg-white shadow-[0_30px_100px_rgba(15,23,42,0.06)]">
-          <div className="relative min-h-[340px] overflow-hidden border-b border-black/6 bg-[#ece5da] px-6 py-12 md:px-12 md:py-16">
+          {/* <div className="relative min-h-[340px] overflow-hidden border-b border-black/6 bg-[#ece5da] px-6 py-12 md:px-12 md:py-16">
             <div className="absolute inset-0">
               <Image
                 src={featuredDesigners[0]?.bannerImage?.url || FALLBACK_BANNER}
@@ -131,9 +131,9 @@ export default async function DesignersPage({
                 </p>
               </form>
             </div>
-          </div>
+          </div> */}
 
-          {featuredDesigners.length ? (
+          {/* {featuredDesigners.length ? (
             <div className="border-b border-black/6 px-6 py-10 md:px-12">
               <div className="mb-6 flex items-end justify-between gap-4">
                 <div>
@@ -207,7 +207,7 @@ export default async function DesignersPage({
                 ))}
               </div>
             </div>
-          ) : null}
+          ) : null} */}
 
      <div
   id="designer-index"

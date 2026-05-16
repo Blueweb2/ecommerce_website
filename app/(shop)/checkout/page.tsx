@@ -29,7 +29,6 @@ setStep(4);
 
 /* ================= HANDLE ORDER ================= */
 const handlePlaceOrder = async (method: PaymentMethod) => {
-
   try {
     if (!selectedAddress) {
       toast.error("Please select a delivery address.");
@@ -37,19 +36,19 @@ const handlePlaceOrder = async (method: PaymentMethod) => {
     }
 
     const { street, city, state, postalCode, country } = selectedAddress;
+    const shippingCharge = deliveryMethod === "express" ? 50 : 0;
 
     /* ================= CREATE ORDER ================= */
-
     const res = await orderAPI.createOrder({
       shippingAddress: { street, city, state, postalCode, country },
       paymentMethod: method,
+      shippingCharge,
       notes: "",
     });
 
     const order = res.data.data || res.data;
 
     /* ================= COD FLOW ================= */
-
     if (method === "cod") {
       toast.success("Order placed successfully!");
       await showCompleteStep();
@@ -57,7 +56,6 @@ const handlePlaceOrder = async (method: PaymentMethod) => {
     }
 
     /* ================= RAZORPAY FLOW ================= */
-
     const isLoaded = await loadRazorpayScript();
     if (!isLoaded) {
       toast.error("Failed to load Razorpay SDK. Are you online?");
@@ -66,8 +64,10 @@ const handlePlaceOrder = async (method: PaymentMethod) => {
 
     const options = {
       key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
-      amount: Math.round(order.totalPrice * 100),
+      amount: Math.round(order.grandTotal * 100), // ✅ Use grandTotal
       currency: "INR",
+      name: "Your Store Name",
+      description: "Order Payment",
       order_id: order.razorpayOrderId,
 
       handler: async (response: any) => {
@@ -94,10 +94,17 @@ const handlePlaceOrder = async (method: PaymentMethod) => {
     };
 
     const rzp = new (window as any).Razorpay(options);
+
+    rzp.on("payment.failed", function (response: any) {
+      toast.error("Payment failed. You can retry from your orders.");
+      console.error("Payment failed details:", response.error);
+    });
+
     rzp.open();
-  } catch (err) {
+  } catch (err: any) {
     console.error("Order failed", err);
-    toast.error("Order failed. Please try again.");
+    const errorMsg = err.response?.data?.message || "Order failed. Please try again.";
+    toast.error(errorMsg);
   };
 };
 
