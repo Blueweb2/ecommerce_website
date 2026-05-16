@@ -41,7 +41,7 @@ export default function Footer() {
 
           {/* SHOP */}
           <div>
-            <h3 className={`${bodoni.className} mb-4 font-semibold text-neutral-600`}>Shop</h3>
+            <h3 className={`${inter.className} mb-4 font-semibold text-neutral-600`}>Shop</h3>
             <ul className="font-brand-sans space-y-2 text-[11px]">
               {categories.length > 0 ? (
                 categories.map((cat) => (
@@ -65,7 +65,7 @@ export default function Footer() {
 
           {/* SUPPORT */}
           <div>
-            <h3 className={`${bodoni.className} mb-4 font-semibold text-neutral-600`}>Support</h3>
+            <h3 className={`${inter.className} mb-4 font-semibold text-neutral-600`}>Support</h3>
             <ul className={`${inter.className} space-y-2 text-[11px] text-[#5C5A58]`}>
               <li><Link href="#" className="hover:text-black">Shipping & Delivery</Link></li>
               <li><Link href="#" className="hover:text-black">Returns & Exchanges</Link></li>
@@ -77,7 +77,7 @@ export default function Footer() {
 
           {/* COMPANY */}
           <div>
-            <h3 className={`${bodoni.className} mb-4 font-semibold text-neutral-600`}>Company</h3>
+            <h3 className={`${inter.className} mb-4 font-semibold text-neutral-600`}>Company</h3>
             <ul className={`${inter.className} space-y-2 text-[11px] text-[#5C5A58]`}>
               <li><Link href="#" className="hover:text-black">About Us</Link></li>
               <li><Link href="#" className="hover:text-black">Our Story</Link></li>
@@ -87,11 +87,9 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* SOCIAL + PAYMENTS */}
+          {/* SOCIAL ICONS */}
           <div>
-            <h3 className={`${bodoni.className} mb-4 font-semibold text-neutral-600`}>Follow us on</h3>
-
-            {/* SOCIAL ICONS */}
+            <h3 className={`${inter.className} mb-4 font-semibold text-neutral-600`}>Follow us on</h3>
             <div className="flex items-center gap-4 mb-6 text-[#5C5A58]">
               <Facebook size={20} className="cursor-pointer hover:text-black h-4" />
               <Instagram size={20} className="cursor-pointer hover:text-black h-4" />
@@ -99,23 +97,21 @@ export default function Footer() {
               <X size={20} className="cursor-pointer hover:text-black h-4" />
               <Youtube size={20} className="cursor-pointer hover:text-black h-4" />
             </div>
-
-            {/* PAYMENTS */}
-            <p className={`${bodoni.className} text-xs text-neutral-600 mb-2`}>We accepts</p>
-            <div className="flex items-center gap-2">
-              <img src="/home/footer/visa.png" alt="visa" className="h-3.5 md:h-4" />
-              <img src="/home/footer/master.png" alt="mastercard" className="h-3.5 md:h-4" />
-              <img src="/home/footer/apple-pay.png" alt="paypal" className="h-3.5 md:h-4" />
-              <img src="/home/footer/discover.png" alt="amex" className="h-3.5 md:h-4" />
-              <img src="/home/footer/maestro.png" alt="maestro" className="h-3.5 md:h-4" />
-            </div>
           </div>
 
         </div>
       </div>
 
-      <div className="px-4 py-1 text-neutral-600 md:px-32">
-        <p className={`${inter.className} max-w-[2000px] mx-auto pl-4`}>© Zenfaz 2026. All rights reserved.</p>
+      <div className="px-4 py-1 text-neutral-600  flex justify-between max-w-[2000px] mx-auto px-4 md:px-32">
+        <p className={`${inter.className}`}>© Zenfaz 2026. All rights reserved.</p>
+        {/* PAYMENTS */}
+        <div className="flex items-center gap-2">
+          <img src="/home/footer/visa.png" alt="visa" className="h-3.5 md:h-4" />
+          <img src="/home/footer/master.png" alt="mastercard" className="h-3.5 md:h-4" />
+          <img src="/home/footer/apple-pay.png" alt="paypal" className="h-3.5 md:h-4" />
+          <img src="/home/footer/discover.png" alt="amex" className="h-3.5 md:h-4" />
+          <img src="/home/footer/maestro.png" alt="maestro" className="h-3.5 md:h-4" />
+        </div>
       </div>
     </footer>
   );
