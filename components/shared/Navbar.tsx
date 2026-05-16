@@ -126,7 +126,7 @@ export default function Navbar() {
       `}
     >
 
-      <div className='h-8 bg-[#cbcbcb] flex items-center justify-center text-xs text-center'>
+      <div className='h-8 bg-[#f0f0f0] flex items-center justify-center text-xs text-center'>
         {messages[index]}
       </div>
 
