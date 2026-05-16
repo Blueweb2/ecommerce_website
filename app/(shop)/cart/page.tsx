@@ -35,7 +35,7 @@ export default function CartPage() {
       <div className="mx-auto grid max-w-[2000px] gap-8 px-4 p-6 md:mt-20 md:grid-cols-3 md:px-32">
         <div className="space-y-6 md:col-span-2">
           <h1
-            className={`${bodoni.className} border-b border-gray-300 pb-5 text-[30px] font-semibold text-neutral-600`}
+            className={`${bodoni.className} border-b border-gray-300 pb-5 text-[24px] font-normal`}
           >
             Shopping Cart
           </h1>

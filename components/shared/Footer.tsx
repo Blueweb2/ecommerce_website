@@ -1,38 +1,10 @@
-"use client";
+// "use client";
 
 import Link from "next/link";
 import { Facebook, Instagram, Linkedin, X, Youtube } from "lucide-react";
-import { useEffect, useState } from "react";
-import { categoryAPI } from "@/lib/api/category.api";
 import { inter } from "@/lib/fonts";
 
-interface Category {
-  _id: string;
-  name: string;
-  slug: string;
-  parent?: string | null;
-  isActive: boolean;
-};
-
 export default function Footer() {
-  
-  const [categories, setCategories] = useState<Category[]>([]);
-
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const res = await categoryAPI.getAll();
-        // Filter only top-level active categories
-        const topLevel = (res.data.data || []).filter(
-          (cat: Category) => !cat.parent && cat.isActive
-        );
-        setCategories(topLevel);
-      } catch (error) {
-        console.error("Failed to fetch footer categories:", error);
-      }
-    };
-    fetchCategories();
-  }, []);
 
   return (
     <footer className="bg-[#f0f0f0]">
@@ -41,56 +13,53 @@ export default function Footer() {
 
           {/* SHOP */}
           <div>
-            <h3 className={`${inter.className} mb-4 font-semibold text-neutral-600`}>Shop</h3>
+            <h3 className={`${inter.className} mb-4 font-semibold text-neutral-600`}>ABOUT</h3>
             <ul className="font-brand-sans space-y-2 text-[11px]">
-              {categories.length > 0 ? (
-                categories.map((cat) => (
-                  <li key={cat._id}>
-                    <Link href={`/category/${cat.slug}`} className={`${inter.className} text-[#5C5A58] hover:text-black transition-colors`}>
-                      {cat.name}
-                    </Link>
-                  </li>
-                ))
-              ) : (
-                <>
-                  <li><Link href="/category/rings">Rings</Link></li>
-                  <li><Link href="/category/necklaces">Necklaces</Link></li>
-                  <li><Link href="/category/earrings">Earrings</Link></li>
-                  <li><Link href="/category/bracelets">Bracelets</Link></li>
-                </>
-              )}
-              <li><Link href="/collection/new-in" className={`${inter.className} text-[#5C5A58] hover:text-black transition-colors`}>New Arrivals</Link></li>
+              <li>
+                <Link href='' className={`${inter.className} text-[#5C5A58] hover:text-black transition-colors`}>
+                  Contact Us
+                </Link>
+              </li>
+              <li>
+                <Link href='' className={`${inter.className} text-[#5C5A58] hover:text-black transition-colors`}>
+                  About Us
+                </Link>
+              </li>
+              <li>
+                <Link href='' className={`${inter.className} text-[#5C5A58] hover:text-black transition-colors`}>
+                  Careers
+                </Link>
+              </li>
             </ul>
           </div>
 
           {/* SUPPORT */}
           <div>
-            <h3 className={`${inter.className} mb-4 font-semibold text-neutral-600`}>Support</h3>
+            <h3 className={`${inter.className} mb-4 font-semibold text-neutral-600`}>HELP</h3>
             <ul className={`${inter.className} space-y-2 text-[11px] text-[#5C5A58]`}>
-              <li><Link href="#" className="hover:text-black">Shipping & Delivery</Link></li>
-              <li><Link href="#" className="hover:text-black">Returns & Exchanges</Link></li>
-              <li><Link href="#" className="hover:text-black">FAQs</Link></li>
-              <li><Link href="#" className="hover:text-black">Contact Us</Link></li>
-              <li><Link href="#" className="hover:text-black">Track Order</Link></li>
+              <li><Link href="#" className="hover:text-black">Payment</Link></li>
+              <li><Link href="#" className="hover:text-black">Shipping</Link></li>
+              <li><Link href="#" className="hover:text-black">Cancellation & Returns</Link></li>
             </ul>
           </div>
 
           {/* COMPANY */}
           <div>
-            <h3 className={`${inter.className} mb-4 font-semibold text-neutral-600`}>Company</h3>
+            <h3 className={`${inter.className} mb-4 font-semibold text-neutral-600`}>CONSUMER POLICY</h3>
             <ul className={`${inter.className} space-y-2 text-[11px] text-[#5C5A58]`}>
-              <li><Link href="#" className="hover:text-black">About Us</Link></li>
-              <li><Link href="#" className="hover:text-black">Our Story</Link></li>
-              <li><Link href="#" className="hover:text-black">Blog</Link></li>
-              <li><Link href="#" className="hover:text-black">Careers</Link></li>
-              <li><Link href="#" className="hover:text-black">Privacy Policy</Link></li>
+              <li><Link href="#" className="hover:text-black">Cancellation & Returns</Link></li>
+              <li><Link href="#" className="hover:text-black">Terms Of Use</Link></li>
+              <li><Link href="#" className="hover:text-black">Security</Link></li>
+              <li><Link href="#" className="hover:text-black">Privacy</Link></li>
             </ul>
           </div>
 
           {/* SOCIAL ICONS */}
           <div>
-            <h3 className={`${inter.className} mb-4 font-semibold text-neutral-600`}>Follow us on</h3>
-            <div className="flex items-center gap-4 mb-6 text-[#5C5A58]">
+            <h3 className={`${inter.className} mb-4 font-semibold text-neutral-600`}>Registered office address</h3>
+            <p className={`${inter.className} text-[11px] text-[#5C5A58]`}>Blue Web2 Private Limited</p>
+            <p className={`${inter.className} text-[11px] text-[#5C5A58]`}>Building: pookottumpadam road Karulai, Maplappuram, keral, india</p>
+            <div className="flex items-center gap-4 mt-4 mb-6 text-[#5C5A58]">
               <Facebook size={20} className="cursor-pointer hover:text-black h-4" />
               <Instagram size={20} className="cursor-pointer hover:text-black h-4" />
               <Linkedin size={20} className="cursor-pointer hover:text-black h-4" />
@@ -105,10 +74,6 @@ export default function Footer() {
         <p className={`${inter.className} text-[11px]`}>© Zenfaz 2026. All rights reserved.</p>
         {/* PAYMENTS */}
         <div className="mt-3 md:mt-0">
-          {/* <img src="/home/footer/visa.png" alt="visa" className="h-3.5 md:h-4" />
-          <img src="/home/footer/master.png" alt="mastercard" className="h-3.5 md:h-4" />
-          <img src="/home/footer/apple-pay.png" alt="paypal" className="h-3.5 md:h-4" />
-          <img src="/home/footer/discover.png" alt="amex" className="h-3.5 md:h-4" /> */}
           <img src="/home/footer/payment-method-69e7ec.svg" alt="maestro" />
         </div>
       </div>
