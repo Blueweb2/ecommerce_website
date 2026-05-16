@@ -46,8 +46,8 @@ export default function TopStories() {
     return (
       <section className="py-12">
         <div className="max-w-[2000px] mx-auto px-4 md:px-20">
-          <h2 className={`${bodoni.className} text-[30px] font-semibold border-t-2 py-5 border-gray-300`}>
-            TOP STORIES ON
+          <h2 className={`${bodoni.className} text-[24px] font-normal border-t-2 py-5 border-gray-300`}>
+            top stories on
           </h2>
           <div className="flex gap-6 pb-14 border-b-2 border-gray-300">
             {[0, 1, 2, 3, 4].map((i) => (
@@ -80,8 +80,8 @@ export default function TopStories() {
       <div className="max-w-[2000px] mx-auto px-4 md:px-32">
 
         {/* TITLE */}
-        <h2 className={`${bodoni.className} border-t-[2px] border-[#e5e5e5] py-5 text-[clamp(25px,2.5vw,32px)] font-normal tracking-tight text-neutral-600`}>
-          TOP STORIES ON
+        <h2 className={`${bodoni.className} border-t-[2px] border-[#e5e5e5] py-5 text-[24px] font-normal tracking-tight`}>
+          top stories on
         </h2>
 
         {/* STORIES */}

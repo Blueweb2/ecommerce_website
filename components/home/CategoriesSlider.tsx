@@ -41,7 +41,7 @@ export default function CategoriesSlider() {
     <div>
       {/* HEADER */}
       <div className="flex items-center justify-between mb-6">
-        <h2 className={`${bodoni.className} text-[clamp(25px,2.5vw,32px)] font-normal tracking-tight text-neutral-600`}>Shop by Categories</h2>
+        <h2 className={`${bodoni.className} text-[24px] font-normal tracking-tight`}>Shop by Categories</h2>
       </div>
 
       {/* SLIDER */}
