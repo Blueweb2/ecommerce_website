@@ -299,10 +299,9 @@ export default function Navbar() {
               >
                 <div className="mx-auto grid max-w-[1300px] grid-cols-4 gap-16 px-10">
 
-                  {/* FEATURED DESIGNERS */}
                   <div>
-                    <h3 className="mb-6 text-xs uppercase tracking-[3px] text-gray-500">
-                      Featured Designers
+                    <h3 className="mb-6 text-lg font-semibold tracking-wider hover:underline">
+                      DESIGNERS
                     </h3>
 
                     <div className="space-y-4">
@@ -313,86 +312,17 @@ export default function Navbar() {
                           <Link
                             key={designer._id}
                             href={`/designers/${designer.slug}`}
-                            className="block text-sm hover:opacity-60"
+                            className="block text-sm font-semibold uppercase tracking-wide text-black hover:text-gray-600"
                           >
                             {designer.name}
                           </Link>
                         ))}
-                    </div>
-                  </div>
-
-                  {/* OUR PICKS */}
-                  <div>
-                    <h3 className="mb-6 text-xs uppercase tracking-[3px] text-gray-500">
-                      Our Picks
-                    </h3>
-
-                    <div className="space-y-4">
-                      {designers
-                        .slice(0, 5)
-                        .map((designer) => (
-                          <Link
-                            key={designer._id}
-                            href={`/designers/${designer.slug}`}
-                            className="block text-sm hover:opacity-60"
-                          >
-                            {designer.name}
-                          </Link>
-                        ))}
-                    </div>
-                  </div>
-
-                  {/* A-Z */}
-                  <div>
-                    <h3 className="mb-6 text-xs uppercase tracking-[3px] text-gray-500">
-                      Browse A–Z
-                    </h3>
-
-                    <div className="flex flex-wrap gap-4">
-                      {"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                        .split("")
-                        .map((letter) => (
-                          <a
-                            key={letter}
-                            href={`/designers#${letter}`}
-                            className="text-sm hover:underline"
-                          >
-                            {letter}
-                          </a>
-                        ))}
-                    </div>
-                  </div>
-
-                  {/* EDITORIAL */}
-                  <div>
-                    <div className="overflow-hidden rounded-xl">
-                      <img
-                        src="https://images.unsplash.com/photo-1496747611176-843222e1e57c"
-                        alt="Designer Editorial"
-                        className="h-[300px] w-full object-cover"
-                      />
-                    </div>
-
-                    <div className="mt-5">
-                      <h3 className="text-2xl font-light">
-                        Discover luxury fashion houses
-                      </h3>
-
-                      <p className="mt-2 text-sm text-gray-600">
-                        Explore curated designer collections
-                      </p>
-
-                      <Link
-                        href="/designers"
-                        className="mt-4 inline-block text-sm underline"
-                      >
-                        Explore now
-                      </Link>
                     </div>
                   </div>
                 </div>
               </div>
             )}
+
           </nav>
         </div>
 
