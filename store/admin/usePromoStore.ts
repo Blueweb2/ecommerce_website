@@ -34,6 +34,8 @@ interface PromoState {
   createPromo: (data: PromoPayload) => Promise<void>;
   updatePromo: (id: string, data: Partial<PromoPayload>) => Promise<void>;
   deletePromo: (id: string) => Promise<void>;
+  sendPromoMail: (id: string) => Promise<void>;
+
 }
 
 export const usePromoStore = create<PromoState>((set, get) => ({
@@ -78,6 +80,16 @@ export const usePromoStore = create<PromoState>((set, get) => ({
       set({ promos: get().promos.filter((p) => p._id !== id) });
     } catch (err) {
       console.error("Delete promo failed", err);
+      throw err;
+    }
+  },
+
+
+  sendPromoMail: async (id) => {
+    try {
+      await api.post(`/promo/${id}/send-mail`);
+    } catch (err) {
+      console.error("Send promo mail failed", err);
       throw err;
     }
   },
