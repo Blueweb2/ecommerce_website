@@ -13,6 +13,7 @@ export const orderAPI = {
       country: string;
     };
     paymentMethod: "cod" | "razorpay";
+    shippingCharge: number; // ✅ ADD THIS
     notes?: string;
   }) => api.post("/orders", data),
 
