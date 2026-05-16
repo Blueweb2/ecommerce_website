@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Facebook, Instagram, Linkedin, X, Youtube } from "lucide-react";
 import { useEffect, useState } from "react";
 import { categoryAPI } from "@/lib/api/category.api";
-import { bodoni, inter } from "@/lib/fonts";
+import { inter } from "@/lib/fonts";
 
 interface Category {
   _id: string;
@@ -35,7 +35,7 @@ export default function Footer() {
   }, []);
 
   return (
-    <footer>
+    <footer className="bg-[#cbcbcb]">
       <div className="py-12">
         <div className="max-w-[2000px] mx-auto px-4 md:px-32 grid grid-cols-2 md:grid-cols-4 gap-10">
 
