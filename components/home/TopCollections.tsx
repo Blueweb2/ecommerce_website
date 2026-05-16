@@ -6,7 +6,7 @@ import Link from "next/link";
 import { collectionAPI } from "@/lib/api/collection.api";
 import { Collection } from "@/types/collection";
 import { optimizeCloudinaryUrl } from "@/lib/constants/admin-catalog";
-import { bodoni } from "@/lib/fonts";
+import { headingClassName } from "../ui/headingClassNames";
 
 const FALLBACK_IMAGE = "/home/herosection/hero-right-top.png";
 
@@ -129,7 +129,7 @@ export default function TopCollections() {
             </Link>
 
             <div className="pt-5">
-              <h2 className={`${bodoni.className} text-[24px] font-normal tracking-tight`}>
+              <h2 className={headingClassName}>
                 {getCollectionTitle(item)}
               </h2>
 

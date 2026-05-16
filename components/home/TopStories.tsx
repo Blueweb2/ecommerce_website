@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { getStories } from "@/lib/api/story.api";
 import { bodoni, inter } from "@/lib/fonts";
+import { headingClassName } from "../ui/headingClassNames";
 
 type Story = {
   _id: string;
@@ -80,7 +81,7 @@ export default function TopStories() {
       <div className="max-w-[2000px] mx-auto px-4 md:px-32">
 
         {/* TITLE */}
-        <h2 className={`${bodoni.className} border-t-[2px] border-[#e5e5e5] py-5 text-[24px] font-normal tracking-tight`}>
+        <h2 className={`${headingClassName} border-t-[2px] border-[#e5e5e5] py-5`}>
           top stories on
         </h2>
 
