@@ -277,7 +277,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
   };
 
   return (
-    <section className=" py-8 md:py-10 mt-16 ">
+    <section className="py-8 md:py-10 mt-20 md:mt-32">
       <div className=" px-4 md:px-10">
         <div className={`grid gap-8 ${hideAside ? 'xl:grid-cols-[270px_minmax(0,1fr)]':'xl:grid-cols-1'}`}>
 

@@ -44,7 +44,7 @@ export default function SalePage() {
   return (
     <>
       {/* ─── HERO SECTION ─── */}
-      <div className="relative left-1/2 right-1/2 w-screen -translate-x-1/2 h-[380px] md:h-[calc(100vh-120px)] overflow-hidden mt-6 md:mt-20">
+      <div className="relative left-1/2 right-1/2 w-screen -translate-x-1/2 h-[380px] md:h-[calc(100vh-120px)] overflow-hidden mt-20 md:mt-32">
         <Image
           src="/sale-banner.jpg"
           alt="Sale Banner"
@@ -67,13 +67,13 @@ export default function SalePage() {
         </div>
       </div>
 
-      <section className="w-full bg-[#f5f5f5] max-w-[2000px] mx-auto px-4 md:px-32">
+      <section className="w-full max-w-[2000px] mx-auto px-4 md:px-32">
         {/* ─── PROMO STRIP ─── */}
         <div className="text-center py-6 ">
           <h2 className={`${bodoni.className} text-base font-semibold tracking-wide text-neutral-600`}>
             Promotion
           </h2>
-          <p className={`${inter.className} text-sm text-gray-500 mt-1`}>
+          <p className={`${inter.className} text-sm text-[#5C5A58] mt-1`}>
             All promotion items are listed at the lowest price in 30 days
           </p>
         </div>
@@ -82,7 +82,7 @@ export default function SalePage() {
         <div className="flex flex-col md:flex-row justify-between items-center px-4 md:px-20 py-5 gap-4">
           <div className="flex items-center gap-2">
             <div className="h-2 w-2 rounded-full bg-gray-500 animate-pulse" />
-            <p className={`${inter.className} text-sm font-medium text-gray-500`}>
+            <p className={`${inter.className} text-sm font-medium text-[#5C5A58]`}>
               {loading ? "Discovering offers..." : `Showing ${products.length} exclusive deals`}
             </p>
           </div>
@@ -172,11 +172,11 @@ export default function SalePage() {
                     {/* DETAILS */}
                     <div className="mt-3 space-y-1">
                       {product.brand && (
-                        <p className="text-[11px] text-gray-400 uppercase tracking-wider">
+                        <p className="text-[11px] text-[#5C5A58] uppercase tracking-wider">
                           {product.brand}
                         </p>
                       )}
-                      <h3 className="text-sm font-medium text-neutral-600 line-clamp-1 group-hover:text-neutral-800 transition">
+                      <h3 className="text-sm font-medium text-[#5C5A58] line-clamp-1 group-hover:text-neutral-600 transition">
                         {product.name}
                       </h3>
 

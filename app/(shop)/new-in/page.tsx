@@ -15,7 +15,7 @@ export default function NewInPage() {
   }, [fetchNewProducts]);
 
   return (
-    <section className="bg-[#f8f8f8] py-12 mt-10">
+    <section className="py-12 mt-10 md:mt-28">
       <div className="max-w-7xl mx-auto px-4 md:px-8">
 
         <div className="text-center mb-10">

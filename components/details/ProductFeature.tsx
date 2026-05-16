@@ -75,12 +75,12 @@ const ProductFeature = ({ product }: ProductFeatureProps) => {
 
   // only in large large divice 
   return (
-    <section className="pb-10 pt-20">
+    <section className="pb-10">
       <div className="lg:grid grid-cols-3">
 
         {/* ================= LEFT IMAGE ================= */}
         <div
-          className="sticky top-14 h-screen group cursor-none hidden lg:block"
+          className="sticky top-0 h-screen group cursor-none hidden lg:block"
           onMouseMove={(e) => {
             const rect = e.currentTarget.getBoundingClientRect();
             setLeftPos({

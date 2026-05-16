@@ -20,6 +20,7 @@ type CustomDataItem = {
 };
 
 const RightSide = ({ product }: Props) => {
+
   const [selectedVariant, setSelectedVariant] = useState<any>(null);
   const [activeIndex, setActiveIndex] = useState<number | null>(0);
   const isCustomizable = product?.customizable?.isCustomizable;
@@ -163,7 +164,7 @@ const RightSide = ({ product }: Props) => {
   };
 
   return (
-    <div className="mx-4 mt-10 h-fit space-y-6 text-sm lg:sticky lg:top-40 lg:mx-10 md:mt-10">
+    <div className="mx-4 mt-10 h-fit space-y-6 text-sm lg:sticky lg:top-7 lg:mx-10 md:mt-10">
       <div>
         <h1 className={`${bodoni.className} text-2xl text-neutral-600 md:text-3xl`}>
           {product?.name}

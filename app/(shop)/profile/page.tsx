@@ -42,7 +42,7 @@ export default function ProfilePage() {
   };
 
   return (
-    <section className="px-4 md:px-20 mt-10 md:mt-20">
+    <section className="px-4 md:px-20 mt-20 md:mt-40">
 
       {/* HEADER */}
       <div className="flex flex-col items-center justify-center border-b py-5 border-gray-300">
