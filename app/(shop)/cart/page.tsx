@@ -3,11 +3,12 @@
 import Link from "next/link";
 import { CartItem, useCartStore } from "@/store/user/cart/useCartStore";
 import { ShoppingCart } from "lucide-react";
-import { bodoni, inter } from "@/lib/fonts";
+import {  inter } from "@/lib/fonts";
 import { useState } from "react";
 import CartEditModal from "@/components/cart/CartEditModal";
 import { validatePromo } from "@/lib/api/promo.api";
 import toast from "react-hot-toast";
+import { headingClassName } from "@/components/ui/headingClassNames";
 
 export default function CartPage() {
   const [selectedItem, setSelectedItem] = useState<CartItem | null>(null);
@@ -59,7 +60,7 @@ export default function CartPage() {
         {/* LEFT SIDE */}
         <div>
           <h1
-            className={`${bodoni.className} border-b border-[#d8d8d8] pb-6 text-[42px] font-normal tracking-[-0.5px] text-black`}
+            className={`${headingClassName} border-b border-gray-300 pb-5`}
           >
             Shopping Bag
           </h1>

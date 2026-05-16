@@ -6,6 +6,7 @@ import Link from "next/link";
 import { collectionAPI } from "@/lib/api/collection.api";
 import { Collection } from "@/types/collection";
 import { optimizeCloudinaryUrl } from "@/lib/constants/admin-catalog";
+import { headingClassName } from "../ui/headingClassNames";
 
 const FALLBACK_IMAGE = "/home/herosection/hero-right-top.png";
 
@@ -128,7 +129,7 @@ export default function TopCollections() {
             </Link>
 
             <div className="pt-5">
-              <h2 className="font-brand-display lora text-xl font-semibold tracking-tight text-neutral-600">
+              <h2 className={headingClassName}>
                 {getCollectionTitle(item)}
               </h2>
 

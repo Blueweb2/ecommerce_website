@@ -6,7 +6,8 @@ import { useProductStore } from "@/store/user/product/useProductStore";
 import { Product } from "@/types/product";
 import ProductCard from "@/components/product/ProductCard";
 import ProductCardSkeleton from "@/components/ui/ProductCardSkeleton";
-import { bodoni, inter } from "@/lib/fonts";
+import { inter } from "@/lib/fonts";
+import { headingClassName } from "../ui/headingClassNames";
 
 export default function NewInSection() {
 
@@ -72,7 +73,7 @@ export default function NewInSection() {
         {/* Left Info Panel */}
         <div className="md:w-[25%] flex-shrink-0 flex flex-col justify-center pr-3">
           <h2
-            className={`${bodoni.className} mb-3 text-[clamp(25px,2.5vw,32px)] font-normal tracking-tight text-neutral-600`}
+            className={`${headingClassName} mb-3`}
           >
             New In
           </h2>

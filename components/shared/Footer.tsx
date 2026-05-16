@@ -56,14 +56,13 @@ export default function Footer() {
 
           {/* SOCIAL ICONS */}
           <div>
-            <h3 className={`${inter.className} mb-4 font-semibold text-neutral-600`}>Registered office address</h3>
-            <p className={`${inter.className} text-[11px] text-[#5C5A58]`}>Blue Web2 Private Limited</p>
+            <h3 className={`${inter.className} mb-4 font-semibold text-neutral-600`}>ABOUT ZENFAZZ ADDRESS</h3>
+            <p className={`${inter.className} text-[11px] text-[#5C5A58]`}>Blue Web2</p>
             <p className={`${inter.className} text-[11px] text-[#5C5A58]`}>Building: pookottumpadam road Karulai, Maplappuram, keral, india</p>
             <div className="flex items-center gap-4 mt-4 mb-6 text-[#5C5A58]">
               <Facebook size={20} className="cursor-pointer hover:text-black h-4" />
               <Instagram size={20} className="cursor-pointer hover:text-black h-4" />
               <Linkedin size={20} className="cursor-pointer hover:text-black h-4" />
-              <X size={20} className="cursor-pointer hover:text-black h-4" />
               <Youtube size={20} className="cursor-pointer hover:text-black h-4" />
             </div>
           </div>
@@ -72,10 +71,7 @@ export default function Footer() {
 
       <div className="px-4 py-1 text-neutral-600  flex flex-col md:flex-row justify-between max-w-[2000px] mx-auto px-4 md:px-32">
         <p className={`${inter.className} text-[11px]`}>© Zenfaz 2026. All rights reserved.</p>
-        {/* PAYMENTS */}
-        <div className="mt-3 md:mt-0">
-          <img src="/home/footer/payment-method-69e7ec.svg" alt="maestro" />
-        </div>
+        <img src="/home/footer/payment-method-69e7ec.svg" alt="" className="h-5"/>
       </div>
     </footer>
   );

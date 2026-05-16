@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { categoryAPI } from "@/lib/api/category.api";
 import { optimizeCloudinaryUrl } from "@/lib/constants/admin-catalog";
-import { bodoni } from "@/lib/fonts";
+import { headingClassName } from "../ui/headingClassNames";
 
 type Category = {
   _id: string;
@@ -41,7 +41,7 @@ export default function CategoriesSlider() {
     <div>
       {/* HEADER */}
       <div className="flex items-center justify-between mb-6">
-        <h2 className={`${bodoni.className} text-[clamp(25px,2.5vw,32px)] font-normal tracking-tight text-neutral-600`}>Shop by Categories</h2>
+        <h2 className={headingClassName}>Shop by Categories</h2>
       </div>
 
       {/* SLIDER */}
