@@ -114,10 +114,10 @@ export default function CartDrawer() {
               <span>Subtotal</span>
               <span>₹{totalPrice}</span>
             </div>
-            <div className="flex justify-between text-gray-500">
+            {/* <div className="flex justify-between text-gray-500">
               <span>GST</span>
               <span>₹{totalGstAmount}</span>
-            </div>
+            </div> */}
             <div className={`${bodoni.className} text-neutral-600 flex justify-between font-bold text-lg border-t border-gray-300 pt-2 mt-2`}>
               <span>Total</span>
               <span>₹{totalPrice + totalGstAmount}</span>

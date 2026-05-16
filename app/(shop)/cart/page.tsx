@@ -132,10 +132,10 @@ export default function CartPage() {
               <span>Item subtotal</span>
               <span>Rs. {totalPrice}</span>
             </div>
-            <div className="flex justify-between border-b border-gray-300 py-3 text-gray-600">
+            {/* <div className="flex justify-between border-b border-gray-300 py-3 text-gray-600">
               <span>GST</span>
               <span>Rs. {totalGstAmount}</span>
-            </div>
+            </div> */}
             <div className="flex justify-between pt-6 text-lg font-bold text-neutral-600">
               <span className={bodoni.className}>Total</span>
               <span>Rs. {totalPrice + totalGstAmount}</span>
