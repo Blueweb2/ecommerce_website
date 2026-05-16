@@ -74,12 +74,13 @@ export default function PaymentStep({
   onPaymentSuccess,
   shippingAddress,
 }: PaymentStepProps) {
-  const [method, setMethod] = useState<PaymentMethod>("cod");
+   const [method, setMethod] = useState<PaymentMethod>("cod");
   const [loading, setLoading] = useState(false);
-  const { totalGstAmount } = useCartStore();
+  const { totalGstAmount, appliedPromo } = useCartStore();
 
   const deliveryCharge = deliveryMethod === "express" ? 50 : 0;
-  const grandTotal = total + totalGstAmount + deliveryCharge;
+  const discountAmount = appliedPromo?.discountAmount || 0;
+  const grandTotal = total + totalGstAmount + deliveryCharge - discountAmount;
 
   const handlePayment = async () => {
     try {
@@ -150,6 +151,13 @@ export default function PaymentStep({
             <span className="text-gray-500">Delivery</span>
             <span>{deliveryCharge === 0 ? "Free" : `₹${deliveryCharge}`}</span>
           </div>
+
+          {appliedPromo && (
+            <div className="flex justify-between text-emerald-600 font-medium">
+              <span>Discount ({appliedPromo.code})</span>
+              <span>-₹{appliedPromo.discountAmount}</span>
+            </div>
+          )}
         </div>
 
         <div className={`${bodoni.className} flex justify-between font-semibold text-lg border-t border-[#8D8B9D] pt-2 text-neutral-600`}>

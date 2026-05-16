@@ -14,6 +14,7 @@ export const orderAPI = {
     };
     paymentMethod: "cod" | "razorpay";
     shippingCharge: number; // ✅ ADD THIS
+    promoCode?: string;     // ✅ ADD THIS
     notes?: string;
   }) => api.post("/orders", data),
 

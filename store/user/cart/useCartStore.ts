@@ -35,6 +35,10 @@ interface CartState {
   items: CartItem[];
   totalPrice: number;
   totalGstAmount: number;
+  appliedPromo: {
+    code: string;
+    discountAmount: number;
+  } | null; // ✅ ADDED
 
   addItem: (item: CartItem) => Promise<void>;
   updateQuantity: (item: CartItem, quantity: number) => Promise<void>;
@@ -46,6 +50,9 @@ interface CartState {
   setCart: (items: CartItem[]) => void;
   clearCart: () => void;
   clearCartAsync: () => Promise<void>; 
+
+  applyPromo: (code: string, discountAmount: number) => void; // ✅ ADDED
+  removePromo: () => void; // ✅ ADDED 
 }
 
 /* ================= HELPERS ================= */
@@ -85,6 +92,7 @@ export const useCartStore = create<CartState>()(
       items: [],
       totalPrice: 0,
       totalGstAmount: 0,
+      appliedPromo: null, // ✅ ADDED
 
       /* ================= SYNC CART ================= */
       syncCart: async () => {
@@ -299,7 +307,11 @@ export const useCartStore = create<CartState>()(
       },
 
       /* ================= CLEAR ================= */
-      clearCart: () => set({ items: [], totalPrice: 0, totalGstAmount: 0 }),
+      clearCart: () => set({ items: [], totalPrice: 0, totalGstAmount: 0, appliedPromo: null }),
+
+      /* ================= PROMO ================= */
+      applyPromo: (code, discountAmount) => set({ appliedPromo: { code, discountAmount } }),
+      removePromo: () => set({ appliedPromo: null }),
     }),
     {
       name: "cart-storage",

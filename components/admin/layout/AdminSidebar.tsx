@@ -11,6 +11,7 @@ import {
   Package,
   ShoppingCart,
   Tag,
+  Ticket,
   User,
   UserCog,
   Users,
@@ -42,6 +43,11 @@ export default function AdminSidebar() {
       name: "Collections",
       href: "/admin/collections",
       icon: LayoutGrid,
+    },
+    {
+      name: "Promo Codes",
+      href: "/admin/promo",
+      icon: Ticket,
     },
     {
       name: "Designers",

@@ -38,11 +38,14 @@ const handlePlaceOrder = async (method: PaymentMethod) => {
     const { street, city, state, postalCode, country } = selectedAddress;
     const shippingCharge = deliveryMethod === "express" ? 50 : 0;
 
+    const { appliedPromo } = useCartStore.getState();
+
     /* ================= CREATE ORDER ================= */
     const res = await orderAPI.createOrder({
       shippingAddress: { street, city, state, postalCode, country },
       paymentMethod: method,
       shippingCharge,
+      promoCode: appliedPromo?.code,
       notes: "",
     });
 
