@@ -72,7 +72,7 @@ export default function CollectionPage({ params }: CollectionPageProps) {
           <p className="mt-3 text-red-600/80 max-w-md mx-auto">{error || "The collection you are looking for does not exist or has been moved."}</p>
           <button 
             onClick={() => window.location.href = '/'}
-            className="mt-8 px-8 py-3 bg-red-600 text-white rounded-full font-semibold hover:bg-red-700 transition"
+            className="mt-8 px-8 py-3 bg-[#BE5555] text-white rounded-full font-semibold hover:bg-[#A04444] transition"
           >
             Back to Home
           </button>

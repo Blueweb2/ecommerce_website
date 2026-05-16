@@ -163,7 +163,7 @@ export default function SalePage() {
 
                       {/* DISCOUNT BADGE */}
                       {discount > 0 && (
-                        <span className="absolute top-2 left-2 bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 tracking-wide">
+                        <span className="absolute top-2 left-2 bg-[#BE5555] text-white text-[10px] font-bold px-2 py-0.5 tracking-wide">
                           -{discount}%
                         </span>
                       )}
@@ -184,7 +184,7 @@ export default function SalePage() {
                         <span className="text-gray-400 font-semibold text-sm">
                           ₹{product.discountPrice}
                         </span>
-                        <span className="line-through text-red-400 text-xs">
+                        <span className="line-through text-[#BE5555] text-xs">
                           ₹{product.price}
                         </span>
                       </div>
