@@ -1,17 +1,39 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { usePromoStore } from "@/store/admin/usePromoStore";
 import Link from "next/link";
-import { Plus, Trash2, Edit } from "lucide-react";
+import { Plus, Trash2, Edit, Send } from "lucide-react";
 import toast from "react-hot-toast";
 
 export default function PromoListPage() {
-  const { promos, loading, fetchPromos, deletePromo } = usePromoStore();
+  const { promos, loading, fetchPromos, deletePromo, sendPromoMail, } = usePromoStore();
+  const [sendingId, setSendingId] = useState<string | null>(null);
+
 
   useEffect(() => {
     fetchPromos();
   }, [fetchPromos]);
+
+  const handleSendMail = async (id: string) => {
+    if (
+      window.confirm(
+        "Send this promo email to all active users?"
+      )
+    ) {
+      try {
+        setSendingId(id);
+
+        await sendPromoMail(id);
+
+        toast.success("Promo emails sent successfully");
+      } catch (err) {
+        toast.error("Failed to send promo emails");
+      } finally {
+        setSendingId(null);
+      }
+    }
+  };
 
   const handleDelete = async (id: string) => {
     if (window.confirm("Are you sure you want to delete this promo code?")) {
@@ -78,11 +100,10 @@ export default function PromoListPage() {
                   </td>
                   <td className="px-6 py-4">
                     <span
-                      className={`rounded-full px-3 py-1 text-xs font-bold ${
-                        promo.isActive
+                      className={`rounded-full px-3 py-1 text-xs font-bold ${promo.isActive
                           ? "bg-emerald-100 text-emerald-700"
                           : "bg-slate-100 text-slate-500"
-                      }`}
+                        }`}
                     >
                       {promo.isActive ? "Active" : "Inactive"}
                     </span>
@@ -92,12 +113,30 @@ export default function PromoListPage() {
                   </td>
                   <td className="px-6 py-4 text-right">
                     <div className="flex justify-end gap-2">
+
+                      {/* SEND MAIL */}
+                      <button
+                        onClick={() => handleSendMail(promo._id)}
+                        disabled={sendingId === promo._id}
+                        className="rounded-lg p-2 text-slate-400 hover:bg-slate-100 hover:text-emerald-600 transition-all disabled:opacity-50"
+                        title="Send Promo Mail"
+                      >
+                        {sendingId === promo._id ? (
+                          <span className="text-xs">...</span>
+                        ) : (
+                          <Send size={18} />
+                        )}
+                      </button>
+
+                      {/* EDIT */}
                       <Link
                         href={`/admin/promo/${promo._id}/edit`}
                         className="rounded-lg p-2 text-slate-400 hover:bg-slate-100 hover:text-blue-600 transition-all"
                       >
                         <Edit size={18} />
                       </Link>
+
+                      {/* DELETE */}
                       <button
                         onClick={() => handleDelete(promo._id)}
                         className="rounded-lg p-2 text-slate-400 hover:bg-slate-100 hover:text-rose-600 transition-all"

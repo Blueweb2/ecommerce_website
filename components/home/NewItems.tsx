@@ -114,7 +114,7 @@ export default function NewInSection() {
                   className="flex-shrink-0"
                   style={{ width: "clamp(140px, 22vw, 200px)" }}
                 >
-                  <ProductCard product={product} />
+                  <ProductCard product={product} useBrandAsTitle={true} />
                 </div>
               ))
             )}
@@ -167,6 +167,7 @@ export default function NewInSection() {
                     isAnimating={isAnimating}
                     isEntering={isEntering}
                     direction={direction}
+                    useBrandAsTitle={true}
                   />
                 ))
               )}
