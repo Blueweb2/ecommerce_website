@@ -10,6 +10,7 @@ type ProductCardProps = {
   isAnimating?: boolean;
   isEntering?: boolean;
   direction?: number;
+  useBrandAsTitle?: boolean;
 };
 
 export default function ProductCard({
@@ -18,6 +19,7 @@ export default function ProductCard({
   isAnimating = false,
   isEntering = false,
   direction = 0,
+  useBrandAsTitle = false,
 }: ProductCardProps) {
 
   const primaryImg =
@@ -72,7 +74,7 @@ export default function ProductCard({
         <h3
           className={`${inter.className} line-clamp-1 text-[13px] font-semibold uppercase text-[#5C5A58] transition-colors group-hover:text-neutral-800`}
         >
-          {product.name}
+          {useBrandAsTitle ? (product.brand || product.name) : product.name}
         </h3>
       </div>
 
