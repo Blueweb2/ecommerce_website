@@ -121,7 +121,7 @@ const ProductFeature = ({ product }: ProductFeatureProps) => {
                 key={index}
                 src={optimizeCloudinaryUrl(img.url)}
                 alt={img.altText || product.name}
-                className="h-screen w-full object-cover mb-2"
+                className="h-screen w-full object-cover"
                 onClick={() => {
                   setCarouselImageIndex(() => index + 1 )
                   setZooming(true)

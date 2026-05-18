@@ -15,104 +15,103 @@ type DeliveryMethod = "standard" | "express";
 type PaymentMethod = "cod" | "razorpay";
 
 export default function CheckoutPage() {
-const [step, setStep] = useState(1);
-const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
-const [deliveryMethod, setDeliveryMethod] =
-useState<DeliveryMethod>("standard");
 
-const { items, totalPrice } = useCartStore();
+  const [step, setStep] = useState(1);
+  const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
+  const [deliveryMethod, setDeliveryMethod] = useState<DeliveryMethod>("standard");
+  const { items, totalPrice } = useCartStore();
 
-const showCompleteStep = async () => {
-await useCartStore.getState().clearCartAsync();
-setStep(4);
-};
-
-/* ================= HANDLE ORDER ================= */
-const handlePlaceOrder = async (method: PaymentMethod) => {
-  try {
-    if (!selectedAddress) {
-      toast.error("Please select a delivery address.");
-      return;
-    }
-
-    const { street, city, state, postalCode, country } = selectedAddress;
-    const shippingCharge = deliveryMethod === "express" ? 50 : 0;
-
-    const { appliedPromo } = useCartStore.getState();
-
-    /* ================= CREATE ORDER ================= */
-    const res = await orderAPI.createOrder({
-      shippingAddress: { street, city, state, postalCode, country },
-      paymentMethod: method,
-      shippingCharge,
-      promoCode: appliedPromo?.code,
-      notes: "",
-    });
-
-    const order = res.data.data || res.data;
-
-    /* ================= COD FLOW ================= */
-    if (method === "cod") {
-      toast.success("Order placed successfully!");
-      await showCompleteStep();
-      return;
-    }
-
-    /* ================= RAZORPAY FLOW ================= */
-    const isLoaded = await loadRazorpayScript();
-    if (!isLoaded) {
-      toast.error("Failed to load Razorpay SDK. Are you online?");
-      return;
-    }
-
-    const options = {
-      key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
-      amount: Math.round(order.grandTotal * 100), // ✅ Use grandTotal
-      currency: "INR",
-      name: "Your Store Name",
-      description: "Order Payment",
-      order_id: order.razorpayOrderId,
-
-      handler: async (response: any) => {
-        try {
-          await orderAPI.verifyPayment({
-            razorpayOrderId: response.razorpay_order_id,
-            paymentId: response.razorpay_payment_id,
-            signature: response.razorpay_signature,
-            orderId: order._id,
-          });
-
-          toast.success("Payment successful!");
-          await showCompleteStep();
-        } catch (err) {
-          toast.error("Payment verification failed");
-        }
-      },
-
-      modal: {
-        ondismiss: () => {
-          toast.error("Payment cancelled");
-        },
-      },
-    };
-
-    const rzp = new (window as any).Razorpay(options);
-
-    rzp.on("payment.failed", function (response: any) {
-      toast.error("Payment failed. You can retry from your orders.");
-      console.error("Payment failed details:", response.error);
-    });
-
-    rzp.open();
-  } catch (err: any) {
-    console.error("Order failed", err);
-    const errorMsg = err.response?.data?.message || "Order failed. Please try again.";
-    toast.error(errorMsg);
+  const showCompleteStep = async () => {
+    await useCartStore.getState().clearCartAsync();
+    setStep(4);
   };
-};
+
+  /* ================= HANDLE ORDER ================= */
+  const handlePlaceOrder = async (method: PaymentMethod) => {
+    try {
+      if (!selectedAddress) {
+        toast.error("Please select a delivery address.");
+        return;
+      }
+
+      const { street, city, state, postalCode, country } = selectedAddress;
+      const shippingCharge = deliveryMethod === "express" ? 50 : 0;
+
+      const { appliedPromo } = useCartStore.getState();
+
+      /* ================= CREATE ORDER ================= */
+      const res = await orderAPI.createOrder({
+        shippingAddress: { street, city, state, postalCode, country },
+        paymentMethod: method,
+        shippingCharge,
+        promoCode: appliedPromo?.code,
+        notes: "",
+      });
+
+      const order = res.data.data || res.data;
+
+      /* ================= COD FLOW ================= */
+      if (method === "cod") {
+        toast.success("Order placed successfully!");
+        await showCompleteStep();
+        return;
+      }
+
+      /* ================= RAZORPAY FLOW ================= */
+      const isLoaded = await loadRazorpayScript();
+      if (!isLoaded) {
+        toast.error("Failed to load Razorpay SDK. Are you online?");
+        return;
+      }
+
+      const options = {
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+        amount: Math.round(order.grandTotal * 100), // ✅ Use grandTotal
+        currency: "INR",
+        name: "Your Store Name",
+        description: "Order Payment",
+        order_id: order.razorpayOrderId,
+
+        handler: async (response: any) => {
+          try {
+            await orderAPI.verifyPayment({
+              razorpayOrderId: response.razorpay_order_id,
+              paymentId: response.razorpay_payment_id,
+              signature: response.razorpay_signature,
+              orderId: order._id,
+            });
+
+            toast.success("Payment successful!");
+            await showCompleteStep();
+          } catch (err) {
+            toast.error("Payment verification failed");
+          }
+        },
+
+        modal: {
+          ondismiss: () => {
+            toast.error("Payment cancelled");
+          },
+        },
+      };
+
+      const rzp = new (window as any).Razorpay(options);
+
+      rzp.on("payment.failed", function (response: any) {
+        toast.error("Payment failed. You can retry from your orders.");
+        console.error("Payment failed details:", response.error);
+      });
+
+      rzp.open();
+    } catch (err: any) {
+      console.error("Order failed", err);
+      const errorMsg = err.response?.data?.message || "Order failed. Please try again.";
+      toast.error(errorMsg);
+    };
+  };
 
   return ( 
-    <div className="max-w-5xl mx-auto p-6 mt-20 md:mt-36"> 
+    <div className="max-w-5xl mx-auto p-6 mt-20 md:mt-36">
 
       <div className="flex relative justify-between mb-8">
         {["Address", "Delivery", "Payment", "Complete"].map((label, i) => ( 
