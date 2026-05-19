@@ -52,12 +52,13 @@ export default function ProductCard({
         opacity: isAnimating ? 0 : isEntering ? 0 : 1,
       }}
     >
-      <div className="relative w-full overflow-hidden bg-neutral-100 aspect-[3/4]">
+
+      <div className="relative w-full overflow-hidden bg-neutral-100  aspect-[4/5] 2xl:aspect-[4/6]">
         <Image
           src={imageUrl}
           alt={product.name}
           fill
-          className="object-cover transition-transform duration-500"
+          className="object-cover h-40 md:h-90 transition-transform duration-500"
           sizes="(max-width: 768px) 45vw, 22vw"
         />
 
