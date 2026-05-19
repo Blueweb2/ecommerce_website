@@ -60,7 +60,7 @@ export default function ShopSection() {
 
         {/* TITLE */}
         <h2 className={`${bodoni.className} mb-6 border-t-[2px] border-[#e5e5e5] pt-8 text-center 
-        text-[clamp(25px,2.5vw,32px)] font-normal tracking-tight text-neutral-600`}>
+        text-[clamp(25px,2.5vw,32px)] font-normal tracking-tight`}>
           Discover ZENFAZ Collection
         </h2>
 

@@ -73,7 +73,7 @@ export default function NewInSection() {
         {/* Left Info Panel */}
         <div className="md:w-[25%] flex-shrink-0 flex flex-col justify-center pr-3">
           <h2
-            className={`${headingClassName} mb-3 text-center`}
+            className={`${headingClassName} mb-3`}
           >
             New In
           </h2>

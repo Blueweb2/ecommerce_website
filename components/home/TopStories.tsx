@@ -86,16 +86,16 @@ export default function TopStories() {
         </h2>
 
         {/* STORIES */}
-        <div className="flex gap-6 overflow-x-auto scrollbar-hide scroll-smooth pb-14 text-[#5C5A58]">
+        <div className="flex gap-6 lg:gap-3 overflow-x-auto scrollbar-hide scroll-smooth lg:grid lg:grid-cols-6 pb-14 text-[#5C5A58]">
           {stories.map((story) => (
             <div
               key={story._id}
-              className="w-[250px] flex flex-col justify-between flex-shrink-0"
+              className="min-w-[200px] lg:w-full lg:min-w-0 flex flex-col justify-between"
             >
               {/* IMAGE */}
               <Link
                 href={`/stories/${story.slug}`}
-                className="flex justify-center h-70 mb-4 relative overflow-hidden"
+                className="flex justify-center h-60 2xl:h-70 mb-4 relative overflow-hidden"
               >
                 <Image
                   src={story.image.url}
