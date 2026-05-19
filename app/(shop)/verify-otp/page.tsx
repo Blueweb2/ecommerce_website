@@ -15,6 +15,7 @@ export default function VerifyOtpPage() {
 
   const email = searchParams.get("email") || "";
   const isAdminFlow = searchParams.get("admin") === "true";
+  const step = searchParams.get("step") || "email";
 
   const [otp, setOtp] = useState<string[]>(["", "", "", "", "", ""]);
   const [loading, setLoading] = useState(false);
@@ -95,12 +96,22 @@ export default function VerifyOtpPage() {
     try {
       setLoading(true);
 
-      const res = await api.post("/auth/verify-otp", {
+      const endpoint = step === "phone" ? "/auth/verify-phone-otp" : "/auth/verify-otp";
+
+      const res = await api.post(endpoint, {
         email,
         otp: otpValue,
       });
 
-      const { accessToken, user } = res.data;
+      const { accessToken, user, phoneVerified } = res.data;
+
+      // 🚨 If Email verified but Phone is NOT verified yet, redirect to Phone Verification step
+      if (step === "email" && phoneVerified === false) {
+        toast.success("Email verified successfully! 🎉");
+        setOtp(["", "", "", "", "", ""]);
+        router.replace(`/verify-otp?email=${email}&step=phone`);
+        return;
+      }
 
       if (!accessToken || !user) {
         throw new Error("Invalid response from server");
@@ -140,8 +151,9 @@ export default function VerifyOtpPage() {
     if (cooldown > 0) return;
 
     try {
-      await api.post("/auth/resend-otp", { email });
-      toast.success("OTP resent successfully");
+      const endpoint = step === "phone" ? "/auth/resend-phone-otp" : "/auth/resend-otp";
+      await api.post(endpoint, { email });
+      toast.success(step === "phone" ? "Phone OTP resent successfully" : "Email OTP resent successfully");
       setCooldown(30);
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
@@ -161,10 +173,10 @@ export default function VerifyOtpPage() {
         {/* HEADER */}
         <div className="text-center">
           <h2 className="text-2xl font-semibold text-[#1a1f1a]">
-            {isAdminFlow ? "Admin Verification" : "Verify OTP"}
+            {step === "phone" ? "Verify Mobile" : (isAdminFlow ? "Admin Verification" : "Verify OTP")}
           </h2>
           <p className="text-sm text-gray-500 mt-2">
-            Enter the code sent to your email
+            {step === "phone" ? "Enter the code sent to your mobile number" : "Enter the code sent to your email"}
           </p>
           <p className="text-xs text-gray-400 mt-1 break-all">
             {email}

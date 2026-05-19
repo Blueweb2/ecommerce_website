@@ -39,7 +39,7 @@ export default function RegisterPage() {
     event.preventDefault();
 
     // 🔥 Basic validation
-    if (!form.name || !form.email || !form.password) {
+    if (!form.name || !form.email || !form.password || !form.phone) {
       return toast.error("Please fill all required fields");
     }
 
@@ -147,6 +147,7 @@ export default function RegisterPage() {
                 <label className="text-sm text-gray-700">Phone</label>
                 <input
                   type="tel"
+                  required
                   value={form.phone}
                   onChange={handleChange("phone")}
                   disabled={loading}

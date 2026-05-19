@@ -28,15 +28,21 @@ export default function CustomerLoginPage() {
     try {
       const emailNormalized = form.email.trim().toLowerCase();
 
-      await api.post("/auth/login", {
+      const res = await api.post("/auth/login", {
         email: emailNormalized,
         password: form.password,
       });
 
-      toast.success("OTP sent to your email");
+      const { emailVerified, phoneVerified, message } = res.data;
 
-      // 👉 redirect to OTP page
-      router.push(`/verify-otp?email=${emailNormalized}`);
+      toast.success(message || "OTP sent successfully");
+
+      // 👉 redirect to correct OTP step
+      if (emailVerified === true && phoneVerified === false) {
+        router.push(`/verify-otp?email=${emailNormalized}&step=phone`);
+      } else {
+        router.push(`/verify-otp?email=${emailNormalized}`);
+      }
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
         toast.error(error.response?.data?.message || "Login failed");
