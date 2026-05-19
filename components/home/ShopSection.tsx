@@ -110,7 +110,7 @@ export default function ShopSection() {
 
                 {/* CONTENT */}
                 <div>
-                  <h3 className={`${inter.className} text-sm font-semibold mb-2 text-neutral-600`}>
+                  <h3 className={`${inter.className} text-sm font-semibold mb-2`}>
                     {product.name}
                   </h3>
 
@@ -118,7 +118,7 @@ export default function ShopSection() {
                     {product.description}
                   </p>
 
-                  <p className={`${inter.className}text-sm font-medium text-[#5C5A58] mb-4`}>
+                  <p className={`${inter.className} text-sm font-medium mb-4`}>
                     ₹{product.price}
                   </p>
                 </div>

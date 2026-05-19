@@ -183,7 +183,7 @@ const RightSide = ({ product }: Props) => {
             </span>
           </>
         ) : (
-          <p className="font-brand-display text-2xl font-bold text-[#8D8B9D]">
+          <p className=" text-2xl font-bold text-[#8D8B9D]">
             ₹{price}{isFabric && <span className="text-sm font-normal text-gray-400 ml-1">/ {product.unit || "meter"}</span>}
           </p>
         )}
