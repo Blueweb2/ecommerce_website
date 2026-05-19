@@ -36,7 +36,7 @@ export default function FilterSection({
                 {title}
               </p>
               {meta ? (
-                <span className="rounded-full bg-black/5 px-2.5 py-1 text-[10px] uppercase tracking-[0.18em] text-black/45">
+                <span className="bg-black/5 px-2.5 py-1 text-[10px] uppercase tracking-[0.18em] text-black/45">
                   {meta}
                 </span>
               ) : null}
@@ -54,7 +54,7 @@ export default function FilterSection({
           <button
             type="button"
             onClick={onClear}
-            className="rounded-full border border-black/8 bg-white px-3 py-1.5 text-[10px] font-medium uppercase tracking-[0.16em] text-black/55 transition hover:border-black/20 hover:text-black"
+            className="border border-black/8 bg-white px-3 py-1.5 text-[10px] font-medium uppercase tracking-[0.16em] text-black/55 transition hover:border-black/20 hover:text-black"
           >
             Clear
           </button>

@@ -82,7 +82,7 @@ export default function ShopSection() {
         </div>
 
         {/* PRODUCTS */}
-        <div className="flex gap-2 overflow-x-auto scrollbar-hide scroll-smooth">
+        <div className="flex gap-2 overflow-x-auto scrollbar-hide scroll-smooth lg:grid lg:grid-cols-6 lg:gap-6">
 
           {loading ? (
             <div className="w-full h-[300px] md:h-[377px] lg:h-[455px] flex items-center justify-center">
@@ -94,7 +94,7 @@ export default function ShopSection() {
             products.map((product) => (
               <div
                 key={product._id}
-                className="w-[200px] md:w-[250px] flex flex-col justify-between flex-shrink-0 overflow-hidden"
+                className="min-w-[200px] md:min-w-[250px] lg:min-w-0  flex flex-col justify-between overflow-hidden"
               >
                 {/* IMAGE */}
                 <Link
@@ -104,13 +104,13 @@ export default function ShopSection() {
                   <img
                     src={(product.images?.find((img: any) => img.isPrimary) || product.images?.[0])?.url || "/placeholder.png"}
                     alt={product.name}
-                    className="h-40 md:h-90 object-fill w-full"
+                    className="h-44 lg:h-60 2xl:h-80 object-fill w-full"
                   />
                 </Link>
 
                 {/* CONTENT */}
                 <div>
-                  <h3 className={`${bodoni.className} text-sm font-semibold mb-2 text-neutral-600`}>
+                  <h3 className={`${inter.className} text-sm font-semibold mb-2 text-neutral-600`}>
                     {product.name}
                   </h3>
 
