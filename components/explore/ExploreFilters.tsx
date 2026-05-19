@@ -40,7 +40,7 @@ function OptionRow({
     <button
       type="button"
       onClick={onSelect}
-      className={`flex w-full items-center gap-3 rounded-2xl border px-3 py-3 text-left text-sm transition ${
+      className={`flex w-full items-center gap-3 border px-3 py-3 text-left text-sm transition ${
         checked
           ? "border-black bg-white text-black shadow-[0_10px_30px_rgba(0,0,0,0.05)]"
           : "border-black/8 bg-white/60 text-black/70 hover:border-black/20 hover:bg-white"
@@ -83,7 +83,7 @@ function MiniChip({
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-full border px-3 py-1.5 text-xs tracking-[0.02em] transition ${
+      className={`border px-3 py-1.5 text-xs tracking-[0.02em] transition ${
         active
           ? "border-black bg-black text-white"
           : "border-black/12 bg-white text-black/70 hover:border-black/35"
@@ -141,7 +141,7 @@ export default function ExploreFilters({
   };
 
   return (
-    <div className="overflow-hidden rounded-[28px] border border-black/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.96),rgba(247,243,236,0.96))] shadow-[0_24px_70px_rgba(15,23,42,0.06)]">
+    <div className="overflow-hidden border border-black/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.96),rgba(247,243,236,0.96))] shadow-[0_24px_70px_rgba(15,23,42,0.06)]">
       <div className="border-b border-black/8 px-6 pb-5 pt-6">
         <div className="flex items-start justify-between gap-4">
           <div>
@@ -169,26 +169,26 @@ export default function ExploreFilters({
         </div>
 
         <div className="mt-5 flex flex-wrap items-center gap-3">
-          <div className="inline-flex items-center gap-2 rounded-full bg-black px-3 py-1.5 text-xs uppercase tracking-[0.14em] text-white">
+          <div className="inline-flex items-center gap-2 bg-black px-3 py-1.5 text-xs uppercase tracking-[0.14em] text-white">
             <Sparkles className="h-3.5 w-3.5" />
             {hasActiveFilters ? `${totalActiveFilters} active` : "All products"}
           </div>
 
           {activeFilters.category ? (
-            <span className="rounded-full border border-black/10 bg-white px-3 py-1.5 text-xs text-black/65">
+            <span className="border border-black/10 bg-white px-3 py-1.5 text-xs text-black/65">
               {allCategories.find((category) => category._id === activeFilters.category)?.name ||
                 "Selected category"}
             </span>
           ) : null}
 
           {activeFilters.type ? (
-            <span className="rounded-full border border-black/10 bg-white px-3 py-1.5 text-xs text-black/65">
+            <span className="border border-black/10 bg-white px-3 py-1.5 text-xs text-black/65">
               {formatFilterLabel(activeFilters.type)}
             </span>
           ) : null}
 
           {hasPriceFilter ? (
-            <span className="rounded-full border border-black/10 bg-white px-3 py-1.5 text-xs text-black/65">
+            <span className="border border-black/10 bg-white px-3 py-1.5 text-xs text-black/65">
               Rs. {activeFilters.minPrice ?? 0} to {activeFilters.maxPrice ?? "Any"}
             </span>
           ) : null}
@@ -428,7 +428,7 @@ export default function ExploreFilters({
                     }))
                   }
                   placeholder="0"
-                  className="w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none transition focus:border-black/35"
+                  className="w-full border border-black/10 bg-white px-4 py-3 text-sm outline-none transition focus:border-black/35"
                 />
               </label>
 
@@ -450,7 +450,7 @@ export default function ExploreFilters({
                     }))
                   }
                   placeholder="Any"
-                  className="w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none transition focus:border-black/35"
+                  className="w-full border border-black/10 bg-white px-4 py-3 text-sm outline-none transition focus:border-black/35"
                 />
               </label>
             </div>
