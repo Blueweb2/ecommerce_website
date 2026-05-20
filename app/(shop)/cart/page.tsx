@@ -34,7 +34,7 @@ export default function CartPage() {
 
   if (items.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center space-y-4 pt-36 pb-20">
+      <div className="flex flex-col items-center justify-center space-y-4 pt-36 md:pt-44 pb-20">
         <ShoppingCart className="h-12 w-12 text-gray-400" />
 
         <h2 className="text-xl font-semibold">Your cart is empty</h2>
@@ -51,7 +51,7 @@ export default function CartPage() {
         </Link>
       </div>
     );
-  }
+  };
 
   return (
     <section className="mt-8 w-full bg-[#f5f5f5] py-10 font-sans">

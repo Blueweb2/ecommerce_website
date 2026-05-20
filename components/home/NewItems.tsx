@@ -17,11 +17,27 @@ export default function NewInSection() {
   const [isAnimating, setIsAnimating] = useState(false);
   const [direction, setDirection] = useState(0);
   const [isEntering, setIsEntering] = useState(false);
-  const itemsPerPage = 4;
+  const [itemsPerPage, setItemsPerPage] = useState(4);
 
   useEffect(() => {
     fetchNewProducts();
   }, [fetchNewProducts]);
+
+  useEffect(() => {
+    const updateItemsPerPage = () => {
+      if (window.innerWidth >= 1536) {
+        setItemsPerPage(5);
+      } else {
+        setItemsPerPage(4);
+      }
+    };
+
+    updateItemsPerPage();
+
+    window.addEventListener("resize", updateItemsPerPage);
+
+    return () => window.removeEventListener("resize", updateItemsPerPage);
+  }, []);
 
   useEffect(() => {
     if (!isAnimating) return;
@@ -149,7 +165,7 @@ export default function NewInSection() {
           )}
 
           <div className="overflow-hidden w-full">
-            <div className="grid grid-cols-4 gap-3">
+            <div className="grid grid-cols-4 2xl:grid-cols-5 gap-3">
               {loading ? (
                 Array.from({ length: 4 }).map((_, index) => (
                   <ProductCardSkeleton key={index} />
