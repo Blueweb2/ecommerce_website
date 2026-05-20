@@ -55,7 +55,7 @@ export default function CustomerLoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#0f172a] px-4">
+    <div className="min-h-screen flex items-center justify-center bg-[#0f172a] px-4 mt-16">
 
       <div className="w-full max-w-md bg-[#f8f6f2] rounded-2xl shadow-xl p-8 space-y-6">
 
