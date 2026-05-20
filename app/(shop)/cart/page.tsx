@@ -54,7 +54,7 @@ export default function CartPage() {
   };
 
   return (
-    <section className="mt-8 w-full bg-[#f5f5f5] py-10 font-sans">
+    <section className="mt-8 w-full py-10 font-sans">
       <div className="mx-auto grid max-w-[2000px] gap-14 px-4 p-6 md:mt-20 md:grid-cols-[1fr_420px] md:px-24">
 
         {/* LEFT SIDE */}
@@ -69,7 +69,7 @@ export default function CartPage() {
             {items.map((item, index) => (
               <div
                 key={`${item.productId}-${item.variantId || "base"}-${index}`}
-                className="group flex gap-7"
+                className="flex gap-7"
               >
                 {/* CLICKABLE PRODUCT */}
                 <button
@@ -77,34 +77,34 @@ export default function CartPage() {
                   className="flex flex-1 gap-7 text-left"
                 >
                   {/* IMAGE */}
-                  <div className="overflow-hidden bg-[#f1f1f1]">
+                  <div className="overflow-hidden">
                     <img
                       src={item.image || "/placeholder.png"}
                       alt={item.name}
-                      className="h-[210px] w-[160px] object-cover transition duration-500 group-hover:scale-[1.02]"
+                      className="h-[150px] w-[150px] object-cover"
                     />
                   </div>
 
                   {/* CONTENT */}
-                  <div className="flex flex-1 flex-col pt-1">
+                  <div className="flex flex-1 flex-col">
 
                     {/* BRAND */}
                     <h2
-                      className={`${inter.className} text-[26px] font-semibold uppercase tracking-[-0.3px] text-black`}
+                      className={`${inter.className} text-[15px] font-semibold uppercase tracking-[-0.3px] text-black`}
                     >
                       {item.name}
                     </h2>
 
                     {/* TITLE */}
                     <p
-                      className={`${inter.className} mt-1 text-[20px] font-light leading-[1.5] text-[#4a4a4a]`}
+                      className={`${inter.className} text-[13px] mt-1 font-light leading-[1.5] text-[#4a4a4a]`}
                     >
                       {item.name}
                     </p>
 
                     {/* OPTIONS */}
                     <div
-                      className={`${inter.className} mt-4 flex flex-wrap items-center gap-3 text-[18px] text-[#5d5d5d]`}
+                      className={`${inter.className} text-[14px] flex flex-wrap items-center gap-3 text-[#5d5d5d]`}
                     >
                       {item.selectedOptions?.map((opt, optionIndex) => (
                         <div
@@ -131,21 +131,21 @@ export default function CartPage() {
 
                     {/* PRICE */}
                     <p
-                      className={`${inter.className} mt-5 text-[30px] font-semibold tracking-[-0.5px] text-black`}
+                      className={`${inter.className} text-[15px] font-semibold tracking-[-0.5px] text-black`}
                     >
                       ₹{item.price}
                     </p>
 
                     {/* LOW STOCK */}
                     <p
-                      className={`${inter.className} mt-4 text-[15px] uppercase tracking-[4px] text-[#6e6e6e]`}
+                      className={`${inter.className} text-[13px] mt-3 text-sm uppercase tracking-[1px] text-[#6e6e6e]`}
                     >
                       Low Stock
                     </p>
 
                     {/* ACTIONS */}
                     <div
-                      className={`${inter.className} mt-10 flex items-center gap-5 text-[15px] text-[#6a6a6a]`}
+                      className={`${inter.className} text-xs mt-5 flex items-center gap-5 text-[#6a6a6a]`}
                     >
                       <button
                         onClick={(e) => {
@@ -176,24 +176,24 @@ export default function CartPage() {
         </div>
 
         {/* RIGHT SIDE */}
-        <div className="h-fit md:sticky md:top-28">
-          <div className="border border-[#e5e5e5] bg-white p-8">
+        <div className="h-fit md:sticky md:top-40 md:mt-12">
+          <div className="md:pl-5">
 
             {/* TITLE */}
             <h2
-              className={`${inter.className} text-[18px] uppercase tracking-[5px] text-black`}
+              className={`${inter.className} uppercase tracking-[3px] text-black`}
             >
               Order Summary
             </h2>
 
             {/* SUMMARY */}
-            <div className="mt-8 space-y-6">
-              <div className="flex items-center justify-between text-[17px] text-[#4a4a4a]">
+            <div className="space-y-3 mt-4">
+              <div className="flex items-center text-[14px] justify-between">
                 <span>Item subtotal</span>
                 <span>₹{totalPrice}</span>
               </div>
 
-              <div className="flex items-center justify-between text-[17px] text-[#4a4a4a]">
+              <div className="flex items-center justify-between text-[14px]">
                 <span>Shipping</span>
                 <span>FREE</span>
               </div>
@@ -213,16 +213,16 @@ export default function CartPage() {
                 </div>
               )}
 
-              <div className="border-t border-[#e5e5e5] pt-6">
+              <div className="border-t border-[#e5e5e5] py-6">
                 <div className="flex items-center justify-between">
                   <span
-                    className={`${inter.className} text-[18px] font-semibold text-black`}
+                    className={`${inter.className} text-[15px] font-semibold text-black`}
                   >
                     Total
                   </span>
 
                   <span
-                    className={`${inter.className} text-[30px] font-semibold tracking-[-0.5px] text-black`}
+                    className={`${inter.className} text-[15px] font-semibold tracking-[-0.5px] text-black`}
                   >
                     ₹{totalPrice + totalGstAmount - (appliedPromo?.discountAmount || 0)}
                   </span>
@@ -232,9 +232,9 @@ export default function CartPage() {
 
             {/* PROMO */}
             {!appliedPromo && (
-              <div className="mt-10 border-t border-[#ececec] pt-8">
+              <div className="border-t border-[#ececec] pt-4">
                 <h3
-                  className={`${inter.className} text-[16px] uppercase tracking-[4px] text-black`}
+                  className={`${inter.className} text-[16px] uppercase text-black`}
                 >
                   Add a Promo Code
                 </h3>
@@ -245,13 +245,13 @@ export default function CartPage() {
                     placeholder="Enter code"
                     value={promoInput}
                     onChange={(e) => setPromoInput(e.target.value.toUpperCase())}
-                    className="h-[54px] flex-1 border border-[#d7d7d7] bg-white px-5 text-[15px] outline-none placeholder:text-[#a1a1a1] focus:border-black"
+                    className="flex-1 border border-[#d7d7d7] bg-white text-[13px] outline-none placeholder:text-[#a1a1a1] focus:border-black p-2"
                   />
 
                   <button
                     onClick={handleApplyPromo}
                     disabled={loadingPromo}
-                    className="h-[54px] min-w-[120px] border border-[#d7d7d7] bg-[#f7f7f7] px-6 text-[15px] transition hover:bg-black hover:text-white disabled:opacity-50"
+                    className="min-w-24 border border-[#d7d7d7] bg-[#f7f7f7] text-[13px] transition hover:bg-black hover:text-white disabled:opacity-50 p-2"
                   >
                     {loadingPromo ? "..." : "Apply"}
                   </button>
@@ -262,7 +262,7 @@ export default function CartPage() {
             {/* CHECKOUT */}
             <Link
               href="/checkout"
-              className="mt-10 flex h-[60px] w-full items-center justify-center bg-black text-[16px] font-medium text-white transition hover:bg-[#1d1d1d]"
+              className="mt-10 flex h-[40px] w-full items-center justify-center bg-black text-[14px] font-medium text-white transition hover:bg-[#1d1d1d]"
             >
               Continue to checkout
             </Link>
