@@ -13,7 +13,7 @@ export default function WishlistPage() {
 
   useEffect(() => {
     if (!loading && !user) {
-      router.replace("/login");
+      router.replace("/account/login");
     }
   }, [user, loading]);
 

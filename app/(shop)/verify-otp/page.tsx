@@ -16,6 +16,7 @@ export default function VerifyOtpPage() {
   const email = searchParams.get("email") || "";
   const isAdminFlow = searchParams.get("admin") === "true";
   const step = searchParams.get("step") || "email";
+  const redirect = searchParams.get("redirect") || "";
 
   const [otp, setOtp] = useState<string[]>(["", "", "", "", "", ""]);
   const [loading, setLoading] = useState(false);
@@ -27,9 +28,13 @@ export default function VerifyOtpPage() {
   useEffect(() => {
     if (!email) {
       toast.error("Invalid access. Please login again");
-      router.push("/login");
+      if (redirect === "/checkout") {
+        router.push("/checkout/login");
+      } else {
+        router.push("/account/login");
+      }
     }
-  }, [email, router]);
+  }, [email, router, redirect]);
 
   // 🔥 Auto focus first input
   useEffect(() => {
@@ -109,7 +114,11 @@ export default function VerifyOtpPage() {
       if (step === "email" && phoneVerified === false) {
         toast.success("Email verified successfully! 🎉");
         setOtp(["", "", "", "", "", ""]);
-        router.replace(`/verify-otp?email=${email}&step=phone`);
+        let nextUrl = `/verify-otp?email=${email}&step=phone`;
+        if (redirect) {
+          nextUrl += `&redirect=${encodeURIComponent(redirect)}`;
+        }
+        router.replace(nextUrl);
         return;
       }
 
@@ -132,7 +141,7 @@ export default function VerifyOtpPage() {
 
         router.replace("/admin/dashboard");
       } else {
-        router.replace("/");
+        router.replace(redirect || "/profile"); // Redirect to custom page (like /checkout) or fallback to dashboard /profile
       }
 
     } catch (error: unknown) {

@@ -1,6 +1,7 @@
 "use client";
 
 import { ReactNode } from "react";
+import { usePathname } from "next/navigation";
 import CartDrawer from "@/components/cart/CartDrawer";
 import Navbar from "@/components/shared/Navbar";
 import Footer from "@/components/shared/Footer";
@@ -11,13 +12,14 @@ export default function ShopLayout({
 }: {
   children: ReactNode;
 }) {
-
   const { zooming } = useProductStore();
+  const pathname = usePathname();
+  const isCheckoutLogin = pathname === "/checkout/login";
 
   return (
     <section>
       {/* NAVBAR */}
-      {!zooming && <Navbar />}
+      {!zooming && !isCheckoutLogin && <Navbar />}
 
       {/* CONTENT */}
       <main className="flex-1 w-full">
@@ -25,10 +27,10 @@ export default function ShopLayout({
       </main>
 
       {/* FOOTER */}
-      {!zooming && <Footer />}
+      {!zooming && !isCheckoutLogin && <Footer />}
 
       {/* CART DRAWER */}
-      <CartDrawer />
+      {!isCheckoutLogin && <CartDrawer />}
     </section>
   );
 }

@@ -12,7 +12,7 @@ export const useRequireAuth = () => {
     if (loading) return;
 
     if (!user) {
-      router.replace("/login");
+      router.replace("/account/login");
     }
   }, [user, loading, router]);
 
