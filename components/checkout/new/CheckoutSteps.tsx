@@ -15,54 +15,54 @@ export default function CheckoutSteps({
     "Success",
   ];
 
+  const progressWidth =
+    steps.length > 1
+      ? `${((step - 1) / (steps.length - 1)) * 100}%`
+      : "0%";
+
   return (
-    <div className="mb-16 flex items-center justify-center">
+    <div className="mb-16 overflow-x-auto">
+      <div className="relative mx-auto min-w-[640px] max-w-4xl px-2">
+        <div className="absolute left-[10%] right-[10%] top-5 h-px bg-[#d5d5d5]" />
 
-      {steps.map((label, index) => {
-        const current = index + 1;
+        <div
+          className="absolute left-[10%] top-5 h-px bg-[#4c7c61] transition-all duration-300"
+          style={{ width: `calc(80% * ${progressWidth})` }}
+        />
 
-        const active = current <= step;
+        <div className="relative grid grid-cols-5 gap-3 sm:gap-6">
+          {steps.map((label, index) => {
+            const current = index + 1;
+            const active = current <= step;
+            const isCurrent = current === step;
 
-        return (
-          <div
-            key={label}
-            className="flex items-center"
-          >
-            <div className="flex flex-col items-center">
-
+            return (
               <div
-                className={`flex h-10 w-10 items-center justify-center rounded-full border text-sm ${
-                  active
-                    ? "border-[#4c7c61] text-[#4c7c61]"
-                    : "border-[#d5d5d5] text-[#999]"
-                }`}
+                key={label}
+                className="flex flex-col items-center text-center"
               >
-                {current}
+                <div
+                  className={`relative z-10 flex h-10 w-10 items-center justify-center rounded-full border bg-[#f7f7f5] text-sm font-medium transition-colors ${
+                    active
+                      ? "border-[#4c7c61] text-[#4c7c61]"
+                      : "border-[#d5d5d5] text-[#999]"
+                  } ${isCurrent ? "shadow-[0_0_0_4px_rgba(76,124,97,0.12)]" : ""}`}
+                >
+                  {current}
+                </div>
+
+                <span
+                  className={`mt-3 text-[11px] sm:text-[13px] ${
+                    active ? "text-black" : "text-[#999]"
+                  }`}
+                >
+                  {label}
+                </span>
               </div>
-
-              <span
-                className={`mt-3 text-[13px] ${
-                  active
-                    ? "text-black"
-                    : "text-[#999]"
-                }`}
-              >
-                {label}
-              </span>
-            </div>
-
-            {index !== steps.length - 1 && (
-              <div
-                className={`mx-5 h-px w-20 ${
-                  current < step
-                    ? "bg-[#4c7c61]"
-                    : "bg-[#d5d5d5]"
-                }`}
-              />
-            )}
-          </div>
-        );
-      })}
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
 }
