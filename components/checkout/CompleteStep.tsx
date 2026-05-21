@@ -18,7 +18,7 @@ export default function CompleteStep() {
 
       <div className="flex justify-center gap-3 pt-2">
         <Link
-          href="/profile?tab=orders"
+          href="/account/orders"
           className="rounded bg-black px-5 py-2 text-white"
         >
           View Orders

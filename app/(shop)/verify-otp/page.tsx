@@ -141,7 +141,7 @@ export default function VerifyOtpPage() {
 
         router.replace("/admin/dashboard");
       } else {
-        router.replace(redirect || "/profile"); // Redirect to custom page (like /checkout) or fallback to dashboard /profile
+        router.replace(redirect || "/account"); // Redirect to custom page (like /checkout) or fallback to dashboard /profile
       }
 
     } catch (error: unknown) {

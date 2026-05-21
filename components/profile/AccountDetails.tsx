@@ -12,13 +12,13 @@ export default function AccountDetails() {
   const handleLogout = async () => {
     await logout();
     toast.success("Logged out successfully");
-    router.replace("/login");
+    router.replace("/account/login");
   };
 
   if (authLoading || !user) {
     return (
       <div className="flex h-[60vh] items-center justify-center text-gray-500">
-        Loading profile...
+        Loading account...
       </div>
     );
   }
@@ -28,7 +28,7 @@ export default function AccountDetails() {
       {/* HEADER */}
       <div className="flex items-center justify-between mb-8">
         <h1 className={`${bodoni.className} text-2xl font-semibold text-neutral-600`}>
-          My Profile
+          Account Details
         </h1>
 
         <button

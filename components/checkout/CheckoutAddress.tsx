@@ -99,10 +99,10 @@ export default function CheckoutAddress({
                 </p>
 
                 <Link
-                  href="/profile"
+                  href="/account/addresses"
                   className="text-sm font-medium underline text-gray-500"
                 >
-                  Add an address in your profile
+                  Add an address in your account
                 </Link>
               </div>
             ) : (

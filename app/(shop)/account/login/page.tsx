@@ -35,7 +35,7 @@ return (
         <div className="space-y-6">
 
           <LoginForm
-            redirectPath="/profile"
+           redirectPath="/account"
             buttonLabel="Sign In"
           />
 

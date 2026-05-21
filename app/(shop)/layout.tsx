@@ -22,7 +22,7 @@ export default function ShopLayout({
       {!zooming && !isCheckoutLogin && <Navbar />}
 
       {/* CONTENT */}
-      <main className="flex-1 w-full">
+      <main className="flex-1 w-full mt-16 lg:mt-24">
         {children}
       </main>
 

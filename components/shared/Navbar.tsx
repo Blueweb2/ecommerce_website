@@ -347,7 +347,7 @@ export default function Navbar() {
           </Link>
           <button onClick={() => {
             if (loading) return;
-            router.push(user ? "/profile" : "/account/login");
+            router.push(user ? "/account" : "/account/login");
           }} className="transition-colors duration-300 hover:text-[#D4AF37]">
             <User size={18} />
           </button>
