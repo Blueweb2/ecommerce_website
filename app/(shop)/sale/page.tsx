@@ -14,11 +14,6 @@ const SORT_OPTIONS = [
   { value: "price-desc", label: "Price: High to Low" },
 ];
 
-function getDiscountPercent(price: number, discountPrice: number) {
-  if (!price || !discountPrice || discountPrice >= price) return 0;
-  return Math.round(((price - discountPrice) / price) * 100);
-};
-
 function SkeletonCard() {
   return (
     <div className="animate-pulse">
@@ -67,7 +62,7 @@ export default function SalePage() {
         </div>
       </div>
 
-      <section className="w-full max-w-[2000px] mx-auto px-4 md:px-32">
+      <section className="px-4 md:px-32">
         {/* ─── PROMO STRIP ─── */}
         <div className="text-center py-6 ">
           <h2 className={`${bodoni.className} text-base font-semibold tracking-wide text-neutral-600`}>
@@ -140,10 +135,6 @@ export default function SalePage() {
               {products.map((product: CatalogProduct) => {
                 const imageUrl =
                   (product.images?.find((img: any) => img.isPrimary) || product.images?.[0])?.url || "/placeholder.png";
-                const discount = getDiscountPercent(
-                  product.price,
-                  product.discountPrice ?? 0
-                );
 
                 return (
                   <Link
@@ -160,13 +151,6 @@ export default function SalePage() {
                         sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
                         className="object-cover transition-transform duration-500 ease-out"
                       />
-
-                      {/* DISCOUNT BADGE */}
-                      {discount > 0 && (
-                        <span className="absolute top-2 left-2 bg-[#BE5555] text-white text-[10px] font-bold px-2 py-0.5 tracking-wide">
-                          -{discount}%
-                        </span>
-                      )}
                     </div>
 
                     {/* DETAILS */}
@@ -181,7 +165,7 @@ export default function SalePage() {
                       </h3>
 
                       <div className="flex items-center gap-2">
-                        <span className="text-gray-400 font-semibold text-sm">
+                        <span className="font-semibold text-sm">
                           ₹{product.discountPrice}
                         </span>
                         <span className="line-through text-[#BE5555] text-xs">

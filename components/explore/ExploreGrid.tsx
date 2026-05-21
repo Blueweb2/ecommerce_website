@@ -70,7 +70,7 @@ export default function ExploreGrid({
                 {product.discountPrice &&
                 product.discountPrice < product.price ? (
                   <>
-                    <span className={`${inter.className} text-[#5C5A58]`}>
+                    <span className={`${inter.className}`}>
                       ₹{product.discountPrice}
                     </span>
                     <span className={`${inter.className} text-[#d82d2d] line-through`}>
@@ -78,7 +78,7 @@ export default function ExploreGrid({
                     </span>
                   </>
                 ) : (
-                  <span className={`${inter.className} text-neutral-600`}>
+                  <span className={`${inter.className}`}>
                     ₹{product.price}
                   </span>
                 )}
