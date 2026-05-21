@@ -10,7 +10,7 @@ export default function AccountLoginPage() {
   const router = useRouter();
 
 return (
-  <div className={`min-h-screen bg-[#f3f3f1] ${inter.className}`}>
+  <div className={`min-h-screen  bg-[#f3f3f1] ${inter.className}`}>
     
     {/* TOP BAR */}
   
@@ -19,7 +19,7 @@ return (
       <div className="w-full max-w-[420px]">
 
         {/* TITLE */}
-        <div className="mb-10 ">
+        <div className="mb-10 mt-24 ">
           <h2
             className={`text-[42px] font-light text-black ${bodoni.className}`}
           >

@@ -44,18 +44,13 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className={`min-h-screen bg-[#f3f3f1] ${inter.className}`}>
+    <div className={`min-h-screen mt-54 bg-[#f3f3f1] ${inter.className}`}>
 
-     <header className="border-b pt-52 border-[#e5e5e5] bg-[#ececeb]">
-        <div className="mx-auto max-w-7xl px-6 py-4 flex items-center gap-2">
-          <Mail className="h-5 w-5 text-[#777]" />
-          <span className="text-sm text-[#777]">Need help? Contact support</span>
-        </div>
-      </header>
+  
  
 
       {/* MAIN */}
-      <main className="flex justify-center px-4 pt-84 pb-20">
+      <main className="flex justify-center px-4  pb-20">
         <div className="w-full max-w-[430px]">
 
           {/* TITLE */}
