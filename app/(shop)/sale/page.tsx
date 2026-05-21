@@ -181,7 +181,7 @@ export default function SalePage() {
                       </h3>
 
                       <div className="flex items-center gap-2">
-                        <span className="text-gray-400 font-semibold text-sm">
+                        <span className="font-semibold text-sm">
                           ₹{product.discountPrice}
                         </span>
                         <span className="line-through text-[#BE5555] text-xs">
