@@ -171,7 +171,8 @@ export default function RelatedProducts({ product }: Props) {
                 </p>
                 <div className="flex items-center gap-2 pt-1">
                   <p className={`${inter.className} text-sm text-[13px] font-black text-[#8D8B9D]`}>
-                   ₹
+
+                    ₹
                     {Math.round(
                       item.price * (1 + (item.gstPercentage || 0) / 100)
                     )}

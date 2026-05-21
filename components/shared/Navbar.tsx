@@ -134,7 +134,7 @@ export default function Navbar() {
 
         {/* LOGO FOR MOBILE DEVICE */}
         <Link href="/">
-          <div className="font-brand-serif text-2xl font-semibold tracking-wide text-white md:hidden">
+          <div className="font-brand-serif text-2xl font-semibold tracking-wide text-white lg:hidden">
             <img
               src="/home/navigation/zenfaz.svg"
               alt="logo"
@@ -144,10 +144,10 @@ export default function Navbar() {
         </Link>
 
         {/* EMPTY SPACE */}
-        <div className="flex-1 hidden md:block"></div>
+        <div className="flex-1 hidden lg:block"></div>
 
         {/* NAV LINKS */}
-        <div className='hidden md:flex flex-col items-center justify-center flex-1'>
+        <div className='hidden lg:flex flex-col items-center justify-center flex-1'>
 
           {/* LOGO FOR LARGE DEVICE */}
           <Link href="/">

@@ -16,7 +16,7 @@ export default function NewInPage() {
 
   return (
     <section className="py-12 mt-10 md:mt-28">
-      <div className="max-w-7xl mx-auto px-4 md:px-8">
+      <div className="px-4 md:px-10">
 
         <div className="text-center mb-10">
           <h1 className="text-3xl font-serif">New In</h1>

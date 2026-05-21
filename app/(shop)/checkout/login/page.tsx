@@ -17,21 +17,10 @@ export default function CheckoutLoginPage() {
   return (
     <div className={`min-h-screen bg-slate-50 flex flex-col ${inter.className}`}>
       
-      {/* MINIMAL HEADER */}
-      <header className="bg-white border-b border-slate-200 py-4 px-6 md:px-12 flex items-center justify-between z-10 shadow-sm">
-        <Link href="/">
-          <span className={`text-2xl font-semibold tracking-widest text-[#1a1f1a] uppercase cursor-pointer ${bodoni.className}`}>
-            Goldland
-          </span>
-        </Link>
-        <div className="flex items-center gap-2 text-slate-600 text-xs font-semibold uppercase tracking-wider">
-          <Lock className="h-4 w-4 text-[#d4af37]" />
-          <span>Secure Checkout</span>
-        </div>
-      </header>
+   
 
       {/* MAIN CONTAINER */}
-      <main className="flex-1 flex flex-col lg:flex-row max-w-7xl mx-auto w-full px-4 py-8 md:py-12 gap-8">
+      <main className="flex-1 flex flex-col lg:flex-row max-w-7xl mx-auto w-full px-42 py-8 md:py-12 gap-8">
         
         {/* LEFT COLUMN: AUTH OPTIONS */}
         <section className="flex-1 space-y-8 bg-white p-6 md:p-10 rounded-2xl border border-slate-100 shadow-sm h-fit">

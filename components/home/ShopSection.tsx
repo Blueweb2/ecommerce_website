@@ -60,7 +60,7 @@ export default function ShopSection() {
 
         {/* TITLE */}
         <h2 className={`${bodoni.className} mb-6 border-t-[2px] border-[#e5e5e5] pt-8 text-center 
-        text-[clamp(25px,2.5vw,32px)] font-normal tracking-tight text-neutral-600`}>
+        text-[clamp(25px,2.5vw,32px)] font-normal tracking-tight`}>
           Discover ZENFAZ Collection
         </h2>
 
@@ -110,7 +110,7 @@ export default function ShopSection() {
 
                 {/* CONTENT */}
                 <div>
-                  <h3 className={`${inter.className} text-sm font-semibold mb-2 text-neutral-600`}>
+                  <h3 className={`${inter.className} text-sm font-semibold mb-2`}>
                     {product.name}
                   </h3>
 
@@ -118,7 +118,7 @@ export default function ShopSection() {
                     {product.description}
                   </p>
 
-                  <p className={`${inter.className}text-sm font-medium text-[#5C5A58] mb-4`}>
+                  <p className={`${inter.className} text-sm font-medium mb-4`}>
                     ₹{product.price}
                   </p>
                 </div>

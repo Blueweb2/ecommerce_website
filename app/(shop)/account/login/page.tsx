@@ -13,30 +13,7 @@ return (
   <div className={`min-h-screen bg-[#f3f3f1] ${inter.className}`}>
     
     {/* TOP BAR */}
-    <div className="border-b border-[#e5e5e5] bg-white text-center text-[11px] tracking-wide text-[#666] py-2">
-      New arrivals, now dropping five days a week
-    </div>
-
-    {/* HEADER */}
-    <header className="bg-black text-white">
-      <div className="mx-auto flex h-[82px] max-w-[1400px] items-center justify-between px-6 lg:px-12">
-
-        <div className="hidden lg:block text-sm">
-          Italy
-        </div>
-
-        <h1 className={`text-[34px] tracking-[0.22em] ${bodoni.className}`}>
-          GOLDLAND
-        </h1>
-
-        <div className="hidden items-center gap-6 text-sm lg:flex">
-          <span>Search</span>
-          <span>Wishlist</span>
-          <span>Bag</span>
-        </div>
-      </div>
-    </header>
-
+  
     {/* LOGIN SECTION */}
     <main className="flex justify-center px-4 py-20">
       <div className="w-full max-w-[420px]">
