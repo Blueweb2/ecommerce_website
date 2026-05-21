@@ -2,10 +2,12 @@
 
 import { useEffect } from "react";
 import Link from "next/link";
+import { clearCheckoutSession } from "@/lib/utils/checkoutSession";
 import { useCartStore } from "@/store/user/cart/useCartStore";
 
 export default function CompleteStep() {
   useEffect(() => {
+    clearCheckoutSession();
     void useCartStore.getState().clearCartAsync();
   }, []);
 

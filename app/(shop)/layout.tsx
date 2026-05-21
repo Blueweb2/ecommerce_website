@@ -14,23 +14,23 @@ export default function ShopLayout({
 }) {
   const { zooming } = useProductStore();
   const pathname = usePathname();
-  const isCheckoutLogin = pathname === "/checkout/login";
+  const isCheckoutRoute = pathname.startsWith("/checkout");
 
   return (
     <section>
       {/* NAVBAR */}
-      {!zooming && !isCheckoutLogin && <Navbar />}
+      {!zooming && !isCheckoutRoute && <Navbar />}
 
       {/* CONTENT */}
-      <main className="flex-1 w-full mt-16 lg:mt-24">
+      <main className="flex-1 w-full ">
         {children}
       </main>
 
       {/* FOOTER */}
-      {!zooming && !isCheckoutLogin && <Footer />}
+      {!zooming && !isCheckoutRoute && <Footer />}
 
       {/* CART DRAWER */}
-      {!isCheckoutLogin && <CartDrawer />}
+      {!isCheckoutRoute && <CartDrawer />}
     </section>
   );
 }
