@@ -12,7 +12,6 @@ import {
   User,
   MapPin,
   CreditCard,
-  ChevronRight,
 } from "lucide-react";
 
 import { bodoni, inter } from "@/lib/fonts";
@@ -81,10 +80,10 @@ export default function AccountPage() {
   }
 
   return (
-    <div className={`min-h-screen bg-[#f5f5f3] ${inter.className}`}>
+    <div className={`min-h-screen ${inter.className}`}>
 
       {/* HERO */}
-      <section className="relative h-[320px] overflow-hidden">
+      <section className="relative h-[320px] overflow-hidden mt-20 lg:mt-32">
 
         {/* BACKGROUND */}
         <Image
@@ -123,27 +122,17 @@ export default function AccountPage() {
         <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
 
           {accountCards.map((card) => {
-            const Icon = card.icon;
 
             return (
               <Link
                 key={card.title}
                 href={card.href}
-                className="group border border-[#e3e3e3] bg-white p-10 transition hover:border-black"
+                className="group border border-[#e3e3e3] bg-white p-10"
               >
-                {/* ICON */}
-                <div className="mb-8 flex items-center justify-between">
-
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full border border-[#e5e5e5]">
-                    <Icon className="h-5 w-5 text-black" />
-                  </div>
-
-                  <ChevronRight className="h-5 w-5 text-[#999] transition group-hover:translate-x-1 group-hover:text-black" />
-                </div>
 
                 {/* TITLE */}
                 <h3
-                  className={`text-[34px] leading-none text-black ${bodoni.className}`}
+                  className={`text-[24px] leading-none text-black ${bodoni.className}`}
                 >
                   {card.title}
                 </h3>

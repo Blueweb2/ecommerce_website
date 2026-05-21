@@ -21,47 +21,62 @@ export default function AccountDetails() {
         Loading account...
       </div>
     );
-  }
+  };
 
   return (
-    <div className="max-w-3xl mx-auto bg-gray-50 p-6 md:p-10">
-      {/* HEADER */}
-      <div className="flex items-center justify-between mb-8">
-        <h1 className={`${bodoni.className} text-2xl font-semibold text-neutral-600`}>
-          Account Details
-        </h1>
+    <div className="min-h-screen px-3 py-4 lg:px-6">
+      
+      {/* CARD 1 */}
+      <div className="border border-black/20 bg-transparent px-6 py-5 mb-4">
+        <h2 className="text-[20px] font-serif font-normal text-black  mb-3">
+          Personal information
+        </h2>
 
-        <button
-          onClick={handleLogout}
-          className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 text-sm transition"
-        >
-          Logout
-        </button>
+        <div className="text-[13px] text-black">
+          <p>{user.name}</p>
+          <p>Born on 3 Mar 2005</p>
+        </div>
+
+        <div className="border-t border-black/20 mt-4 pt-2">
+          <button className="text-[13px] text-black">
+            Edit
+          </button>
+        </div>
       </div>
 
-      {/* USER INFO */}
-      <div className={`${bodoni.className} space-y-4`}>
-        <div>
-          <p className={`${inter.className} text-sm text-gray-500`}>Name</p>
-          <p className="text-lg font-medium text-gray-800">
-            {user.name}
-          </p>
-        </div>
+      {/* CARD 2 */}
+      <div className="border border-black/20 bg-transparent px-6 py-5 mb-4">
+        <h2 className="text-[20px] font-serif font-normal text-black mb-3">
+          Email address
+        </h2>
 
-        <div>
-          <p className={`${inter.className} text-sm text-gray-500`}>Email</p>
-          <p className="text-lg font-medium text-gray-800">
-            {user.email}
-          </p>
-        </div>
+        <p className="text-[13px] text-black">
+          {user.email}
+        </p>
 
-        <div>
-          <p className={`${inter.className}text-sm text-gray-500`}>Role</p>
-          <p className="text-lg font-medium text-gray-800 capitalize">
-            {user.role}
-          </p>
+        <div className="border-t border-black/20 mt-4 pt-2">
+          <button className="text-[13px] text-black">
+            Edit
+          </button>
+        </div>
+      </div>
+
+      {/* CARD 3 */}
+      <div className="border border-black/20 bg-transparent px-6 py-5">
+        <h2 className="text-[20px] font-serif font-normal text-black mb-3">
+          Password
+        </h2>
+
+        <p className="text-[20px] tracking-[3px] font-semibold">
+          ••••••••••••
+        </p>
+
+        <div className="border-t border-black/20 mt-4 pt-2">
+          <button className="text-[13px] text-black">
+            Edit
+          </button>
         </div>
       </div>
     </div>
   );
-}
+};

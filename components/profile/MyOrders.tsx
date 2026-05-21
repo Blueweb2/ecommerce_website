@@ -205,23 +205,36 @@ const MyOrders = () => {
 
   if (!loading && orders.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center border-2 border-dashed border-gray-200 bg-gray-50 py-20 text-center">
-        <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-white text-3xl shadow-sm">
-          📦
+      <div className="min-h-screen flex items-start justify-center lg:justify-start px-4">
+        <div className="flex flex-col items-center text-center max-w-sm lg:ml-52 2xl:ml-56">
+          
+          {/* ICON */}
+          <div className="w-13 h-13 rounded-full border-2 border-black flex items-center justify-center mb-8">
+            <span className="text-3xl leading-none">!</span>
+          </div>
+
+          {/* TITLE */}
+          <h2 className="text-[17px] leading-tight font-serif text-black mb-3">
+            You don’t currently have <br /> any orders
+          </h2>
+
+          {/* DESCRIPTION */}
+          <p className="text-[13px] text-black mb-10">
+            Once you have checked out, you <br />
+            can view and track your order <br />
+            here
+          </p>
+
+          {/* BUTTON */}
+          <button 
+            onClick={()=>{
+              window.location.href = '/'
+            }}
+            className="border-b border-black/70 text-[13px] text-black/70 hover:text-black transition cursor-pointer"
+          >
+            Shop What’s New
+          </button>
         </div>
-        <h2 className={`${bodoni.className} text-xl font-bold text-neutral-600`}>No orders found</h2>
-        <p className="mt-2 max-w-sm px-6 text-sm text-gray-500">
-          You haven&apos;t placed any orders yet. Start shopping to see your
-          order history here!
-        </p>
-        <button
-          onClick={() => {
-            window.location.href = "/";
-          }}
-          className="mt-8  bg-black px-8 py-3 font-bold text-white shadow-lg transition hover:bg-gray-800"
-        >
-          Start Shopping
-        </button>
       </div>
     );
   };
