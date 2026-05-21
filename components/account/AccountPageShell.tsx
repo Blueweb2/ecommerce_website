@@ -31,7 +31,7 @@ export default function AccountPageShell({
   }
 
   return (
-    <div className="min-h-screen bg-[#f7f7f5]">
+    <div className="min-h-screen">
       <div className="mx-auto max-w-[1400px] px-6 py-16">
         <AccountHeader title={title} />
 
