@@ -12,9 +12,13 @@ import { orderAPI } from "@/lib/api/order.api";
 import { loadRazorpayScript } from "@/lib/utils/razorpay";
 import {
   clearCheckoutSession,
+  getShippingCharge,
   getStoredCheckoutAddress,
+  getStoredCheckoutMode,
   getStoredPackagingOption,
+  getStoredShippingOption,
   type PackagingOption,
+  type ShippingOption,
 } from "@/lib/utils/checkoutSession";
 import { useAuthStore } from "@/store/auth/useAuthStore";
 import { useCartStore } from "@/store/user/cart/useCartStore";
@@ -57,12 +61,14 @@ export default function PaymentOptionsPage() {
   const router = useRouter();
   const { initialized, isAuthenticated } = useAuthStore();
   const { items, totalPrice, totalGstAmount, appliedPromo, clearCartAsync } = useCartStore();
+  const [checkoutMode] = useState(getStoredCheckoutMode);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("cod");
   const [loading, setLoading] = useState(false);
   const [shippingAddress] = useState<Address | null>(getStoredCheckoutAddress);
   const [packagingOption] = useState<PackagingOption>(getStoredPackagingOption);
+  const [shippingOption] = useState<ShippingOption>(getStoredShippingOption);
 
-  const shippingCharge = 0;
+  const shippingCharge = getShippingCharge(shippingOption);
   const discountAmount = appliedPromo?.discountAmount || 0;
   const fallbackGrandTotal = totalPrice + totalGstAmount + shippingCharge - discountAmount;
 
@@ -76,7 +82,7 @@ export default function PaymentOptionsPage() {
       return;
     }
 
-    if (!isAuthenticated) {
+    if (!isAuthenticated && checkoutMode !== "guest") {
       router.replace("/checkout/login");
       return;
     }
@@ -88,12 +94,12 @@ export default function PaymentOptionsPage() {
       return;
     }
 
-  }, [initialized, isAuthenticated, items.length, router]);
+  }, [checkoutMode, initialized, isAuthenticated, items.length, router]);
 
   const finalizeCheckout = async () => {
     clearCheckoutSession();
     await clearCartAsync();
-    router.push("/checkout/complete");
+    router.push("/checkout/success");
   };
 
   const handlePlaceOrder = async () => {
@@ -186,7 +192,7 @@ export default function PaymentOptionsPage() {
 
   return (
     <CheckoutContainer shippingCharge={shippingCharge}>
-      <CheckoutSteps step={2} />
+      <CheckoutSteps step={4} />
 
       <div className="border-b border-[#e5e5e5] pb-10">
         <h1 className={`mb-8 text-[36px] text-black ${bodoni.className}`}>
@@ -212,10 +218,15 @@ export default function PaymentOptionsPage() {
 
           <div>
             <p className="mb-4 text-[12px] uppercase tracking-[0.15em] text-[#666]">
-              Packaging
+              Delivery & Packaging
             </p>
 
             <div className="space-y-2 text-[15px] leading-7 text-black">
+              <p>
+                {shippingOption === "express"
+                  ? "Express Delivery - ₹50"
+                  : "Standard Delivery - Free"}
+              </p>
               <p>{packagingOption === "gift" ? "Gift Packaging" : "Standard Packaging"}</p>
               <p className="text-[#666]">
                 {packagingOption === "gift"

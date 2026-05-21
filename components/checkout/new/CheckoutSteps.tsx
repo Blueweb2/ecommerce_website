@@ -1,16 +1,18 @@
 "use client";
 
 interface Props {
-  step: 1 | 2 | 3;
+  step: 1 | 2 | 3 | 4 | 5;
 }
 
 export default function CheckoutSteps({
   step,
 }: Props) {
   const steps = [
+    "Address",
     "Shipping",
-    "Review & Pay",
-    "Complete",
+    "Packaging",
+    "Payment",
+    "Success",
   ];
 
   return (

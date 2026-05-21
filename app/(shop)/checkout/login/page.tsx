@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import LoginForm from "@/components/auth/LoginForm";
 import CheckoutContainer from "@/components/checkout/new/CheckoutContainer";
 import { bodoni, inter } from "@/lib/fonts";
+import { setStoredCheckoutMode } from "@/lib/utils/checkoutSession";
 import { useAuthStore } from "@/store/auth/useAuthStore";
 import { useCartStore } from "@/store/user/cart/useCartStore";
 
@@ -57,6 +58,19 @@ export default function CheckoutLoginPage() {
             <Link href="/register" className="text-black underline underline-offset-4">
               Create one here
             </Link>
+          </div>
+
+          <div className={`mt-6 border-t border-[#ececec] pt-6 ${inter.className}`}>
+            <button
+              type="button"
+              onClick={() => {
+                setStoredCheckoutMode("guest");
+                router.push("/checkout/shipping-address");
+              }}
+              className="w-full border border-black px-5 py-3 text-sm uppercase tracking-[0.15em] text-black transition hover:bg-black hover:text-white"
+            >
+              Continue as Guest
+            </button>
           </div>
         </div>
       </div>
