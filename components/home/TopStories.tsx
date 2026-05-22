@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { getStories } from "@/lib/api/story.api";
 import { bodoni, inter } from "@/lib/fonts";
+import { resolveImageSrc } from "@/lib/utils/image";
 import { headingClassName } from "../ui/headingClassNames";
 
 type Story = {
@@ -98,8 +99,8 @@ export default function TopStories() {
                 className="flex justify-center h-60 2xl:h-70 mb-4 relative overflow-hidden"
               >
                 <Image
-                  src={story.image.url}
-                  alt={story.image.alt || story.title}
+                  src={resolveImageSrc(story.image?.url)}
+                  alt={story.image?.alt || story.title}
                   fill
                   sizes="200px"
                   className="object-fill"

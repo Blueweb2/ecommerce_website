@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Heart } from "lucide-react";
 import { Product } from "@/types/product";
 import { bodoni, inter } from "@/lib/fonts";
+import { resolveImageSrc } from "@/lib/utils/image";
 
 type ExploreGridProps = {
   products: Product[];
@@ -33,7 +34,7 @@ export default function ExploreGrid({
     <div className="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-10 lg:grid-cols-4">
       {products.map((product) => {
         const primaryImg = product.images?.find((img: any) => img.isPrimary) || product.images?.[0];
-        const productImage = primaryImg?.url || fallbackImage;
+        const productImage = resolveImageSrc(primaryImg?.url, fallbackImage);
 
         return (
           <article key={product._id}>

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { optimizeCloudinaryUrl } from "@/lib/constants/admin-catalog";
+import { resolveImageSrc } from "@/lib/utils/image";
 import { useProductStore } from "@/store/user/product/useProductStore";
 
 type CarouselProps = {
@@ -24,7 +24,7 @@ const Carousel = ({ images = [], firstImage }: CarouselProps) => {
   const safeImages =
     images.length > 0
       ? images
-      : [{ url: "/placeholder.png", altText: "no image" }];
+      : [{ url: resolveImageSrc(), altText: "no image" }];
 
   const next = (e:React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
@@ -54,7 +54,7 @@ const Carousel = ({ images = [], firstImage }: CarouselProps) => {
         onClick={() => setZooming(false)}
       >
         <img
-          src={optimizeCloudinaryUrl(safeImages[index].url)}
+          src={resolveImageSrc(safeImages[index].url)}
           alt={safeImages[index].altText}
           className="w-full h-[500px] md:h-[calc(100vh+100vh+600px)] object-cover"
         />
@@ -99,7 +99,7 @@ const Carousel = ({ images = [], firstImage }: CarouselProps) => {
         {safeImages.map((img, i) => (
           <img
             key={i}
-            src={optimizeCloudinaryUrl(img.url)}
+            src={resolveImageSrc(img.url)}
             onClick={() => setIndex(i)}
             className={`w-16 h-16 object-cover cursor-pointer border ${
               index === i ? "border-black" : "border-gray-300"

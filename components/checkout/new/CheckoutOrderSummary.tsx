@@ -3,6 +3,8 @@
 import Image from "next/image";
 
 import { useCartStore } from "@/store/user/cart/useCartStore";
+import { resolveImageSrc } from "@/lib/utils/image";
+import { calculateCheckoutTotals, getLineGstAmount } from "@/lib/utils/pricing";
 
 interface CheckoutOrderSummaryProps {
   shippingCharge?: number;
@@ -17,9 +19,13 @@ const formatSelectedOptions = (
 export default function CheckoutOrderSummary({
   shippingCharge = 0,
 }: CheckoutOrderSummaryProps) {
-  const { items, totalPrice, totalGstAmount, appliedPromo } = useCartStore();
+  const { items, appliedPromo } = useCartStore();
   const discountAmount = appliedPromo?.discountAmount || 0;
-  const grandTotal = totalPrice + totalGstAmount + shippingCharge - discountAmount;
+  const totals = calculateCheckoutTotals({
+    items,
+    shippingCharge,
+    discountAmount,
+  });
 
   return (
     <aside className="w-full border-l border-[#ececec] bg-[#fafafa] p-8 lg:w-[360px]">
@@ -40,7 +46,7 @@ export default function CheckoutOrderSummary({
             >
               <div className="relative h-[110px] w-[85px] overflow-hidden bg-[#f5f5f5]">
                 <Image
-                  src={item.image || "/placeholder.png"}
+                  src={resolveImageSrc(item.image)}
                   alt={item.name}
                   fill
                   className="object-cover"
@@ -67,8 +73,12 @@ export default function CheckoutOrderSummary({
                   {item.isFabric ? ` ${item.unit || "meter"}` : ""}
                 </p>
 
-                <p className="mt-3 text-[14px] font-medium">
-                  {formatCurrency(item.price * item.quantity)}
+                <p className="mt-2 text-[12px] text-[#777]">
+                  GST {item.gstPercentage || 0}% · {formatCurrency(getLineGstAmount(item))}
+                </p>
+
+                <p className="mt-2 text-[14px] font-medium">
+                  {formatCurrency(item.price * item.quantity + getLineGstAmount(item))}
                 </p>
               </div>
             </div>
@@ -78,13 +88,13 @@ export default function CheckoutOrderSummary({
 
       <div className="mt-10 space-y-4 border-t border-[#e5e5e5] pt-8">
         <div className="flex justify-between text-[15px]">
-          <span>Item subtotal</span>
-          <span>{formatCurrency(totalPrice)}</span>
+          <span>Item subtotal (excl. GST)</span>
+          <span>{formatCurrency(totals.subtotal)}</span>
         </div>
 
         <div className="flex justify-between text-[15px]">
           <span>GST</span>
-          <span>{formatCurrency(totalGstAmount)}</span>
+          <span>{formatCurrency(totals.totalGstAmount)}</span>
         </div>
 
         <div className="flex justify-between text-[15px]">
@@ -101,7 +111,7 @@ export default function CheckoutOrderSummary({
 
         <div className="flex justify-between border-t border-[#ececec] pt-5 text-[20px]">
           <span>Total</span>
-          <span>{formatCurrency(grandTotal)}</span>
+          <span>{formatCurrency(totals.grandTotal)}</span>
         </div>
       </div>
     </aside>

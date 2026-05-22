@@ -2,8 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
-
 import CheckoutContainer from "@/components/checkout/new/CheckoutContainer";
 import CheckoutSteps from "@/components/checkout/new/CheckoutSteps";
 import { bodoni } from "@/lib/fonts";
@@ -11,8 +9,10 @@ import {
     getShippingCharge,
     getStoredCheckoutAddress,
     getStoredCheckoutMode,
+    getStoredGiftMessage,
     getStoredPackagingOption,
     getStoredShippingOption,
+    setStoredGiftMessage,
     setStoredPackagingOption,
     type PackagingOption,
     type ShippingOption,
@@ -23,23 +23,25 @@ import type { Address } from "@/types/address";
 import PersonalMessageModal from "@/components/checkout/new/PersonalMessageModal";
 
 export default function PackagingOptionsPage() {
-    const router = useRouter();
-    const { initialized, isAuthenticated } = useAuthStore();
-    const { items } = useCartStore();
+  const router = useRouter();
+  const { initialized, isAuthenticated } = useAuthStore();
+  const { items, hydrated } = useCartStore();
     const [checkoutMode] = useState(getStoredCheckoutMode);
     const [selectedPackaging, setSelectedPackaging] = useState<PackagingOption>(
-        getStoredPackagingOption
+        () => getStoredPackagingOption() ?? "standard"
     );
     const [shippingAddress] = useState<Address | null>(getStoredCheckoutAddress);
-    const [shippingOption] = useState<ShippingOption>(getStoredShippingOption);
+    const [shippingOption] = useState<ShippingOption>(
+        () => getStoredShippingOption() ?? "standard"
+    );
 
     const [messageModalOpen, setMessageModalOpen] = useState(false);
-    const [giftMessage, setGiftMessage] = useState("");
+    const [giftMessage, setGiftMessage] = useState(() => getStoredGiftMessage());
 
     useEffect(() => {
-        if (!initialized) {
-            return;
-        }
+    if (!initialized || !hydrated) {
+      return;
+    }
 
         if (items.length === 0) {
             router.replace("/cart");
@@ -51,29 +53,37 @@ export default function PackagingOptionsPage() {
             return;
         }
 
-        const storedAddress = getStoredCheckoutAddress();
-        const storedShippingOption = getStoredShippingOption();
-
-        if (!storedAddress) {
+        if (!getStoredCheckoutAddress()) {
             router.replace("/checkout/shipping-address");
             return;
         }
 
-        if (!storedShippingOption) {
+        if (getStoredShippingOption() === null) {
             router.replace("/checkout/shipping-options");
-            return;
         }
 
-    }, [checkoutMode, initialized, isAuthenticated, items.length, router]);
+  }, [checkoutMode, hydrated, initialized, isAuthenticated, items.length, router]);
 
     const handleContinue = () => {
         setStoredPackagingOption(selectedPackaging);
+
+        if (selectedPackaging === "gift") {
+            setStoredGiftMessage(giftMessage);
+        } else {
+            setStoredGiftMessage("");
+        }
+
         router.push("/checkout/payment-options");
     };
 
-    if (!initialized || items.length === 0 || !shippingAddress) {
-        return null;
-    }
+    const handleGiftMessageConfirm = () => {
+        setStoredGiftMessage(giftMessage);
+        setMessageModalOpen(false);
+    };
+
+  if (!initialized || !hydrated || items.length === 0 || !shippingAddress) {
+    return null;
+  }
 
     return (
         <CheckoutContainer shippingCharge={getShippingCharge(shippingOption)}>
@@ -153,7 +163,10 @@ export default function PackagingOptionsPage() {
                         <input
                             type="radio"
                             checked={selectedPackaging === "standard"}
-                            onChange={() => setSelectedPackaging("standard")}
+                            onChange={() => {
+                                setSelectedPackaging("standard");
+                                setGiftMessage("");
+                            }}
                             className="mt-1 h-5 w-5 accent-black"
                         />
 
@@ -173,13 +186,11 @@ export default function PackagingOptionsPage() {
                         </div>
                     </div>
 
-                    <div className="relative hidden h-[120px] w-[210px] overflow-hidden bg-[#f5f5f5] md:block">
-                        <Image
-                            src="/checkout/shipping/standard-packaging.jpg"
-                            alt="Standard packaging"
-                            fill
-                            className="object-cover"
-                        />
+                    <div
+                        aria-hidden
+                        className="relative hidden h-[120px] w-[210px] overflow-hidden bg-[#f0f0f0] md:block"
+                    >
+                        <div className="absolute inset-4 border border-[#d9d9d9] bg-white" />
                     </div>
                 </label>
 
@@ -208,8 +219,16 @@ export default function PackagingOptionsPage() {
                                 onClick={() => setMessageModalOpen(true)}
                                 className="mt-4 text-[14px] text-[#777] underline underline-offset-4"
                             >
-                                Add a personal message
+                                {giftMessage.trim()
+                                    ? "Edit personal message"
+                                    : "Add a personal message"}
                             </button>
+
+                            {giftMessage.trim() && (
+                                <p className="mt-3 max-w-[340px] text-[14px] italic leading-6 text-[#555]">
+                                    &ldquo;{giftMessage.trim()}&rdquo;
+                                </p>
+                            )}
                         </div>
                     </div>
 
@@ -218,16 +237,14 @@ export default function PackagingOptionsPage() {
                         onClose={() => setMessageModalOpen(false)}
                         message={giftMessage}
                         setMessage={setGiftMessage}
-                        onConfirm={() => setMessageModalOpen(false)}
+                        onConfirm={handleGiftMessageConfirm}
                     />
 
-                    <div className="relative hidden h-[120px] w-[210px] overflow-hidden bg-[#f5f5f5] md:block">
-                        <Image
-                            src="/checkout/shipping/gift-packaging.jpg"
-                            alt="Gift packaging"
-                            fill
-                            className="object-cover"
-                        />
+                    <div
+                        aria-hidden
+                        className="relative hidden h-[120px] w-[210px] overflow-hidden bg-[#111] md:block"
+                    >
+                        <div className="absolute inset-4 border border-[#444] bg-[#1a1a1a]" />
                     </div>
                 </label>
 

@@ -6,12 +6,15 @@ import toast from "react-hot-toast";
 import api from "@/lib/api/axios";
 import axios from "axios";
 import { setAccessToken } from "@/lib/auth";
+import { setStoredCheckoutMode } from "@/lib/utils/checkoutSession";
 import { useAuthStore } from "@/store/auth/useAuthStore";
+import { useCartStore } from "@/store/user/cart/useCartStore";
 
 export default function VerifyOtpPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { setUser } = useAuthStore();
+  const mergeCart = useCartStore((state) => state.mergeCart);
 
   const email = searchParams.get("email") || "";
   const isAdminFlow = searchParams.get("admin") === "true";
@@ -129,6 +132,11 @@ export default function VerifyOtpPage() {
       // 🔐 Save auth
       setAccessToken(accessToken);
       setUser(user);
+
+      if (redirect.startsWith("/checkout")) {
+        setStoredCheckoutMode("account");
+        await mergeCart();
+      }
 
       toast.success("Verified successfully 🎉");
 

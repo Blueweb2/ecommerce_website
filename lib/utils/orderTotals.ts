@@ -1,54 +1,59 @@
-type OrderLineItem = {
-  price?: number;
-  quantity?: number;
-  gstPercentage?: number;
-  gstAmount?: number;
-};
+import {
+  calculateCheckoutTotals,
+  getLineGstAmount,
+  roundCurrency,
+  type PricedLineItem,
+} from "@/lib/utils/pricing";
+
+type OrderLineItem = PricedLineItem;
 
 type OrderTotalsInput = {
   items?: OrderLineItem[];
   totalPrice?: number;
   totalGstAmount?: number;
   grandTotal?: number;
+  shippingCharge?: number;
+  discountAmount?: number;
 };
-
-const roundCurrency = (amount: number) =>
-  Math.round((amount + Number.EPSILON) * 100) / 100;
 
 export function getOrderTotals(order: OrderTotalsInput) {
   const items = Array.isArray(order.items) ? order.items : [];
-  const hasItems = items.length > 0;
+  const shippingCharge = Number(order.shippingCharge) || 0;
+  const discountAmount = Number(order.discountAmount) || 0;
 
-  const calculatedSubtotal = items.reduce((sum, item) => {
-    const price = Number(item.price) || 0;
-    const quantity = Number(item.quantity) || 0;
-    return sum + price * quantity;
-  }, 0);
+  if (items.length > 0) {
+    const calculated = calculateCheckoutTotals({
+      items,
+      shippingCharge,
+      discountAmount,
+    });
 
-  const calculatedGst = items.reduce((sum, item) => {
-    const price = Number(item.price) || 0;
-    const quantity = Number(item.quantity) || 0;
-    const unitGst =
-      typeof item.gstAmount === "number"
-        ? item.gstAmount
-        : (price * (Number(item.gstPercentage) || 0)) / 100;
+    return {
+      subtotal: calculated.subtotal,
+      totalGstAmount: calculated.totalGstAmount,
+      shippingCharge: calculated.shippingCharge,
+      discountAmount: calculated.discountAmount,
+      grandTotal:
+        typeof order.grandTotal === "number" && order.grandTotal > 0
+          ? roundCurrency(order.grandTotal)
+          : calculated.grandTotal,
+    };
+  }
 
-    return sum + unitGst * quantity;
-  }, 0);
-
-  const subtotal = hasItems
-    ? roundCurrency(calculatedSubtotal)
-    : Number(order.totalPrice) || 0;
-  const totalGstAmount = hasItems
-    ? roundCurrency(calculatedGst)
-    : Number(order.totalGstAmount) || 0;
-  const grandTotal = hasItems
-    ? roundCurrency(subtotal + totalGstAmount)
-    : Number(order.grandTotal) || roundCurrency(subtotal + totalGstAmount);
+  const subtotal = Number(order.totalPrice) || 0;
+  const totalGstAmount = Number(order.totalGstAmount) || 0;
 
   return {
-    subtotal,
-    totalGstAmount,
-    grandTotal,
+    subtotal: roundCurrency(subtotal),
+    totalGstAmount: roundCurrency(totalGstAmount),
+    shippingCharge: roundCurrency(shippingCharge),
+    discountAmount: roundCurrency(discountAmount),
+    grandTotal: roundCurrency(
+      typeof order.grandTotal === "number" && order.grandTotal > 0
+        ? order.grandTotal
+        : subtotal + totalGstAmount + shippingCharge - discountAmount
+    ),
   };
 }
+
+export { getLineGstAmount };

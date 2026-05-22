@@ -6,6 +6,8 @@ export const orderAPI = {
   // ✅ Create order (MATCHES YOUR BACKEND)
   createOrder: (data: {
     shippingAddress: {
+      fullName: string;
+      phone: string;
       street: string;
       city: string;
       state: string;

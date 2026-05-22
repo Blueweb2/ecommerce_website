@@ -4,7 +4,7 @@ import { X, ShoppingCart } from "lucide-react";
 import Link from "next/link";
 import { useCartUIStore } from "@/store/ui/useCartUIStore";
 import { useCartStore } from "@/store/user/cart/useCartStore";
-import { optimizeCloudinaryUrl } from "@/lib/constants/admin-catalog";
+import { resolveImageSrc } from "@/lib/utils/image";
 import { bodoni, inter } from "@/lib/fonts";
 
 export default function CartDrawer() {
@@ -46,7 +46,7 @@ export default function CartDrawer() {
             items.map((item) => (
               <div key={`${item.productId}-${item.variantId || 'base'}`} className="flex gap-3">
                 <img
-                  src={optimizeCloudinaryUrl(item.image) || "/placeholder.png"}
+                  src={resolveImageSrc(item.image)}
                   alt={item.name}
                   className="w-16 h-full object-cover"
                 />

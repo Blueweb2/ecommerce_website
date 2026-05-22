@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { productAPI } from "@/lib/api/product.api";
 import { bodoni, inter } from "@/lib/fonts";
+import { resolveImageSrc } from "@/lib/utils/image";
 
 type Product = {
   _id: string;
@@ -102,7 +103,10 @@ export default function ShopSection() {
                   className="flex justify-center items-center mb-4"
                 >
                   <img
-                    src={(product.images?.find((img: any) => img.isPrimary) || product.images?.[0])?.url || "/placeholder.png"}
+                    src={resolveImageSrc(
+                      (product.images?.find((img: any) => img.isPrimary) ||
+                        product.images?.[0])?.url
+                    )}
                     alt={product.name}
                     className="h-44 lg:h-60 2xl:h-80 object-fill w-full"
                   />

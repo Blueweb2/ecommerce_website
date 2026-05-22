@@ -14,10 +14,10 @@ import { useCartStore } from "@/store/user/cart/useCartStore";
 export default function CheckoutLoginPage() {
   const router = useRouter();
   const { initialized, isAuthenticated } = useAuthStore();
-  const { items } = useCartStore();
+  const { items, hydrated } = useCartStore();
 
   useEffect(() => {
-    if (!initialized) {
+    if (!initialized || !hydrated) {
       return;
     }
 
@@ -29,9 +29,9 @@ export default function CheckoutLoginPage() {
     if (isAuthenticated) {
       router.replace("/checkout/shipping-address");
     }
-  }, [initialized, isAuthenticated, items.length, router]);
+  }, [hydrated, initialized, isAuthenticated, items.length, router]);
 
-  if (!initialized || items.length === 0) {
+  if (!initialized || !hydrated || items.length === 0) {
     return null;
   }
 

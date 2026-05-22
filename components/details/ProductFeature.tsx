@@ -2,7 +2,8 @@
 
 import dynamic from "next/dynamic";
 import { useState, useEffect } from "react";
-import { optimizeCloudinaryUrl, getPrimaryProductImage } from "@/lib/constants/admin-catalog";
+import { getPrimaryProductImage } from "@/lib/constants/admin-catalog";
+import { resolveImageSrc } from "@/lib/utils/image";
 import { useProductStore } from "@/store/user/product/useProductStore";
 
 const Carousel = dynamic(() => import("./inside-product-feature/Carousel"),{
@@ -51,7 +52,7 @@ const ProductFeature = ({ product }: ProductFeatureProps) => {
 
   // fallback image (important)
   const primaryImg = getPrimaryProductImage(product?.images);
-  const mainImage = optimizeCloudinaryUrl(primaryImg?.url) || "/placeholder.png";
+  const mainImage = resolveImageSrc(primaryImg?.url);
 
   // display only product images
   if (zooming) {
@@ -119,7 +120,7 @@ const ProductFeature = ({ product }: ProductFeatureProps) => {
             product.images.slice(1).map((img: any, index: number) => (
               <img
                 key={index}
-                src={optimizeCloudinaryUrl(img.url)}
+                src={resolveImageSrc(img.url)}
                 alt={img.altText || product.name}
                 className="h-screen w-full object-cover"
                 onClick={() => {
@@ -130,7 +131,7 @@ const ProductFeature = ({ product }: ProductFeatureProps) => {
             ))
           ) : (
             <img
-              src="/placeholder.png"
+              src={resolveImageSrc()}
               alt="no image"
               className="h-screen w-full object-cover"
             />

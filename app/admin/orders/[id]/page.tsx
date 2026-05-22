@@ -165,6 +165,7 @@ export default function AdminOrderDetailPage() {
                         </span>
                         <span className="font-semibold text-slate-900">
                           ₹{item.price * item.quantity} (₹{item.price} each)
+                          {item.gstPercentage ? ` · GST ${item.gstPercentage}%` : ""}
                         </span>
                       </div>
                     </div>
@@ -182,8 +183,20 @@ export default function AdminOrderDetailPage() {
                 <span>GST</span>
                 <span>₹{pricing.totalGstAmount}</span>
               </div>
+              {(order.shippingCharge ?? 0) > 0 && (
+                <div className="flex items-center justify-between text-sm text-slate-600">
+                  <span>Shipping</span>
+                  <span>₹{order.shippingCharge}</span>
+                </div>
+              )}
+              {(order.discountAmount ?? 0) > 0 && (
+                <div className="flex items-center justify-between text-sm text-emerald-700">
+                  <span>Discount</span>
+                  <span>-₹{order.discountAmount}</span>
+                </div>
+              )}
               <div className="flex items-center justify-between border-t border-slate-200 pt-2">
-                <span className="font-semibold text-slate-700">Total Price</span>
+                <span className="font-semibold text-slate-700">Amount payable</span>
                 <span className="text-xl font-bold text-slate-900">
                   ₹{pricing.grandTotal}
                 </span>
@@ -225,6 +238,14 @@ export default function AdminOrderDetailPage() {
             </h2>
             {order.shippingAddress ? (
               <div className="space-y-1 text-sm text-slate-600">
+                {order.shippingAddress.fullName && (
+                  <p className="font-medium text-slate-900">
+                    {order.shippingAddress.fullName}
+                  </p>
+                )}
+                {order.shippingAddress.phone && (
+                  <p>{order.shippingAddress.phone}</p>
+                )}
                 <p>{order.shippingAddress.street}</p>
                 <p>
                   {order.shippingAddress.city}, {order.shippingAddress.state}

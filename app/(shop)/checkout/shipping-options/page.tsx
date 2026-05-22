@@ -21,15 +21,15 @@ import type { Address } from "@/types/address";
 export default function ShippingOptionsPage() {
   const router = useRouter();
   const { initialized, isAuthenticated } = useAuthStore();
-  const { items } = useCartStore();
+  const { items, hydrated } = useCartStore();
   const [checkoutMode] = useState(getStoredCheckoutMode);
   const [shippingOption, setShippingOption] = useState<ShippingOption>(
-    getStoredShippingOption
+    () => getStoredShippingOption() ?? "standard"
   );
   const [shippingAddress] = useState<Address | null>(getStoredCheckoutAddress);
 
   useEffect(() => {
-    if (!initialized) {
+    if (!initialized || !hydrated) {
       return;
     }
 
@@ -46,14 +46,14 @@ export default function ShippingOptionsPage() {
     if (!getStoredCheckoutAddress()) {
       router.replace("/checkout/shipping-address");
     }
-  }, [checkoutMode, initialized, isAuthenticated, items.length, router]);
+  }, [checkoutMode, hydrated, initialized, isAuthenticated, items.length, router]);
 
   const handleContinue = () => {
     setStoredShippingOption(shippingOption);
     router.push("/checkout/packaging-options");
   };
 
-  if (!initialized || items.length === 0 || !shippingAddress) {
+  if (!initialized || !hydrated || items.length === 0 || !shippingAddress) {
     return null;
   }
 

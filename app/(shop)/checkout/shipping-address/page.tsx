@@ -12,7 +12,13 @@ import {
   getStoredCheckoutAddress,
   getStoredCheckoutMode,
   setStoredCheckoutAddress,
+  setStoredCheckoutMode,
 } from "@/lib/utils/checkoutSession";
+import {
+  formatPhoneInput,
+  getPhoneValidationError,
+  normalizePhoneNumber,
+} from "@/lib/utils/phone";
 import { useAuthStore } from "@/store/auth/useAuthStore";
 import { useCartStore } from "@/store/user/cart/useCartStore";
 import type { Address } from "@/types/address";
@@ -59,7 +65,7 @@ const fieldLabels: Record<GuestAddressField, string> = {
 export default function ShippingAddressPage() {
   const router = useRouter();
   const { initialized, isAuthenticated } = useAuthStore();
-  const { items } = useCartStore();
+  const { items, hydrated } = useCartStore();
   const [checkoutMode] = useState(getStoredCheckoutMode);
   const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
   const [guestAddress, setGuestAddress] = useState<Address>(() => {
@@ -70,7 +76,7 @@ export default function ShippingAddressPage() {
   const isGuestCheckout = !isAuthenticated && checkoutMode === "guest";
 
   useEffect(() => {
-    if (!initialized) {
+    if (!initialized || !hydrated) {
       return;
     }
 
@@ -79,10 +85,12 @@ export default function ShippingAddressPage() {
       return;
     }
 
-    if (!isAuthenticated && checkoutMode !== "guest") {
+    if (isAuthenticated) {
+      setStoredCheckoutMode("account");
+    } else if (checkoutMode !== "guest") {
       router.replace("/checkout/login");
     }
-  }, [checkoutMode, initialized, isAuthenticated, items.length, router]);
+  }, [checkoutMode, hydrated, initialized, isAuthenticated, items.length, router]);
 
   const handleContinue = () => {
     if (isGuestCheckout) {
@@ -95,12 +103,17 @@ export default function ShippingAddressPage() {
         return;
       }
 
-      if (!/^\d{10}$/.test(guestAddress.phone)) {
-        toast.error("Please enter a valid 10 digit phone number.");
+      const phoneError = getPhoneValidationError(guestAddress.phone);
+
+      if (phoneError) {
+        toast.error(phoneError);
         return;
       }
 
-      setStoredCheckoutAddress(guestAddress);
+      setStoredCheckoutAddress({
+        ...guestAddress,
+        phone: normalizePhoneNumber(guestAddress.phone),
+      });
       router.push("/checkout/shipping-options");
       return;
     }
@@ -110,11 +123,21 @@ export default function ShippingAddressPage() {
       return;
     }
 
-    setStoredCheckoutAddress(selectedAddress);
+    const phoneError = getPhoneValidationError(selectedAddress.phone);
+
+    if (phoneError) {
+      toast.error(`${phoneError} Update the address before continuing.`);
+      return;
+    }
+
+    setStoredCheckoutAddress({
+      ...selectedAddress,
+      phone: normalizePhoneNumber(selectedAddress.phone),
+    });
     router.push("/checkout/shipping-options");
   };
 
-  if (!initialized || items.length === 0) {
+  if (!initialized || !hydrated || items.length === 0) {
     return null;
   }
 
@@ -141,9 +164,14 @@ export default function ShippingAddressPage() {
               onChange={(event) =>
                 setGuestAddress((current) => ({
                   ...current,
-                  [field]: event.target.value,
+                  [field]:
+                    field === "phone"
+                      ? formatPhoneInput(event.target.value)
+                      : event.target.value,
                 }))
               }
+              maxLength={field === "phone" ? 10 : undefined}
+              inputMode={field === "phone" ? "numeric" : undefined}
               placeholder={fieldLabels[field]}
               className="w-full border border-[#8D8B9D] bg-white p-3 text-[#5C5A58] outline-none"
             />

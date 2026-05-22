@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { useAuthStore } from "@/store/auth/useAuthStore";
 import { cartAPI } from "@/lib/api/cart.api";
+import { calculateCheckoutTotals } from "@/lib/utils/pricing";
 
 /* ================= TYPES ================= */
 
@@ -31,10 +32,30 @@ export interface CartItem {
   stepQty?: number;
 }
 
+interface BackendCartItem {
+  _id: string;
+  product: {
+    _id: string;
+    name: string;
+    image?: string;
+    isFabric?: boolean;
+    unit?: string;
+    minOrderQty?: number;
+    stepQty?: number;
+  };
+  price: number;
+  quantity: number;
+  variantId?: string;
+  selectedOptions?: SelectedOption[];
+  gstPercentage?: number;
+  gstAmount?: number;
+}
+
 interface CartState {
   items: CartItem[];
   totalPrice: number;
   totalGstAmount: number;
+  hydrated: boolean;
   appliedPromo: {
     code: string;
     discountAmount: number;
@@ -46,8 +67,10 @@ interface CartState {
 
   syncCart: () => Promise<void>;
   mergeCart: () => Promise<void>;
+  ensureServerCartForCheckout: () => Promise<boolean>;
 
   setCart: (items: CartItem[]) => void;
+  setHydrated: (hydrated: boolean) => void;
   clearCart: () => void;
   clearCartAsync: () => Promise<void>; 
 
@@ -57,18 +80,10 @@ interface CartState {
 
 /* ================= HELPERS ================= */
 
-const calculateTotals = (items: CartItem[]) =>
-  items.reduce(
-    (acc, item) => {
-      const price = item.price * item.quantity;
-      const gstAmount = ((item.price * (item.gstPercentage || 0)) / 100) * item.quantity;
-      return {
-        totalPrice: acc.totalPrice + price,
-        totalGstAmount: acc.totalGstAmount + gstAmount,
-      };
-    },
-    { totalPrice: 0, totalGstAmount: 0 }
-  );
+const calculateTotals = (items: CartItem[]) => {
+  const { subtotal, totalGstAmount } = calculateCheckoutTotals({ items });
+  return { totalPrice: subtotal, totalGstAmount };
+};
 
 const normalizeOptions = (options: SelectedOption[] = []) =>
   [...options].sort((a, b) =>
@@ -92,6 +107,7 @@ export const useCartStore = create<CartState>()(
       items: [],
       totalPrice: 0,
       totalGstAmount: 0,
+      hydrated: false,
       appliedPromo: null, // ✅ ADDED
 
       /* ================= SYNC CART ================= */
@@ -100,7 +116,7 @@ export const useCartStore = create<CartState>()(
           const res = await cartAPI.getCart();
           const data = res.data.data;
 
-          const mappedItems: CartItem[] = data.items.map((i: any) => ({
+          const mappedItems: CartItem[] = data.items.map((i: BackendCartItem) => ({
             _id: i._id,
             productId: i.product._id,
             name: i.product.name,
@@ -152,6 +168,41 @@ export const useCartStore = create<CartState>()(
           await get().syncCart();
         } catch (err) {
           console.error("Merge cart failed", err);
+        }
+      },
+
+      ensureServerCartForCheckout: async () => {
+        const isLoggedIn = useAuthStore.getState().isAuthenticated;
+
+        if (!isLoggedIn) {
+          return get().items.length > 0;
+        }
+
+        const pendingItems = get().items.map((item) => ({
+          productId: item.productId,
+          quantity: item.quantity,
+          variantId: item.variantId,
+          selectedOptions: item.selectedOptions,
+        }));
+
+        try {
+          await get().syncCart();
+
+          if (get().items.length > 0) {
+            return true;
+          }
+
+          if (pendingItems.length === 0) {
+            return false;
+          }
+
+          await cartAPI.mergeCart({ items: pendingItems });
+          await get().syncCart();
+
+          return get().items.length > 0;
+        } catch (err) {
+          console.error("Checkout cart sync failed", err);
+          return false;
         }
       },
 
@@ -306,6 +357,8 @@ export const useCartStore = create<CartState>()(
         });
       },
 
+      setHydrated: (hydrated) => set({ hydrated }),
+
       /* ================= CLEAR ================= */
       clearCart: () => set({ items: [], totalPrice: 0, totalGstAmount: 0, appliedPromo: null }),
 
@@ -316,6 +369,9 @@ export const useCartStore = create<CartState>()(
     {
       name: "cart-storage",
       storage: createJSONStorage(() => localStorage),
+      onRehydrateStorage: () => (state) => {
+        state?.setHydrated(true);
+      },
     }
   )
 );

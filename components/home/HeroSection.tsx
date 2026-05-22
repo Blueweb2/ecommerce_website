@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { getBanners } from "@/lib/api/banner.api";
-import { optimizeCloudinaryUrl } from "@/lib/constants/admin-catalog";
+import { resolveImageSrc } from "@/lib/utils/image";
 
 export default function HeroSection() {
 
@@ -84,7 +84,7 @@ export default function HeroSection() {
               }`}
             >
               <Image
-                src={optimizeCloudinaryUrl(hero.image?.url) || "/placeholder.png"}
+                src={resolveImageSrc(hero.image?.url)}
                 alt="Hero Banner"
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"
@@ -123,7 +123,7 @@ export default function HeroSection() {
               className="relative overflow-hidden w-full h-[320px] md:h-full"
             >
               <Image
-                src={optimizeCloudinaryUrl(banners.center.image?.url) || "/placeholder.png"}
+                src={resolveImageSrc(banners.center.image?.url)}
                 alt="Center Banner"
                 fill
                 sizes="(max-width: 1024px) 100vw, 30vw"
@@ -143,7 +143,7 @@ export default function HeroSection() {
                 className="relative h-full w-full"
               >
                 <Image
-                  src={optimizeCloudinaryUrl(banners.rightTop.image?.url) || "/placeholder.png"}
+                  src={resolveImageSrc(banners.rightTop.image?.url)}
                   alt="Right Top Banner"
                   fill
                   sizes="(max-width: 1024px) 100vw, 20vw"
@@ -160,7 +160,7 @@ export default function HeroSection() {
                 className="relative h-full w-full"
               >
                 <Image
-                  src={optimizeCloudinaryUrl(banners.rightBottom.image?.url) || "/placeholder.png"}
+                  src={resolveImageSrc(banners.rightBottom.image?.url)}
                   alt="Right Bottom Banner"
                   fill
                   sizes="(max-width: 1024px) 100vw, 20vw"
