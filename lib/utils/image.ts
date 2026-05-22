@@ -1,16 +1,24 @@
-export const getOptimizedImageUrl = (
-  url: string,
-  options: {
-    width?: number;
-    height?: number;
-  } = {}
-) => {
-  if (!url) return url;
+import { optimizeCloudinaryUrl } from "@/lib/constants/admin-catalog";
 
-  let transform = "f_auto,q_auto";
+export const PLACEHOLDER_IMAGE = "/images/placeholder.svg";
 
-  if (options.width) transform += `,w_${options.width}`;
-  if (options.height) transform += `,h_${options.height}`;
+/** @deprecated Use PLACEHOLDER_IMAGE — old path was missing from /public */
+export const LEGACY_PLACEHOLDER_IMAGE = "/placeholder.png";
 
-  return url.replace("/upload/", `/upload/${transform}/`);
-};
+export function resolveImageSrc(
+  url?: string | null,
+  fallback: string = PLACEHOLDER_IMAGE
+): string {
+  if (!url?.trim()) {
+    return fallback;
+  }
+
+  const trimmed = url.trim();
+
+  if (trimmed.startsWith("/")) {
+    return trimmed;
+  }
+
+  const optimized = optimizeCloudinaryUrl(trimmed);
+  return optimized || fallback;
+}

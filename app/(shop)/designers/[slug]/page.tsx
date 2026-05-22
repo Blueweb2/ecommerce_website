@@ -8,9 +8,11 @@ import ExploreGrid from "@/components/explore/ExploreGrid";
 import { bodoni, inter } from "@/lib/fonts";
 import type { Product } from "@/types/product";
 
-const FALLBACK_BANNER = "/home/herosection/hero-right-top.png";
-const FALLBACK_AVATAR = "/placeholder.png";
-const FALLBACK_PRODUCT_IMAGE = "/home/categorysection/category-one.png";
+import { PLACEHOLDER_IMAGE, resolveImageSrc } from "@/lib/utils/image";
+
+const FALLBACK_BANNER = PLACEHOLDER_IMAGE;
+const FALLBACK_AVATAR = PLACEHOLDER_IMAGE;
+const FALLBACK_PRODUCT_IMAGE = PLACEHOLDER_IMAGE;
 
 type DesignerSlugPageProps = {
   params: Promise<{
@@ -107,7 +109,7 @@ return (
       {/* IMAGE */}
       <div className="absolute inset-0">
         <Image
-          src={designer.bannerImage?.url || FALLBACK_BANNER}
+          src={resolveImageSrc(designer.bannerImage?.url, FALLBACK_BANNER)}
           alt={`${designer.name} banner`}
           fill
           priority

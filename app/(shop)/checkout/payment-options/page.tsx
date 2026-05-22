@@ -7,19 +7,27 @@ import toast from "react-hot-toast";
 
 import CheckoutContainer from "@/components/checkout/new/CheckoutContainer";
 import CheckoutSteps from "@/components/checkout/new/CheckoutSteps";
+import CheckoutTotalsBreakdown from "@/components/checkout/new/CheckoutTotalsBreakdown";
+import { calculateCheckoutTotals } from "@/lib/utils/pricing";
 import { bodoni } from "@/lib/fonts";
 import { orderAPI } from "@/lib/api/order.api";
 import { loadRazorpayScript } from "@/lib/utils/razorpay";
 import {
+  buildCheckoutOrderNotes,
   clearCheckoutSession,
   getShippingCharge,
   getStoredCheckoutAddress,
   getStoredCheckoutMode,
+  getStoredGiftMessage,
   getStoredPackagingOption,
   getStoredShippingOption,
   type PackagingOption,
   type ShippingOption,
 } from "@/lib/utils/checkoutSession";
+import {
+  getPhoneValidationError,
+  normalizePhoneNumber,
+} from "@/lib/utils/phone";
 import { useAuthStore } from "@/store/auth/useAuthStore";
 import { useCartStore } from "@/store/user/cart/useCartStore";
 import type { Address } from "@/types/address";
@@ -60,20 +68,30 @@ type RazorpayConstructor = new (options: RazorpayOptions) => RazorpayInstance;
 export default function PaymentOptionsPage() {
   const router = useRouter();
   const { initialized, isAuthenticated } = useAuthStore();
-  const { items, totalPrice, totalGstAmount, appliedPromo, clearCartAsync } = useCartStore();
+  const {
+    items,
+    appliedPromo,
+    clearCartAsync,
+    hydrated,
+    ensureServerCartForCheckout,
+    syncCart,
+  } = useCartStore();
   const [checkoutMode] = useState(getStoredCheckoutMode);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("cod");
   const [loading, setLoading] = useState(false);
   const [shippingAddress] = useState<Address | null>(getStoredCheckoutAddress);
-  const [packagingOption] = useState<PackagingOption>(getStoredPackagingOption);
-  const [shippingOption] = useState<ShippingOption>(getStoredShippingOption);
+  const [packagingOption] = useState<PackagingOption>(
+    () => getStoredPackagingOption() ?? "standard"
+  );
+  const [shippingOption] = useState<ShippingOption>(
+    () => getStoredShippingOption() ?? "standard"
+  );
+  const [giftMessage] = useState(() => getStoredGiftMessage());
 
   const shippingCharge = getShippingCharge(shippingOption);
   const discountAmount = appliedPromo?.discountAmount || 0;
-  const fallbackGrandTotal = totalPrice + totalGstAmount + shippingCharge - discountAmount;
-
   useEffect(() => {
-    if (!initialized) {
+    if (!initialized || !hydrated) {
       return;
     }
 
@@ -87,14 +105,21 @@ export default function PaymentOptionsPage() {
       return;
     }
 
-    const storedAddress = getStoredCheckoutAddress();
-
-    if (!storedAddress) {
+    if (!getStoredCheckoutAddress()) {
       router.replace("/checkout/shipping-address");
       return;
     }
 
-  }, [checkoutMode, initialized, isAuthenticated, items.length, router]);
+    if (getStoredShippingOption() === null) {
+      router.replace("/checkout/shipping-options");
+      return;
+    }
+
+    if (getStoredPackagingOption() === null) {
+      router.replace("/checkout/packaging-options");
+    }
+
+  }, [checkoutMode, hydrated, initialized, isAuthenticated, items.length, router]);
 
   const finalizeCheckout = async () => {
     clearCheckoutSession();
@@ -108,11 +133,45 @@ export default function PaymentOptionsPage() {
       return;
     }
 
+    const phoneError = getPhoneValidationError(shippingAddress.phone);
+
+    if (phoneError) {
+      toast.error(`${phoneError} Go back to shipping details to fix it.`);
+      return;
+    }
+
+    const normalizedPhone = normalizePhoneNumber(shippingAddress.phone);
+
+    if (!isAuthenticated) {
+      toast.error("Please sign in to place your order.");
+      router.push("/checkout/login");
+      return;
+    }
+
     try {
       setLoading(true);
 
+      const cartReady = await ensureServerCartForCheckout();
+
+      if (!cartReady) {
+        toast.error("Your cart is empty. Please add items before checkout.");
+        router.replace("/cart");
+        return;
+      }
+
+      await syncCart();
+
+      const latestItems = useCartStore.getState().items;
+      const payableTotals = calculateCheckoutTotals({
+        items: latestItems,
+        shippingCharge,
+        discountAmount,
+      });
+
       const res = await orderAPI.createOrder({
         shippingAddress: {
+          fullName: shippingAddress.fullName,
+          phone: normalizedPhone,
           street: shippingAddress.street,
           city: shippingAddress.city,
           state: shippingAddress.state,
@@ -122,10 +181,10 @@ export default function PaymentOptionsPage() {
         paymentMethod,
         shippingCharge,
         promoCode: appliedPromo?.code,
-        notes:
-          packagingOption === "gift"
-            ? "Gift packaging selected"
-            : "Standard packaging selected",
+        notes: buildCheckoutOrderNotes(
+          packagingOption,
+          packagingOption === "gift" ? giftMessage : null
+        ),
       });
 
       const order = (res.data.data || res.data) as CreatedOrder;
@@ -151,7 +210,7 @@ export default function PaymentOptionsPage() {
 
       const instance = new Razorpay({
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
-        amount: Math.round((order.grandTotal || fallbackGrandTotal) * 100),
+        amount: Math.round((order.grandTotal || payableTotals.grandTotal) * 100),
         currency: "INR",
         name: "ZENFAZ",
         description: "Checkout Payment",
@@ -176,17 +235,25 @@ export default function PaymentOptionsPage() {
 
       instance.open();
     } catch (error: unknown) {
-      toast.error(
-        axios.isAxiosError(error)
-          ? error.response?.data?.message || "Unable to place your order right now."
-          : "Unable to place your order right now."
-      );
+      const apiMessage = axios.isAxiosError(error)
+        ? error.response?.data?.message
+        : undefined;
+
+      if (apiMessage === "Cart is empty") {
+        toast.error(
+          "Your cart could not be synced. Please return to the cart and try again."
+        );
+        router.replace("/cart");
+        return;
+      }
+
+      toast.error(apiMessage || "Unable to place your order right now.");
     } finally {
       setLoading(false);
     }
   };
 
-  if (!initialized || items.length === 0 || !shippingAddress) {
+  if (!initialized || !hydrated || items.length === 0 || !shippingAddress) {
     return null;
   }
 
@@ -233,9 +300,25 @@ export default function PaymentOptionsPage() {
                   ? "Luxury gift box selected for this order."
                   : "Eco-friendly standard packaging selected."}
               </p>
+              {packagingOption === "gift" && giftMessage.trim() && (
+                <p className="text-[#666]">
+                  Message: &ldquo;{giftMessage.trim()}&rdquo;
+                </p>
+              )}
             </div>
           </div>
         </div>
+      </div>
+
+      <div className="mt-10">
+        <h2 className={`mb-6 text-[28px] text-black ${bodoni.className}`}>
+          Order Total
+        </h2>
+        <CheckoutTotalsBreakdown
+          items={items}
+          shippingCharge={shippingCharge}
+          discountAmount={discountAmount}
+        />
       </div>
 
       <div className="mt-12">

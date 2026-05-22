@@ -8,7 +8,10 @@ import { useCartStore } from "@/store/user/cart/useCartStore";
 export default function CompleteStep() {
   useEffect(() => {
     clearCheckoutSession();
-    void useCartStore.getState().clearCartAsync();
+
+    if (useCartStore.getState().items.length > 0) {
+      void useCartStore.getState().clearCartAsync();
+    }
   }, []);
 
   return (

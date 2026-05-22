@@ -9,8 +9,10 @@ import ExploreHeader from "@/components/explore/ExploreHeader";
 import ExploreGrid from "@/components/explore/ExploreGrid";
 import ExploreControls from "@/components/explore/ExploreControls";
 
-const FALLBACK_BANNER = "/home/herosection/hero-center.png";
-const FALLBACK_PRODUCT_IMAGE = "/home/categorysection/category-one.png";
+import { PLACEHOLDER_IMAGE, resolveImageSrc } from "@/lib/utils/image";
+
+const FALLBACK_BANNER = PLACEHOLDER_IMAGE;
+const FALLBACK_PRODUCT_IMAGE = PLACEHOLDER_IMAGE;
 
 type CollectionPageProps = {
   params: Promise<{
@@ -81,9 +83,12 @@ export default function CollectionPage({ params }: CollectionPageProps) {
     );
   }
 
-  const bannerImage = typeof collection.image === 'string' 
-    ? collection.image 
-    : (collection.image?.url || FALLBACK_BANNER);
+  const bannerImage = resolveImageSrc(
+    typeof collection.image === "string"
+      ? collection.image
+      : collection.image?.url,
+    FALLBACK_BANNER
+  );
 
   return (
     <section className="bg-[#f8f6f1] py-12 md:py-16 mt-16 min-h-screen">

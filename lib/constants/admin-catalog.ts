@@ -236,7 +236,7 @@ export function getSectionLabel(section: string) {
 
 // ✅ CLOUDINARY URL OPTIMIZER (WebP + Auto Quality)
 export function optimizeCloudinaryUrl(url?: string): string {
-  if (!url) return "";
+  if (!url?.trim()) return "";
   
   // Only process Cloudinary URLs
   if (!url.includes("res.cloudinary.com")) return url;

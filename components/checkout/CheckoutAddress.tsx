@@ -8,6 +8,11 @@ import { useAddressStore } from "@/store/user/address/useAddressStore";
 import { useAuthStore } from "@/store/auth/useAuthStore";
 import type { Address } from "@/types/address";
 import { bodoni, inter } from "@/lib/fonts";
+import {
+  formatPhoneInput,
+  getPhoneValidationError,
+  normalizePhoneNumber,
+} from "@/lib/utils/phone";
 
 interface CheckoutAddressProps {
   onSelect: (address: Address) => void;
@@ -60,8 +65,18 @@ export default function CheckoutAddress({
       return;
     }
 
+    const phoneError = getPhoneValidationError(form.phone);
+
+    if (phoneError) {
+      toast.error(phoneError);
+      return;
+    }
+
     try {
-      const newAddress = await addAddress(form);
+      const newAddress = await addAddress({
+        ...form,
+        phone: normalizePhoneNumber(form.phone),
+      });
 
       setShowForm(false);
       setForm(emptyForm);
@@ -184,11 +199,13 @@ export default function CheckoutAddress({
               />
 
               <input
-                placeholder="Phone"
+                placeholder="Phone (10 digits)"
                 value={form.phone}
                 onChange={(e) =>
-                  setForm({ ...form, phone: e.target.value })
+                  setForm({ ...form, phone: formatPhoneInput(e.target.value) })
                 }
+                maxLength={10}
+                inputMode="numeric"
                 className="w-full border border-[#8D8B9D] text-[#8D8B9D] outline-none p-2"
               />
 

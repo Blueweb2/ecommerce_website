@@ -12,7 +12,9 @@ import ExploreFilters from "@/components/explore/ExploreFilters";
 import ExploreGrid from "@/components/explore/ExploreGrid";
 import ExploreControls from "@/components/explore/ExploreControls";
 
-const FALLBACK_PRODUCT_IMAGE = "/home/categorysection/category-one.png";
+import { PLACEHOLDER_IMAGE } from "@/lib/utils/image";
+
+const FALLBACK_PRODUCT_IMAGE = PLACEHOLDER_IMAGE;
 
 type CategoryPageProps = {
   params: Promise<{

@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Product } from "@/types/product";
-import { optimizeCloudinaryUrl } from "@/lib/constants/admin-catalog";
+import { resolveImageSrc } from "@/lib/utils/image";
 import { inter } from "@/lib/fonts";
 
 type ProductCardProps = {
@@ -27,7 +27,7 @@ export default function ProductCard({
     product.images?.find((image) => "isPrimary" in image && image.isPrimary) ||
     product.images?.[0];
 
-  const imageUrl = optimizeCloudinaryUrl(primaryImg?.url) || "/placeholder.png";
+  const imageUrl = resolveImageSrc(primaryImg?.url);
   const hasDiscount =
     typeof product.discountPrice === "number" &&
     product.discountPrice < product.price;

@@ -9,24 +9,44 @@ import { useCartStore } from "@/store/user/cart/useCartStore";
 export default function CheckoutEntryPage() {
   const router = useRouter();
   const { initialized, isAuthenticated } = useAuthStore();
-  const { items } = useCartStore();
+  const { items, hydrated, ensureServerCartForCheckout } = useCartStore();
 
   useEffect(() => {
-    if (!initialized) {
+    if (!initialized || !hydrated) {
       return;
     }
 
-    if (items.length === 0) {
-      router.replace("/cart");
-      return;
-    }
+    const proceedToCheckout = async () => {
+      if (items.length === 0) {
+        router.replace("/cart");
+        return;
+      }
 
-    router.replace(
-      isAuthenticated
-        ? "/checkout/shipping-address"
-        : "/checkout/login"
-    );
-  }, [initialized, isAuthenticated, items.length, router]);
+      if (isAuthenticated) {
+        const cartReady = await ensureServerCartForCheckout();
+
+        if (!cartReady) {
+          router.replace("/cart");
+          return;
+        }
+      }
+
+      router.replace(
+        isAuthenticated
+          ? "/checkout/shipping-address"
+          : "/checkout/login"
+      );
+    };
+
+    void proceedToCheckout();
+  }, [
+    ensureServerCartForCheckout,
+    hydrated,
+    initialized,
+    isAuthenticated,
+    items.length,
+    router,
+  ]);
 
   return null;
 }

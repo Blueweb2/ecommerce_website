@@ -7,7 +7,7 @@ import OrderTimeline from "@/components/orders/OrderTimeline";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import { loadRazorpay } from "@/lib/utils/loadRazorpay";
-import { getOrderTotals } from "@/lib/utils/orderTotals";
+import { getLineGstAmount, getOrderTotals } from "@/lib/utils/orderTotals";
 
 interface RazorpaySuccessResponse {
   razorpay_order_id: string;
@@ -49,6 +49,8 @@ interface Order {
   totalGstAmount: number;
   grandTotal: number;
   shippingAddress: {
+    fullName?: string;
+    phone?: string;
     street: string;
     city: string;
     state: string;
@@ -275,6 +277,16 @@ export default function OrderDetailPage({
                 Shipping To
               </h2>
               <div className="space-y-1 pl-10">
+                {order.shippingAddress.fullName && (
+                  <p className="font-bold" style={{ color: "#111827" }}>
+                    {order.shippingAddress.fullName}
+                  </p>
+                )}
+                {order.shippingAddress.phone && (
+                  <p className="text-sm" style={{ color: "#4b5563" }}>
+                    {order.shippingAddress.phone}
+                  </p>
+                )}
                 <p className="font-bold" style={{ color: "#111827" }}>
                   {order.shippingAddress.street}
                 </p>
@@ -345,10 +357,10 @@ export default function OrderDetailPage({
                           {item.gstPercentage || 0}%
                         </td>
                         <td className="px-4 py-4 text-right text-gray-600">
-                          ₹{(item.gstAmount || 0) * item.quantity}
+                          ₹{getLineGstAmount(item)}
                         </td>
                         <td className="px-4 py-4 text-right font-black text-gray-900">
-                          ₹{(item.price + (item.gstAmount || 0)) * item.quantity}
+                          ₹{item.price * item.quantity + getLineGstAmount(item)}
                         </td>
                       </tr>
                     ))}
