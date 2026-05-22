@@ -1,19 +1,10 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import toast from "react-hot-toast";
 import { useAuthStore } from "@/store/auth/useAuthStore";
-import { bodoni, inter } from "@/lib/fonts";
+import { inter } from "@/lib/fonts";
 
 export default function AccountDetails() {
-  const { user, logout, loading: authLoading } = useAuthStore();
-  const router = useRouter();
-
-  const handleLogout = async () => {
-    await logout();
-    toast.success("Logged out successfully");
-    router.replace("/account/login");
-  };
+  const { user, loading: authLoading } = useAuthStore();
 
   if (authLoading || !user) {
     return (
@@ -24,17 +15,16 @@ export default function AccountDetails() {
   };
 
   return (
-    <div className="min-h-screen px-3 py-4 lg:px-6">
+    <div className={`${inter.className} min-h-screen px-3 py-4 lg:px-6`}>
       
       {/* CARD 1 */}
       <div className="border border-black/20 bg-transparent px-6 py-5 mb-4">
-        <h2 className="text-[20px] font-serif font-normal text-black  mb-3">
+        <h2 className="not-[]: text-[20px] font-normal text-black  mb-3">
           Personal information
         </h2>
 
         <div className="text-[13px] text-black">
           <p>{user.name}</p>
-          <p>Born on 3 Mar 2005</p>
         </div>
 
         <div className="border-t border-black/20 mt-4 pt-2">
@@ -46,7 +36,7 @@ export default function AccountDetails() {
 
       {/* CARD 2 */}
       <div className="border border-black/20 bg-transparent px-6 py-5 mb-4">
-        <h2 className="text-[20px] font-serif font-normal text-black mb-3">
+        <h2 className="text-[20px] font-normal text-black mb-3">
           Email address
         </h2>
 
@@ -63,7 +53,7 @@ export default function AccountDetails() {
 
       {/* CARD 3 */}
       <div className="border border-black/20 bg-transparent px-6 py-5">
-        <h2 className="text-[20px] font-serif font-normal text-black mb-3">
+        <h2 className="text-[20px] font-normal text-black mb-3">
           Password
         </h2>
 

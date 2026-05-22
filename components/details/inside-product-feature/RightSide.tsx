@@ -204,7 +204,7 @@ const RightSide = ({ product }: Props) => {
           <div>
             <p className="mb-2 text-xs text-neutral-600">SELECT SIZE:</p>
 
-            <div className="flex gap-2">
+            <div className="grid grid-cols-4 gap-2">
               {sizes.map((size: string) => {
                 const variant = product.variants.find(
                   (item: any) =>
@@ -221,10 +221,10 @@ const RightSide = ({ product }: Props) => {
                       setSelectedSize(size);
                       setSelectedVariant(variant);
                     }}
-                    className={`rounded border px-3 py-1 transition ${
+                    className={`border px-3 py-2 transition ${
                       selectedSize === size
-                        ? "bg-black text-white"
-                        : "bg-white hover:bg-black hover:text-white"
+                        ? "border border-black"
+                        : "border-gray-200 hover:border-gray-400"
                     } ${isOutOfStock ? "cursor-not-allowed opacity-40" : ""}`}
                   >
                     {size}
@@ -339,7 +339,7 @@ const RightSide = ({ product }: Props) => {
         {product?.deliveryDetails && (
           <div className="border-t border-slate-100 pt-4">
             <div className="mb-2 flex items-center gap-2">
-              <div className="rounded-lg bg-emerald-50 p-1.5 text-black">
+              <div className="text-black">
                 <Truck className="h-4 w-4" />
               </div>
 

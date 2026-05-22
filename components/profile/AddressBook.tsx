@@ -18,16 +18,6 @@ const emptyForm = {
   country: "",
 };
 
-const fieldLabels: Record<string, string> = {
-  fullName: "Full Name",
-  phone: "Phone Number",
-  street: "Street Address",
-  city: "City",
-  state: "State",
-  postalCode: "Postal Code",
-  country: "Country",
-};
-
 const AddressBook = () => {
 
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -49,36 +39,36 @@ const AddressBook = () => {
     }
   }, [authLoading, user]);
 
-  const handleSubmit = async () => {
-    if (Object.values(form).some((value) => !value.trim())) {
-      toast.error("Please fill all fields");
-      return;
-    }
+  // const handleSubmit = async () => {
+  //   if (Object.values(form).some((value) => !value.trim())) {
+  //     toast.error("Please fill all fields");
+  //     return;
+  //   }
 
-    if (!/^\d{10}$/.test(form.phone)) {
-      toast.error("Enter valid phone number");
-      return;
-    }
+  //   if (!/^\d{10}$/.test(form.phone)) {
+  //     toast.error("Enter valid phone number");
+  //     return;
+  //   }
 
-    try {
-      if (editingId) {
-        await updateAddress(editingId, form);
-        toast.success("Address updated");
-        setEditingId(null);
-      } else {
-        await addAddress(form);
-        toast.success("Address added");
-      }
+  //   try {
+  //     if (editingId) {
+  //       await updateAddress(editingId, form);
+  //       toast.success("Address updated");
+  //       setEditingId(null);
+  //     } else {
+  //       await addAddress(form);
+  //       toast.success("Address added");
+  //     }
 
-      setForm(emptyForm);
-    } catch (error: unknown) {
-      toast.error(
-        axios.isAxiosError(error)
-          ? error.response?.data?.message
-          : "Something went wrong"
-      );
-    }
-  };
+  //     setForm(emptyForm);
+  //   } catch (error: unknown) {
+  //     toast.error(
+  //       axios.isAxiosError(error)
+  //         ? error.response?.data?.message
+  //         : "Something went wrong"
+  //     );
+  //   }
+  // };
 
   const handleEdit = (addr: Address) => {
     setForm({ ...addr });
@@ -100,69 +90,49 @@ const AddressBook = () => {
   }
 
   return (
-    <div className="max-w-3xl mx-auto">
-      <h2 className={`${bodoni.className} text-xl font-semibold mb-4 text-neutral-600`}>My Addresses</h2>
+    <div className={`${inter.className} px-4`}>
+      
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        {/* ADD ADDRESS CARD */}
+        <div className="border cursor-pointer group border-black/10 bg-white min-h-[210px] flex items-center justify-center">
+          <button className="flex items-center gap-3 text-[28px] text-black transition">
+            <span className="text-[35px] font-light -mt-1">+</span>
 
-      {/* LIST */}
-      <div className="space-y-4">
+            <span className="text-[14px] font-normal group-hover:opacity-70">
+              Add an address
+            </span>
+          </button>
+        </div>
+
         {addresses.length === 0 ? (
-          <div className="text-gray-500 text-center border p-6 rounded">
+          <div className="text-gray-500 text-center border p-6">
             No addresses found
           </div>
         ) : (
           addresses.map((addr) => (
-            <div
-              key={addr._id}
-              className={`${inter.className} text-[#8D8B9D] border border-[#8D8B9D] p-4 flex justify-between`}
-            >
-              <div>
-                <p className="font-medium">{addr.fullName}</p>
-                <p className="text-sm">
-                  {addr.street}, {addr.city}
-                </p>
-                <p className="text-sm">{addr.phone}</p>
+            <div className="border border-black/10 bg-white px-5 pt-7 flex flex-col justify-between">
+              
+              {/* ADDRESS DETAILS */}
+              <div className="space-y-1 text-[15px] text-black">
+                <p>{addr.fullName}</p>
+                <p>{addr.phone}</p>
+                <p>{addr.street}, {addr.city}</p>
               </div>
 
-              <div className="flex flex-col gap-2 text-sm">
-                <button onClick={() => handleEdit(addr)} className="hover:text-black">Edit</button>
-                <button onClick={() => handleDelete(addr._id!)} className="hover:text-black">
+              {/* ACTIONS */}
+              <div className="border-t border-black/15 py-3 flex items-center gap-8">
+                <button onClick={() => handleEdit(addr)} className="text-[15px] hover:opacity-65 cursor-pointer">
+                  Edit
+                </button>
+
+                <button onClick={() => handleDelete(addr._id!)} className="text-[15px] hover:opacity-65 cursor-pointer">
                   Delete
                 </button>
-                {!addr.isDefault && (
-                  <button onClick={() => setDefault(addr._id!)} className="hover:text-black">
-                    Set Default
-                  </button>
-                )}
               </div>
             </div>
           ))
         )}
-      </div>
-
-      {/* FORM */}
-      <div className="mt-6 space-y-3">
-        <h2 className={`${bodoni.className} text-xl font-semibold mb-4 text-neutral-600`}>
-          {editingId ? "Edit Address" : "Add Address"}
-        </h2>
-
-        {Object.keys(emptyForm).map((key) => (
-          <input
-            key={key}
-            placeholder={fieldLabels[key]}
-            value={(form as any)[key]}
-            onChange={(e) =>
-              setForm({ ...form, [key]: e.target.value })
-            }
-            className="w-full border p-2 outline-none border-[#8D8B9D] text-[#8D8B9D]"
-          />
-        ))}
-
-        <button
-          onClick={handleSubmit}
-          className="bg-black text-white px-4 py-2"
-        >
-          {editingId ? "Update" : "Add"}
-        </button>
       </div>
     </div>
   );
