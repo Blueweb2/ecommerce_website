@@ -238,7 +238,7 @@ export default function PackagingOptionsPage() {
                     </div>
 
                     <p className="max-w-[700px] text-[14px] leading-6 text-[#444]">
-                        Each NET-A-PORTER order is carefully wrapped in
+                        Each ZENFAZ order is carefully wrapped in
                         your packaging of choice made from certified
                         paper. Both options are fully recyclable.
                         <span className="ml-1 underline underline-offset-4">
