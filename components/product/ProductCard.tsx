@@ -78,13 +78,13 @@ export default function ProductCard({
 
       <div className="space-y-1 px-1">
         {showFullDetails && product.brand && (
-          <p className={`${inter.className} text-[11px] uppercase tracking-[0.18em] text-[#8D8B9D]`}>
+          <p className={`${inter.className} text-[11px] uppercase tracking-[0.18em] text-right text-[#8D8B9D]`}>
             {product.brand}
           </p>
         )}
 
         <h3
-          className={`${inter.className} line-clamp-1 text-[13px] font-semibold uppercase text-[#5C5A58] transition-colors group-hover:text-neutral-800 text-center`}
+          className={`${inter.className} line-clamp-1 text-[13px] font-semibold uppercase text-[#5C5A58] transition-colors group-hover:text-neutral-800`}
         >
           {useBrandAsTitle ? (product.brand || product.name) : product.name}
         </h3>
