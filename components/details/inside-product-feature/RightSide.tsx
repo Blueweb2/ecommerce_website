@@ -166,24 +166,26 @@ const RightSide = ({ product }: Props) => {
   return (
     <div className="mx-4 mt-10 h-fit space-y-6 text-sm lg:sticky lg:top-7 lg:mx-10 md:mt-10">
       <div>
-        <h1 className={`${bodoni.className} text-2xl text-neutral-600 md:text-3xl`}>
+        <h1 className={`${bodoni.className} text-2xl md:text-3xl`}>
           {product?.name}
         </h1>
       </div>
 
-      <div className="flex items-center gap-3">
+      <div className="flex flex-col gap-3">
         {discountPrice ? (
           <>
-            <p className="text-2xl font-bold text-[#8D8B9D]">
+            <div className="flex items-center">
+              <p className="text-[#BE5555] line-through">₹{price}</p>
+              <span className="bg-[#BE5555] ml-3 px-[2px] py-[1px] text-xs text-white">
+                {Math.round(((price - discountPrice) / price) * 100)}% OFF
+              </span>
+            </div>
+            <p className="text-[15px] font-bold">
               ₹{discountPrice}{isFabric && <span className="text-sm font-normal text-gray-400 ml-1">/ {product.unit || "meter"}</span>}
             </p>
-            <p className="text-lg text-[#BE5555] line-through">₹{price}</p>
-            <span className="rounded bg-[#BE5555] px-2 py-1 text-xs font-bold tracking-wide text-white">
-              {Math.round(((price - discountPrice) / price) * 100)}% OFF
-            </span>
           </>
         ) : (
-          <p className=" text-2xl font-bold text-[#8D8B9D]">
+          <p className="text-[15px] font-bold">
             ₹{price}{isFabric && <span className="text-sm font-normal text-gray-400 ml-1">/ {product.unit || "meter"}</span>}
           </p>
         )}
@@ -288,20 +290,20 @@ const RightSide = ({ product }: Props) => {
 
       <div className="space-y-4">
         <div>
-          <h3 className={`${bodoni.className} mb-1 text-sm font-semibold text-neutral-600`}>
+          <h3 className={`${inter.className} mb-1 text-sm font-semibold`}>
             PRODUCT DESCRIPTION
           </h3>
-          <p className={`${inter.className} text-xs leading-relaxed text-[#8D8B9D]`}>
+          <p className={`${inter.className} text-xs leading-relaxed text-[#5C5A58]`}>
             {product?.description || "No description available"}
           </p>
         </div>
 
         {product?.keyFeatures?.length > 0 && (
           <div>
-            <h3 className={`${bodoni.className} mb-1 text-sm font-semibold text-neutral-600`}>
+            <h3 className={`${inter.className} mb-1 text-sm font-semibold`}>
               KEY FEATURES
             </h3>
-            <ul className="list-disc space-y-1 pl-4 text-xs text-[#8D8B9D]">
+            <ul className="list-disc space-y-1 pl-4 text-xs text-[#5C5A58]">
               {product.keyFeatures.map((feature: string, index: number) => (
                 <li key={index} className={inter.className}>
                   {feature}
@@ -313,7 +315,7 @@ const RightSide = ({ product }: Props) => {
 
         {product?.specifications?.length > 0 && (
           <div className="border-t border-slate-100 pt-4">
-            <h3 className={`${bodoni.className} mb-3 text-sm font-semibold uppercase tracking-wider text-neutral-600`}>
+            <h3 className={`${inter.className} mb-3 text-sm font-semibold uppercase tracking-wider`}>
               Technical Specifications
             </h3>
             <div className="grid grid-cols-1 gap-y-2">
@@ -322,10 +324,10 @@ const RightSide = ({ product }: Props) => {
                   key={index}
                   className={`${inter.className} flex justify-between border-b border-slate-50 py-2 last:border-0`}
                 >
-                  <span className="text-[11px] font-bold uppercase tracking-widest text-slate-400">
+                  <span className="text-[11px] font-bold uppercase tracking-widest">
                     {spec.name}
                   </span>
-                  <span className="text-[11px] font-black text-slate-900">
+                  <span className="text-[11px] font-black text-[#5C5A58]">
                     {spec.value}
                   </span>
                 </div>
@@ -337,15 +339,15 @@ const RightSide = ({ product }: Props) => {
         {product?.deliveryDetails && (
           <div className="border-t border-slate-100 pt-4">
             <div className="mb-2 flex items-center gap-2">
-              <div className="rounded-lg bg-emerald-50 p-1.5 text-emerald-600">
+              <div className="rounded-lg bg-emerald-50 p-1.5 text-black">
                 <Truck className="h-4 w-4" />
               </div>
 
-              <h3 className={`${bodoni.className} text-sm font-bold uppercase tracking-tight text-neutral-600`}>
+              <h3 className={`${inter.className} text-sm font-bold uppercase tracking-tight`}>
                 Delivery Details
               </h3>
             </div>
-            <p className={`${inter.className} pl-9 text-xs leading-relaxed text-[#8D8B9D]`}>
+            <p className={`${inter.className} pl-9 text-xs leading-relaxed text-[#5C5A58]`}>
               {product.deliveryDetails}
             </p>
           </div>
@@ -360,7 +362,7 @@ const RightSide = ({ product }: Props) => {
           <div key={index}>
             <button
               onClick={() => toggle(index)}
-              className="flex items-center gap-2 text-neutral-600"
+              className="flex items-center gap-2"
             >
               <ChevronDown
                 className={activeIndex === index ? "rotate-180" : ""}
@@ -369,7 +371,7 @@ const RightSide = ({ product }: Props) => {
             </button>
 
             {activeIndex === index && (
-              <p className="font-brand-sans text-xs text-[#8D8B9D]">
+              <p className="font-brand-sans text-xs text-[#5C5A58]">
                 {item.content}
               </p>
             )}
