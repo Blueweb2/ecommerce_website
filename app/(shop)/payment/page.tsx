@@ -10,7 +10,7 @@ export default function PaymentPage() {
     <LegalLayout
       heroTitle="Payment Policy"
       heroSubtitle="Customer Care"
-      heroImage="/legal/payment-banner.jpg"
+      heroImage="/legal-banner.webp"
       intro="Zenfaz provides secure and reliable payment options to ensure a smooth shopping experience. This Payment Policy explains accepted payment methods, transaction processing, billing responsibilities, and payment security practices."
       sections={paymentSections}
       tabs={legalTabs}

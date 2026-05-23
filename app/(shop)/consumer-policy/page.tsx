@@ -10,7 +10,7 @@ export default function ConsumerPolicyPage() {
     <LegalLayout
       heroTitle="Consumer Policy"
       heroSubtitle="Customer Care"
-      heroImage="/legal/consumer-banner.jpg"
+      heroImage="/legal-banner.webp"
       intro="Zenfaz is committed to maintaining transparency, fairness, and trust in every shopping experience. This Consumer Policy outlines customer rights, platform responsibilities, and important guidelines for using our ecommerce services."
       sections={consumerSections}
       tabs={legalTabs}

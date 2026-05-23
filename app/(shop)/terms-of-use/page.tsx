@@ -10,7 +10,7 @@ export default function TermsOfUsePage() {
     <LegalLayout
       heroTitle="Terms & Conditions"
       heroSubtitle="Customer Care"
-      heroImage="/legal/terms-banner.jpg"
+      heroImage="/legal-banner.webp"
       intro="These Terms & Conditions govern your access to and use of the Zenfaz platform, services, products, applications, and related features. By using Zenfaz, you agree to comply with these Terms of Use and all applicable laws, policies, and regulations."
       sections={termsSections}
       tabs={legalTabs}

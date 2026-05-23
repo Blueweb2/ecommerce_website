@@ -10,7 +10,7 @@ export default function ShippingPolicyPage() {
     <LegalLayout
       heroTitle="Shipping Policy"
       heroSubtitle="Customer Care"
-      heroImage="/legal/shipping-banner.jpg"
+      heroImage="/legal-banner.webp"
       intro="Zenfaz is committed to delivering your orders safely and efficiently. This Shipping Policy outlines delivery timelines, shipping procedures, logistics responsibilities, and important information related to order fulfillment."
       sections={shippingSections}
       tabs={legalTabs}

@@ -10,7 +10,7 @@ export default function FAQsPage() {
     <LegalLayout
       heroTitle="Frequently Asked Questions"
       heroSubtitle="Customer Care"
-      heroImage="/legal/faqs-banner.jpg"
+      heroImage="/legal-banner.webp"
       intro="Find answers to the most commonly asked questions about orders, payments, shipping, returns, accounts, and platform services at Zenfaz."
       sections={faqSections}
       tabs={legalTabs}

@@ -10,7 +10,7 @@ export default function CancellationReturnsPage() {
     <LegalLayout
       heroTitle="Cancellation & Returns"
       heroSubtitle="Customer Care"
-      heroImage="/legal/returns-banner.jpg"
+      heroImage="/legal-banner.webp"
       intro="Zenfaz aims to provide a smooth and transparent return experience for all customers. This policy explains our cancellation, exchange, refund, and return procedures for purchases made through our platform."
       sections={cancellationSections}
       tabs={legalTabs}
