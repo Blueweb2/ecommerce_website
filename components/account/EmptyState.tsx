@@ -1,40 +1,32 @@
 "use client";
+import { inter } from "@/lib/fonts";
 
-import Link from "next/link";
-import { LucideIcon } from "lucide-react";
-
-interface Props {
-  icon: LucideIcon;
-  title: string;
-  description: string;
-}
-
-export default function EmptyState({
-  icon: Icon,
-  title,
-  description,
-}: Props) {
+export default function EmptyState() {
   return (
-    <div className="flex flex-col items-center justify-center py-24 text-center">
+    <div className={`${inter.className} flex ml-8 2xl:ml-14 px-4`}>
+      
+      <div className="w-full max-w-[520px] flex flex-col items-center text-center">
+        
+        {/* ICON */}
+        <div className="w-[58px] h-[58px] rounded-full border-2 border-black flex items-center justify-center mb-8">
+          <span className="text-[34px] leading-none font-light">!</span>
+        </div>
 
-      <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-full border border-black">
-        <Icon className="h-7 w-7 text-black" />
+        {/* TITLE */}
+        <h2 className="text-[20px] leading-tight font-semibold text-black mb-5">
+          You don’t have any saved cards
+        </h2>
+
+        {/* DESCRIPTION */}
+        <p className="text-[16px] text-black mb-10">
+          Add a card to check out more quickly
+        </p>
+
+        {/* BUTTON */}
+        <button className="px-36 bg-black text-white py-2 text-[15px] font-medium hover:opacity-90 transition">
+          Add a card
+        </button>
       </div>
-
-      <h2 className="text-[34px] leading-tight text-black">
-        {title}
-      </h2>
-
-      <p className="mt-4 max-w-md text-[15px] leading-7 text-[#666]">
-        {description}
-      </p>
-
-      <Link
-        href="/"
-        className="mt-8 border border-black px-8 py-3 text-sm text-black transition hover:bg-black hover:text-white"
-      >
-        Shop What's New
-      </Link>
     </div>
   );
-}
+};
