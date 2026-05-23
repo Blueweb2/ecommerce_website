@@ -262,7 +262,7 @@ export default function PaymentOptionsPage() {
       <CheckoutSteps step={4} />
 
       <div className="border-b border-[#e5e5e5] pb-10">
-        <h1 className={`mb-8 text-[36px] text-black ${bodoni.className}`}>
+        <h1 className={`mb-8 text-[24px] text-black ${bodoni.className}`}>
           Review & Pay
         </h1>
 
@@ -272,7 +272,7 @@ export default function PaymentOptionsPage() {
               Ship To
             </p>
 
-            <div className="space-y-1 text-[15px] leading-7 text-black">
+            <div className="space-y-1 text-[13px] leading-7 text-black">
               <p className="uppercase">{shippingAddress.fullName}</p>
               <p>{shippingAddress.street}</p>
               <p>
@@ -288,7 +288,7 @@ export default function PaymentOptionsPage() {
               Delivery & Packaging
             </p>
 
-            <div className="space-y-2 text-[15px] leading-7 text-black">
+            <div className="space-y-2 text-[13px] leading-7 text-black">
               <p>
                 {shippingOption === "express"
                   ? "Express Delivery - ₹50"
@@ -311,7 +311,7 @@ export default function PaymentOptionsPage() {
       </div>
 
       <div className="mt-10">
-        <h2 className={`mb-6 text-[28px] text-black ${bodoni.className}`}>
+        <h2 className={`mb-6 text-[24px] text-black ${bodoni.className}`}>
           Order Total
         </h2>
         <CheckoutTotalsBreakdown
@@ -322,7 +322,7 @@ export default function PaymentOptionsPage() {
       </div>
 
       <div className="mt-12">
-        <h2 className={`mb-10 text-[36px] text-black ${bodoni.className}`}>
+        <h2 className={`mb-10 text-[24px] text-black ${bodoni.className}`}>
           Payment Methods
         </h2>
 
@@ -336,12 +336,12 @@ export default function PaymentOptionsPage() {
 
           <div className="flex-1">
             <div className="flex items-center gap-3">
-              <span className="text-[16px] font-medium text-black">
+              <span className="text-[13px] font-medium text-black">
                 Credit / Debit Card / UPI
               </span>
             </div>
 
-            <p className="mt-2 text-[14px] text-[#666]">
+            <p className="mt-2 text-[13px] text-[#666]">
               Secure online payment with Razorpay.
             </p>
           </div>
@@ -356,11 +356,11 @@ export default function PaymentOptionsPage() {
           />
 
           <div>
-            <span className="text-[16px] font-medium text-black">
+            <span className="text-[13px] font-medium text-black">
               Cash on Delivery
             </span>
 
-            <p className="mt-2 text-[14px] text-[#666]">
+            <p className="mt-2 text-[13px] text-[#666]">
               Pay when your order is delivered.
             </p>
           </div>

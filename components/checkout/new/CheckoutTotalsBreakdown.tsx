@@ -26,17 +26,17 @@ export default function CheckoutTotalsBreakdown({
 
   return (
     <div className={`space-y-3 rounded border border-[#e5e5e5] bg-white p-6 ${className}`}>
-      <div className="flex justify-between text-[15px]">
+      <div className="flex justify-between text-[13px]">
         <span>Item subtotal (excl. GST)</span>
         <span>{formatCurrency(totals.subtotal)}</span>
       </div>
 
-      <div className="flex justify-between text-[15px]">
+      <div className="flex justify-between text-[13px]">
         <span>GST (from product slabs)</span>
         <span>{formatCurrency(totals.totalGstAmount)}</span>
       </div>
 
-      <div className="flex justify-between text-[15px]">
+      <div className="flex justify-between text-[13px]">
         <span>Shipping</span>
         <span>{shippingCharge === 0 ? "FREE" : formatCurrency(shippingCharge)}</span>
       </div>
@@ -48,7 +48,7 @@ export default function CheckoutTotalsBreakdown({
         </div>
       )}
 
-      <div className="flex justify-between border-t border-[#ececec] pt-4 text-[18px] font-medium">
+      <div className="flex justify-between border-t border-[#ececec] pt-4 text-[15px] font-medium">
         <span>Amount payable</span>
         <span>{formatCurrency(totals.grandTotal)}</span>
       </div>

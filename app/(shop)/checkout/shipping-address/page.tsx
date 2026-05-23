@@ -145,7 +145,7 @@ export default function ShippingAddressPage() {
     <CheckoutContainer>
       <CheckoutSteps step={1} />
 
-      <h1 className={`mb-8 text-[38px] font-light text-black ${bodoni.className}`}>
+      <h1 className={`mb-8 text-[30px] font-light text-black ${bodoni.className}`}>
         Shipping Details
       </h1>
 
