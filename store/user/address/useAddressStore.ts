@@ -1,14 +1,14 @@
 import { create } from "zustand";
 import { addressAPI } from "@/lib/api/address.api";
-import { Address } from "@/types/address";
+import type { Address, AddressInput } from "@/types/address";
 
 interface AddressState {
   addresses: Address[];
   loading: boolean;
   loaded: boolean;
   fetchAddresses: (force?: boolean) => Promise<void>;
-  addAddress: (data: Address) => Promise<Address>;
-  updateAddress: (id: string, data: Address) => Promise<void>;
+  addAddress: (data: AddressInput) => Promise<Address>;
+  updateAddress: (id: string, data: Partial<AddressInput>) => Promise<Address>;
   deleteAddress: (id: string) => Promise<void>;
   setDefault: (id: string) => Promise<void>;
   resetAddresses: () => void;
@@ -61,17 +61,20 @@ export const useAddressStore = create<AddressState>((set, get) => ({
     try {
       set({ loading: true });
       const res = await addressAPI.update(id, data);
+      const updatedAddress = res.data.data as Address;
 
       set((state) => ({
         addresses: state.addresses.map((a) =>
-          a._id === id ? res.data.data : a
+          a._id === id ? updatedAddress : a
         ),
         loading: false,
         loaded: true,
       }));
+
+      return updatedAddress;
     } catch (error) {
-      console.error("Failed to update address:", error);
       set({ loading: false });
+      throw error;
     }
   },
 
@@ -85,27 +88,28 @@ export const useAddressStore = create<AddressState>((set, get) => ({
         loaded: true,
       }));
     } catch (error) {
-      console.error("Failed to delete address:", error);
       set({ loading: false });
+      throw error;
     }
   },
 
   setDefault: async (id) => {
     try {
       set({ loading: true });
-      await addressAPI.setDefault(id);
+      const res = await addressAPI.setDefault(id);
+      const defaultAddress = res.data.data as Address;
 
       set((state) => ({
         addresses: state.addresses.map((a) => ({
           ...a,
-          isDefault: a._id === id,
+          isDefault: a._id === defaultAddress._id,
         })),
         loading: false,
         loaded: true,
       }));
     } catch (error) {
-      console.error("Failed to set default address:", error);
       set({ loading: false });
+      throw error;
     }
   },
 

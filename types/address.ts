@@ -9,3 +9,5 @@ export interface Address {
   country: string;
   isDefault?: boolean;
 }
+
+export type AddressInput = Omit<Address, "_id">;
