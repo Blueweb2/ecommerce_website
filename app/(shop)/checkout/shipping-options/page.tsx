@@ -62,7 +62,7 @@ export default function ShippingOptionsPage() {
       <CheckoutSteps step={2} />
 
       <div className="border-b border-[#e5e5e5] pb-10">
-        <h1 className={`mb-8 text-[36px] text-black ${bodoni.className}`}>
+        <h1 className={`mb-8 text-[24px] text-black ${bodoni.className}`}>
           Shipping Method
         </h1>
 
@@ -84,7 +84,7 @@ export default function ShippingOptionsPage() {
       </div>
 
       <div className="mt-14">
-        <h2 className={`mb-10 text-[36px] text-black ${bodoni.className}`}>
+        <h2 className={`mb-10 text-[24px] text-black ${bodoni.className}`}>
           Choose Shipping
         </h2>
 
@@ -104,11 +104,11 @@ export default function ShippingOptionsPage() {
             />
 
             <div>
-              <h3 className="text-[18px] font-medium uppercase text-black">
+              <h3 className="text-[13px] font-medium uppercase text-black">
                 Standard Delivery
               </h3>
 
-              <p className="mt-3 max-w-[300px] text-[14px] leading-6 text-[#666]">
+              <p className="mt-3 max-w-[300px] text-[12px] leading-6 text-[#666]">
                 Free delivery within 3 business days with signature on delivery.
               </p>
             </div>
@@ -133,11 +133,11 @@ export default function ShippingOptionsPage() {
             />
 
             <div>
-              <h3 className="text-[18px] font-medium uppercase text-black">
+              <h3 className="text-[13px] font-medium uppercase text-black">
                 Express Delivery
               </h3>
 
-              <p className="mt-3 max-w-[300px] text-[14px] leading-6 text-[#666]">
+              <p className="mt-3 max-w-[300px] text-[12px] leading-6 text-[#666]">
                 Priority delivery within 1 to 2 business days.
               </p>
             </div>
@@ -164,4 +164,4 @@ export default function ShippingOptionsPage() {
       </div>
     </CheckoutContainer>
   );
-}
+};

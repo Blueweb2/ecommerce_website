@@ -90,7 +90,7 @@ export default function PackagingOptionsPage() {
             <CheckoutSteps step={3} />
 
             <div className="border-b border-[#e5e5e5] pb-10">
-                <h1 className={`mb-8 text-[36px] text-black ${bodoni.className}`}>
+                <h1 className={`mb-8 text-[24px] text-black ${bodoni.className}`}>
                     Shipping Details
                 </h1>
 
@@ -100,7 +100,7 @@ export default function PackagingOptionsPage() {
                             Ship To
                         </p>
 
-                        <div className="space-y-1 text-[15px] leading-7 text-black">
+                        <div className="space-y-1 text-[13px] leading-7 text-black">
                             <p className="uppercase">{shippingAddress.fullName}</p>
                             <p>{shippingAddress.street}</p>
                             <p>
@@ -123,7 +123,7 @@ export default function PackagingOptionsPage() {
                             Shipping Option
                         </p>
 
-                        <ul className="space-y-2 text-[15px] leading-7 text-black">
+                        <ul className="space-y-2 text-[13px] leading-7 text-black">
                             {shippingOption === "express" ? (
                                 <>
                                     <li>Express Delivery - ₹50</li>
@@ -152,7 +152,7 @@ export default function PackagingOptionsPage() {
             <div className="mt-14">
                 {/* TITLE */}
                 <h2
-                    className={`mb-6 text-[38px] font-light text-black ${bodoni.className}`}
+                    className={`mb-6 text-[24px] font-light text-black ${bodoni.className}`}
                 >
                     Packaging and Gifting
                 </h2>
@@ -175,11 +175,11 @@ export default function PackagingOptionsPage() {
                                 We Recommend
                             </p>
 
-                            <h3 className="mt-1 text-[18px] font-semibold uppercase text-black">
+                            <h3 className="mt-1 text-[15px] font-normal uppercase text-black">
                                 Standard Packaging
                             </h3>
 
-                            <p className="mt-3 max-w-[340px] text-[15px] leading-7 text-[#333]">
+                            <p className="mt-3 max-w-[340px] text-[13px] leading-7 text-[#333]">
                                 A discreet, recyclable box that uses fewer
                                 materials and has a lighter footprint.
                             </p>
@@ -205,11 +205,11 @@ export default function PackagingOptionsPage() {
                         />
 
                         <div>
-                            <h3 className="text-[18px] font-semibold uppercase text-black">
+                            <h3 className="text-[15px] font-normal uppercase text-black">
                                 Gift Packaging
                             </h3>
 
-                            <p className="mt-3 max-w-[340px] text-[15px] leading-7 text-[#333]">
+                            <p className="mt-3 max-w-[340px] text-[13px] leading-7 text-[#333]">
                                 A touch of luxury — elevate your gift with our
                                 signature black box and ribbon.
                             </p>
@@ -254,7 +254,7 @@ export default function PackagingOptionsPage() {
                         i
                     </div>
 
-                    <p className="max-w-[700px] text-[14px] leading-6 text-[#444]">
+                    <p className="max-w-[700px] text-[13px] leading-6 text-[#444]">
                         Each ZENFAZ order is carefully wrapped in
                         your packaging of choice made from certified
                         paper. Both options are fully recyclable.
