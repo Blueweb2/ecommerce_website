@@ -30,13 +30,10 @@ const links = [
     href: "/account/addresses",
   },
   {
-    label: "Card Wallet",
-    href: "/account/wallet",
-  },
-  {
-    label: "Preferences",
+    label: "Privacy Settings",
     href: "/account/preferences",
   },
+ 
 ];
 
 export default function AccountSidebar() {

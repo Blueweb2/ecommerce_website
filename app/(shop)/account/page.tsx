@@ -54,11 +54,11 @@ const accountCards = [
     href: "/account/addresses",
   },
   {
-    title: "Card Wallet",
+    title: "Privacy Settings",
     description:
-      "View and manage your payment methods",
+      "View and manage your privacy preferences",
     icon: CreditCard,
-    href: "/account/wallet",
+    href: "/account/preferences",
   },
 ];
 
