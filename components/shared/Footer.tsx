@@ -37,9 +37,9 @@ export default function Footer() {
           <div>
             <h3 className={`${inter.className} mb-4 font-semibold text-neutral-600`}>HELP</h3>
             <ul className={`${inter.className} space-y-2 text-[11px] text-[#5C5A58]`}>
-              <li><Link href="#" className="hover:text-black">Payment</Link></li>
-              <li><Link href="#" className="hover:text-black">Shipping</Link></li>
-              <li><Link href="#" className="hover:text-black">Cancellation & Returns</Link></li>
+              <li><Link href="/payment" className="hover:text-black">Payment</Link></li>
+              <li><Link href="/shipping" className="hover:text-black">Shipping</Link></li>
+              <li><Link href="/cancellation-returns" className="hover:text-black">Cancellation & Returns</Link></li>
             </ul>
           </div>
 
@@ -47,10 +47,10 @@ export default function Footer() {
           <div>
             <h3 className={`${inter.className} mb-4 font-semibold text-neutral-600`}>CONSUMER POLICY</h3>
             <ul className={`${inter.className} space-y-2 text-[11px] text-[#5C5A58]`}>
-              <li><Link href="#" className="hover:text-black">Cancellation & Returns</Link></li>
-              <li><Link href="#" className="hover:text-black">Terms Of Use</Link></li>
-              <li><Link href="#" className="hover:text-black">Security</Link></li>
-              <li><Link href="#" className="hover:text-black">Privacy</Link></li>
+              <li><Link href="/terms-of-use" className="hover:text-black">Terms Of Use</Link></li>
+              <li><Link href="/security" className="hover:text-black">Security</Link></li>
+              <li><Link href="/consumer-policy" className="hover:text-black">Consumer Policy</Link></li>
+              <li><Link href="/privacy-policy" className="hover:text-black">Privacy Policy</Link></li>
             </ul>
           </div>
 
