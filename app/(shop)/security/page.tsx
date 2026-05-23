@@ -10,7 +10,7 @@ export default function SecurityPage() {
     <LegalLayout
       heroTitle="Security"
       heroSubtitle="Customer Care"
-      heroImage="/legal/security-banner.jpg"
+      heroImage="/legal-banner.webp"
       intro="At Zenfaz, we prioritize the safety and protection of our customers, payments, and personal information. Our platform uses modern security practices and continuous monitoring to help maintain a secure shopping experience."
       sections={securitySections}
       tabs={legalTabs}
