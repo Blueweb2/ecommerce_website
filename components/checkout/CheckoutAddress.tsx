@@ -38,6 +38,12 @@ export default function CheckoutAddress({
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState(emptyForm);
+  const [submitting, setSubmitting] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const closeForm = () => {
+  setShowForm(false);
+  setForm(emptyForm);
+};
 
   const selectedAddress =
     addresses.find((addr) => addr._id === selectedId) ||
@@ -96,7 +102,7 @@ export default function CheckoutAddress({
 
   return (
     <div className="mt-6 w-full">
-      <h2 className={`${bodoni.className} text-neutral-600 mb-4 text-[clamp(25px,2.5vw,32px)] font-normal`}>
+      <h2 className={`${bodoni.className} text-neutral-600 mb-4 text-[24px] font-normal`}>
         Select Delivery Address
       </h2>
 
@@ -129,11 +135,10 @@ export default function CheckoutAddress({
                       setSelectedId(addr._id);
                     }
                   }}
-                  className={`cursor-pointer border p-4 transition ${
-                    selectedAddress?._id === addr._id
+                  className={`cursor-pointer border p-4 transition ${selectedAddress?._id === addr._id
                       ? "border-[#8D8B9D] bg-gray-50 ring-1 ring-[#52515c]"
                       : "border-[#8D8B9D] hover:border-[#494852]"
-                  }`}
+                    }`}
                 >
                   <div className="flex items-start justify-between text-neutral-600">
                     <div>
@@ -160,11 +165,10 @@ export default function CheckoutAddress({
                     </div>
 
                     <div
-                      className={`flex h-5 w-5 items-center justify-center rounded-full border ${
-                        selectedAddress?._id === addr._id
+                      className={`flex h-5 w-5 items-center justify-center rounded-full border ${selectedAddress?._id === addr._id
                           ? "border-[#8D8B9D] hover:border-[#494852]"
                           : "border-gray-300"
-                      }`}
+                        }`}
                     >
                       {selectedAddress?._id === addr._id && (
                         <div className="h-2.5 w-2.5 rounded-full bg-black" />
@@ -185,94 +189,285 @@ export default function CheckoutAddress({
             </button>
           </div>
 
-          {showForm && (
-            <div className={`${inter.className} mt-4 space-y-3 border border-[#8D8B9D] bg-gray-50 p-4`}>
-              <h3 className={`${bodoni.className} text-neutral-600 text-[clamp(25px,2.5vw,32px)] font-normal`}>Add New Address</h3>
+{showForm && (
+  <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/50 px-4">
+    <div className="max-h-[90vh] w-full max-w-[720px] overflow-y-auto bg-white p-10 shadow-2xl">
+      
+      {/* HEADER */}
+      <div className="mb-10 flex items-center justify-between border-b border-[#e5e5e5] pb-5">
+        <h2
+          className={`${bodoni.className} text-[34px] font-normal text-black`}
+        >
+          Add Address
+        </h2>
 
-              <input
-                placeholder="Full Name"
-                value={form.fullName}
-                onChange={(e) =>
-                  setForm({ ...form, fullName: e.target.value })
-                }
-                className="w-full border border-[#8D8B9D] text-[#8D8B9D] outline-none p-2"
-              />
+        <button
+          type="button"
+          onClick={closeForm}
+          className="text-[28px] leading-none text-[#777] transition hover:text-black"
+          aria-label="Close"
+        >
+          ×
+        </button>
+      </div>
 
-              <input
-                placeholder="Phone (10 digits)"
-                value={form.phone}
-                onChange={(e) =>
-                  setForm({ ...form, phone: formatPhoneInput(e.target.value) })
-                }
-                maxLength={10}
-                inputMode="numeric"
-                className="w-full border border-[#8D8B9D] text-[#8D8B9D] outline-none p-2"
-              />
+      {/* FORM */}
+      <div className={`${inter.className} space-y-7`}>
+        
+        {/* FULL NAME */}
+        <div>
+          <label className="mb-2 block text-[13px] uppercase tracking-[0.15em] text-[#666]">
+            Full Name
+          </label>
 
-              <input
-                placeholder="Street"
-                value={form.street}
-                onChange={(e) =>
-                  setForm({ ...form, street: e.target.value })
-                }
-                className="w-full border-[#8D8B9D] text-[#8D8B9D] outline-none border p-2"
-              />
+          <input
+            value={form.fullName}
+            onChange={(event) =>
+              setForm((current) => ({
+                ...current,
+                fullName: event.target.value,
+              }))
+            }
+            className="
+              h-[54px]
+              w-full
+              border
+              border-[#d7d7d7]
+              bg-white
+              px-4
+              text-[15px]
+              outline-none
+              transition
+              focus:border-black
+            "
+          />
+        </div>
 
-              <div className="flex gap-2">
-                <input
-                  placeholder="City"
-                  value={form.city}
-                  onChange={(e) =>
-                    setForm({ ...form, city: e.target.value })
-                  }
-                  className="w-full border-[#8D8B9D] text-[#8D8B9D] outline-none border p-2"
-                />
-                <input
-                  placeholder="State"
-                  value={form.state}
-                  onChange={(e) =>
-                    setForm({ ...form, state: e.target.value })
-                  }
-                  className="w-full border-[#8D8B9D] text-[#8D8B9D] outline-none border p-2"
-                />
-              </div>
+        {/* PHONE */}
+        <div>
+          <label className="mb-2 block text-[13px] uppercase tracking-[0.15em] text-[#666]">
+            Phone Number
+          </label>
 
-              <div className="flex gap-2">
-                <input
-                  placeholder="Postal Code"
-                  value={form.postalCode}
-                  onChange={(e) =>
-                    setForm({ ...form, postalCode: e.target.value })
-                  }
-                  className="w-full border-[#8D8B9D] text-[#8D8B9D] outline-none border p-2"
-                />
-                <input
-                  placeholder="Country"
-                  value={form.country}
-                  onChange={(e) =>
-                    setForm({ ...form, country: e.target.value })
-                  }
-                  className="w-full border-[#8D8B9D] text-[#8D8B9D] outline-none border p-2"
-                />
-              </div>
+          <input
+            value={form.phone}
+            onChange={(event) =>
+              setForm((current) => ({
+                ...current,
+                phone: formatPhoneInput(event.target.value),
+              }))
+            }
+            maxLength={10}
+            inputMode="numeric"
+            className="
+              h-[54px]
+              w-full
+              border
+              border-[#d7d7d7]
+              bg-white
+              px-4
+              text-[15px]
+              outline-none
+              transition
+              focus:border-black
+            "
+          />
+        </div>
 
-              <div className="flex justify-end gap-2">
-                <button
-                  onClick={() => setShowForm(false)}
-                  className="text-gray-500"
-                >
-                  Cancel
-                </button>
+        {/* STREET */}
+        <div>
+          <label className="mb-2 block text-[13px] uppercase tracking-[0.15em] text-[#666]">
+            Street Address
+          </label>
 
-                <button
-                  onClick={handleSave}
-                  className="bg-black px-4 py-2 text-white"
-                >
-                  Save Address
-                </button>
-              </div>
-            </div>
-          )}
+          <input
+            value={form.street}
+            onChange={(event) =>
+              setForm((current) => ({
+                ...current,
+                street: event.target.value,
+              }))
+            }
+            className="
+              h-[54px]
+              w-full
+              border
+              border-[#d7d7d7]
+              bg-white
+              px-4
+              text-[15px]
+              outline-none
+              transition
+              focus:border-black
+            "
+          />
+        </div>
+
+        {/* CITY + STATE */}
+        <div className="grid gap-6 md:grid-cols-2">
+          <div>
+            <label className="mb-2 block text-[13px] uppercase tracking-[0.15em] text-[#666]">
+              City
+            </label>
+
+            <input
+              value={form.city}
+              onChange={(event) =>
+                setForm((current) => ({
+                  ...current,
+                  city: event.target.value,
+                }))
+              }
+              className="
+                h-[54px]
+                w-full
+                border
+                border-[#d7d7d7]
+                bg-white
+                px-4
+                text-[15px]
+                outline-none
+                transition
+                focus:border-black
+              "
+            />
+          </div>
+
+          <div>
+            <label className="mb-2 block text-[13px] uppercase tracking-[0.15em] text-[#666]">
+              State
+            </label>
+
+            <input
+              value={form.state}
+              onChange={(event) =>
+                setForm((current) => ({
+                  ...current,
+                  state: event.target.value,
+                }))
+              }
+              className="
+                h-[54px]
+                w-full
+                border
+                border-[#d7d7d7]
+                bg-white
+                px-4
+                text-[15px]
+                outline-none
+                transition
+                focus:border-black
+              "
+            />
+          </div>
+        </div>
+
+        {/* POSTAL + COUNTRY */}
+        <div className="grid gap-6 md:grid-cols-2">
+          <div>
+            <label className="mb-2 block text-[13px] uppercase tracking-[0.15em] text-[#666]">
+              Postal Code
+            </label>
+
+            <input
+              value={form.postalCode}
+              onChange={(event) =>
+                setForm((current) => ({
+                  ...current,
+                  postalCode: event.target.value
+                    .replace(/\D/g, "")
+                    .slice(0, 6),
+                }))
+              }
+              maxLength={6}
+              inputMode="numeric"
+              className="
+                h-[54px]
+                w-full
+                border
+                border-[#d7d7d7]
+                bg-white
+                px-4
+                text-[15px]
+                outline-none
+                transition
+                focus:border-black
+              "
+            />
+          </div>
+
+          <div>
+            <label className="mb-2 block text-[13px] uppercase tracking-[0.15em] text-[#666]">
+              Country
+            </label>
+
+            <input
+              value={form.country}
+              onChange={(event) =>
+                setForm((current) => ({
+                  ...current,
+                  country: event.target.value,
+                }))
+              }
+              className="
+                h-[54px]
+                w-full
+                border
+                border-[#d7d7d7]
+                bg-white
+                px-4
+                text-[15px]
+                outline-none
+                transition
+                focus:border-black
+              "
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* ACTIONS */}
+      <div className="mt-10 flex items-center justify-end gap-4 border-t border-[#e5e5e5] pt-6">
+        <button
+          type="button"
+          onClick={closeForm}
+          className="
+            text-[13px]
+            uppercase
+            tracking-[0.15em]
+            text-[#666]
+            transition
+            hover:text-black
+          "
+        >
+          Cancel
+        </button>
+
+        <button
+          type="button"
+          onClick={() => void handleSave()}
+          disabled={submitting}
+          className="
+            h-[54px]
+            min-w-[220px]
+            bg-black
+            px-8
+            text-[13px]
+            uppercase
+            tracking-[0.18em]
+            text-white
+            transition
+            hover:bg-[#222]
+            disabled:cursor-not-allowed
+            disabled:opacity-60
+          "
+        >
+          {submitting ? "Saving..." : "Save Address"}
+        </button>
+      </div>
+    </div>
+  </div>
+)}
         </>
       )}
     </div>
