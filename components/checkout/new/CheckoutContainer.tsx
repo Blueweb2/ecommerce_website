@@ -15,7 +15,7 @@ export default function CheckoutContainer({
   shippingCharge = 0,
 }: Props) {
   return (
-    <div className="min-h-screen bg-[#f7f7f5]">
+    <div className="min-h-screen">
       <CheckoutHeader />
 
       <div className="flex flex-col lg:flex-row">

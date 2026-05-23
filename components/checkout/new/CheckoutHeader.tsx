@@ -12,7 +12,10 @@ export default function CheckoutHeader() {
         </span>
 
         <h1
-          className={`text-[38px] tracking-[0.25em] ${bodoni.className}`}
+          className={`text-[38px] tracking-[0.25em] ${bodoni.className} cursor-pointer`}
+          onClick={() => {
+            window.location.href = '/'
+          }}
         >
           ZENFAZ
         </h1>
