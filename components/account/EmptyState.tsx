@@ -1,32 +1,51 @@
 "use client";
-import { inter } from "@/lib/fonts";
 
-export default function EmptyState() {
+import { inter } from "@/lib/fonts";
+import { LucideIcon } from "lucide-react";
+
+interface EmptyStateProps {
+  icon?: LucideIcon;
+  title: string;
+  description: string;
+  buttonText?: string;
+}
+
+export default function EmptyState({
+  icon: Icon,
+  title,
+  description,
+  buttonText,
+}: EmptyStateProps) {
   return (
-    <div className={`${inter.className} flex ml-8 2xl:ml-14 px-4`}>
-      
-      <div className="w-full max-w-[520px] flex flex-col items-center text-center">
-        
+    <div className={`${inter.className} ml-8 flex px-4 2xl:ml-14`}>
+      <div className="flex w-full max-w-[520px] flex-col items-center text-center">
+
         {/* ICON */}
-        <div className="w-[58px] h-[58px] rounded-full border-2 border-black flex items-center justify-center mb-8">
-          <span className="text-[34px] leading-none font-light">!</span>
+        <div className="mb-8 flex h-[58px] w-[58px] items-center justify-center rounded-full border-2 border-black">
+          {Icon ? (
+            <Icon className="h-7 w-7 text-black" />
+          ) : (
+            <span className="text-[34px] font-light leading-none">!</span>
+          )}
         </div>
 
         {/* TITLE */}
-        <h2 className="text-[20px] leading-tight font-semibold text-black mb-5">
-          You don’t have any saved cards
+        <h2 className="mb-5 text-[20px] font-semibold leading-tight text-black">
+          {title}
         </h2>
 
         {/* DESCRIPTION */}
-        <p className="text-[16px] text-black mb-10">
-          Add a card to check out more quickly
+        <p className="mb-10 text-[16px] text-black">
+          {description}
         </p>
 
         {/* BUTTON */}
-        <button className="px-36 bg-black text-white py-2 text-[15px] font-medium hover:opacity-90 transition">
-          Add a card
-        </button>
+        {buttonText && (
+          <button className="bg-black px-36 py-2 text-[15px] font-medium text-white transition hover:opacity-90">
+            {buttonText}
+          </button>
+        )}
       </div>
     </div>
   );
-};
+}

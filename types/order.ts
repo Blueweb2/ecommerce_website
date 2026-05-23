@@ -49,6 +49,8 @@ export interface Order {
   totalGstAmount: number;
   grandTotal: number;
   totalQuantity: number;
+   shippingCharge?: number;
+  discountAmount?: number;
   status: "pending" | "processing" | "shipped" | "delivered" | "cancelled";
   shippingAddress: ShippingAddress;
   paymentMethod: "cod" | "razorpay";
