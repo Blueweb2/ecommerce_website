@@ -25,6 +25,18 @@ const ProductFeature = ({ product }: ProductFeatureProps) => {
   const [carouselImageIndex, setCarouselImageIndex] = useState<number>(0)
   const { zooming, setZooming } = useProductStore();
 
+  // Sort images: primary first, then rest in original order
+  const sortedImages = (() => {
+    const imgs = product?.images || [];
+    if (!imgs.length) return imgs;
+    const primaryIdx = imgs.findIndex((img: any) => img.isPrimary);
+    if (primaryIdx <= 0) return imgs; // already first or not found
+    const sorted = [...imgs];
+    const [primary] = sorted.splice(primaryIdx, 1);
+    sorted.unshift(primary);
+    return sorted;
+  })();
+
   // detect screen size
   useEffect(() => {
     const checkScreen = () => {
@@ -50,15 +62,14 @@ const ProductFeature = ({ product }: ProductFeatureProps) => {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
-  // fallback image (important)
-  const primaryImg = getPrimaryProductImage(product?.images);
-  const mainImage = resolveImageSrc(primaryImg?.url);
+  // fallback image (important) — use sorted images
+  const mainImage = resolveImageSrc(sortedImages[0]?.url);
 
   // display only product images
   if (zooming) {
     return (
       <Carousel
-        images={product?.images || []}   
+        images={sortedImages}   
         firstImage={carouselImageIndex}
       />
     );

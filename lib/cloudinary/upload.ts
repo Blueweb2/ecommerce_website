@@ -174,7 +174,8 @@ export const uploadSingleImage = async (
 // ✅ MULTIPLE IMAGE UPLOAD
 export const uploadMultipleImages = async (
   files: File[],
-  folder = "ecommerce/products"
+  folder = "ecommerce/products",
+  primaryIndex = 0
 ): Promise<UploadedImage[]> => {
   try {
     const { timestamp, signature, cloudName, apiKey } =
@@ -205,7 +206,7 @@ export const uploadMultipleImages = async (
       return {
         url: data.secure_url,
         public_id: data.public_id,
-        isPrimary: index === 0,
+        isPrimary: index === primaryIndex,
       };
     });
 

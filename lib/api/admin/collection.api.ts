@@ -106,25 +106,39 @@ async function requestWithFallback<T>(
 }
 
 export const getCollections = async () => {
-  const response = await api.get<CollectionListResponse>("/collections");
+  const response = await requestWithFallback<CollectionListResponse>(
+    "get",
+    getCollectionBasePaths()
+  );
   return normalizeCollections(response.data);
 };
 
 export const getCollectionById = async (id: string) => {
-  const response = await api.get<CollectionDetailResponse>(`/collections/admin/${id}`);
+  const response = await requestWithFallback<CollectionDetailResponse>(
+    "get",
+    getCollectionIdPaths(id)
+  );
   return normalizeCollection(response.data);
 };
 
 export const createCollection = async (data: CollectionPayload) => {
-  const response = await api.post<CollectionDetailResponse>("/collections", data);
+  const response = await requestWithFallback<CollectionDetailResponse>(
+    "post",
+    getCollectionBasePaths(),
+    data
+  );
   return normalizeCollection(response.data);
 };
 
 export const updateCollection = async (id: string, data: CollectionPayload) => {
-  const response = await api.put<CollectionDetailResponse>(`/collections/${id}`, data);
+  const response = await requestWithFallback<CollectionDetailResponse>(
+    "put",
+    getCollectionIdPaths(id),
+    data
+  );
   return normalizeCollection(response.data);
 };
 
 export const deleteCollection = async (id: string) => {
-  await api.delete(`/collections/${id}`);
+  await requestWithFallback("delete", getCollectionIdPaths(id));
 };

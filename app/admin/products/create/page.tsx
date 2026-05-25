@@ -22,17 +22,18 @@ const handleSubmit = async (
   files: File[]
 ) => {
   try {
-    // 🔥 STEP 1: Upload images to Cloudinary
-    const uploadedImages = await uploadMultipleImages(files);
+    // 🔥 STEP 1: Upload images to Cloudinary (with correct primary index)
+    const primaryIndex = data.primaryImageIndex ?? 0;
+    const uploadedImages = await uploadMultipleImages(files, "ecommerce/products", primaryIndex);
 
     // 🔥 STEP 2: Attach images to payload
     const payload = {
       ...data,
-      images: uploadedImages, // ✅ THIS IS THE FIX
+      images: uploadedImages,
     };
 
     // 🔥 STEP 3: Send to backend
-    await createProduct(payload, []); // no need files anymore
+    await createProduct(payload, []);
 
     toast.success("Product created successfully");
     router.push("/admin/products");

@@ -1,6 +1,7 @@
-import { ImagePlus, Maximize2 } from "lucide-react";
-import ImageUpload from "@/components/admin/ui/ImageUpload";
-import { useEffect, useState } from "react";
+"use client";
+
+import { ImagePlus, Maximize2, Star, GripVertical, Trash2, Upload, Plus, Image as ImageIcon } from "lucide-react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import ImageModal from "@/components/admin/ui/ImageModal";
 import { CatalogImage } from "@/lib/constants/admin-catalog";
 
@@ -25,18 +26,21 @@ export default function MediaSection({
 }: Props) {
   const [previews, setPreviews] = useState<string[]>([]);
   const [zoomedImage, setZoomedImage] = useState<string | null>(null);
+  const [isDragOver, setIsDragOver] = useState(false);
+  const [dragIndex, setDragIndex] = useState<number | null>(null);
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const addMoreInputRef = useRef<HTMLInputElement>(null);
 
-  // ✅ Generate previews safely
+  // Generate previews safely
   useEffect(() => {
     const urls = files.map((file) => URL.createObjectURL(file));
     setPreviews(urls);
-
     return () => {
       urls.forEach((url) => URL.revokeObjectURL(url));
     };
   }, [files]);
 
-  // 🔥 Primary image index
   const primaryIndex = form.primaryImageIndex ?? 0;
 
   const setPrimary = (index: number) => {
@@ -46,67 +50,303 @@ export default function MediaSection({
     }));
   };
 
+  // Handle file selection (initial or add more)
+  const handleFilesSelected = useCallback((newFiles: File[], append = false) => {
+    if (append) {
+      setFiles((prev) => [...prev, ...newFiles]);
+    } else {
+      setFiles(newFiles);
+    }
+  }, [setFiles]);
+
+  // Drag & drop zone handlers
+  const handleDragEnter = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    // Only set false if leaving the container (not entering a child)
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX;
+    const y = e.clientY;
+    if (x < rect.left || x > rect.right || y < rect.top || y > rect.bottom) {
+      setIsDragOver(false);
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(false);
+
+    const droppedFiles = Array.from(e.dataTransfer.files).filter(f =>
+      f.type.startsWith("image/")
+    );
+    if (droppedFiles.length > 0) {
+      handleFilesSelected(droppedFiles, files.length > 0);
+    }
+  };
+
+  // Reorder via drag
+  const handleReorderDragStart = (index: number) => {
+    setDragIndex(index);
+  };
+
+  const handleReorderDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    setDragOverIndex(index);
+  };
+
+  const handleReorderDrop = (e: React.DragEvent, dropIndex: number) => {
+    e.preventDefault();
+    if (dragIndex === null || dragIndex === dropIndex) {
+      setDragIndex(null);
+      setDragOverIndex(null);
+      return;
+    }
+
+    setFiles((prev) => {
+      const updated = [...prev];
+      const [moved] = updated.splice(dragIndex, 1);
+      updated.splice(dropIndex, 0, moved);
+      return updated;
+    });
+
+    // Adjust primary index if needed
+    if (primaryIndex === dragIndex) {
+      setPrimary(dropIndex);
+    } else if (dragIndex < primaryIndex && dropIndex >= primaryIndex) {
+      setPrimary(primaryIndex - 1);
+    } else if (dragIndex > primaryIndex && dropIndex <= primaryIndex) {
+      setPrimary(primaryIndex + 1);
+    }
+
+    setDragIndex(null);
+    setDragOverIndex(null);
+  };
+
+  const handleReorderDragEnd = () => {
+    setDragIndex(null);
+    setDragOverIndex(null);
+  };
+
+  // Remove single image
+  const removeImage = (index: number) => {
+    setFiles((prev) => prev.filter((_, i) => i !== index));
+    // Adjust primary index
+    if (index === primaryIndex) {
+      setPrimary(0);
+    } else if (index < primaryIndex) {
+      setPrimary(primaryIndex - 1);
+    }
+  };
+
+  // Format file size
+  const formatSize = (bytes: number) => {
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+  };
+
+  const totalImages = files.length + (form.images?.length || 0);
+
   return (
-    <section className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm">
-      
+    <section className="rounded-[28px] border border-slate-200 bg-white shadow-sm overflow-hidden">
+
       {/* Header */}
-      <div className="flex items-center gap-2">
-        <ImagePlus className="h-5 w-5 text-slate-500" />
-        <h3 className="text-xl font-semibold tracking-tight text-slate-900">
-          Media
-        </h3>
+      <div className="px-8 pt-8 pb-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="flex items-center justify-center w-10 h-10 rounded-2xl bg-gradient-to-br from-violet-500 to-indigo-600 shadow-lg shadow-violet-200">
+              <ImagePlus className="h-5 w-5 text-white" />
+            </div>
+            <div>
+              <h3 className="text-xl font-bold text-slate-900">
+                Product Media
+              </h3>
+              <p className="text-sm text-slate-500">
+                {totalImages > 0
+                  ? `${totalImages} image${totalImages > 1 ? "s" : ""} added`
+                  : "Upload beautiful product images"}
+              </p>
+            </div>
+          </div>
+
+          {/* Add More Button */}
+          {files.length > 0 && (
+            <button
+              type="button"
+              onClick={() => addMoreInputRef.current?.click()}
+              className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-sm font-bold rounded-2xl shadow-lg shadow-emerald-200 hover:shadow-xl hover:shadow-emerald-200 hover:from-emerald-600 hover:to-teal-600 transition-all active:scale-95"
+            >
+              <Plus className="h-4 w-4" />
+              Add More Images
+            </button>
+          )}
+
+          <input
+            ref={addMoreInputRef}
+            type="file"
+            multiple
+            accept="image/*"
+            className="hidden"
+            onChange={(e) => {
+              const newFiles = Array.from(e.target.files || []);
+              if (newFiles.length > 0) {
+                handleFilesSelected(newFiles, true);
+              }
+              e.target.value = "";
+            }}
+          />
+        </div>
       </div>
 
-      <div className="mt-6 grid gap-4">
-        
-        {/* Upload */}
-        <div className="grid gap-2">
-          <label className="text-sm font-medium text-slate-700">
-            Upload product images
-          </label>
+      <div className="px-8 pb-8 space-y-6">
 
-          {/* ✅ Fixed: showPreview={false} to avoid double images */}
-          <ImageUpload onFilesSelect={setFiles} showPreview={false} />
+        {/* Drop Zone */}
+        {files.length === 0 && (form.images?.length || 0) === 0 && (
+          <div
+            onDragEnter={handleDragEnter}
+            onDragLeave={handleDragLeave}
+            onDragOver={handleDragOver}
+            onDrop={handleDrop}
+            onClick={() => fileInputRef.current?.click()}
+            className={`relative cursor-pointer rounded-3xl border-2 border-dashed transition-all duration-300 ${
+              isDragOver
+                ? "border-violet-400 bg-violet-50 scale-[1.01] shadow-xl shadow-violet-100"
+                : "border-slate-200 bg-gradient-to-b from-slate-50 to-white hover:border-violet-300 hover:bg-violet-50/50 hover:shadow-lg"
+            }`}
+          >
+            <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
+              <div className={`flex items-center justify-center w-20 h-20 rounded-3xl mb-6 transition-all duration-300 ${
+                isDragOver
+                  ? "bg-violet-100 scale-110"
+                  : "bg-gradient-to-br from-slate-100 to-slate-50"
+              }`}>
+                <Upload className={`h-8 w-8 transition-colors duration-300 ${
+                  isDragOver ? "text-violet-500" : "text-slate-400"
+                }`} />
+              </div>
 
-          <p className="text-xs text-slate-500">
-            {files.length > 0
-               ? `${files.length} image${files.length > 1 ? "s" : ""} selected`
-              : "Upload multiple product images"}
-          </p>
+              <p className="text-lg font-bold text-slate-700 mb-1">
+                {isDragOver ? "Drop images here" : "Drag & drop product images"}
+              </p>
+              <p className="text-sm text-slate-400 mb-6">
+                or click to browse from your device
+              </p>
 
-          {errors.images && (
-            <p className="text-sm text-rose-600">{errors.images}</p>
-          )}
-        </div>
+              <div className="flex items-center gap-3">
+                <span className="px-4 py-2 bg-slate-900 text-white text-sm font-bold rounded-xl hover:bg-slate-800 transition-all">
+                  Browse Files
+                </span>
+                <span className="text-xs text-slate-400">
+                  JPG, PNG, WebP • Max 10MB each
+                </span>
+              </div>
+            </div>
 
-        {/* 🔥 EXISTING IMAGES (EDIT MODE) */}
+            <input
+              ref={fileInputRef}
+              type="file"
+              multiple
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => {
+                const selected = Array.from(e.target.files || []);
+                if (selected.length > 0) {
+                  handleFilesSelected(selected, false);
+                }
+                e.target.value = "";
+              }}
+            />
+          </div>
+        )}
+
+        {/* Compact Drop Zone (when images exist) */}
+        {(files.length > 0 || (form.images?.length || 0) > 0) && (
+          <div
+            onDragEnter={handleDragEnter}
+            onDragLeave={handleDragLeave}
+            onDragOver={handleDragOver}
+            onDrop={handleDrop}
+            onClick={() => addMoreInputRef.current?.click()}
+            className={`cursor-pointer rounded-2xl border-2 border-dashed transition-all duration-200 ${
+              isDragOver
+                ? "border-violet-400 bg-violet-50"
+                : "border-slate-200 bg-slate-50/50 hover:border-violet-300 hover:bg-violet-50/30"
+            }`}
+          >
+            <div className="flex items-center justify-center gap-3 py-5 px-4">
+              <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-white border border-slate-200 shadow-sm">
+                <Plus className={`h-5 w-5 transition-colors ${isDragOver ? "text-violet-500" : "text-slate-400"}`} />
+              </div>
+              <div>
+                <p className="text-sm font-bold text-slate-600">
+                  {isDragOver ? "Drop to add more" : "Drop or click to add more images"}
+                </p>
+                <p className="text-xs text-slate-400">Add additional product photos</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {errors.images && (
+          <div className="flex items-center gap-2 px-4 py-3 bg-rose-50 border border-rose-200 rounded-2xl">
+            <span className="text-sm text-rose-600 font-medium">{errors.images}</span>
+          </div>
+        )}
+
+        {/* EXISTING IMAGES (EDIT MODE) */}
         {form.images?.length > 0 && (
           <div>
-            <p className="text-sm font-medium text-slate-700 mb-2 font-semibold">
-              Existing Images
-            </p>
+            <div className="flex items-center gap-2 mb-4">
+              <ImageIcon className="h-4 w-4 text-slate-400" />
+              <p className="text-sm font-bold text-slate-700 uppercase tracking-wider">
+                Current Images
+              </p>
+              <span className="px-2 py-0.5 bg-slate-100 text-slate-500 text-xs font-bold rounded-lg">
+                {form.images.length}
+              </span>
+            </div>
 
-            <div className="flex gap-3 flex-wrap">
+            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3">
               {form.images.map((img: CatalogImage, i: number) => (
-                <div key={i} className="relative group overflow-hidden rounded-lg">
-                  
-                  <img
-                    src={img.url}
-                    className="h-20 w-20 object-cover rounded-lg border cursor-pointer group-hover:scale-110 transition-transform duration-300"
-                    onClick={() => setZoomedImage(img.url)}
-                  />
-
-                  {/* Zoom Icon Overlay */}
-                  <div 
-                    className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity cursor-pointer pointer-events-none"
-                  >
-                    <Maximize2 className="h-4 w-4 text-white" />
+                <div
+                  key={i}
+                  className={`relative group overflow-hidden rounded-2xl border-2 transition-all duration-200 ${
+                    img.isPrimary
+                      ? "border-amber-400 shadow-lg shadow-amber-100 ring-2 ring-amber-200"
+                      : "border-slate-200 hover:border-slate-300 hover:shadow-md"
+                  }`}
+                >
+                  <div className="aspect-square">
+                    <img
+                      src={img.url}
+                      className="h-full w-full object-cover cursor-pointer transition-transform duration-300 group-hover:scale-105"
+                      onClick={() => setZoomedImage(img.url)}
+                    />
                   </div>
 
+                  {/* Hover overlay */}
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-200 flex items-center justify-center">
+                    <Maximize2 className="h-5 w-5 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+                  </div>
+
+                  {/* Primary Badge */}
                   {img.isPrimary && (
-                    <span className="absolute top-1 left-1 bg-black text-white text-[9px] px-1.5 py-0.5 rounded uppercase font-bold tracking-wider">
-                      Primary
-                    </span>
+                    <div className="absolute top-2 left-2 flex items-center gap-1 bg-amber-500 text-white text-[10px] px-2.5 py-1 rounded-lg font-bold uppercase tracking-wider shadow-lg">
+                      <Star className="h-3 w-3 fill-current" />
+                      Main
+                    </div>
                   )}
                 </div>
               ))}
@@ -114,98 +354,204 @@ export default function MediaSection({
           </div>
         )}
 
-        {/* 🔥 NEW FILE PREVIEW */}
+        {/* NEW FILE PREVIEWS — Main Image + Grid */}
         {files.length > 0 && (
           <div>
-            <p className="text-sm font-medium text-slate-700 mb-2 font-semibold">
-              New Images
-            </p>
+            <div className="flex items-center gap-2 mb-4">
+              <ImagePlus className="h-4 w-4 text-emerald-500" />
+              <p className="text-sm font-bold text-slate-700 uppercase tracking-wider">
+                New Images
+              </p>
+              <span className="px-2 py-0.5 bg-emerald-50 text-emerald-600 text-xs font-bold rounded-lg">
+                {files.length}
+              </span>
+            </div>
 
-            <div className="flex gap-3 flex-wrap">
-              {previews.map((src, i) => (
-                <div key={i} className="relative group overflow-hidden rounded-lg">
-                  
+            {/* Main Image (Primary) — Large Preview */}
+            <div className="mb-4">
+              <div className="relative group overflow-hidden rounded-3xl border-2 border-amber-400 shadow-xl shadow-amber-100 ring-2 ring-amber-200 bg-slate-50">
+                <div className="aspect-video max-h-[350px] w-full">
                   <img
-                    src={src}
-                    alt={`preview-${i}`}
-                    className="h-20 w-20 object-cover rounded-lg border cursor-pointer group-hover:scale-110 transition-transform duration-300"
-                    onClick={() => setZoomedImage(src)}
+                    src={previews[primaryIndex] || previews[0]}
+                    alt="Main product image"
+                    className="h-full w-full object-contain cursor-pointer transition-transform duration-500 group-hover:scale-[1.02]"
+                    onClick={() => setZoomedImage(previews[primaryIndex] || previews[0])}
                   />
+                </div>
 
-                  {/* Zoom Icon Overlay */}
-                  <div 
-                    className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity cursor-pointer pointer-events-none"
-                  >
-                    <Maximize2 className="h-4 w-4 text-white" />
+                {/* Main Badge */}
+                <div className="absolute top-4 left-4 flex items-center gap-1.5 bg-amber-500 text-white text-xs px-3.5 py-1.5 rounded-xl font-bold uppercase tracking-wider shadow-lg">
+                  <Star className="h-3.5 w-3.5 fill-current" />
+                  Main Image
+                </div>
+
+                {/* Zoom overlay */}
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-200 flex items-center justify-center pointer-events-none">
+                  <Maximize2 className="h-6 w-6 text-white opacity-0 group-hover:opacity-100 transition-opacity drop-shadow-lg" />
+                </div>
+              </div>
+            </div>
+
+            {/* Thumbnail Grid — Draggable & Reorderable */}
+            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3">
+              {previews.map((src, i) => (
+                <div
+                  key={`${i}-${files[i]?.name}`}
+                  draggable
+                  onDragStart={() => handleReorderDragStart(i)}
+                  onDragOver={(e) => handleReorderDragOver(e, i)}
+                  onDrop={(e) => handleReorderDrop(e, i)}
+                  onDragEnd={handleReorderDragEnd}
+                  className={`relative group overflow-hidden rounded-2xl border-2 transition-all duration-200 cursor-grab active:cursor-grabbing ${
+                    dragIndex === i
+                      ? "opacity-40 scale-95 border-violet-400"
+                      : dragOverIndex === i
+                        ? "border-violet-400 scale-105 shadow-xl shadow-violet-100"
+                        : i === primaryIndex
+                          ? "border-amber-400 shadow-lg shadow-amber-100 ring-2 ring-amber-200"
+                          : "border-slate-200 hover:border-slate-300 hover:shadow-md"
+                  }`}
+                >
+                  {/* Image */}
+                  <div className="aspect-square">
+                    <img
+                      src={src}
+                      alt={`Product image ${i + 1}`}
+                      className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      onClick={() => setZoomedImage(src)}
+                    />
+                  </div>
+
+                  {/* Drag Handle */}
+                  <div className="absolute top-1.5 left-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="flex items-center justify-center w-6 h-6 rounded-lg bg-black/50 backdrop-blur-sm">
+                      <GripVertical className="h-3.5 w-3.5 text-white" />
+                    </div>
                   </div>
 
                   {/* Primary Badge */}
                   {i === primaryIndex && (
-                    <span className="absolute top-1 left-1 bg-black text-white text-[9px] px-1.5 py-0.5 rounded uppercase font-bold tracking-wider">
-                      Primary
-                    </span>
+                    <div className="absolute top-1.5 left-1.5 flex items-center gap-0.5 bg-amber-500 text-white text-[9px] px-2 py-1 rounded-lg font-bold uppercase tracking-wider shadow-md">
+                      <Star className="h-2.5 w-2.5 fill-current" />
+                      Main
+                    </div>
                   )}
 
-                  {/* Set Primary Button */}
-                  <button
-                    type="button"
-                    onClick={() => setPrimary(i)}
-                    className="absolute bottom-1 left-1 text-[9px] bg-blue-600 text-white px-1.5 py-0.5 rounded-full font-bold uppercase hover:bg-blue-700 transition"
-                  >
-                    Main
-                  </button>
+                  {/* Image number */}
+                  <div className="absolute bottom-1.5 left-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <span className="text-[10px] bg-black/50 backdrop-blur-sm text-white px-2 py-0.5 rounded-md font-bold">
+                      {i + 1}/{files.length}
+                    </span>
+                  </div>
 
-                  {/* Remove Button */}
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setFiles((prev) =>
-                         prev.filter((_, index) => index !== i)
-                      )
-                    }
-                    className="absolute top-1 right-1 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full hover:bg-red-600 transition"
-                  >
-                    ✕
-                  </button>
+                  {/* File size */}
+                  {files[i] && (
+                    <div className="absolute bottom-1.5 right-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <span className="text-[10px] bg-black/50 backdrop-blur-sm text-white px-2 py-0.5 rounded-md font-medium">
+                        {formatSize(files[i].size)}
+                      </span>
+                    </div>
+                  )}
 
+                  {/* Action Buttons Overlay */}
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-200 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100">
+                    {/* Set as Main */}
+                    {i !== primaryIndex && (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setPrimary(i);
+                        }}
+                        className="flex items-center justify-center w-8 h-8 bg-amber-500 text-white rounded-xl shadow-lg hover:bg-amber-600 transition-all hover:scale-110 active:scale-95"
+                        title="Set as main image"
+                      >
+                        <Star className="h-4 w-4" />
+                      </button>
+                    )}
+
+                    {/* Zoom */}
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setZoomedImage(src);
+                      }}
+                      className="flex items-center justify-center w-8 h-8 bg-white/90 text-slate-700 rounded-xl shadow-lg hover:bg-white transition-all hover:scale-110 active:scale-95"
+                      title="View full size"
+                    >
+                      <Maximize2 className="h-4 w-4" />
+                    </button>
+
+                    {/* Remove */}
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        removeImage(i);
+                      }}
+                      className="flex items-center justify-center w-8 h-8 bg-red-500 text-white rounded-xl shadow-lg hover:bg-red-600 transition-all hover:scale-110 active:scale-95"
+                      title="Remove image"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
                 </div>
               ))}
+
+              {/* Add More Card */}
+              <button
+                type="button"
+                onClick={() => addMoreInputRef.current?.click()}
+                className="aspect-square rounded-2xl border-2 border-dashed border-slate-200 bg-slate-50/50 flex flex-col items-center justify-center gap-2 hover:border-emerald-300 hover:bg-emerald-50/50 transition-all group"
+              >
+                <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-white border border-slate-200 group-hover:border-emerald-200 group-hover:bg-emerald-50 transition-all shadow-sm">
+                  <Plus className="h-5 w-5 text-slate-400 group-hover:text-emerald-500 transition-colors" />
+                </div>
+                <span className="text-[11px] font-bold text-slate-400 group-hover:text-emerald-600 transition-colors uppercase tracking-wider">
+                  Add More
+                </span>
+              </button>
+            </div>
+
+            {/* Reorder Hint */}
+            <div className="flex items-center gap-2 mt-3 px-1">
+              <GripVertical className="h-3.5 w-3.5 text-slate-300" />
+              <p className="text-xs text-slate-400">
+                Drag thumbnails to reorder • Click the <Star className="h-3 w-3 text-amber-500 inline fill-amber-500" /> to set as main image
+              </p>
             </div>
           </div>
         )}
 
         {/* Alt text */}
-        <div className="grid gap-2">
-          <label className="text-sm font-medium text-slate-700">
-            Image alt text
+        <div className="space-y-2">
+          <label className="text-sm font-bold text-slate-700">
+            Image Alt Text
           </label>
-
           <input
-            placeholder="Product displayed on clean background"
-            value={form.altText}
+            placeholder="e.g. Red cotton kurta displayed on white background"
+            value={form.altText || ""}
             onChange={(e) =>
               setForm((prev: any) => ({
                 ...prev,
                 altText: e.target.value,
               }))
             }
-            className="rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-slate-400"
+            className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition-all focus:border-violet-400 focus:ring-4 focus:ring-violet-50 placeholder:text-slate-300"
           />
-
-          <p className="text-xs text-slate-500">
-            Helps with SEO and accessibility.
+          <p className="text-xs text-slate-400">
+            Improves SEO and accessibility. Describe the product clearly.
           </p>
         </div>
-
       </div>
 
-      {/* ✅ Full Screen Image Modal */}
+      {/* Full Screen Image Modal */}
       <ImageModal
         isOpen={zoomedImage !== null}
         onClose={() => setZoomedImage(null)}
         imageUrl={zoomedImage}
       />
-
     </section>
   );
 }
