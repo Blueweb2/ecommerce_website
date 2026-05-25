@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { PRODUCT_SECTION_OPTIONS } from "@/lib/constants/admin-catalog";
+import { calculateVariantStock, hasVariants } from "@/lib/utils/product-stock";
 
 type Props = {
   form: any;
@@ -11,6 +12,7 @@ type Props = {
 
 export default function PreviewSection({ form, files, setFiles }: Props) {
   const [previews, setPreviews] = useState<string[]>([]);
+  const firstVariantAttributes = form.variants?.[0]?.attributes;
 
   // ✅ Safe preview generation
   useEffect(() => {
@@ -27,18 +29,17 @@ export default function PreviewSection({ form, files, setFiles }: Props) {
   const mainImage = previews[primaryIndex];
 
   // 🔥 Variant stock total
-  const totalStock =
-    form.variants?.length > 0
-      ? form.variants.reduce(
-          (sum: number, v: any) => sum + (Number(v.stock) || 0),
-          0
-        )
-      : form.stock || 0;
+  const totalStock = hasVariants(form.variants)
+    ? calculateVariantStock(form.variants)
+    : Number(form.stock) || 0;
 
   // 🔥 Attribute keys
-  const attributeKeys =
-    form.variants?.length > 0
-      ? Object.keys(form.variants[0].attributes || {})
+  const variantAttributeKeys =
+    hasVariants(form.variants) &&
+    firstVariantAttributes &&
+    typeof firstVariantAttributes === "object" &&
+    !Array.isArray(firstVariantAttributes)
+      ? Object.keys(firstVariantAttributes)
       : [];
 
   return (
@@ -124,14 +125,14 @@ export default function PreviewSection({ form, files, setFiles }: Props) {
           </div>
 
           {/* 🔥 Variants (dynamic attributes) */}
-          {form.variants?.length > 0 && (
+          {hasVariants(form.variants) && (
             <div className="flex flex-wrap gap-2">
               {form.variants.map((v: any, i: number) => (
                 <span
                   key={i}
                   className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs text-slate-600"
                 >
-                  {attributeKeys
+                  {variantAttributeKeys
                     .map((key) => v.attributes?.[key] || "-")
                     .join(" / ")}
                 </span>

@@ -29,7 +29,13 @@ export default function VariantSection({
 
   if (!variants.length) return null;
 
-  const attributeKeys = Object.keys(variants[0]?.attributes || {});
+  const firstVariantAttributes = variants[0]?.attributes;
+  const variantAttributeKeys =
+    firstVariantAttributes &&
+    typeof firstVariantAttributes === "object" &&
+    !Array.isArray(firstVariantAttributes)
+      ? Object.keys(firstVariantAttributes)
+      : [];
 
   // 🔥 Update field (NO SKU)
   const updateField = (
@@ -89,7 +95,7 @@ export default function VariantSection({
         <table className="w-full border rounded-xl">
           <thead className="bg-slate-100 text-sm">
             <tr>
-              {attributeKeys.map((key) => (
+              {variantAttributeKeys.map((key) => (
                 <th key={key} className="p-3 text-left capitalize">
                   {key}
                 </th>
@@ -107,7 +113,7 @@ export default function VariantSection({
               <tr key={index} className="border-t align-top">
 
                 {/* Attributes */}
-                {attributeKeys.map((key) => (
+                {variantAttributeKeys.map((key) => (
                   <td key={key} className="p-3 text-sm">
                     {variant.attributes[key]}
                   </td>
@@ -141,6 +147,7 @@ export default function VariantSection({
                 <td className="p-3">
                   <input
                     type="number"
+                    min="0"
                     value={variant.stock ?? ""}
                     onChange={(e) =>
                       updateField(index, "stock", e.target.value)

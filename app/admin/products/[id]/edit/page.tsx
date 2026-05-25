@@ -11,6 +11,7 @@ import {
   CatalogProduct,
   ProductPayload,
 } from "@/lib/constants/admin-catalog";
+import { calculateVariantStock, hasVariants } from "@/lib/utils/product-stock";
 import {
   ArrowLeft,
   ExternalLink,
@@ -86,7 +87,9 @@ export default function EditProductPage() {
       brand: product.brand || "",
       sku: product.sku || "",
 
-      stock: product.stock ?? "",
+      stock: hasVariants(product.variants)
+        ? calculateVariantStock(product.variants)
+        : product.stock ?? "",
       isPublished: product.isPublished ?? true,
       isOnSale: product.isOnSale ?? false, // ✅ ADDED
 
@@ -101,6 +104,7 @@ export default function EditProductPage() {
           price: variant.price ?? "",
           discountPrice: variant.discountPrice ?? "",
           sku: variant.sku || "",
+          images: variant.images || [],
         })) || [],
 
       customizable: product.customizable || {

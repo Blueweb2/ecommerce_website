@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Heart, ChevronDown, Truck } from "lucide-react";
+import { Heart, Truck } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { useCartStore } from "@/store/user/cart/useCartStore";
 import { useWishlistStore } from "@/store/user/wishlist/useWishlistStore";
@@ -12,6 +12,7 @@ import { getPrimaryProductImage } from "@/lib/constants/admin-catalog";
 
 type Props = {
   product: any;
+  onVariantChange?: (variant: any | null) => void;
 };
 
 type CustomDataItem = {
@@ -19,13 +20,12 @@ type CustomDataItem = {
   value: string | number;
 };
 
-const RightSide = ({ product }: Props) => {
+const RightSide = ({ product, onVariantChange }: Props) => {
 
   const [selectedVariant, setSelectedVariant] = useState<any>(null);
-  const [activeIndex, setActiveIndex] = useState<number | null>(0);
   const isCustomizable = product?.customizable?.isCustomizable;
   const [showCustom, setShowCustom] = useState(false);
-  const [selectedSize, setSelectedSize] = useState<string | undefined>();
+  const [selectedAttributes, setSelectedAttributes] = useState<Record<string, string>>({});
 
   const [customData, setCustomData] = useState<CustomDataItem[]>([]);
 
@@ -39,8 +39,12 @@ const RightSide = ({ product }: Props) => {
   const { user } = useAuthStore();
 
   const isWishlisted = isInWishlist(product._id);
+  const selectedVariantPrimaryImage =
+    getPrimaryProductImage(selectedVariant?.images)?.url;
   const primaryImageUrl =
-    getPrimaryProductImage(product.images)?.url || "/placeholder.png";
+    selectedVariantPrimaryImage ||
+    getPrimaryProductImage(product.images)?.url ||
+    "/placeholder.png";
 
   const handleWishlistToggle = async () => {
     toggleWishlist({
@@ -101,28 +105,76 @@ const RightSide = ({ product }: Props) => {
     return options;
   };
 
+  const matchesSelection = (variant: any, selection: Record<string, string>) => {
+    return Object.entries(selection).every(([key, value]) => {
+      const variantValue = variant?.attributes?.[key];
+
+      return (
+        typeof variantValue === "string" &&
+        variantValue.toLowerCase() === value.toLowerCase()
+      );
+    });
+  };
+
+  const inStockVariants =
+    product?.variants?.filter((variant: any) => variant.stock > 0) || [];
+
+  const findVariantForAttributeValue = (
+    attributeName: string,
+    value: string,
+    currentSelection: Record<string, string>
+  ) => {
+    const prioritizedSelection = {
+      ...currentSelection,
+      [attributeName]: value,
+    };
+
+    return (
+      inStockVariants.find((variant: any) =>
+        matchesSelection(variant, prioritizedSelection)
+      ) ||
+      inStockVariants.find((variant: any) => {
+        const variantValue = variant?.attributes?.[attributeName];
+
+        return (
+          typeof variantValue === "string" &&
+          variantValue.toLowerCase() === value.toLowerCase()
+        );
+      }) ||
+      null
+    );
+  };
+
   useEffect(() => {
     if (product?.variants?.length > 0) {
       const firstAvailable = product.variants.find((variant: any) => variant.stock > 0);
 
       if (firstAvailable) {
         setSelectedVariant(firstAvailable);
-        setSelectedSize(
-          String(Object.values(firstAvailable.attributes)[0]).toUpperCase()
+        onVariantChange?.(firstAvailable);
+        setSelectedAttributes(
+          Object.entries(firstAvailable.attributes || {}).reduce(
+            (acc, [key, value]) => ({
+              ...acc,
+              [key]: String(value),
+            }),
+            {}
+          )
         );
+        return;
       }
     }
-  }, [product]);
+
+    setSelectedVariant(null);
+    onVariantChange?.(null);
+    setSelectedAttributes({});
+  }, [product, onVariantChange]);
 
   const isValid =
     product?.customizable?.fields?.every((field: any) => {
       if (!field.required) return true;
       return customData.find((item) => item.fieldName === field.name);
     }) ?? true;
-
-  const toggle = (index: number) => {
-    setActiveIndex(activeIndex === index ? null : index);
-  };
 
   const price = selectedVariant?.price || product?.price;
   const discountPrice = selectedVariant?.discountPrice || product?.discountPrice;
@@ -131,7 +183,7 @@ const RightSide = ({ product }: Props) => {
 
   const handleAddToCart = () => {
     if (product.variants?.length && !selectedVariant) {
-      toast.error("Please select a size");
+      toast.error("Please select product options");
       return;
     }
 
@@ -166,6 +218,11 @@ const RightSide = ({ product }: Props) => {
   return (
     <div className="mx-4 mt-10 h-fit space-y-6 text-sm lg:sticky lg:top-7 lg:mx-10 md:mt-10">
       <div>
+        {(product?.brand || product?.designer?.brandName || product?.designer?.name) && (
+          <p className={`${inter.className} mb-2 text-[11px] uppercase tracking-[0.16em] text-[#8D8B9D]`}>
+            {product?.brand || product?.designer?.brandName || product?.designer?.name}
+          </p>
+        )}
         <h1 className={`${bodoni.className} text-2xl md:text-3xl`}>
           {product?.name}
         </h1>
@@ -191,54 +248,73 @@ const RightSide = ({ product }: Props) => {
         )}
       </div>
 
-      {(() => {
-        const sizeAttribute = product?.attributes?.find(
-          (attr: any) => attr.name === "size"
-        );
+      {(product?.attributes || []).map((attribute: any) => {
+        const values = attribute?.values || [];
 
-        const sizes = sizeAttribute?.values || [];
-
-        if (sizes.length === 0) return null;
+        if (!values.length) {
+          return null;
+        }
 
         return (
-          <div>
-            <p className="mb-2 text-xs text-neutral-600">SELECT SIZE:</p>
+          <div key={attribute.name}>
+            <p className="mb-2 text-xs text-neutral-600 uppercase">
+              Select {attribute.name}:
+            </p>
 
             <div className="grid grid-cols-4 gap-2">
-              {sizes.map((size: string) => {
-                const variant = product.variants.find(
-                  (item: any) =>
-                    item.attributes?.size?.toLowerCase() === size.toLowerCase()
+              {values.map((value: string) => {
+                const variant = findVariantForAttributeValue(
+                  attribute.name,
+                  value,
+                  selectedAttributes
                 );
 
-                const isOutOfStock = !variant || variant.stock === 0;
+                const isSelected =
+                  selectedAttributes?.[attribute.name]?.toLowerCase() ===
+                  value.toLowerCase();
+                const isOutOfStock = !variant;
 
                 return (
                   <button
-                    key={size}
+                    key={`${attribute.name}-${value}`}
                     disabled={isOutOfStock}
                     onClick={() => {
-                      setSelectedSize(size);
+                      if (!variant) {
+                        return;
+                      }
+
+                      const nextAttributes = Object.entries(
+                        variant.attributes || {}
+                      ).reduce(
+                        (acc, [key, attributeValue]) => ({
+                          ...acc,
+                          [key]: String(attributeValue),
+                        }),
+                        {}
+                      );
+
+                      setSelectedAttributes(nextAttributes);
                       setSelectedVariant(variant);
+                      onVariantChange?.(variant);
                     }}
                     className={`border px-3 py-2 transition ${
-                      selectedSize === size
+                      isSelected
                         ? "border border-black"
                         : "border-gray-200 hover:border-gray-400"
                     } ${isOutOfStock ? "cursor-not-allowed opacity-40" : ""}`}
                   >
-                    {size}
+                    {value}
                   </button>
                 );
               })}
             </div>
           </div>
         );
-      })()}
+      })}
 
       <div className="flex flex-col gap-3">
         {/* QUANTITY SELECTOR */}
-        <div>
+        {/* <div>
           <p className="mb-2 text-xs text-neutral-600 uppercase">Quantity {isFabric && `(${product.unit || "meter"})`}:</p>
           <div className="flex items-center gap-4 w-fit border border-gray-300 rounded px-2 py-1">
             <button
@@ -258,7 +334,7 @@ const RightSide = ({ product }: Props) => {
               +
             </button>
           </div>
-        </div>
+        </div> */}
 
         <button
           disabled={!isValid || (product?.variants?.length > 0 && !selectedVariant)}
@@ -354,7 +430,7 @@ const RightSide = ({ product }: Props) => {
         )}
       </div>
 
-      <div>
+      {/* <div>
         {[
           { title: "Size & Fit", content: "Standard fit" },
           { title: "Returns", content: "Easy returns available" },
@@ -377,7 +453,7 @@ const RightSide = ({ product }: Props) => {
             )}
           </div>
         ))}
-      </div>
+      </div> */}
 
       {showCustom && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">

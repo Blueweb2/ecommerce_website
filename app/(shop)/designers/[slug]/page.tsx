@@ -124,16 +124,16 @@ return (
         <div className="w-full px-6 md:px-16">
 
           {/* FLOATING CARD */}
-          <div className="max-w-[670px] bg-white p-10 md:p-14">
+          <div className="max-w-[670px] bg-white p-8 md:p-12">
 
             <h1
-              className={`${bodoni.className} text-[clamp(42px,6vw,64px)] leading-[0.95] tracking-tight text-black`}
+              className={`${bodoni.className} text-[clamp(24px,6vw,26px)] leading-[0.55] tracking-tight text-black`}
             >
               {designer.name}
             </h1>
 
             <p
-              className={`${inter.className} mt-6 text-[15px] leading-8 text-black/75`}
+              className={`${inter.className} mt-6 text-[15px] font-semibold leading-[1.8] text-black/75`}
             >
               {designer.description}
             </p>

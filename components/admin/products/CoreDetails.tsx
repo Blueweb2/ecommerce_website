@@ -1,5 +1,7 @@
 "use client";
 
+import { calculateVariantStock, hasVariants } from "@/lib/utils/product-stock";
+
 type Props = {
   form: any;
   setForm: (updater: any) => void;
@@ -8,15 +10,10 @@ type Props = {
 
 export default function CoreDetails({ form, setForm, errors }: Props) {
   // 🔥 Detect if variants exist
-  const hasVariants = form.variants?.length > 0;
+  const stockManagedByVariants = hasVariants(form.variants);
 
   // 🔥 Calculate total stock from variants (optional UX boost)
-  const totalVariantStock = hasVariants
-    ? form.variants.reduce(
-      (sum: number, v: any) => sum + (Number(v.stock) || 0),
-      0
-    )
-    : 0;
+  const totalVariantStock = calculateVariantStock(form.variants);
 
   return (
     <section className="rounded-[32px] border border-slate-200 bg-white p-8 shadow-sm space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -149,8 +146,8 @@ export default function CoreDetails({ form, setForm, errors }: Props) {
             type="number"
             min="0"
             placeholder="14"
-            value={form.stock}
-            disabled={hasVariants}
+            value={stockManagedByVariants ? totalVariantStock : form.stock}
+            disabled={stockManagedByVariants}
             onChange={(e) =>
               setForm((prev: any) => ({
                 ...prev,
@@ -158,13 +155,13 @@ export default function CoreDetails({ form, setForm, errors }: Props) {
               }))
             }
             className={`w-full rounded-2xl border px-4 py-3 outline-none transition 
-              ${hasVariants
+              ${stockManagedByVariants
                 ? "bg-slate-50 text-slate-400 border-slate-100 cursor-not-allowed"
                 : "border-slate-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-50"
               }
             `}
           />
-          {hasVariants && (
+          {stockManagedByVariants && (
             <p className="text-xs text-emerald-600 font-medium bg-emerald-50 px-3 py-1 rounded-full inline-block">
               Stock managed by variants. Total: {totalVariantStock}
             </p>

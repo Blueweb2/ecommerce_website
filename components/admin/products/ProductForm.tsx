@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { useCategoryStore } from "@/store/admin/useCategoryStore";
 import { useDesignerStore } from "@/store/admin/useDesignerStore"; // ✅ Added
 import { generateVariants } from "@/lib/utils/generateVariants";
+import { calculateVariantStock, hasVariants } from "@/lib/utils/product-stock";
+import { uploadMultipleImages } from "@/lib/cloudinary/upload";
 
 import {
   CatalogImage,
@@ -44,6 +46,13 @@ type ProductFormValues = {
     stock?: number | string;
     price?: number | string;
     discountPrice?: number | string;
+    images?: {
+      file?: File;
+      preview?: string;
+      url?: string;
+      public_id?: string;
+      isPrimary?: boolean;
+    }[];
   }[];
   specifications: {
     name: string;
@@ -123,6 +132,7 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
         stock: v.stock ?? "",
         price: v.price ?? "",
         discountPrice: v.discountPrice ?? "",
+        images: v.images || [],
       })) || [],
     specifications: initialData?.specifications || [],
     isFabric: initialData?.isFabric ?? false,
@@ -198,6 +208,18 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
     fetchCategories();
   }, [fetchCategories]);
 
+  useEffect(() => {
+    if (!hasVariants(form.variants)) {
+      return;
+    }
+
+    const totalStock = calculateVariantStock(form.variants);
+
+    setForm((prev) =>
+      Number(prev.stock) === totalStock ? prev : { ...prev, stock: totalStock }
+    );
+  }, [form.variants]);
+
   const { designers, fetchDesigners } = useDesignerStore();
   useEffect(() => {
     fetchDesigners();
@@ -221,6 +243,42 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
       const cleanedVariants = form.variants.filter((v) =>
         Object.values(v.attributes).every((val) => val.trim() !== "")
       );
+      const preparedVariants = await Promise.all(
+        cleanedVariants.map(async (variant) => {
+          const existingImages =
+            variant.images?.filter((image) => image.url && image.public_id).map((image) => ({
+              url: image.url!,
+              public_id: image.public_id!,
+              isPrimary: image.isPrimary,
+            })) || [];
+
+          const newVariantFiles =
+            variant.images?.filter((image) => image.file).map((image) => image.file!) || [];
+
+          const uploadedVariantImages =
+            newVariantFiles.length > 0
+              ? await uploadMultipleImages(
+                  newVariantFiles,
+                  "ecommerce/products/variants"
+                )
+              : [];
+
+          return {
+            attributes: variant.attributes,
+            stock: variant.stock === "" ? 0 : Number(variant.stock),
+            price: variant.price === "" ? undefined : Number(variant.price),
+            discountPrice:
+              variant.discountPrice === ""
+                ? undefined
+                : Number(variant.discountPrice),
+            images: [...existingImages, ...uploadedVariantImages],
+          };
+        })
+      );
+      const totalStock =
+        preparedVariants.length > 0
+          ? calculateVariantStock(preparedVariants)
+          : Number(form.stock) || 0;
 
       const payload: ProductPayload = {
         name: form.name.trim(),
@@ -234,25 +292,20 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
         brand: designers.find(d => d._id === form.designer)?.brandName || "", // ✅ Added
         sections: form.sections,
         images: form.images,
-        stock: Number(form.stock) || 0,
+        stock: totalStock,
         isPublished: form.isPublished,
         isOnSale: Boolean(form.isOnSale),
         gstPercentage: Number(form.gstPercentage) || 0,
         attributes:
-          cleanedVariants.length > 0
-            ? Object.keys(cleanedVariants[0].attributes).map((key) => ({
+          preparedVariants.length > 0
+            ? Object.keys(preparedVariants[0].attributes).map((key) => ({
               name: key,
               values: [
-                ...new Set(cleanedVariants.map((v) => v.attributes[key])),
+                ...new Set(preparedVariants.map((v) => v.attributes[key])),
               ],
             }))
             : [],
-        variants: cleanedVariants.map((v) => ({
-          attributes: v.attributes,
-          stock: v.stock === "" ? 0 : Number(v.stock),
-          price: v.price === "" ? undefined : Number(v.price),
-          discountPrice: v.discountPrice === "" ? undefined : Number(v.discountPrice),
-        })),
+        variants: preparedVariants,
         primaryImageIndex: form.primaryImageIndex || 0,
         customizable: customizable.isCustomizable ? customizable : undefined,
         specifications: form.specifications.filter(s => s.name.trim() && s.value.trim()),
