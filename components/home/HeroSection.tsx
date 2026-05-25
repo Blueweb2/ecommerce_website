@@ -67,9 +67,9 @@ export default function HeroSection() {
   };
 
   return (
-    <section className="w-full py-8 mt-12 md:mt-20">
+    <section className="w-full py-8 mt-12 md:mt-20 lg:mt-[109px]">
       
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 md:h-[calc(100vh-120px)]">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 md:h-[calc(100vh-150px)]">
 
         {/* LEFT SLIDER */}
         <Link

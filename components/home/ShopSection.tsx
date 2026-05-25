@@ -105,20 +105,22 @@ export default function ShopSection() {
                 </Link>
 
                 {/* CONTENT */}
-                <div>
+                <div className="flex flex-col justify-between h-full">
                   {(product.brand || product.designer?.brandName || product.designer?.name) && (
                     <p className={`${inter.className} mb-1 text-[11px] uppercase tracking-[0.16em] text-[#8D8B9D]`}>
                       {product.brand || product.designer?.brandName || product.designer?.name}
                     </p>
                   )}
 
-                  <h3 className={`${inter.className} text-sm font-semibold mb-2`}>
-                    {product.name}
-                  </h3>
+                  <div>
+                    <h3 className={`${inter.className} text-sm font-semibold mb-2`}>
+                      {product.name}
+                    </h3>
 
-                  <p className={`${inter.className} text-sm font-medium mb-4`}>
-                    ₹{product.price}
-                  </p>
+                    <p className={`${inter.className} text-sm font-medium`}>
+                      ₹{product.price}
+                    </p>
+                  </div>
                 </div>
               </div>
             ))

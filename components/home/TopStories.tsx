@@ -109,7 +109,7 @@ export default function TopStories() {
 
               {/* CONTENT */}
               <div className="mr-8">
-                <h3 className={`${bodoni.className} text-sm font-semibold mb-2 uppercase`}>
+                <h3 className={`${bodoni.className} text-sm font-semibold mb-2 lowercase`}>
                   {story.category}
                 </h3>
                 <div className="text-xs space-y-2">
