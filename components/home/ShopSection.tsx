@@ -4,16 +4,8 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { productAPI } from "@/lib/api/product.api";
 import { bodoni, inter } from "@/lib/fonts";
+import { Product } from "@/types/product";
 import { resolveImageSrc } from "@/lib/utils/image";
-
-type Product = {
-  _id: string;
-  name: string;
-  price: number;
-  description: string;
-  slug: string;
-  images?: { url: string }[];
-};
 
 const tabs = ["Featured", "Best Sellers", "Top Rated"];
 
@@ -114,13 +106,15 @@ export default function ShopSection() {
 
                 {/* CONTENT */}
                 <div>
+                  {(product.brand || product.designer?.brandName || product.designer?.name) && (
+                    <p className={`${inter.className} mb-1 text-[11px] uppercase tracking-[0.16em] text-[#8D8B9D]`}>
+                      {product.brand || product.designer?.brandName || product.designer?.name}
+                    </p>
+                  )}
+
                   <h3 className={`${inter.className} text-sm font-semibold mb-2`}>
                     {product.name}
                   </h3>
-
-                  <p className={`${inter.className} text-xs text-[#5C5A58] mb-3 h-[45px]`}>
-                    {product.description}
-                  </p>
 
                   <p className={`${inter.className} text-sm font-medium mb-4`}>
                     ₹{product.price}
