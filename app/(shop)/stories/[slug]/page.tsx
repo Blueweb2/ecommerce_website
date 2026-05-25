@@ -2,11 +2,10 @@ import Image from "next/image";
 import { getStoryBySlug } from "@/lib/api/story.api";
 
 type Props = {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 };
 
 export async function generateMetadata({ params }: Props) {
-
   const { slug } = await params;
 
   try {
@@ -16,6 +15,8 @@ export async function generateMetadata({ params }: Props) {
       title: story.title,
       description: story.description,
       openGraph: {
+        title: story.title,
+        description: story.description,
         images: [story.image.url],
       },
     };
@@ -26,11 +27,8 @@ export async function generateMetadata({ params }: Props) {
   }
 }
 
-
 export default async function StoryDetailPage({ params }: Props) {
-
   const { slug } = await params;
-  console.log("Slug from URL:", slug);
 
   let story = null;
 
@@ -43,43 +41,75 @@ export default async function StoryDetailPage({ params }: Props) {
 
   if (!story) {
     return (
-      <div className="p-10 text-center text-gray-500">
+      <div className="flex min-h-screen items-center justify-center bg-[#f8f5ef] px-32 text-center text-gray-500">
         Story not found
       </div>
     );
   }
 
   return (
-    <section className="w-full md:mt-32">
-      <div className="max-w-[2000px] mx-auto px-4 md:px-32 py-10 mt-14">
+    <section className="bg-[#f8f5ef] pt-46 pb-20">
+      <div className="mx-auto grid max-w-[1800px] grid-cols-1 gap-14 px-4 md:px-10 lg:grid-cols-[48%_52%] lg:px-20">
 
-        {/* CATEGORY */}
-        <p className="text-xs uppercase text-gray-500 mb-2">
-          {story.category}
-        </p>
+        {/* LEFT SIDE - STICKY IMAGE */}
+        <div className="relative">
+          <div className="sticky top-28">
+            <div className="relative aspect-[4/5] overflow-hidden rounded-[30px] bg-[#ebe6de] shadow-[0_25px_80px_rgba(0,0,0,0.08)]">
 
-        {/* TITLE */}
-        <h1 className="text-3xl font-semibold mb-6">
-          {story.title}
-        </h1>
-
-        {/* IMAGE */}
-        <div className="relative w-full h-[400px] mb-6 rounded-xl overflow-hidden">
-          <Image
-            src={story.image.url}
-            alt={story.image.alt || story.title}
-            fill
-            sizes="(max-width: 1024px) 100vw, 960px"
-            className="object-cover"
-          />
+              <Image
+                src={story.image.url}
+                alt={story.image.alt || story.title}
+                fill
+                priority
+                sizes="(max-width:1024px) 100vw, 50vw"
+                className="object-cover transition duration-700 hover:scale-[1.03]"
+              />
+            </div>
+          </div>
         </div>
 
-        {/* DESCRIPTION */}
-        <div
-          className="prose prose-lg prose-slate max-w-none"
-          dangerouslySetInnerHTML={{ __html: story.description }}
-        />
+        {/* RIGHT SIDE - CONTENT */}
+        <div className="flex flex-col justify-start pt-2">
+
+          {/* CATEGORY */}
+          <p className="mb-4 text-[11px] uppercase tracking-[0.35em] text-neutral-500">
+            {story.category}
+          </p>
+
+          {/* TITLE */}
+          <h1 className="mb-10 max-w-4xl text-4xl font-light leading-[1.05] tracking-[-0.04em] text-[#111] md:text-6xl">
+            {story.title}
+          </h1>
+
+          {/* DESCRIPTION */}
+          <div
+            className="
+              prose
+              prose-neutral
+              max-w-none
+
+              prose-headings:font-light
+              prose-headings:text-[#111]
+
+              prose-p:text-[17px]
+              prose-p:leading-[2]
+              prose-p:text-[#444]
+
+              prose-a:text-black
+              prose-a:no-underline
+
+              prose-strong:font-semibold
+              prose-blockquote:border-l-black
+              prose-blockquote:text-neutral-700
+
+              prose-img:rounded-2xl
+            "
+            dangerouslySetInnerHTML={{
+              __html: story.description,
+            }}
+          />
+        </div>
       </div>
     </section>
   );
-};
+}
