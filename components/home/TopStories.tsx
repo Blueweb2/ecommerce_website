@@ -103,7 +103,7 @@ export default function TopStories() {
                   alt={story.image?.alt || story.title}
                   fill
                   sizes="200px"
-                  className="object-fill"
+                  className="object-cover"
                 />
               </Link>
 
