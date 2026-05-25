@@ -84,7 +84,7 @@ export default function ProductCard({
         )}
 
         <h3
-          className={`${inter.className} line-clamp-1 text-[13px] font-semibold uppercase text-[#5C5A58] transition-colors group-hover:text-neutral-800`}
+          className={`${inter.className} line-clamp-1 text-[13px] font-semibold uppercase text-[#5C5A58] transition-colors group-hover:text-neutral-800 text-center`}
         >
           {useBrandAsTitle ? (product.brand || product.name) : product.name}
         </h3>
