@@ -97,16 +97,24 @@ export default function Navbar() {
     if (isProductPage) {
       setShowNavbar(true);
       return;
-    };
+    }
 
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
 
+      // Before 300px always show
+      if (currentScrollY < 130) {
+        setShowNavbar(true);
+        setLastScrollY(currentScrollY);
+        return;
+      }
+
+      // After 300px
       if (currentScrollY > lastScrollY) {
-        // scrolling DOWN = hide navbar
+        // scrolling down
         setShowNavbar(false);
       } else {
-        // scrolling UP = show navbar
+        // scrolling up
         setShowNavbar(true);
       }
 
@@ -120,9 +128,14 @@ export default function Navbar() {
 
   return (
     <header
-      className={`w-full bg-black z-[9999] transition-transform duration-300
+      className={`w-full bg-black z-[9999]
+        transition-all duration-300 ease-in-out origin-top
         ${isProductPage ? "relative" : "fixed top-0"}
-        ${showNavbar ? "translate-y-0" : "-translate-y-full"}
+        ${
+          showNavbar
+            ? "scale-100 opacity-100"
+            : "scale-95 opacity-0 -translate-y-2"
+        }
       `}
     >
 
