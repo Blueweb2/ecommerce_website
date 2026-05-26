@@ -156,7 +156,7 @@ export default function ProductCard({
         </div>
 
         {/* HEART */}
-        <button
+        {/* <button
           type="button"
           onClick={handleWishlistToggle}
           aria-label={`Save ${product.name}`}
@@ -173,7 +173,7 @@ export default function ProductCard({
             className="h-4 w-4 transition"
             fill={isWishlisted ? "currentColor" : "none"}
           />
-        </button>
+        </button> */}
 
         {/* OVERLAY */}
         <div className="absolute inset-0 z-10 bg-transparent transition duration-500 group-hover:bg-white/10" />
