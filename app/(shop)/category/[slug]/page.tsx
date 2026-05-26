@@ -43,7 +43,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
   const [error, setError] = useState("");
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [hideAside, setHideAside] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   
   const [sortBy, setSortBy] = useState<SortOption>("recommended");
   const [activeFilters, setActiveFilters] = useState<any>({
