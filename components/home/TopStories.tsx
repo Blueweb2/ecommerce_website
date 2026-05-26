@@ -83,7 +83,7 @@ export default function TopStories() {
 
         {/* TITLE */}
         <h2 className={`${headingClassName} border-t-[2px] border-[#e5e5e5] py-5`}>
-          top stories on
+          Top stories on
         </h2>
 
         {/* STORIES */}
@@ -109,7 +109,7 @@ export default function TopStories() {
 
               {/* CONTENT */}
               <div className="mr-8">
-                <h3 className={`${bodoni.className} text-sm font-semibold mb-2 lowercase`}>
+                <h3 className={`${inter.className} text-sm font-semibold mb-2 lowercase`}>
                   {story.category}
                 </h3>
                 <div className="text-xs space-y-2">

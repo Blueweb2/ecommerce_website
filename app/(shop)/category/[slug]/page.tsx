@@ -339,7 +339,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
       </div>
 
       {mobileFiltersOpen && (
-        <div className="fixed inset-0 z-50 bg-black/35 xl:hidden">
+        <div className="fixed inset-0 z-50 bg-black/35 xl:hidden mt-20">
           <div className="ml-auto h-full w-full max-w-sm overflow-y-auto bg-[#f8f6f1] p-4 shadow-2xl">
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-lg font-semibold text-black">Filters</h2>

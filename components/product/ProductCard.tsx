@@ -191,7 +191,7 @@ export default function ProductCard({
         )}
 
         <h3
-          className={`${inter.className} line-clamp-1 pt-0.5 text-[13px] leading-6 text-[#5C5A58] transition-colors group-hover:text-neutral-800`}
+          className={`${inter.className} line-clamp-1 pt-0.5 text-[13px] leading-6 text-[#5C5A58] transition-colors group-hover:text-neutral-800 text-center`}
         >
           {useBrandAsTitle
             ? (product.brand || product.name)
