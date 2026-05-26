@@ -2,16 +2,10 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Heart } from "lucide-react";
-import { toast } from "react-hot-toast";
 
 import { Product } from "@/types/product";
 import { resolveImageSrc } from "@/lib/utils/image";
 import { inter } from "@/lib/fonts";
-
-import { useWishlistStore } from "@/store/user/wishlist/useWishlistStore";
-import { wishlistAPI } from "@/lib/api/wishlist.api";
-import { useAuthStore } from "@/store/auth/useAuthStore";
 
 type ProductCardProps = {
   product: Product;
@@ -33,9 +27,6 @@ export default function ProductCard({
   showFullDetails = false,
 }: ProductCardProps) {
 
-  const { toggleWishlist, isInWishlist } = useWishlistStore();
-  const { user } = useAuthStore();
-
   const primaryImg =
     product.images?.find(
       (image) => "isPrimary" in image && image.isPrimary
@@ -45,45 +36,6 @@ export default function ProductCard({
 
   const imageUrl = resolveImageSrc(primaryImg?.url);
   const hoverImageUrl = resolveImageSrc(secondImg?.url);
-
-  const isWishlisted = isInWishlist(product._id);
-
-  const handleWishlistToggle = async (
-    e: React.MouseEvent<HTMLButtonElement>
-  ) => {
-
-    e.preventDefault();
-    e.stopPropagation();
-
-    toggleWishlist({
-      _id: product._id,
-      name: product.name,
-      price: product.price,
-      image: imageUrl,
-    });
-
-    if (user) {
-      try {
-        await wishlistAPI.toggle(product._id);
-      } catch {
-        console.log("Wishlist sync failed");
-      }
-    }
-
-    toast.success(
-      isWishlisted
-        ? "Removed from wishlist"
-        : "Added to wishlist"
-    );
-  };
-
-  const hasDiscount =
-    typeof product.discountPrice === "number" &&
-    product.discountPrice < product.price;
-
-  const displayPrice = hasDiscount
-    ? product.discountPrice
-    : product.price;
 
   return (
     <Link
@@ -155,26 +107,6 @@ export default function ProductCard({
           )}
         </div>
 
-        {/* HEART */}
-        {/* <button
-          type="button"
-          onClick={handleWishlistToggle}
-          aria-label={`Save ${product.name}`}
-          className="
-            absolute right-4 top-4 z-40
-            flex h-9 w-9 items-center justify-center
-            rounded-full bg-white/90 text-black
-            shadow-sm backdrop-blur-sm
-            transition duration-300
-            hover:scale-105
-          "
-        >
-          <Heart
-            className="h-4 w-4 transition"
-            fill={isWishlisted ? "currentColor" : "none"}
-          />
-        </button> */}
-
         {/* OVERLAY */}
         <div className="absolute inset-0 z-10 bg-transparent transition duration-500 group-hover:bg-white/10" />
       </div>
@@ -182,39 +114,14 @@ export default function ProductCard({
       {/* CONTENT */}
       <div className="space-y-1 px-1 pt-1">
 
-        {showFullDetails && product.brand && (
-          <p
-            className={`${inter.className} text-[13px] font-semibold uppercase tracking-[0.03em] text-neutral-600`}
-          >
-            {product.brand}
-          </p>
-        )}
-
         <h3
-          className={`${inter.className} line-clamp-1 pt-0.5 text-[13px] leading-6 text-[#5C5A58] transition-colors group-hover:text-neutral-800 text-center`}
+          className={`${inter.className} line-clamp-1 pt-0.5 text-[13px] leading-6 text-[#5C5A58] transition-colors group-hover:text-neutral-800 uppercase text-center`}
         >
           {useBrandAsTitle
             ? (product.brand || product.name)
-            : product.name}
+            : product.name}cd
         </h3>
-
-        {showFullDetails && (
-          <div className="flex items-center gap-2 pt-1">
-
-            <span className={`${inter.className} text-[15px]`}>
-              ₹{displayPrice}
-            </span>
-
-            {hasDiscount && (
-              <span
-                className={`${inter.className} text-xs text-neutral-400 line-through`}
-              >
-                ₹{product.price}
-              </span>
-            )}
-          </div>
-        )}
       </div>
     </Link>
   );
-}
+};
