@@ -119,7 +119,7 @@ export default function ProductCard({
         >
           {useBrandAsTitle
             ? (product.brand || product.name)
-            : product.name}cd
+            : product.name}
         </h3>
       </div>
     </Link>
