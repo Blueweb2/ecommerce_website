@@ -163,23 +163,20 @@ export default function RelatedProducts({ product }: Props) {
               </div>
 
               <div className="mt-4 space-y-1">
-                <h3 className={`${bodoni.className} text-xs font-normal uppercase tracking-widest text-neutral-600`}>
+                <h3 className={`${inter.className} text-xs font-normal uppercase tracking-widest text-neutral-600`}>
                   {item.name}
                 </h3>
                 <p className={`${inter.className} line-clamp-1 text-[10px] font-medium text-gray-400`}>
                   {item.description}
                 </p>
                 <div className="flex items-center gap-2 pt-1">
-                  <p className={`${inter.className} text-sm text-[13px] font-black text-[#8D8B9D]`}>
+                  <p className={`${inter.className} text-sm text-[15px]`}>
 
                     ₹
                     {Math.round(
                       item.price * (1 + (item.gstPercentage || 0) / 100)
                     )}
                   </p>
-                  <span className="text-[10px] font-bold uppercase tracking-tighter text-gray-400">
-                  
-                  </span>
                 </div>
               </div>
             </Link>

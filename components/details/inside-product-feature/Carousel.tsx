@@ -39,7 +39,7 @@ const Carousel = ({ images = [], firstImage }: CarouselProps) => {
   };
 
   return (
-    <div className="w-full lg:max-w-full lg:my-auto mx-auto mt-[30px] lg:mt-[-56px] lg:mb-3 lg:flex lg:flex-col lg:items-center lg:justify-center text-center">
+    <div className="w-full lg:max-w-full lg:my-auto mx-auto lg:mt-[-56px] lg:mb-3 lg:flex lg:flex-col lg:items-center lg:justify-center text-center">
 
       {/* MAIN IMAGE */}
       <div
@@ -56,7 +56,7 @@ const Carousel = ({ images = [], firstImage }: CarouselProps) => {
         <img
           src={resolveImageSrc(safeImages[index].url)}
           alt={safeImages[index].altText}
-          className="w-full h-[500px] md:h-[calc(100vh+100vh+600px)] object-cover"
+          className="w-full h-[500px] md:h-[calc(100vh-180px)] lg:h-[calc(100vh+100vh+600px)] object-cover"
         />
 
         {/* LEFT */}
