@@ -63,11 +63,10 @@ export default function ShopSection() {
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`pb-1 border-b transition ${
-                activeTab === tab
+              className={`pb-1 border-b transition ${activeTab === tab
                   ? "border-neutral-600 text-neutral-600"
                   : "border-transparent text-[#8D8B9D] hover:text-neutral-600"
-              }`}
+                }`}
             >
               {tab}
             </button>
@@ -90,7 +89,7 @@ export default function ShopSection() {
                 className="min-w-[200px] md:min-w-[250px] lg:min-w-0  flex flex-col justify-between overflow-hidden"
               >
                 {/* IMAGE */}
-                <Link
+                {/* <Link
                   href={`/product/${product.slug}`}
                   className="flex justify-center items-center mb-4"
                 >
@@ -102,6 +101,44 @@ export default function ShopSection() {
                     alt={product.name}
                     className="h-44 lg:h-60 2xl:h-80 object-fill w-full"
                   />
+                </Link> */}
+                {/* IMAGE */}
+                <Link
+                  href={`/product/${product.slug}`}
+                  className="group relative mb-4 block  bg-[#f8f8f8]"
+                >
+                  {/* PRIMARY IMAGE */}
+                  <img
+                    src={resolveImageSrc(
+                      (product.images?.find((img: any) => img.isPrimary) ||
+                        product.images?.[0])?.url
+                    )}
+                    alt={product.name}
+                    className="
+      h-44 lg:h-60 2xl:h-80
+      w-full object-fill
+      transition-all duration-700
+      group-hover:opacity-0
+      group-hover:scale-[1.02]
+    "
+                  />
+
+                  {/* SECOND IMAGE */}
+                  {product.images?.[1] && (
+                    <img
+                      src={resolveImageSrc(product.images[1].url)}
+                      alt={product.name}
+                      className="
+        absolute inset-0
+        h-44 lg:h-60 2xl:h-80
+        w-full object-fill
+        opacity-0
+        transition-all duration-700
+        group-hover:opacity-100
+        group-hover:scale-[1.02]
+      "
+                    />
+                  )}
                 </Link>
 
                 {/* CONTENT */}
