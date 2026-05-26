@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Heart, Truck } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { useCartStore } from "@/store/user/cart/useCartStore";
@@ -18,6 +18,23 @@ type Props = {
 type CustomDataItem = {
   fieldName: string;
   value: string | number;
+};
+
+const normalizeKey = (key: string) => {
+  const k = key.toLowerCase().trim();
+  if (k === "color" || k === "colour") return "color";
+  return k;
+};
+
+const getAttributeValueCaseInsensitive = (attributes: Record<string, any> | undefined, key: string) => {
+  if (!attributes) return undefined;
+  const lowerKey = normalizeKey(key);
+  for (const [k, v] of Object.entries(attributes)) {
+    if (normalizeKey(k) === lowerKey) {
+      return v;
+    }
+  }
+  return undefined;
 };
 
 const RightSide = ({ product, onVariantChange }: Props) => {
@@ -107,11 +124,10 @@ const RightSide = ({ product, onVariantChange }: Props) => {
 
   const matchesSelection = (variant: any, selection: Record<string, string>) => {
     return Object.entries(selection).every(([key, value]) => {
-      const variantValue = variant?.attributes?.[key];
-
+      const variantValue = getAttributeValueCaseInsensitive(variant?.attributes, key);
       return (
-        typeof variantValue === "string" &&
-        variantValue.toLowerCase() === value.toLowerCase()
+        variantValue !== undefined &&
+        String(variantValue).toLowerCase().trim() === String(value).toLowerCase().trim()
       );
     });
   };
@@ -119,37 +135,69 @@ const RightSide = ({ product, onVariantChange }: Props) => {
   const inStockVariants =
     product?.variants?.filter((variant: any) => variant.stock > 0) || [];
 
-  const findVariantForAttributeValue = (
+  const findBestMatchingVariant = (
     attributeName: string,
     value: string,
     currentSelection: Record<string, string>
   ) => {
-    const prioritizedSelection = {
-      ...currentSelection,
-      [attributeName]: value,
-    };
+    const targetKeyNormalized = normalizeKey(attributeName);
+    const targetValueLower = value.toLowerCase().trim();
 
-    return (
-      inStockVariants.find((variant: any) =>
-        matchesSelection(variant, prioritizedSelection)
-      )  ||
-      null
-    );
+    let candidates = inStockVariants.filter((variant: any) => {
+      const variantValue = getAttributeValueCaseInsensitive(variant.attributes, attributeName);
+      return variantValue !== undefined && String(variantValue).toLowerCase().trim() === targetValueLower;
+    });
+
+    if (candidates.length === 0) {
+      candidates = (product?.variants || []).filter((variant: any) => {
+        const variantValue = getAttributeValueCaseInsensitive(variant.attributes, attributeName);
+        return variantValue !== undefined && String(variantValue).toLowerCase().trim() === targetValueLower;
+      });
+    }
+
+    if (candidates.length === 0) return null;
+
+    let bestCandidate = candidates[0];
+    let maxMatches = -1;
+
+    candidates.forEach((candidate: any) => {
+      let matches = 0;
+      Object.entries(currentSelection).forEach(([selKey, selVal]) => {
+        const selKeyNorm = normalizeKey(selKey);
+        if (selKeyNorm === targetKeyNormalized) return;
+
+        const candidateVal = getAttributeValueCaseInsensitive(candidate.attributes, selKey);
+        if (candidateVal !== undefined && String(candidateVal).toLowerCase().trim() === String(selVal).toLowerCase().trim()) {
+          matches++;
+        }
+      });
+
+      if (matches > maxMatches) {
+        maxMatches = matches;
+        bestCandidate = candidate;
+      }
+    });
+
+    return bestCandidate;
   };
-console.log("variants", product?.variants);
-console.log("selectedAttributes", selectedAttributes);
+
+  const onVariantChangeRef = useRef(onVariantChange);
+  useEffect(() => {
+    onVariantChangeRef.current = onVariantChange;
+  }, [onVariantChange]);
+
   useEffect(() => {
     if (product?.variants?.length > 0) {
-      const firstAvailable = product.variants.find((variant: any) => variant.stock > 0);
+      const firstAvailable = product.variants.find((variant: any) => variant.stock > 0) || product.variants[0];
 
       if (firstAvailable) {
         setSelectedVariant(firstAvailable);
-        onVariantChange?.(firstAvailable);
+        onVariantChangeRef.current?.(firstAvailable);
         setSelectedAttributes(
           Object.entries(firstAvailable.attributes || {}).reduce(
             (acc, [key, value]) => ({
               ...acc,
-              [key]: String(value),
+              [normalizeKey(key)]: String(value),
             }),
             {}
           )
@@ -159,15 +207,19 @@ console.log("selectedAttributes", selectedAttributes);
     }
 
     setSelectedVariant(null);
-    onVariantChange?.(null);
+    onVariantChangeRef.current?.(null);
     setSelectedAttributes({});
-  }, [product, onVariantChange]);
+  }, [product]);
 
   const isValid =
     product?.customizable?.fields?.every((field: any) => {
       if (!field.required) return true;
       return customData.find((item) => item.fieldName === field.name);
     }) ?? true;
+
+  const isOutOfStock = product?.variants?.length > 0
+    ? (!selectedVariant || selectedVariant.stock <= 0)
+    : (product?.stock <= 0);
 
   const price = selectedVariant?.price || product?.price;
   const discountPrice = selectedVariant?.discountPrice || product?.discountPrice;
@@ -256,41 +308,41 @@ console.log("selectedAttributes", selectedAttributes);
 
             <div className="grid grid-cols-4 gap-2">
               {values.map((value: string) => {
-                const variant = findVariantForAttributeValue(
-                  attribute.name,
-                  value,
-                  selectedAttributes
-                );
- 
-                const isSelected =
-                  selectedAttributes?.[attribute.name]?.toLowerCase() ===
-                  value.toLowerCase();
-                const isOutOfStock = !variant;
+                const hasAnyVariant = inStockVariants.some((v: any) => {
+                  const val = getAttributeValueCaseInsensitive(v.attributes, attribute.name);
+                  return val !== undefined && String(val).toLowerCase().trim() === value.toLowerCase().trim();
+                });
+                const isOutOfStock = !hasAnyVariant;
+
+                const isSelected = (() => {
+                  const currentVal = getAttributeValueCaseInsensitive(selectedAttributes, attribute.name);
+                  return currentVal !== undefined && String(currentVal).toLowerCase().trim() === value.toLowerCase().trim();
+                })();
 
                 return (
                   <button
                     key={`${attribute.name}-${value}`}
                     disabled={isOutOfStock}
-                   onClick={() => {
-  if (!variant) return;
+                    onClick={() => {
+                      const matchedVariant = findBestMatchingVariant(
+                        attribute.name,
+                        value,
+                        selectedAttributes
+                      );
 
-  const updatedSelection = {
-    ...selectedAttributes,
-    [attribute.name]: value,
-  };
-
-  const matchedVariant = inStockVariants.find((v: any) =>
-    matchesSelection(v, updatedSelection)
-  );
-
-  if (matchedVariant) {
-    setSelectedAttributes(updatedSelection);
-    setSelectedVariant(matchedVariant);
-    onVariantChange?.(matchedVariant);
-  } else {
-    setSelectedAttributes(updatedSelection);
-  }
-}}
+                      if (matchedVariant) {
+                        const newAttributes = Object.entries(matchedVariant.attributes || {}).reduce(
+                          (acc, [k, v]) => ({
+                            ...acc,
+                            [normalizeKey(k)]: String(v),
+                          }),
+                          {}
+                        );
+                        setSelectedAttributes(newAttributes);
+                        setSelectedVariant(matchedVariant);
+                        onVariantChange?.(matchedVariant);
+                      }
+                    }}
                     className={`border px-3 py-2 transition ${
                       isSelected
                         ? "border border-black"
