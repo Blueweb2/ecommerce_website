@@ -132,19 +132,12 @@ const RightSide = ({ product, onVariantChange }: Props) => {
     return (
       inStockVariants.find((variant: any) =>
         matchesSelection(variant, prioritizedSelection)
-      ) ||
-      inStockVariants.find((variant: any) => {
-        const variantValue = variant?.attributes?.[attributeName];
-
-        return (
-          typeof variantValue === "string" &&
-          variantValue.toLowerCase() === value.toLowerCase()
-        );
-      }) ||
+      )  ||
       null
     );
   };
-
+console.log("variants", product?.variants);
+console.log("selectedAttributes", selectedAttributes);
   useEffect(() => {
     if (product?.variants?.length > 0) {
       const firstAvailable = product.variants.find((variant: any) => variant.stock > 0);
@@ -268,7 +261,7 @@ const RightSide = ({ product, onVariantChange }: Props) => {
                   value,
                   selectedAttributes
                 );
-
+ 
                 const isSelected =
                   selectedAttributes?.[attribute.name]?.toLowerCase() ===
                   value.toLowerCase();
@@ -278,25 +271,26 @@ const RightSide = ({ product, onVariantChange }: Props) => {
                   <button
                     key={`${attribute.name}-${value}`}
                     disabled={isOutOfStock}
-                    onClick={() => {
-                      if (!variant) {
-                        return;
-                      }
+                   onClick={() => {
+  if (!variant) return;
 
-                      const nextAttributes = Object.entries(
-                        variant.attributes || {}
-                      ).reduce(
-                        (acc, [key, attributeValue]) => ({
-                          ...acc,
-                          [key]: String(attributeValue),
-                        }),
-                        {}
-                      );
+  const updatedSelection = {
+    ...selectedAttributes,
+    [attribute.name]: value,
+  };
 
-                      setSelectedAttributes(nextAttributes);
-                      setSelectedVariant(variant);
-                      onVariantChange?.(variant);
-                    }}
+  const matchedVariant = inStockVariants.find((v: any) =>
+    matchesSelection(v, updatedSelection)
+  );
+
+  if (matchedVariant) {
+    setSelectedAttributes(updatedSelection);
+    setSelectedVariant(matchedVariant);
+    onVariantChange?.(matchedVariant);
+  } else {
+    setSelectedAttributes(updatedSelection);
+  }
+}}
                     className={`border px-3 py-2 transition ${
                       isSelected
                         ? "border border-black"

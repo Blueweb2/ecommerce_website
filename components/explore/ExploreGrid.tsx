@@ -30,64 +30,121 @@ export default function ExploreGrid({
     );
   };
 
-  return (
-    <div className="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-10 lg:grid-cols-4">
-      {products.map((product) => {
-        const primaryImg = product.images?.find((img: any) => img.isPrimary) || product.images?.[0];
-        const productImage = resolveImageSrc(primaryImg?.url, fallbackImage);
+return (
+  <div className="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-10 lg:grid-cols-4">
+    {products.map((product) => {
+      const primaryImg =
+        product.images?.find((img: any) => img.isPrimary) ||
+        product.images?.[0];
 
-        return (
-          <article key={product._id}>
-            <Link href={`/product/${product.slug}`} className="block">
-              <div className="relative aspect-[4/5] 2xl:aspect-[4/6] overflow-hidden">
+      const secondImg = product.images?.[1];
+
+      const productImage = resolveImageSrc(
+        primaryImg?.url,
+        fallbackImage
+      );
+
+      const hoverImage = resolveImageSrc(
+        secondImg?.url,
+        fallbackImage
+      );
+
+      return (
+        <article key={product._id}>
+          <Link
+            href={`/product/${product.slug}`}
+            className="group block"
+          >
+            <div className="relative aspect-[4/5] 2xl:aspect-[4/6] overflow-hidden bg-[#f8f8f8]">
+
+              {/* PRIMARY IMAGE */}
+              <Image
+                src={productImage}
+                alt={product.name}
+                fill
+                sizes="(max-width: 768px) 48vw, (max-width: 1536px) 30vw, 22vw"
+                className="
+                  object-cover
+                  transition-all duration-700
+                  group-hover:opacity-0
+                  group-hover:scale-[1.03]
+                "
+              />
+
+              {/* SECOND IMAGE */}
+              {secondImg && (
                 <Image
-                  src={productImage}
+                  src={hoverImage}
                   alt={product.name}
                   fill
                   sizes="(max-width: 768px) 48vw, (max-width: 1536px) 30vw, 22vw"
-                  className="object-fill h-40 md:h-90 transition duration-500"
+                  className="
+                    object-cover
+                    opacity-0
+                    transition-all duration-700
+                    group-hover:opacity-100
+                    group-hover:scale-[1.03]
+                  "
                 />
-                <button
-                  type="button"
-                  aria-label={`Save ${product.name}`}
-                  className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-black shadow-sm backdrop-blur-sm transition hover:scale-105"
-                >
-                  <Heart className="h-4 w-4" />
-                </button>
-              </div>
+              )}
+
+              {/* HEART BUTTON */}
+              <button
+                type="button"
+                aria-label={`Save ${product.name}`}
+                className="
+                  absolute right-4 top-4 z-10
+                  flex h-9 w-9 items-center justify-center
+                  rounded-full bg-white/90 text-black
+                  shadow-sm backdrop-blur-sm
+                  transition duration-300
+                  hover:scale-105
+                "
+              >
+                <Heart className="h-4 w-4" />
+              </button>
+            </div>
+          </Link>
+
+          {/* CONTENT */}
+          <div className="pt-4">
+            <p
+              className={`${inter.className} text-[13px] font-semibold uppercase tracking-[0.03em] text-neutral-600`}
+            >
+              {product.brand || categoryTitle}
+            </p>
+
+            <Link
+              href={`/product/${product.slug}`}
+              className={`${inter.className} mt-2 line-clamp-2 block text-[13px] leading-6 text-[#5C5A58]`}
+            >
+              {product.name}
             </Link>
 
-            <div className="pt-4">
-              <p className={`${inter.className} text-[13px] font-semibold uppercase tracking-[0.03em] text-neutral-600`}>
-                {product.brand || categoryTitle}
-              </p>
-              <Link
-                href={`/product/${product.slug}`}
-                className={`${inter.className} mt-2 line-clamp-2 block text-[13px] leading-6 text-[#5C5A58]`}
-              >
-                {product.name}
-              </Link>
-              <div className="mt-3 flex items-center gap-2 text-[15px]">
-                {product.discountPrice &&
-                product.discountPrice < product.price ? (
-                  <>
-                    <span className={`${inter.className}`}>
-                      ₹{product.discountPrice}
-                    </span>
-                    <span className={`${inter.className} text-[#d82d2d] line-through`}>
-                      ₹{product.price}
-                    </span>
-                  </>
-                ) : (
+            <div className="mt-3 flex items-center gap-2 text-[15px]">
+              {product.discountPrice &&
+              product.discountPrice < product.price ? (
+                <>
                   <span className={`${inter.className}`}>
+                    ₹{product.discountPrice}
+                  </span>
+
+                  <span
+                    className={`${inter.className} text-[#d82d2d] line-through`}
+                  >
                     ₹{product.price}
                   </span>
-                )}
-              </div>
+                </>
+              ) : (
+                <span className={`${inter.className}`}>
+                  ₹{product.price}
+                </span>
+              )}
             </div>
-          </article>
-        );
-      })}
-    </div>
-  );
+          </div>
+        </article>
+      );
+    })}
+  </div>
+);
 };

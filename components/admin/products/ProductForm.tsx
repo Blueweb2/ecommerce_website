@@ -127,8 +127,8 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
     designer: (initialData as any)?.designer?._id || (initialData as any)?.designer || "", // ✅ Added
     sections: initialData?.sections || [],
     variants:
-      initialData?.variants?.map((v) => ({
-        attributes: v.attributes || {},
+  initialData?.variants?.map((v) => ({
+    attributes: { ...(v.attributes || {}) },
         stock: v.stock ?? "",
         price: v.price ?? "",
         discountPrice: v.discountPrice ?? "",
@@ -188,10 +188,13 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
   useEffect(() => {
     if (initialData?.variants?.length) {
       const first = initialData.variants[0];
-      const keys = Object.keys(first.attributes || {});
-      const attrs = keys.map((key) => ({
+const attrsObject = {
+  ...(first.attributes || {}),
+};
+
+const keys = Object.keys(attrsObject);      const attrs = keys.map((key) => ({
         name: key,
-        values: [...new Set(initialData.variants!.map((v) => v.attributes[key]))],
+        values: [...new Set(initialData.variants!.map((v) =>attrsObject[key]))],
       }));
       setAttributes(attrs);
     }

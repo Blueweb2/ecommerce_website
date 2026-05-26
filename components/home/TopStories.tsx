@@ -96,7 +96,7 @@ export default function TopStories() {
               {/* IMAGE */}
               <Link
                 href={`/stories/${story.slug}`}
-                className="flex justify-center h-60 2xl:h-70 mb-4 relative overflow-hidden"
+                className="flex justify-center h-80 2xl:h-90 mb-4 relative overflow-hidden"
               >
                 <Image
                   src={resolveImageSrc(story.image?.url)}
