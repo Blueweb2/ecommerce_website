@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Heart } from "lucide-react";
 import { Product } from "@/types/product";
 import { resolveImageSrc } from "@/lib/utils/image";
 import { inter } from "@/lib/fonts";
@@ -23,6 +24,7 @@ export default function ProductCard({
   useBrandAsTitle = false,
   showFullDetails = false,
 }: ProductCardProps) {
+
   const primaryImg =
     product.images?.find((image) => "isPrimary" in image && image.isPrimary) ||
     product.images?.[0];
@@ -74,29 +76,33 @@ export default function ProductCard({
             </span>
           )}
         </div>
+
+        <button
+          type="button"
+          aria-label={`Save ${product.name}`}
+          className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-black shadow-sm backdrop-blur-sm transition hover:scale-105 z-40"
+        >
+          <Heart className="h-4 w-4" />
+        </button>
       </div>
 
-      <div className="space-y-1 px-1">
+      <div className="space-y-1 pt-1 px-1">
         {showFullDetails && product.brand && (
-          <p className={`${inter.className} text-[11px] uppercase tracking-[0.18em] text-right text-[#8D8B9D]`}>
+          <p className={`${inter.className} text-[13px] font-semibold uppercase tracking-[0.03em] text-neutral-600 `}>
             {product.brand}
           </p>
         )}
 
         <h3
-          className={`${inter.className} line-clamp-1 text-[13px] font-semibold uppercase text-[#5C5A58] transition-colors group-hover:text-neutral-800 text-center`}
+          className={`${inter.className} line-clamp-1 text-[13px] leading-6 text-[#5C5A58] transition-colors group-hover:text-neutral-800 pt-0.5`}
         >
           {useBrandAsTitle ? (product.brand || product.name) : product.name}
         </h3>
 
         {showFullDetails && (
           <>
-            <p className={`${inter.className} line-clamp-2 text-xs leading-5 text-[#7A7672]`}>
-              {product.description || "No description available."}
-            </p>
-
             <div className="flex items-center gap-2 pt-1">
-              <span className={`${inter.className} text-sm font-semibold text-[#5C5A58]`}>
+              <span className={`${inter.className} text-[15px]`}>
                 ₹{displayPrice}
               </span>
               {hasDiscount && (
