@@ -43,6 +43,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
   const [error, setError] = useState("");
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [hideAside, setHideAside] = useState(false);
+  const [loading, setLoading] = useState(true);
   
   const [sortBy, setSortBy] = useState<SortOption>("recommended");
   const [activeFilters, setActiveFilters] = useState<any>({
@@ -61,6 +62,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
 
   const loadData = useCallback(async () => {
     try {
+      setLoading(true);
       setError("");
 
       const [catRes, prodRes, allCatsRes] = await Promise.all([
@@ -78,6 +80,8 @@ export default function CategoryPage({ params }: CategoryPageProps) {
           ? err.message
           : "Unable to load this category right now.";
       setError(message);
+    } finally {
+      setLoading(false);
     }
   }, [slug]);
 
@@ -328,11 +332,17 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                 </button>
               </div>
             ) : (
-              <ExploreGrid
-                products={filteredProducts}
-                fallbackImage={FALLBACK_PRODUCT_IMAGE}
-                categoryTitle={categoryTitle}
-              />
+              loading ? (
+                <div className="flex justify-center h-[calc(100vh-300px)] items-center">
+                  <div className="w-10 h-10 border-4 border-gray-300 border-t-black rounded-full animate-spin"></div>
+                </div>
+              ) : (
+                <ExploreGrid
+                  products={filteredProducts}
+                  fallbackImage={FALLBACK_PRODUCT_IMAGE}
+                  categoryTitle={categoryTitle}
+                />
+              )
             )}
           </div>
         </div>

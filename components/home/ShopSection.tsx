@@ -77,7 +77,7 @@ export default function ShopSection() {
         <div className="flex gap-2 overflow-x-auto scrollbar-hide scroll-smooth lg:grid lg:grid-cols-6 lg:gap-6">
 
           {loading ? (
-            <div className="w-full h-[300px] md:h-[377px] lg:h-[455px] flex items-center justify-center">
+            <div className="w-full h-[300px] md:h-[377px] lg:h-[455px] flex items-center justify-center col-span-6">
               <div className="w-10 h-10 border-4 border-gray-300 border-t-black rounded-full animate-spin"></div>
             </div>
           ) : products.length === 0 ? (
@@ -88,20 +88,6 @@ export default function ShopSection() {
                 key={product._id}
                 className="min-w-[200px] md:min-w-[250px] lg:min-w-0  flex flex-col justify-between overflow-hidden"
               >
-                {/* IMAGE */}
-                {/* <Link
-                  href={`/product/${product.slug}`}
-                  className="flex justify-center items-center mb-4"
-                >
-                  <img
-                    src={resolveImageSrc(
-                      (product.images?.find((img: any) => img.isPrimary) ||
-                        product.images?.[0])?.url
-                    )}
-                    alt={product.name}
-                    className="h-44 lg:h-60 2xl:h-80 object-fill w-full"
-                  />
-                </Link> */}
                 {/* IMAGE */}
                 <Link
                   href={`/product/${product.slug}`}
@@ -115,12 +101,12 @@ export default function ShopSection() {
                     )}
                     alt={product.name}
                     className="
-      h-44 lg:h-60 2xl:h-80
-      w-full object-fill
-      transition-all duration-700
-      group-hover:opacity-0
-      group-hover:scale-[1.02]
-    "
+                      h-44 lg:h-60 2xl:h-80
+                      w-full object-fill
+                      transition-all duration-700
+                      group-hover:opacity-0
+                      group-hover:scale-[1.02]
+                    "
                   />
 
                   {/* SECOND IMAGE */}
