@@ -9,6 +9,7 @@ import { wishlistAPI } from "@/lib/api/wishlist.api";
 import { useAuthStore } from "@/store/auth/useAuthStore";
 import { bodoni, inter } from "@/lib/fonts";
 import { getPrimaryProductImage } from "@/lib/constants/admin-catalog";
+import { getInclusivePrice } from "@/lib/utils/pricing";
 
 type Props = {
   product: any;
@@ -221,8 +222,11 @@ const RightSide = ({ product, onVariantChange }: Props) => {
     ? (!selectedVariant || selectedVariant.stock <= 0)
     : (product?.stock <= 0);
 
-  const price = selectedVariant?.price || product?.price;
-  const discountPrice = selectedVariant?.discountPrice || product?.discountPrice;
+  const basePrice = selectedVariant?.price || product?.price;
+  const baseDiscountPrice = selectedVariant?.discountPrice || product?.discountPrice;
+  const gstPct = product?.gstPercentage || 0;
+  const price = getInclusivePrice(basePrice, gstPct);
+  const discountPrice = baseDiscountPrice ? getInclusivePrice(baseDiscountPrice, gstPct) : undefined;
 
   const { addItem } = useCartStore();
 
@@ -246,7 +250,7 @@ const RightSide = ({ product, onVariantChange }: Props) => {
       productId: product._id,
       name: product.name,
       image: primaryImageUrl,
-      price,
+      price: basePrice,
       quantity: quantity,
       gstPercentage: product.gstPercentage || 0,
       variantId: selectedVariant?.sku,

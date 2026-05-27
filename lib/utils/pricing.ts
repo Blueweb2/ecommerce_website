@@ -8,6 +8,13 @@ export type PricedLineItem = {
 export const roundCurrency = (amount: number) =>
   Math.round((amount + Number.EPSILON) * 100) / 100;
 
+/** Price inclusive of GST (price + GST) for user-facing display. */
+export const getInclusivePrice = (price: number, gstPercentage?: number): number => {
+  const p = Number(price) || 0;
+  const gst = Number(gstPercentage) || 0;
+  return roundCurrency(p * (1 + gst / 100));
+};
+
 /** GST per single unit (from product slab %). */
 export const getUnitGstAmount = (item: PricedLineItem): number => {
   const price = Number(item.price) || 0;

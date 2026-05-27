@@ -6,6 +6,7 @@ import { useCartUIStore } from "@/store/ui/useCartUIStore";
 import { useCartStore } from "@/store/user/cart/useCartStore";
 import { resolveImageSrc } from "@/lib/utils/image";
 import { bodoni, inter } from "@/lib/fonts";
+import { getInclusivePrice } from "@/lib/utils/pricing";
 
 export default function CartDrawer() {
 
@@ -61,7 +62,7 @@ export default function CartDrawer() {
                   )}
 
                   <p className="text-sm text-gray-500">
-                    ₹{item.price} {item.isFabric && <span className="text-xs">/ {item.unit || "meter"}</span>}
+                    ₹{getInclusivePrice(item.price, item.gstPercentage)} {item.isFabric && <span className="text-xs">/ {item.unit || "meter"}</span>}
                   </p>
 
                   {/* Quantity */}
@@ -110,15 +111,7 @@ export default function CartDrawer() {
         {/* Footer */}
         <div className="absolute bottom-0 w-full p-4 border-t border-gray-300 bg-white pb-20">
           <div className="space-y-1 mb-4 text-sm">
-            <div className="flex justify-between text-gray-500">
-              <span>Subtotal</span>
-              <span>₹{totalPrice}</span>
-            </div>
-            {/* <div className="flex justify-between text-gray-500">
-              <span>GST</span>
-              <span>₹{totalGstAmount}</span>
-            </div> */}
-            <div className={`${bodoni.className} text-neutral-600 flex justify-between font-bold text-lg border-t border-gray-300 pt-2 mt-2`}>
+            <div className={`${bodoni.className} text-neutral-600 flex justify-between font-bold text-lg pt-2`}>
               <span>Total</span>
               <span>₹{totalPrice + totalGstAmount}</span>
             </div>

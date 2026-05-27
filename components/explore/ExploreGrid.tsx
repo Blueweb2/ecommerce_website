@@ -181,18 +181,18 @@ export default function ExploreGrid({
                 product.discountPrice < product.price ? (
                   <>
                     <span className={`${inter.className}`}>
-                      ₹{product.discountPrice}
+                      ₹{Math.round(product.discountPrice * (1 + (product.gstPercentage || 0) / 100))}
                     </span>
 
                     <span
                       className={`${inter.className} text-[#d82d2d] line-through`}
                     >
-                      ₹{product.price}
+                      ₹{Math.round(product.price * (1 + (product.gstPercentage || 0) / 100))}
                     </span>
                   </>
                 ) : (
                   <span className={`${inter.className}`}>
-                    ₹{product.price}
+                    ₹{Math.round(product.price * (1 + (product.gstPercentage || 0) / 100))}
                   </span>
                 )}
               </div>

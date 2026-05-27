@@ -12,6 +12,7 @@ import {
 import { useEffect, useState } from "react";
 
 import { useCartStore } from "@/store/user/cart/useCartStore";
+import { getInclusivePrice } from "@/lib/utils/pricing";
 
 interface Props {
     item: any;
@@ -141,7 +142,7 @@ export default function CartEditModal({
 
             {/* PRICE */}
             <p className="mt-5 text-[34px] font-semibold tracking-[-0.5px] text-black">
-              ₹{item.price}
+              ₹{getInclusivePrice(item.price, item.gstPercentage)}
             </p>
 
             {/* OPTIONS */}

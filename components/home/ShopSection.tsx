@@ -155,7 +155,7 @@ export default function ShopSection() {
                     </h3>
 
                     <p className={`${inter.className} text-sm font-medium`}>
-                      ₹{product.price}
+                      ₹{Math.round(product.price * (1 + (product.gstPercentage || 0) / 100))}
                     </p>
                   </div>
                 </div>

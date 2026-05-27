@@ -9,6 +9,7 @@ import CartEditModal from "@/components/cart/CartEditModal";
 import { validatePromo } from "@/lib/api/promo.api";
 import toast from "react-hot-toast";
 import { headingClassName } from "@/components/ui/headingClassNames";
+import { getInclusivePrice } from "@/lib/utils/pricing";
 
 export default function CartPage() {
   const [selectedItem, setSelectedItem] = useState<CartItem | null>(null);
@@ -133,7 +134,7 @@ export default function CartPage() {
                     <p
                       className={`${inter.className} text-[15px] font-semibold tracking-[-0.5px] text-black`}
                     >
-                      ₹{item.price}
+                      ₹{getInclusivePrice(item.price, item.gstPercentage)}
                     </p>
 
                     {/* LOW STOCK */}
@@ -188,16 +189,6 @@ export default function CartPage() {
 
             {/* SUMMARY */}
             <div className="space-y-3 mt-4">
-              <div className="flex items-center text-[14px] justify-between">
-                <span>Item subtotal</span>
-                <span>₹{totalPrice}</span>
-              </div>
-
-              <div className="flex items-center justify-between text-[14px]">
-                <span>Shipping</span>
-                <span>FREE</span>
-              </div>
-
               {appliedPromo && (
                 <div className="flex items-center justify-between text-[17px] text-emerald-600 font-medium">
                   <div className="flex items-center gap-2">
