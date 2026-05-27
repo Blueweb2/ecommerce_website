@@ -186,18 +186,28 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
   }, [attributes]);
 
   useEffect(() => {
-    if (initialData?.variants?.length) {
-      const first = initialData.variants[0];
-const attrsObject = {
-  ...(first.attributes || {}),
-};
+  if (initialData?.variants?.length) {
+  const first = initialData.variants[0];
 
-const keys = Object.keys(attrsObject);      const attrs = keys.map((key) => ({
-        name: key,
-        values: [...new Set(initialData.variants!.map((v) =>attrsObject[key]))],
-      }));
-      setAttributes(attrs);
-    }
+  const attrsObject = {
+    ...(first.attributes || {}),
+  };
+
+  const keys = Object.keys(attrsObject);
+
+  const attrs = keys.map((key) => ({
+    name: key,
+    values: [
+      ...new Set(
+        initialData.variants!
+          .map((v) => v.attributes?.[key])
+          .filter(Boolean)
+      ),
+    ],
+  }));
+
+  setAttributes(attrs);
+}
 
     if (initialData?.customizable) {
       setCustomizable({

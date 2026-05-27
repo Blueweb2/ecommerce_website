@@ -261,7 +261,53 @@ const RightSide = ({ product, onVariantChange }: Props) => {
       stepQty: product.stepQty,
     });
 
-    toast.success("Added to cart");
+    toast.custom(
+      (t) => (
+        <div
+          className={`${t.visible ? "animate-enter" : "animate-leave"
+            } pointer-events-auto w-[92vw] max-w-[520px] border border-[#e5e5e5] bg-[#f8f8f8] shadow-[0_8px_30px_rgba(0,0,0,0.12)] z-[99999]`}
+        >
+          <div className="p-8">
+            <div className="flex gap-7">
+              {/* IMAGE */}
+              <div className="h-[142px] w-[108px] shrink-0 bg-white">
+                <img
+                  src={primaryImageUrl}
+                  alt={product.name}
+                  className="h-full w-full object-cover"
+                />
+              </div>
+
+              {/* CONTENT */}
+              <div className="flex flex-1 flex-col">
+                <h2 className="text-[18px] font-semibold leading-[1.3] text-black">
+                  This article was added to your shopping bag.
+                </h2>
+
+                <p className="mt-10 text-[15px] leading-[1.5] text-black">
+                  Please note that your items are not reserved.
+                </p>
+              </div>
+            </div>
+
+            {/* BUTTON */}
+            <button
+              onClick={() => {
+                toast.dismiss(t.id);
+                window.location.href = "/cart";
+              }}
+              className="mt-8 h-[50px] w-full bg-black text-[15px] font-medium text-white transition hover:bg-[#1a1a1a]"
+            >
+              Go to Bag
+            </button>
+          </div>
+        </div>
+      ),
+      {
+        duration: 4000,
+        position: "top-center",
+      }
+    );
   };
 
   return (
@@ -347,11 +393,10 @@ const RightSide = ({ product, onVariantChange }: Props) => {
                         onVariantChange?.(matchedVariant);
                       }
                     }}
-                    className={`border px-3 py-2 transition ${
-                      isSelected
-                        ? "border border-black"
-                        : "border-gray-200 hover:border-gray-400"
-                    } ${isOutOfStock ? "cursor-not-allowed opacity-40" : ""}`}
+                    className={`border px-3 py-2 transition ${isSelected
+                      ? "border border-black"
+                      : "border-gray-200 hover:border-gray-400"
+                      } ${isOutOfStock ? "cursor-not-allowed opacity-40" : ""}`}
                   >
                     {value}
                   </button>
@@ -396,9 +441,8 @@ const RightSide = ({ product, onVariantChange }: Props) => {
 
         <button
           onClick={handleWishlistToggle}
-          className={`flex items-center justify-center gap-2 border py-2 transition ${
-            isWishlisted ? "bg-black text-white" : "bg-white"
-          }`}
+          className={`flex items-center justify-center gap-2 border py-2 transition ${isWishlisted ? "bg-black text-white" : "bg-white"
+            }`}
         >
           <Heart size={16} fill={isWishlisted ? "currentColor" : "none"} />
           {isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
