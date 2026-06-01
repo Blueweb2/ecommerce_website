@@ -353,7 +353,7 @@ export default function Navbar() {
             <Heart size={18} />
 
             {wishlistItems.length > 0 && (
-              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] px-1 rounded-full">
+              <span className="absolute -top-2 -right-2 bg-[#656565] text-white text-[10px] px-1 rounded-full">
                 {wishlistItems.length}
               </span>
             )}
@@ -372,7 +372,7 @@ export default function Navbar() {
             <ShoppingCart size={18} />
 
             {cartCount > 0 && (
-              <span className="absolute -top-3 -right-3 bg-red-500 text-white font-bold text-[11px] px-1.5 py-0.5 rounded-full">
+              <span className="absolute -top-3 -right-3 bg-[#656565] text-white font-bold text-[11px] px-1.5 py-0.5 rounded-full">
                 {cartCount > 99 ? "99+" : cartCount}
               </span>
             )}

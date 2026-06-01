@@ -34,7 +34,7 @@ const RightSide = ({ product, onVariantChange }: Props) => {
 
   // Fabric / Quantity State
   const isFabric = product?.isFabric;
-  const stepQty = isFabric ? product?.stepQty || 1 : 1;
+  // const stepQty = isFabric ? product?.stepQty || 1 : 1;
   const minQty = isFabric ? product?.minOrderQty || 1 : 1;
   const [quantity, setQuantity] = useState<number>(minQty);
 
@@ -108,15 +108,15 @@ const RightSide = ({ product, onVariantChange }: Props) => {
     return options;
   };
 
-  const matchesSelection = (variant: any, selection: Record<string, string>) => {
-    return Object.entries(selection).every(([key, value]) => {
-      const variantValue = getAttributeValueCaseInsensitive(variant?.attributes, key);
-      return (
-        variantValue !== undefined &&
-        String(variantValue).toLowerCase().trim() === String(value).toLowerCase().trim()
-      );
-    });
-  };
+  // const matchesSelection = (variant: any, selection: Record<string, string>) => {
+  //   return Object.entries(selection).every(([key, value]) => {
+  //     const variantValue = getAttributeValueCaseInsensitive(variant?.attributes, key);
+  //     return (
+  //       variantValue !== undefined &&
+  //       String(variantValue).toLowerCase().trim() === String(value).toLowerCase().trim()
+  //     );
+  //   });
+  // };
 
   const inStockVariants =
     product?.variants?.filter((variant: any) => variant.stock > 0) || [];
@@ -203,9 +203,9 @@ const RightSide = ({ product, onVariantChange }: Props) => {
       return customData.find((item) => item.fieldName === field.name);
     }) ?? true;
 
-  const isOutOfStock = product?.variants?.length > 0
-    ? (!selectedVariant || selectedVariant.stock <= 0)
-    : (product?.stock <= 0);
+  // const isOutOfStock = product?.variants?.length > 0
+  //   ? (!selectedVariant || selectedVariant.stock <= 0)
+  //   : (product?.stock <= 0);
 
   const basePrice = selectedVariant?.price || product?.price;
   const baseDiscountPrice = selectedVariant?.discountPrice || product?.discountPrice;
@@ -312,8 +312,8 @@ const RightSide = ({ product, onVariantChange }: Props) => {
         {discountPrice ? (
           <>
             <div className="flex items-center">
-              <p className="text-[#BE5555] line-through">₹{price}</p>
-              <span className="bg-[#BE5555] ml-3 px-[2px] py-[1px] text-xs text-white">
+              <p className="text-[#656565] line-through">₹{price}</p>
+              <span className="bg-[#656565] ml-3 px-[2px] py-[1px] text-xs text-white">
                 {Math.round(((price - discountPrice) / price) * 100)}% OFF
               </span>
             </div>
