@@ -110,7 +110,7 @@ const normalize = (obj: Record<string, string>) =>
     Object.keys(obj)
       .sort()
       .reduce((acc, key) => {
-        acc[key] = obj[key];
+        acc[key.trim().toLowerCase()] = String(obj[key] || "").trim().toLowerCase();
         return acc;
       }, {} as Record<string, string>)
   );
@@ -277,7 +277,10 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
               : [];
 
           return {
-            attributes: variant.attributes,
+            attributes: Object.keys(variant.attributes).reduce((acc, k) => {
+              acc[k.trim().toLowerCase()] = variant.attributes[k].trim().toLowerCase();
+              return acc;
+            }, {} as Record<string, string>),
             stock: variant.stock === "" ? 0 : Number(variant.stock),
             price: variant.price === "" ? undefined : Number(variant.price),
             discountPrice:

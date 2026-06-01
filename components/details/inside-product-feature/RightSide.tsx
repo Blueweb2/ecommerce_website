@@ -11,6 +11,8 @@ import { bodoni, inter } from "@/lib/fonts";
 import { getPrimaryProductImage } from "@/lib/constants/admin-catalog";
 import { getInclusivePrice } from "@/lib/utils/pricing";
 
+import { normalizeKey, getAttributeValueCaseInsensitive } from "@/lib/utils/attributes";
+
 type Props = {
   product: any;
   onVariantChange?: (variant: any | null) => void;
@@ -19,23 +21,6 @@ type Props = {
 type CustomDataItem = {
   fieldName: string;
   value: string | number;
-};
-
-const normalizeKey = (key: string) => {
-  const k = key.toLowerCase().trim();
-  if (k === "color" || k === "colour") return "color";
-  return k;
-};
-
-const getAttributeValueCaseInsensitive = (attributes: Record<string, any> | undefined, key: string) => {
-  if (!attributes) return undefined;
-  const lowerKey = normalizeKey(key);
-  for (const [k, v] of Object.entries(attributes)) {
-    if (normalizeKey(k) === lowerKey) {
-      return v;
-    }
-  }
-  return undefined;
 };
 
 const RightSide = ({ product, onVariantChange }: Props) => {
