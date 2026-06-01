@@ -113,36 +113,36 @@ export default function ProductCard({
 
       {/* CONTENT */}
     <div className="space-y-1 px-1 pt-1">
-  {useBrandAsTitle ? (
-    <p
-      className={`${inter.className} text-[13px] font-semibold uppercase tracking-[0.03em] text-neutral-700`}
-    >
-      {product.brand}
-    </p>
-  ) : (
-    <>
-      <p
-        className={`${inter.className} text-[13px] font-semibold uppercase tracking-[0.03em] text-neutral-600`}
-      >
-        {product.brand}
-      </p>
+      {useBrandAsTitle ? (
+        <p
+          className={`${inter.className} text-[13px] text-center font-semibold uppercase tracking-[0.03em] text-neutral-700`}
+        >
+          {product.brand}
+        </p>
+      ) : (
+        <>
+          <p
+            className={`${inter.className} text-[13px] font-semibold uppercase tracking-[0.03em] text-neutral-600`}
+          >
+            {product.brand}
+          </p>
 
-      <Link
-        href={`/product/${product.slug}`}
-        className={`${inter.className} mt-2 line-clamp-2 block text-[13px] leading-6 text-[#5C5A58]`}
-      >
-        {product.name}
-      </Link>
+          <Link
+            href={`/product/${product.slug}`}
+            className={`${inter.className} mt-2 line-clamp-2 block text-[13px] leading-6 text-[#5C5A58]`}
+          >
+            {product.name}
+          </Link>
 
-      <span className={inter.className}>
-        ₹
-        {Math.round(
-          product.price * (1 + (product.gstPercentage || 0) / 100)
-        )}
-      </span>
-    </>
-  )}
-</div>
+          <span className={inter.className}>
+            ₹
+            {Math.round(
+              product.price * (1 + (product.gstPercentage || 0) / 100)
+            )}
+          </span>
+        </>
+      )}
+    </div>
     </Link>
   );
 };

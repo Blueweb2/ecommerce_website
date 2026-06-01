@@ -168,7 +168,7 @@ export default function SalePage() {
                         <span className="font-semibold text-sm">
                           ₹{product.discountPrice}
                         </span>
-                        <span className="line-through text-[#BE5555] text-xs">
+                        <span className="line-through text-[#656565] text-xs">
                           ₹{product.price}
                         </span>
                       </div>
