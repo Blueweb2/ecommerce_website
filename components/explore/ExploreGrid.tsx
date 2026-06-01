@@ -185,7 +185,7 @@ export default function ExploreGrid({
                     </span>
 
                     <span
-                      className={`${inter.className} text-[#d82d2d] line-through`}
+                      className={`${inter.className} text-[#656565] line-through`}
                     >
                       ₹{Math.round(product.price * (1 + (product.gstPercentage || 0) / 100))}
                     </span>
