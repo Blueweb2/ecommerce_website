@@ -64,8 +64,8 @@ export default function ShopSection() {
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={`pb-1 border-b transition ${activeTab === tab
-                  ? "border-neutral-600 text-neutral-600"
-                  : "border-transparent text-[#8D8B9D] hover:text-neutral-600"
+                ? "border-neutral-600 text-neutral-600"
+                : "border-transparent text-[#8D8B9D] hover:text-neutral-600"
                 }`}
             >
               {tab}
@@ -83,7 +83,7 @@ export default function ShopSection() {
           ) : products.length === 0 ? (
             <p className="w-full text-center">No products found</p>
           ) : (
-            products.map((product) => (
+            products.slice(0, 6).map((product) => (
               <div
                 key={product._id}
                 className="min-w-[200px] md:min-w-[250px] lg:min-w-0  flex flex-col justify-between overflow-hidden"
