@@ -114,13 +114,23 @@ export default function ProductCard({
       {/* CONTENT */}
       <div className="space-y-1 px-1 pt-1">
 
-        <h3
-          className={`${inter.className} line-clamp-1 pt-0.5 text-[13px] leading-6 text-[#5C5A58] transition-colors group-hover:text-neutral-800 uppercase text-center`}
+        <p
+          className={`${inter.className} text-[13px] font-semibold uppercase tracking-[0.03em] text-neutral-600`}
         >
-          {useBrandAsTitle
-            ? (product.brand || product.name)
-            : product.name}
-        </h3>
+          {product.brand}
+        </p>
+        
+        <Link
+          href={`/product/${product.slug}`}
+          className={`${inter.className} mt-2 line-clamp-2 block text-[13px] leading-6 text-[#5C5A58]`}
+        >
+          {product.name}
+        </Link>
+
+        <span className={`${inter.className}`}>
+          ₹{Math.round(product.price * (1 + (product.gstPercentage || 0) / 100))}
+        </span>
+
       </div>
     </Link>
   );
