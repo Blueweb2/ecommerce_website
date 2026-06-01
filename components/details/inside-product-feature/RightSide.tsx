@@ -34,7 +34,6 @@ const RightSide = ({ product, onVariantChange }: Props) => {
 
   // Fabric / Quantity State
   const isFabric = product?.isFabric;
-  // const stepQty = isFabric ? product?.stepQty || 1 : 1;
   const minQty = isFabric ? product?.minOrderQty || 1 : 1;
   const [quantity, setQuantity] = useState<number>(minQty);
 
@@ -107,16 +106,6 @@ const RightSide = ({ product, onVariantChange }: Props) => {
 
     return options;
   };
-
-  // const matchesSelection = (variant: any, selection: Record<string, string>) => {
-  //   return Object.entries(selection).every(([key, value]) => {
-  //     const variantValue = getAttributeValueCaseInsensitive(variant?.attributes, key);
-  //     return (
-  //       variantValue !== undefined &&
-  //       String(variantValue).toLowerCase().trim() === String(value).toLowerCase().trim()
-  //     );
-  //   });
-  // };
 
   const inStockVariants =
     product?.variants?.filter((variant: any) => variant.stock > 0) || [];
@@ -203,10 +192,6 @@ const RightSide = ({ product, onVariantChange }: Props) => {
       return customData.find((item) => item.fieldName === field.name);
     }) ?? true;
 
-  // const isOutOfStock = product?.variants?.length > 0
-  //   ? (!selectedVariant || selectedVariant.stock <= 0)
-  //   : (product?.stock <= 0);
-
   const basePrice = selectedVariant?.price || product?.price;
   const baseDiscountPrice = selectedVariant?.discountPrice || product?.discountPrice;
   const gstPct = product?.gstPercentage || 0;
@@ -250,10 +235,10 @@ const RightSide = ({ product, onVariantChange }: Props) => {
       (t) => (
         <div
           className={`${t.visible ? "animate-enter" : "animate-leave"
-            } pointer-events-auto w-[92vw] max-w-[520px] border border-[#e5e5e5] bg-[#f8f8f8] shadow-[0_8px_30px_rgba(0,0,0,0.12)] z-[99999]`}
+            } pointer-events-auto max-w-[390px] bg-[#f8f8f8] shadow-[0_8px_30px_rgba(0,0,0,0.12)] z-[99999]`}
         >
-          <div className="p-8">
-            <div className="flex gap-7">
+          <div className="p-4">
+            <div className="flex gap-4">
               {/* IMAGE */}
               <div className="h-[142px] w-[108px] shrink-0 bg-white">
                 <img
@@ -265,7 +250,7 @@ const RightSide = ({ product, onVariantChange }: Props) => {
 
               {/* CONTENT */}
               <div className="flex flex-1 flex-col">
-                <h2 className="text-[18px] font-semibold leading-[1.3] text-black">
+                <h2 className="text-[14px] font-semibold leading-[1.3] text-black">
                   This article was added to your shopping bag.
                 </h2>
 
@@ -281,7 +266,7 @@ const RightSide = ({ product, onVariantChange }: Props) => {
                 toast.dismiss(t.id);
                 window.location.href = "/cart";
               }}
-              className="mt-8 h-[50px] w-full bg-black text-[15px] font-medium text-white transition hover:bg-[#1a1a1a]"
+              className="mt-4 h-[40px] w-full bg-black text-[15px] font-medium text-white transition hover:bg-[#1a1a1a]"
             >
               Go to Bag
             </button>
@@ -290,7 +275,7 @@ const RightSide = ({ product, onVariantChange }: Props) => {
       ),
       {
         duration: 4000,
-        position: "top-center",
+        position: "top-right",
       }
     );
   };
@@ -393,28 +378,6 @@ const RightSide = ({ product, onVariantChange }: Props) => {
       })}
 
       <div className="flex flex-col gap-3">
-        {/* QUANTITY SELECTOR */}
-        {/* <div>
-          <p className="mb-2 text-xs text-neutral-600 uppercase">Quantity {isFabric && `(${product.unit || "meter"})`}:</p>
-          <div className="flex items-center gap-4 w-fit border border-gray-300 rounded px-2 py-1">
-            <button
-              onClick={() => setQuantity((q) => Math.max(minQty, Number((q - stepQty).toFixed(2))))}
-              disabled={quantity <= minQty}
-              className="px-2 text-xl hover:text-black text-gray-500 disabled:opacity-50"
-            >
-              -
-            </button>
-            <span className="w-12 text-center font-medium text-black">
-              {quantity}
-            </span>
-            <button
-              onClick={() => setQuantity((q) => Number((q + stepQty).toFixed(2)))}
-              className="px-2 text-xl hover:text-black text-gray-500"
-            >
-              +
-            </button>
-          </div>
-        </div> */}
 
         <button
           disabled={!isValid || (product?.variants?.length > 0 && !selectedVariant)}
@@ -508,31 +471,6 @@ const RightSide = ({ product, onVariantChange }: Props) => {
           </div>
         )}
       </div>
-
-      {/* <div>
-        {[
-          { title: "Size & Fit", content: "Standard fit" },
-          { title: "Returns", content: "Easy returns available" },
-        ].map((item, index) => (
-          <div key={index}>
-            <button
-              onClick={() => toggle(index)}
-              className="flex items-center gap-2"
-            >
-              <ChevronDown
-                className={activeIndex === index ? "rotate-180" : ""}
-              />
-              {item.title}
-            </button>
-
-            {activeIndex === index && (
-              <p className="font-brand-sans text-xs text-[#5C5A58]">
-                {item.content}
-              </p>
-            )}
-          </div>
-        ))}
-      </div> */}
 
       {showCustom && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">

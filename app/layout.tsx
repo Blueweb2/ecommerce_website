@@ -22,6 +22,9 @@ export default function RootLayout({
           {/* 🔹 GLOBAL TOASTER */}
           <Toaster
             position="top-right"
+            containerStyle={{
+              zIndex: 99999,
+            }}
             toastOptions={{
               style: {
                 backgroundColor: "#1a1f1a",
