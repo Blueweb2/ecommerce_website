@@ -1,6 +1,4 @@
-"use client";
-
-import { bodoni } from "@/lib/fonts";
+import Link from "next/link";
 
 export default function CheckoutHeader() {
   return (
@@ -11,14 +9,15 @@ export default function CheckoutHeader() {
           Secure
         </span>
 
-        <h1
-          className={`text-[38px] tracking-[0.25em] ${bodoni.className} cursor-pointer`}
-          onClick={() => {
-            window.location.href = '/'
-          }}
-        >
-          ZENFAZ
-        </h1>
+        <Link href="/">
+          <div className="font-brand-serif cursor-pointer text-2xl lg:text-3xl font-semibold tracking-wide text-white">
+            <img
+              src="/home/navigation/zenfaz.svg"
+              alt="logo"
+              className="h-4 lg:h-7 mb-2 mt-3"
+            />
+          </div>
+        </Link>
 
         <div className="w-[60px]" />
       </div>
