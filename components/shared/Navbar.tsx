@@ -11,6 +11,7 @@ import { useAuthStore } from "@/store/auth/useAuthStore";
 import { useWishlistStore } from '@/store/user/wishlist/useWishlistStore';
 import { categoryAPI } from "@/lib/api/category.api";
 import { getDesigners } from "@/lib/api/designer.api";
+import { authApi } from '@/lib/api/auth.api';
 
 type Category = {
   _id: string;
@@ -46,6 +47,8 @@ export default function Navbar() {
   const isProductPage = pathname.startsWith("/product");
 
   const cartCount = items.reduce((acc, item) => acc + item.quantity, 0);
+
+  const [showAccountMenu, setShowAccountMenu] = useState(false);
 
   const linkClass = (path: string) => {
     return `whitespace-nowrap border-b-2 transition-all duration-200 pb-3 ${pathname === path
@@ -90,6 +93,8 @@ export default function Navbar() {
 
     fetchCategories();
   }, []);
+const { logout } = useAuthStore();
+
 
   // navbar hide and show during the scroll time
   useEffect(() => {
@@ -358,12 +363,89 @@ export default function Navbar() {
               </span>
             )}
           </Link>
-          <button onClick={() => {
+          {/* <button onClick={() => {
             if (loading) return;
             router.push(user ? "/account" : "/account/login");
           }} className="transition-colors duration-300 hover:text-[#D4AF37]">
             <User size={18} />
-          </button>
+          </button> */}
+          <div
+  className="relative"
+  onMouseEnter={() => user && setShowAccountMenu(true)}
+  onMouseLeave={() => setShowAccountMenu(false)}
+>
+  <button
+    onClick={() => {
+      if (loading) return;
+
+      if (!user) {
+        router.push("/account/login");
+      }
+    }}
+    className="transition-colors duration-300 hover:text-[#D4AF37]"
+  >
+    <User size={18} />
+  </button>
+
+  {user && showAccountMenu && (
+    <div className="absolute right-0 top-[35px] z-[9999] w-[320px] bg-white text-black shadow-2xl border border-black/10">
+      {/* Triangle */}
+      <div className="absolute -top-2 right-6 h-4 w-4 rotate-45 bg-white border-l border-t border-black/10" />
+
+      {/* Header */}
+      <div className="px-8 pt-8 pb-6">
+        <p className="text-[24px] tracking-[3px] uppercase">
+          Hi {user.name}
+        </p>
+      </div>
+
+      <div className="border-t border-black/10" />
+
+      {/* Links */}
+      <div className="px-8 py-6 flex flex-col gap-5 text-[15px]">
+        <Link href="/account/orders">My Orders</Link>
+
+        <Link href="/wishlist">Wish List</Link>
+
+        <Link href="/account/address-book">
+          Address Book
+        </Link>
+
+        <Link href="/account/preferences">
+          Preferences
+        </Link>
+
+        <Link href="/account/delivery">
+          Delivery
+        </Link>
+
+        <Link href="/account/returns">
+          Returns
+        </Link>
+      </div>
+
+      <div className="border-t border-black/10 mx-8" />
+
+      <div className="p-8">
+        <button
+          onClick={logout}
+          className="
+            w-full
+            h-[48px]
+            border
+            border-black
+            text-[15px]
+            transition
+            hover:bg-black
+            hover:text-white
+          "
+        >
+          Sign Out
+        </button>
+      </div>
+    </div>
+  )}
+</div>
 
           <button
             onClick={openCart}
