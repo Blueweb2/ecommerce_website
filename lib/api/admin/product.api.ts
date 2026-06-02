@@ -6,9 +6,9 @@ import { uploadMultipleImages } from "@/lib/cloudinary/upload";
 export const getProducts = () => api.get("/products");
 
 // ✅ CREATE PRODUCT (WITH CLOUDINARY)
-export const createProduct = async (data: any, files: File[]) => {
+export const createProduct = async (data: ProductPayload, files: File[]) => {
   try {
-    let images: any[] = data.images || [];
+    let images = data.images || [];
 
     if (files.length > 0) {
       const uploadedImages = await uploadMultipleImages(files);
@@ -43,11 +43,19 @@ export const updateProduct = async (
 
     // 🔥 If new files exist → upload
     if (files.length > 0) {
-      const uploadedImages = await uploadMultipleImages(files);
+      const uploadedImages = await uploadMultipleImages(
+        files,
+        "ecommerce/products"
+      );
 
       // ✅ Merge old + new images
       images = [...images, ...uploadedImages];
     }
+
+    images = images.map((image, index) => ({
+      ...image,
+      isPrimary: index === (data.primaryImageIndex || 0),
+    }));
 
     return api.put(`/products/${id}`, {
       ...data,

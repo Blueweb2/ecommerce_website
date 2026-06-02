@@ -69,7 +69,7 @@ export default function ProductCard({
             <>
               <span className="text-lg font-bold text-red-600">₹{product.discountPrice}</span>
               <span className="text-sm text-gray-500 line-through">₹{product.price}</span>
-              <span className="text-xs bg-[#BE5555] text-[#BE5555] px-2 py-1 rounded">
+              <span className="text-xs bg-[#BE5555] text-white px-2 py-1 rounded">
                 {Math.round(((product.price - product.discountPrice) / product.price) * 100)}% OFF
               </span>
             </>

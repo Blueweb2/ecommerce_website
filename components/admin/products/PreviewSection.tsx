@@ -1,32 +1,49 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { PRODUCT_SECTION_OPTIONS } from "@/lib/constants/admin-catalog";
 import { calculateVariantStock, hasVariants } from "@/lib/utils/product-stock";
+import type { ProductFormVariant } from "./ProductForm";
 
 type Props = {
-  form: any;
+  form: {
+    images?: { url: string; isPrimary?: boolean }[];
+    primaryImageIndex?: number;
+    variants?: ProductFormVariant[];
+    stock?: number | string;
+    sections: string[];
+    sku?: string;
+    name: string;
+    description: string;
+    price: number | string;
+  };
   files: File[];
-  setFiles: (files: File[] | ((prev: File[]) => File[])) => void;
 };
 
-export default function PreviewSection({ form, files, setFiles }: Props) {
-  const [previews, setPreviews] = useState<string[]>([]);
+export default function PreviewSection({ form, files }: Props) {
   const firstVariantAttributes = form.variants?.[0]?.attributes;
 
-  // ✅ Safe preview generation
-  useEffect(() => {
-    const urls = files.map((file) => URL.createObjectURL(file));
-    setPreviews(urls);
+  const previews = useMemo(
+    () => files.map((file) => URL.createObjectURL(file)),
+    [files]
+  );
 
+  useEffect(() => {
     return () => {
-      urls.forEach((url) => URL.revokeObjectURL(url));
+      previews.forEach((url) => URL.revokeObjectURL(url));
     };
-  }, [files]);
+  }, [previews]);
 
   // 🔥 Primary image
-  const primaryIndex = form.primaryImageIndex ?? 0;
-  const mainImage = previews[primaryIndex];
+  const existingImages = form.images || [];
+  const totalImages = existingImages.length + previews.length;
+  const primaryIndex = totalImages
+    ? Math.min(form.primaryImageIndex ?? 0, totalImages - 1)
+    : 0;
+  const mainImage =
+    primaryIndex < existingImages.length
+      ? existingImages[primaryIndex]?.url
+      : previews[primaryIndex - existingImages.length];
 
   // 🔥 Variant stock total
   const totalStock = hasVariants(form.variants)
@@ -60,12 +77,13 @@ export default function PreviewSection({ form, files, setFiles }: Props) {
               alt="Preview"
               className="h-full w-full object-cover"
             />
-          ) : form.images?.length > 0 ? (
+          ) : existingImages.length > 0 ? (
             <img
               src={
-                form.images.find((img: any) => img.isPrimary)?.url ||
-                form.images[0].url
+                existingImages.find((img) => img.isPrimary)?.url ||
+                existingImages[0].url
               }
+              alt={form.name || "Product preview"}
               className="h-full w-full object-cover"
             />
           ) : (
@@ -78,13 +96,13 @@ export default function PreviewSection({ form, files, setFiles }: Props) {
         <div className="space-y-3 p-5">
           
           {/* Thumbnails */}
-          {previews.length > 0 && (
+          {totalImages > 0 && (
             <div className="flex gap-3 flex-wrap">
-              {previews.map((src, i) => (
-                <div key={i} className="relative">
-                  
+              {existingImages.map((image, i: number) => (
+                <div key={`existing-${i}`} className="relative">
                   <img
-                    src={src}
+                    src={image.url}
+                    alt={`Saved product image ${i + 1}`}
                     className="h-20 w-20 object-cover rounded"
                   />
 
@@ -93,18 +111,22 @@ export default function PreviewSection({ form, files, setFiles }: Props) {
                       Primary
                     </span>
                   )}
+                </div>
+              ))}
 
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setFiles((prev) =>
-                        prev.filter((_, index) => index !== i)
-                      )
-                    }
-                    className="absolute top-1 right-1 bg-red-500 text-white text-xs px-2 rounded"
-                  >
-                    ✕
-                  </button>
+              {previews.map((src, i) => (
+                <div key={`new-${i}`} className="relative">
+                  <img
+                    src={src}
+                    alt={`New product image ${i + 1}`}
+                    className="h-20 w-20 object-cover rounded"
+                  />
+
+                  {existingImages.length + i === primaryIndex && (
+                    <span className="absolute top-1 left-1 bg-black text-white text-xs px-2 rounded">
+                      Primary
+                    </span>
+                  )}
                 </div>
               ))}
             </div>
@@ -127,13 +149,13 @@ export default function PreviewSection({ form, files, setFiles }: Props) {
           {/* 🔥 Variants (dynamic attributes) */}
           {hasVariants(form.variants) && (
             <div className="flex flex-wrap gap-2">
-              {form.variants.map((v: any, i: number) => (
+              {form.variants.map((variant, i: number) => (
                 <span
                   key={i}
                   className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs text-slate-600"
                 >
                   {variantAttributeKeys
-                    .map((key) => v.attributes?.[key] || "-")
+                    .map((key) => variant.attributes?.[key] || "-")
                     .join(" / ")}
                 </span>
               ))}

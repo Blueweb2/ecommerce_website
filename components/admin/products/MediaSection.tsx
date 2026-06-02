@@ -1,19 +1,22 @@
 "use client";
 
 import { ImagePlus, Maximize2, Star, GripVertical, Trash2, Upload, Plus, Image as ImageIcon } from "lucide-react";
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import ImageModal from "@/components/admin/ui/ImageModal";
 import { CatalogImage } from "@/lib/constants/admin-catalog";
+
+type MediaFormState = {
+  images: CatalogImage[];
+  primaryImageIndex?: number;
+  altText?: string;
+  [key: string]: unknown;
+};
 
 type Props = {
   files: File[];
   setFiles: (files: File[] | ((prev: File[]) => File[])) => void;
-  form: {
-    images: CatalogImage[];
-    primaryImageIndex?: number;
-    altText?: string;
-  };
-  setForm: (updater: any) => void;
+  form: MediaFormState;
+  setForm: React.Dispatch<React.SetStateAction<MediaFormState>>;
   errors: Record<string, string>;
 };
 
@@ -24,29 +27,42 @@ export default function MediaSection({
   setForm,
   errors,
 }: Props) {
-  const [previews, setPreviews] = useState<string[]>([]);
   const [zoomedImage, setZoomedImage] = useState<string | null>(null);
   const [isDragOver, setIsDragOver] = useState(false);
   const [dragIndex, setDragIndex] = useState<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const addMoreInputRef = useRef<HTMLInputElement>(null);
+  const existingImageCount = form.images?.length || 0;
 
-  // Generate previews safely
+  const previews = useMemo(
+    () => files.map((file) => URL.createObjectURL(file)),
+    [files]
+  );
+
   useEffect(() => {
-    const urls = files.map((file) => URL.createObjectURL(file));
-    setPreviews(urls);
     return () => {
-      urls.forEach((url) => URL.revokeObjectURL(url));
+      previews.forEach((url) => URL.revokeObjectURL(url));
     };
-  }, [files]);
+  }, [previews]);
 
-  const primaryIndex = form.primaryImageIndex ?? 0;
+  const totalImages = existingImageCount + files.length;
+  const primaryIndex = totalImages
+    ? Math.min(form.primaryImageIndex ?? 0, totalImages - 1)
+    : 0;
+  const mainPreviewUrl =
+    primaryIndex < existingImageCount
+      ? form.images?.[primaryIndex]?.url
+      : previews[primaryIndex - existingImageCount];
 
   const setPrimary = (index: number) => {
-    setForm((prev: any) => ({
+    setForm((prev) => ({
       ...prev,
       primaryImageIndex: index,
+      images: (prev.images || []).map((image: CatalogImage, imageIndex: number) => ({
+        ...image,
+        isPrimary: imageIndex === index,
+      })),
     }));
   };
 
@@ -122,11 +138,20 @@ export default function MediaSection({
     });
 
     // Adjust primary index if needed
-    if (primaryIndex === dragIndex) {
-      setPrimary(dropIndex);
-    } else if (dragIndex < primaryIndex && dropIndex >= primaryIndex) {
+    const draggedGlobalIndex = existingImageCount + dragIndex;
+    const droppedGlobalIndex = existingImageCount + dropIndex;
+
+    if (primaryIndex === draggedGlobalIndex) {
+      setPrimary(droppedGlobalIndex);
+    } else if (
+      draggedGlobalIndex < primaryIndex &&
+      droppedGlobalIndex >= primaryIndex
+    ) {
       setPrimary(primaryIndex - 1);
-    } else if (dragIndex > primaryIndex && dropIndex <= primaryIndex) {
+    } else if (
+      draggedGlobalIndex > primaryIndex &&
+      droppedGlobalIndex <= primaryIndex
+    ) {
       setPrimary(primaryIndex + 1);
     }
 
@@ -139,15 +164,66 @@ export default function MediaSection({
     setDragOverIndex(null);
   };
 
-  // Remove single image
+  const removeExistingImage = (index: number) => {
+    setForm((prev) => {
+      const nextImages = (prev.images || []).filter(
+        (_: CatalogImage, imageIndex: number) => imageIndex !== index
+      );
+      const nextTotalImages = nextImages.length + files.length;
+      let nextPrimaryIndex = prev.primaryImageIndex ?? 0;
+
+      if (index === nextPrimaryIndex) {
+        nextPrimaryIndex = 0;
+      } else if (index < nextPrimaryIndex) {
+        nextPrimaryIndex -= 1;
+      }
+
+      if (!nextTotalImages) {
+        nextPrimaryIndex = 0;
+      } else if (nextPrimaryIndex >= nextTotalImages) {
+        nextPrimaryIndex = nextTotalImages - 1;
+      }
+
+      return {
+        ...prev,
+        images: nextImages.map((image: CatalogImage, imageIndex: number) => ({
+          ...image,
+          isPrimary: imageIndex === nextPrimaryIndex,
+        })),
+        primaryImageIndex: nextPrimaryIndex,
+      };
+    });
+  };
+
+  // Remove single new image
   const removeImage = (index: number) => {
+    const removedGlobalIndex = existingImageCount + index;
     setFiles((prev) => prev.filter((_, i) => i !== index));
-    // Adjust primary index
-    if (index === primaryIndex) {
-      setPrimary(0);
-    } else if (index < primaryIndex) {
-      setPrimary(primaryIndex - 1);
-    }
+    setForm((prev) => {
+      const nextTotalImages = (prev.images?.length || 0) + Math.max(files.length - 1, 0);
+      let nextPrimaryIndex = prev.primaryImageIndex ?? 0;
+
+      if (removedGlobalIndex === nextPrimaryIndex) {
+        nextPrimaryIndex = 0;
+      } else if (removedGlobalIndex < nextPrimaryIndex) {
+        nextPrimaryIndex -= 1;
+      }
+
+      if (!nextTotalImages) {
+        nextPrimaryIndex = 0;
+      } else if (nextPrimaryIndex >= nextTotalImages) {
+        nextPrimaryIndex = nextTotalImages - 1;
+      }
+
+      return {
+        ...prev,
+        primaryImageIndex: nextPrimaryIndex,
+        images: (prev.images || []).map((image: CatalogImage, imageIndex: number) => ({
+          ...image,
+          isPrimary: imageIndex === nextPrimaryIndex,
+        })),
+      };
+    });
   };
 
   // Format file size
@@ -156,8 +232,6 @@ export default function MediaSection({
     if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
     return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
   };
-
-  const totalImages = files.length + (form.images?.length || 0);
 
   return (
     <section className="rounded-[28px] border border-slate-200 bg-white shadow-sm overflow-hidden">
@@ -323,7 +397,7 @@ export default function MediaSection({
                 <div
                   key={i}
                   className={`relative group overflow-hidden rounded-2xl border-2 transition-all duration-200 ${
-                    img.isPrimary
+                    i === primaryIndex
                       ? "border-amber-400 shadow-lg shadow-amber-100 ring-2 ring-amber-200"
                       : "border-slate-200 hover:border-slate-300 hover:shadow-md"
                   }`}
@@ -331,6 +405,7 @@ export default function MediaSection({
                   <div className="aspect-square">
                     <img
                       src={img.url}
+                      alt={`Current product image ${i + 1}`}
                       className="h-full w-full object-cover cursor-pointer transition-transform duration-300 group-hover:scale-105"
                       onClick={() => setZoomedImage(img.url)}
                     />
@@ -342,12 +417,52 @@ export default function MediaSection({
                   </div>
 
                   {/* Primary Badge */}
-                  {img.isPrimary && (
+                  {i === primaryIndex && (
                     <div className="absolute top-2 left-2 flex items-center gap-1 bg-amber-500 text-white text-[10px] px-2.5 py-1 rounded-lg font-bold uppercase tracking-wider shadow-lg">
                       <Star className="h-3 w-3 fill-current" />
                       Main
                     </div>
                   )}
+
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-200 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100">
+                    {i !== primaryIndex && (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setPrimary(i);
+                        }}
+                        className="flex items-center justify-center w-8 h-8 bg-amber-500 text-white rounded-xl shadow-lg hover:bg-amber-600 transition-all hover:scale-110 active:scale-95"
+                        title="Set as main image"
+                      >
+                        <Star className="h-4 w-4" />
+                      </button>
+                    )}
+
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setZoomedImage(img.url);
+                      }}
+                      className="flex items-center justify-center w-8 h-8 bg-white/90 text-slate-700 rounded-xl shadow-lg hover:bg-white transition-all hover:scale-110 active:scale-95"
+                      title="View full size"
+                    >
+                      <Maximize2 className="h-4 w-4" />
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        removeExistingImage(i);
+                      }}
+                      className="flex items-center justify-center w-8 h-8 bg-red-500 text-white rounded-xl shadow-lg hover:bg-red-600 transition-all hover:scale-110 active:scale-95"
+                      title="Remove image"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
@@ -372,10 +487,10 @@ export default function MediaSection({
               <div className="relative group overflow-hidden rounded-3xl border-2 border-amber-400 shadow-xl shadow-amber-100 ring-2 ring-amber-200 bg-slate-50">
                 <div className="aspect-video max-h-[350px] w-full">
                   <img
-                    src={previews[primaryIndex] || previews[0]}
+                    src={mainPreviewUrl || previews[0]}
                     alt="Main product image"
                     className="h-full w-full object-contain cursor-pointer transition-transform duration-500 group-hover:scale-[1.02]"
-                    onClick={() => setZoomedImage(previews[primaryIndex] || previews[0])}
+                    onClick={() => setZoomedImage(mainPreviewUrl || previews[0])}
                   />
                 </div>
 
@@ -407,7 +522,7 @@ export default function MediaSection({
                       ? "opacity-40 scale-95 border-violet-400"
                       : dragOverIndex === i
                         ? "border-violet-400 scale-105 shadow-xl shadow-violet-100"
-                        : i === primaryIndex
+                        : existingImageCount + i === primaryIndex
                           ? "border-amber-400 shadow-lg shadow-amber-100 ring-2 ring-amber-200"
                           : "border-slate-200 hover:border-slate-300 hover:shadow-md"
                   }`}
@@ -430,7 +545,7 @@ export default function MediaSection({
                   </div>
 
                   {/* Primary Badge */}
-                  {i === primaryIndex && (
+                  {existingImageCount + i === primaryIndex && (
                     <div className="absolute top-1.5 left-1.5 flex items-center gap-0.5 bg-amber-500 text-white text-[9px] px-2 py-1 rounded-lg font-bold uppercase tracking-wider shadow-md">
                       <Star className="h-2.5 w-2.5 fill-current" />
                       Main
@@ -456,12 +571,12 @@ export default function MediaSection({
                   {/* Action Buttons Overlay */}
                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-200 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100">
                     {/* Set as Main */}
-                    {i !== primaryIndex && (
+                    {existingImageCount + i !== primaryIndex && (
                       <button
                         type="button"
                         onClick={(e) => {
                           e.stopPropagation();
-                          setPrimary(i);
+                          setPrimary(existingImageCount + i);
                         }}
                         className="flex items-center justify-center w-8 h-8 bg-amber-500 text-white rounded-xl shadow-lg hover:bg-amber-600 transition-all hover:scale-110 active:scale-95"
                         title="Set as main image"
@@ -533,7 +648,7 @@ export default function MediaSection({
             placeholder="e.g. Red cotton kurta displayed on white background"
             value={form.altText || ""}
             onChange={(e) =>
-              setForm((prev: any) => ({
+              setForm((prev) => ({
                 ...prev,
                 altText: e.target.value,
               }))

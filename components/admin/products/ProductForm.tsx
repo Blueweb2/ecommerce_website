@@ -24,7 +24,35 @@ import SpecificationsSection from "./SpecificationsSection";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
-type ProductFormValues = {
+type ProductFormVariantImage = {
+  _id?: string;
+  file?: File;
+  preview?: string;
+  url?: string;
+  public_id?: string;
+  isPrimary?: boolean;
+  altText?: string;
+};
+
+export type ProductFormVariant = {
+  attributes: Record<string, string>;
+  stock?: number | string;
+  price?: number | string;
+  discountPrice?: number | string;
+  sku?: string;
+  isActive?: boolean;
+  images?: ProductFormVariantImage[];
+};
+
+export type ProductFormValues = {
+  sku?: string;
+  slug?: string;
+  brand?: string;
+  altText?: string;
+  attributes?: {
+    name: string;
+    values: string[];
+  }[];
   name: string;
   price: number | string;
   discountPrice: number | string;
@@ -41,19 +69,7 @@ type ProductFormValues = {
   gstPercentage: number | string;
   primaryImageIndex?: number;
 
-  variants: {
-    attributes: Record<string, string>;
-    stock?: number | string;
-    price?: number | string;
-    discountPrice?: number | string;
-    images?: {
-      file?: File;
-      preview?: string;
-      url?: string;
-      public_id?: string;
-      isPrimary?: boolean;
-    }[];
-  }[];
+  variants: ProductFormVariant[];
   specifications: {
     name: string;
     value: string;
@@ -76,12 +92,20 @@ type ProductFormValues = {
   };
 };
 
+export type ProductFormInitialData =
+  Partial<ProductFormValues> & Record<string, unknown>;
+
 type Props = {
   onSubmit: (data: ProductPayload, files: File[]) => Promise<void>;
-  initialData?: Partial<ProductFormValues>;
+  initialData?: ProductFormInitialData;
 };
 
 const defaultValues: ProductFormValues = {
+  sku: "",
+  slug: "",
+  brand: "",
+  altText: "",
+  attributes: [],
   name: "",
   price: "",
   discountPrice: "",
@@ -105,6 +129,70 @@ const defaultValues: ProductFormValues = {
   stepQty: 0.5,
 };
 
+const getPrimaryImageIndex = (images?: CatalogImage[]) => {
+  const primaryIndex = images?.findIndex((image) => image.isPrimary) ?? -1;
+  return primaryIndex >= 0 ? primaryIndex : 0;
+};
+
+const cloneAttributes = (
+  attributes?: { name: string; values: string[] }[]
+) =>
+  attributes?.map((attribute) => ({
+    name: attribute.name,
+    values: [...attribute.values],
+  })) || [];
+
+const cloneSpecifications = (
+  specifications?: { name: string; value: string }[]
+) =>
+  specifications?.map((specification) => ({ ...specification })) || [];
+
+const cloneImages = (images?: CatalogImage[]) =>
+  images?.map((image) => ({ ...image })) || [];
+
+const getDesignerValue = (designer: unknown) => {
+  if (typeof designer === "string") {
+    return designer;
+  }
+
+  if (
+    designer &&
+    typeof designer === "object" &&
+    "_id" in designer &&
+    typeof designer._id === "string"
+  ) {
+    return designer._id;
+  }
+
+  return "";
+};
+
+const getInitialAttributes = (initialData?: ProductFormInitialData) => {
+  const savedAttributes = cloneAttributes(initialData?.attributes);
+
+  if (savedAttributes.length > 0) {
+    return savedAttributes;
+  }
+
+  if (!initialData?.variants?.length) {
+    return [];
+  }
+
+  const firstVariant = initialData.variants[0];
+  const attributeKeys = Object.keys(firstVariant.attributes || {});
+
+  return attributeKeys.map((key) => ({
+    name: key,
+    values: [
+      ...new Set(
+        initialData.variants!
+          .map((variant) => variant.attributes?.[key])
+          .filter(Boolean)
+      ),
+    ],
+  }));
+};
+
 const normalize = (obj: Record<string, string>) =>
   JSON.stringify(
     Object.keys(obj)
@@ -119,22 +207,35 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
   const router = useRouter();
   const { categories, fetchCategories } = useCategoryStore();
   const [loading, setLoading] = useState(false);
+  const initialPrimaryImageIndex =
+    typeof initialData?.primaryImageIndex === "number"
+      ? initialData.primaryImageIndex
+      : getPrimaryImageIndex(initialData?.images as CatalogImage[] | undefined);
 
   const [form, setForm] = useState<ProductFormValues>({
     ...defaultValues,
     ...initialData,
+    sku: typeof initialData?.sku === "string" ? initialData.sku : "",
+    slug: typeof initialData?.slug === "string" ? initialData.slug : "",
+    brand: typeof initialData?.brand === "string" ? initialData.brand : "",
+    altText: typeof initialData?.altText === "string" ? initialData.altText : "",
+    attributes: cloneAttributes(initialData?.attributes),
     isOnSale: initialData?.isOnSale ?? false,
-    designer: (initialData as any)?.designer?._id || (initialData as any)?.designer || "", // ✅ Added
+    gstPercentage: initialData?.gstPercentage ?? 0,
+    designer: getDesignerValue(initialData?.designer),
     sections: initialData?.sections || [],
+    images: cloneImages(initialData?.images as CatalogImage[] | undefined),
     variants:
-  initialData?.variants?.map((v) => ({
-    attributes: { ...(v.attributes || {}) },
+      initialData?.variants?.map((v) => ({
+        ...v,
+        attributes: { ...(v.attributes || {}) },
         stock: v.stock ?? "",
         price: v.price ?? "",
         discountPrice: v.discountPrice ?? "",
-        images: v.images || [],
+        images: v.images?.map((image) => ({ ...image })) || [],
       })) || [],
-    specifications: initialData?.specifications || [],
+    specifications: cloneSpecifications(initialData?.specifications),
+    primaryImageIndex: initialPrimaryImageIndex,
     isFabric: initialData?.isFabric ?? false,
     unit: initialData?.unit || "meter",
     minOrderQty: initialData?.minOrderQty ?? 1,
@@ -143,18 +244,18 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
 
   const [customizable, setCustomizable] = useState({
     isCustomizable: initialData?.customizable?.isCustomizable || false,
-    fields: initialData?.customizable?.fields || [] as {
-      name: string;
-      type: "text" | "number" | "select";
-      required?: boolean;
-      options?: string[];
-      unit?: string;
-    }[],
+    fields:
+      initialData?.customizable?.fields?.map((field) => ({
+        ...field,
+        options: field.options ? [...field.options] : undefined,
+      })) || [],
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [files, setFiles] = useState<File[]>([]);
-  const [attributes, setAttributes] = useState<{ name: string; values: string[] }[]>([]);
+  const [attributes, setAttributes] = useState<{ name: string; values: string[] }[]>(
+    getInitialAttributes(initialData)
+  );
   const [currentStep, setCurrentStep] = useState(1);
   const [saleType, setSaleType] = useState<"percentage" | "fixed">("percentage");
 
@@ -186,33 +287,16 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
   }, [attributes]);
 
   useEffect(() => {
-  if (initialData?.variants?.length) {
-  const first = initialData.variants[0];
-
-  const attrsObject = {
-    ...(first.attributes || {}),
-  };
-
-  const keys = Object.keys(attrsObject);
-
-  const attrs = keys.map((key) => ({
-    name: key,
-    values: [
-      ...new Set(
-        initialData.variants!
-          .map((v) => v.attributes?.[key])
-          .filter(Boolean)
-      ),
-    ],
-  }));
-
-  setAttributes(attrs);
-}
+    setAttributes(getInitialAttributes(initialData));
 
     if (initialData?.customizable) {
       setCustomizable({
         isCustomizable: initialData.customizable.isCustomizable,
-        fields: initialData.customizable.fields || [],
+        fields:
+          initialData.customizable.fields?.map((field) => ({
+            ...field,
+            options: field.options ? [...field.options] : undefined,
+          })) || [],
       });
     }
   }, [initialData]);
@@ -253,17 +337,38 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
     if (!validateForm()) return;
     try {
       setLoading(true);
+      const cleanedAttributes = attributes
+        .map((attribute) => ({
+          name: attribute.name.trim().toLowerCase(),
+          values: [
+            ...new Set(
+              attribute.values
+                .map((value) => value.trim().toLowerCase())
+                .filter(Boolean)
+            ),
+          ],
+        }))
+        .filter((attribute) => attribute.name && attribute.values.length > 0);
+
       const cleanedVariants = form.variants.filter((v) =>
         Object.values(v.attributes).every((val) => val.trim() !== "")
       );
       const preparedVariants = await Promise.all(
         cleanedVariants.map(async (variant) => {
           const existingImages =
-            variant.images?.filter((image) => image.url && image.public_id).map((image) => ({
-              url: image.url!,
-              public_id: image.public_id!,
-              isPrimary: image.isPrimary,
-            })) || [];
+            variant.images
+              ?.filter((image) => image.url && image.public_id)
+              .map((image) => {
+                const cleanedImage = { ...image };
+                delete cleanedImage.file;
+                delete cleanedImage.preview;
+
+                return {
+                  ...cleanedImage,
+                  url: cleanedImage.url!,
+                  public_id: cleanedImage.public_id!,
+                };
+              }) || [];
 
           const newVariantFiles =
             variant.images?.filter((image) => image.file).map((image) => image.file!) || [];
@@ -277,6 +382,7 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
               : [];
 
           return {
+            ...variant,
             attributes: Object.keys(variant.attributes).reduce((acc, k) => {
               acc[k.trim().toLowerCase()] = variant.attributes[k].trim().toLowerCase();
               return acc;
@@ -305,22 +411,17 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
         discountPrice: Number(form.discountPrice) || undefined,
         category: form.category,
         designer: form.designer || undefined, // ✅ Added
-        brand: designers.find(d => d._id === form.designer)?.brandName || "", // ✅ Added
+        brand:
+          designers.find((designer) => designer._id === form.designer)?.brandName ||
+          form.brand?.trim() ||
+          undefined,
         sections: form.sections,
         images: form.images,
         stock: totalStock,
         isPublished: form.isPublished,
         isOnSale: Boolean(form.isOnSale),
         gstPercentage: Number(form.gstPercentage) || 0,
-        attributes:
-          preparedVariants.length > 0
-            ? Object.keys(preparedVariants[0].attributes).map((key) => ({
-              name: key,
-              values: [
-                ...new Set(preparedVariants.map((v) => v.attributes[key])),
-              ],
-            }))
-            : [],
+        attributes: cleanedAttributes,
         variants: preparedVariants,
         primaryImageIndex: form.primaryImageIndex || 0,
         customizable: customizable.isCustomizable ? customizable : undefined,
@@ -334,8 +435,16 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
       await onSubmit(payload, files);
       toast.success(initialData ? "Product updated" : "Product created");
       router.replace("/admin/products");
-    } catch (error: any) {
-      toast.error(error?.response?.data?.message || "Operation failed");
+    } catch (error: unknown) {
+      const apiError = error as {
+        response?: {
+          data?: {
+            message?: string;
+          };
+        };
+      };
+
+      toast.error(apiError.response?.data?.message || "Operation failed");
     } finally {
       setLoading(false);
     }
@@ -392,12 +501,12 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
                     <input value={f} onChange={(e) => {
                       const updated = [...form.keyFeatures];
                       updated[i] = e.target.value;
-                      setForm((prev: any) => ({ ...prev, keyFeatures: updated }));
+                      setForm((prev) => ({ ...prev, keyFeatures: updated }));
                     }} className="flex-1 rounded-xl border border-slate-200 px-4 py-2 text-sm" />
-                    <button type="button" onClick={() => setForm((prev: any) => ({ ...prev, keyFeatures: prev.keyFeatures.filter((_: any, idx: any) => idx !== i) }))} className="text-red-500 font-bold">×</button>
+                    <button type="button" onClick={() => setForm((prev) => ({ ...prev, keyFeatures: prev.keyFeatures.filter((_, idx) => idx !== i) }))} className="text-red-500 font-bold">×</button>
                   </div>
                 ))}
-                <button type="button" onClick={() => setForm((prev: any) => ({ ...prev, keyFeatures: [...prev.keyFeatures, ""] }))} className="text-emerald-600 text-sm font-bold">+ Add Feature</button>
+                <button type="button" onClick={() => setForm((prev) => ({ ...prev, keyFeatures: [...prev.keyFeatures, ""] }))} className="text-emerald-600 text-sm font-bold">+ Add Feature</button>
               </div>
             </section>
             <SpecificationsSection specifications={form.specifications} setForm={setForm} />
@@ -431,7 +540,7 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
                     }} className="w-full rounded-xl border border-slate-200 px-4 py-2" />
                     <select value={field.type} onChange={(e) => {
                       const updated = [...customizable.fields];
-                      updated[idx].type = e.target.value as any;
+                      updated[idx].type = e.target.value as "text" | "number" | "select";
                       setCustomizable({ ...customizable, fields: updated });
                     }} className="w-full rounded-xl border border-slate-200 px-4 py-2 bg-white">
                       <option value="text">Text</option>
@@ -477,7 +586,7 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
             )}
           </section>
         )}
-        {currentStep === 6 && <PreviewSection form={form} files={files} setFiles={setFiles} />}
+        {currentStep === 6 && <PreviewSection form={form} files={files} />}
       </div>
 
       <div className="flex items-center justify-between p-6 bg-white border border-slate-200 rounded-[32px] shadow-xl shadow-slate-100">
