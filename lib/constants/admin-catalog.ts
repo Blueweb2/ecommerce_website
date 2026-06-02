@@ -72,6 +72,10 @@ export type CustomDataItem = {
   value: string | number;
 };
 
+export type ProductSeo = Record<string, unknown>;
+
+export type ProductMetadata = Record<string, unknown>;
+
 // ❌ REMOVE string | ... → STRICT TYPE
 export type CatalogProductImage = CatalogImage;
 
@@ -109,6 +113,9 @@ export type CatalogProduct = {
   designer?: CatalogEntity | string | null; // ✅ ADD THIS
 
   sections?: string[];
+  tags?: string[];
+  seo?: ProductSeo;
+  metadata?: ProductMetadata;
 
   attributes?: {
     name: string;
@@ -148,6 +155,8 @@ export type CatalogCollection = {
 
 // ✅ PRODUCT PAYLOAD
 export type ProductPayload = {
+  slug?: string;
+  sku?: string;
   name: string;
   price: number;
   description: string;
@@ -157,6 +166,9 @@ export type ProductPayload = {
   designer?: string; // ✅ ADD THIS
   brand?: string;    // ✅ ADD THIS
   sections: string[];
+  tags?: string[];
+  seo?: ProductSeo;
+  metadata?: ProductMetadata;
   images: CatalogImage[];
   stock: number;
   isPublished: boolean;
@@ -182,7 +194,7 @@ export type ProductPayload = {
     value: string;
   }[];
   primaryImageIndex?: number;
-};
+} & Record<string, unknown>;
 
 export type SelectedOption = {
   fieldName: string;
