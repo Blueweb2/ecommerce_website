@@ -84,7 +84,7 @@ export default function NewInSection() {
 
   return (
     <section className="w-full py-10">
-      <div className="max-w-[2000px] mx-auto flex flex-col md:flex-row gap-6 md:gap-0 items-stretch px-4 md:px-32">
+      <div className="max-w-[2000px] mx-auto flex flex-col md:flex-row gap-6 md:gap-0 items-stretch px-4 md:px-10 lg:px-32">
 
         {/* Left Info Panel */}
         <div className="md:w-[25%] flex-shrink-0 flex flex-col justify-center pr-3">

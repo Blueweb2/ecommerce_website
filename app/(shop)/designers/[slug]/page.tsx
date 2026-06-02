@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getDesignerDetail } from "@/lib/api/designer.api";
@@ -11,7 +10,6 @@ import type { Product } from "@/types/product";
 import { PLACEHOLDER_IMAGE, resolveImageSrc } from "@/lib/utils/image";
 
 const FALLBACK_BANNER = PLACEHOLDER_IMAGE;
-const FALLBACK_AVATAR = PLACEHOLDER_IMAGE;
 const FALLBACK_PRODUCT_IMAGE = PLACEHOLDER_IMAGE;
 
 type DesignerSlugPageProps = {
@@ -94,97 +92,98 @@ export async function generateMetadata({
 export default async function DesignerSlugPage({
   params,
 }: DesignerSlugPageProps) {
+
   const { slug } = await params;
 
   try {
     const { designer, products: apiProducts } = await getDesignerDetail(slug);
     const products = await getDesignerProducts(designer.brandName, apiProducts);
 
-return (
-  <section className="min-h-screen bg-white pt-[80px]">
+    return (
+      <section className="min-h-screen bg-white pt-[85px] md:pt-[98px] lg:pt-[130px]">
 
-    {/* HERO */}
-    <div className="relative h-[520px] overflow-hidden bg-black">
+        {/* HERO */}
+        <div className="relative h-[520px] overflow-hidden bg-black">
 
-      {/* IMAGE */}
-      <div className="absolute inset-0">
-        <Image
-          src={resolveImageSrc(designer.bannerImage?.url, FALLBACK_BANNER)}
-          alt={`${designer.name} banner`}
-          fill
-          priority
-          className="object-cover"
-        />
+          {/* IMAGE */}
+          <div className="absolute inset-0">
+            <Image
+              src={resolveImageSrc(designer.bannerImage?.url, FALLBACK_BANNER)}
+              alt={`${designer.name} banner`}
+              fill
+              priority
+              className="object-cover"
+            />
 
-        <div className="absolute inset-0 bg-black/10" />
-      </div>
+            <div className="absolute inset-0 bg-black/10" />
+          </div>
 
-      {/* CONTENT */}
-      <div className="relative z-10 flex h-full items-center">
-        <div className="w-full px-6 md:px-16">
+          {/* CONTENT */}
+          <div className="relative z-10 flex h-full items-center">
+            <div className="w-full px-6 md:px-16">
 
-          {/* FLOATING CARD */}
-          <div className="max-w-[670px] bg-white p-8 md:p-12">
+              {/* FLOATING CARD */}
+              <div className="max-w-[670px] bg-white p-2 md:p-12">
 
-            <h1
-              className={`${bodoni.className} text-[clamp(24px,6vw,26px)] leading-[0.55] tracking-tight text-black`}
-            >
-              {designer.name}
-            </h1>
+                <h1
+                  className={`${bodoni.className} text-[clamp(24px,6vw,26px)] leading-[0.55] tracking-tight text-black`}
+                >
+                  {designer.name}
+                </h1>
 
-            <p
-              className={`${inter.className} mt-6 text-[15px] font-semibold leading-[1.8] text-black/75`}
-            >
-              {designer.description}
-            </p>
+                <p
+                  className={`${inter.className} mt-6 text-[15px] font-semibold md:leading-[1.8] text-black/75`}
+                >
+                  {designer.description}
+                </p>
 
-            <button className="mt-8 flex items-center gap-3 text-sm text-black/75 transition hover:text-black">
-              <span>♡</span>
-              Favorite Designer
-            </button>
+                <button className="mt-8 flex items-center gap-3 text-sm text-black/75 transition hover:text-black">
+                  <span>♡</span>
+                  Favorite Designer
+                </button>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
 
-    {/* FILTER BAR */}
-    <div className="border-b border-black/10 bg-white">
-      <div className="flex flex-col gap-4 px-6 py-5 md:flex-row md:items-center md:justify-between md:px-8">
+        {/* FILTER BAR */}
+        <div className="border-b border-black/10 bg-white">
+          <div className="flex flex-col gap-4 px-6 py-5 md:flex-row md:items-center md:justify-between md:px-8">
 
-        {/* LEFT */}
-        <div className="flex items-center gap-4">
+            {/* LEFT */}
+            <div className="flex items-center gap-4">
 
-          <button className="flex items-center gap-2 border border-black/15 px-4 py-2 text-sm transition hover:border-black">
-            <span>⊕</span>
-            Filter
-          </button>
+              <button className="flex items-center gap-2 border border-black/15 px-4 py-2 text-sm transition hover:border-black">
+                <span>⊕</span>
+                Filter
+              </button>
 
-          <p className="text-sm text-black/60">
-            {products.length} Results
-          </p>
+              <p className="text-sm text-black/60">
+                {products.length} Results
+              </p>
+            </div>
+
+            {/* SORT */}
+            <select className="h-[44px] border border-black/15 px-4 text-sm outline-none">
+              <option>Recommended</option>
+              <option>Newest</option>
+              <option>Price Low to High</option>
+              <option>Price High to Low</option>
+            </select>
+          </div>
         </div>
 
-        {/* SORT */}
-        <select className="h-[44px] border border-black/15 px-4 text-sm outline-none">
-          <option>Recommended</option>
-          <option>Newest</option>
-          <option>Price Low to High</option>
-          <option>Price High to Low</option>
-        </select>
-      </div>
-    </div>
+        {/* PRODUCTS */}
+        <div className="px-4 py-8 md:px-8">
 
-    {/* PRODUCTS */}
-    <div className="px-4 py-8 md:px-8">
-
-      <ExploreGrid
-        products={products}
-        fallbackImage={FALLBACK_PRODUCT_IMAGE}
-        categoryTitle={designer.brandName}
-      />
-    </div>
-  </section>
-);
+          <ExploreGrid
+            products={products}
+            fallbackImage={FALLBACK_PRODUCT_IMAGE}
+            categoryTitle={designer.brandName}
+          />
+        </div>
+      </section>
+    );
   } catch {
     notFound();
   }

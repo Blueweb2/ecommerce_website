@@ -47,7 +47,7 @@ export default function TopStories() {
   if (loading) {
     return (
       <section className="py-12">
-        <div className="max-w-[2000px] mx-auto px-4 md:px-20">
+        <div className="max-w-[2000px] mx-auto px-4 md:px-10 lg:px-20">
           <h2 className={`${bodoni.className} text-[24px] font-normal border-t-2 py-5 border-gray-300`}>
             top stories on
           </h2>
@@ -79,7 +79,7 @@ export default function TopStories() {
 
   return (
     <section className="pt-12">
-      <div className="max-w-[2000px] mx-auto px-4 md:px-32">
+      <div className="max-w-[2000px] mx-auto px-4 md:px-10 lg:px-32">
 
         {/* TITLE */}
         <h2 className={`${headingClassName} border-t-[2px] border-[#e5e5e5] py-5`}>

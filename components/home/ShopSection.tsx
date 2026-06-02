@@ -49,7 +49,7 @@ export default function ShopSection() {
 
   return (
     <section className="pt-6 md:pt-14 md:py-0">
-      <div className="max-w-[2000px] mx-auto px-4 md:px-32">
+      <div className="max-w-[2000px] mx-auto px-4 md:px-10 lg:px-32">
 
         {/* TITLE */}
         <h2 className={`${bodoni.className} mb-6 border-t-[2px] border-[#e5e5e5] pt-8 text-center 
@@ -101,7 +101,7 @@ export default function ShopSection() {
                     )}
                     alt={product.name}
                     className="
-                      h-44 lg:h-60 2xl:h-80
+                      h-44 md:h-52 lg:h-60 2xl:h-80
                       w-full object-fill
                       transition-all duration-700
                       group-hover:opacity-0
