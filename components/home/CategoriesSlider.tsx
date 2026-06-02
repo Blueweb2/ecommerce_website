@@ -68,8 +68,7 @@ export default function CategoriesSlider() {
         <button
           onClick={handlePrev}
           aria-label="Scroll left"
-          
-          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white border border-neutral-200 w-10 h-14 flex items-center justify-center shadow-sm hover:shadow-md transition-all duration-200"
+          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white border border-neutral-200 w-6 h-10 md:w-10 md:h-14 flex items-center justify-center shadow-sm hover:shadow-md transition-all duration-200"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -108,7 +107,7 @@ export default function CategoriesSlider() {
           onClick={handleNext}
           aria-label="Scroll right"
           
-          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white border border-neutral-200 w-10 h-14 flex items-center justify-center shadow-sm hover:shadow-md transition-all duration-200"
+          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white border border-neutral-200 w-6 h-10 md:w-10 md:h-14 flex items-center justify-center shadow-sm hover:shadow-md transition-all duration-200"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
