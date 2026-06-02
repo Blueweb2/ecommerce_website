@@ -181,6 +181,8 @@ export default function PaymentOptionsPage() {
         paymentMethod,
         shippingCharge,
         promoCode: appliedPromo?.code,
+          packagingOption,
+  giftMessage: packagingOption === "gift" ? giftMessage : "",
         notes: buildCheckoutOrderNotes(
           packagingOption,
           packagingOption === "gift" ? giftMessage : null
