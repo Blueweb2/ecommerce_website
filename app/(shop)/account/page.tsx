@@ -119,7 +119,7 @@ export default function AccountPage() {
       {/* ACCOUNT GRID */}
       <section className="mx-auto max-w-[1250px] px-6 py-20">
 
-        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+        <div className="grid gap-2 md:gap-5 grid-cols-2 xl:grid-cols-3">
 
           {accountCards.map((card) => {
 
@@ -127,21 +127,21 @@ export default function AccountPage() {
               <Link
                 key={card.title}
                 href={card.href}
-                className="group border border-[#e3e3e3] bg-white p-10"
+                className="group border border-[#e3e3e3] bg-white p-3 md:p-10"
               >
 
                 {/* TITLE */}
                 <h3
-                  className={`text-[24px] leading-none text-black ${bodoni.className}`}
+                  className={`text-[20px] md:text-[24px] leading-none text-black ${bodoni.className}`}
                 >
                   {card.title}
                 </h3>
 
                 {/* LINE */}
-                <div className="my-8 h-px bg-[#ececec]" />
+                <div className="my-5 md:my-8 h-px bg-[#ececec]" />
 
                 {/* DESCRIPTION */}
-                <p className="text-[13px] leading-7 text-[#666]">
+                <p className="text-[13px] leading-4 md:leading-7 text-[#666]">
                   {card.description}
                 </p>
               </Link>
