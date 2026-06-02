@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { getStoryBySlug } from "@/lib/api/story.api";
+import { inter, bodoni } from "@/lib/fonts";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -54,15 +55,14 @@ export default async function StoryDetailPage({ params }: Props) {
         {/* LEFT SIDE - STICKY IMAGE */}
         <div className="relative">
           <div className="sticky top-28">
-            <div className="relative aspect-[4/5] overflow-hidden rounded-[30px] bg-[#ebe6de] shadow-[0_25px_80px_rgba(0,0,0,0.08)]">
-
+            <div className="relative aspect-[4/5] overflow-hidden bg-[#ebe6de] shadow-[0_25px_80px_rgba(0,0,0,0.08)]">
               <Image
                 src={story.image.url}
                 alt={story.image.alt || story.title}
                 fill
                 priority
                 sizes="(max-width:1024px) 100vw, 50vw"
-                className="object-cover transition duration-700 hover:scale-[1.03]"
+                className="object-cover transition duration-700"
               />
             </div>
           </div>
@@ -77,33 +77,13 @@ export default async function StoryDetailPage({ params }: Props) {
           </p>
 
           {/* TITLE */}
-          <h1 className="mb-10 max-w-4xl text-4xl font-light leading-[1.05] tracking-[-0.04em] text-[#111] md:text-6xl">
+          <h1 className={`mb-10 max-w-4xl text-4xl ${bodoni.className} font-light leading-[1.05] tracking-[-0.04em] text-[#111] md:text-4xl`}>
             {story.title}
           </h1>
 
           {/* DESCRIPTION */}
           <div
-            className="
-              prose
-              prose-neutral
-              max-w-none
-
-              prose-headings:font-light
-              prose-headings:text-[#111]
-
-              prose-p:text-[17px]
-              prose-p:leading-[2]
-              prose-p:text-[#444]
-
-              prose-a:text-black
-              prose-a:no-underline
-
-              prose-strong:font-semibold
-              prose-blockquote:border-l-black
-              prose-blockquote:text-neutral-700
-
-              prose-img:rounded-2xl
-            "
+            className={`prose prose-neutral max-w-none prose-headings:font-light prose-headings:text-[#111] prose-p:text-[13px] prose-p:leading-[2] prose-p:text-[#444] prose-a:text-black prose-a:no-underline prose-strong:font-semibold prose-blockquote:border-l-black prose-blockquote:text-neutral-700 prose-img:rounded-2xl ${inter.className}`}
             dangerouslySetInnerHTML={{
               __html: story.description,
             }}
