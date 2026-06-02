@@ -1,11 +1,45 @@
 "use client";
 import { inter } from "@/lib/fonts";
 import { useState } from "react";
+import { authApi } from "@/lib/api/auth.api";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function PrivacySettings() {
+  const router = useRouter();
+
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [confirmText, setConfirmText] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleDeleteAccount = async () => {
+    if (confirmText !== "DELETE MY ACCOUNT") {
+      toast.error("Please type DELETE MY ACCOUNT");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      await authApi.deleteAccount(password);
+
+      toast.success("Account deleted successfully");
+
+      localStorage.removeItem("accessToken");
+
+      router.push("/");
+    } catch (error: any) {
+      toast.error(
+        error?.response?.data?.message ||
+        "Failed to delete account"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className={`min-h-screen ${inter.className} px-4`}>
 
@@ -35,10 +69,11 @@ export default function PrivacySettings() {
           <p className="text-[13px] text-black/65 mb-2">
             Read by you on 11 April 2026
           </p>
-
-          <button className="text-[13px] border-b border-black/50 text-black/70 hover:text-black transition">
-            Read our Privacy Policy
-          </button>
+          <Link href="/privacy-policy">
+            <button className="text-[13px] border-b border-black/50 text-black/70 hover:text-black transition">
+              Read our Privacy Policy
+            </button>
+          </Link>
         </section>
 
         {/* CUSTOMER DATA REQUESTS */}
@@ -104,6 +139,93 @@ export default function PrivacySettings() {
           </button>
         </section>
       </div>
+
+      {showDeleteModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
+          <div className="w-full max-w-md bg-white p-6 shadow-xl">
+            <h3 className="text-[22px] mb-3">
+              Delete Account
+            </h3>
+
+            <p className="text-[13px] text-black/70 mb-5">
+              This action cannot be undone.
+              Your account will be permanently deactivated.
+            </p>
+
+            <div className="space-y-4">
+              <div>
+                <p className="text-[12px] uppercase tracking-[1px] text-black/60 mb-2">
+                  Type
+                  <span className="font-medium text-black ml-1">
+                    DELETE MY ACCOUNT
+                  </span>
+                  {" "}to confirm
+                </p>
+
+                <input
+                  type="text"
+                  value={confirmText}
+                  placeholder="Type DELETE MY ACCOUNT to here"
+                  onChange={(e) => setConfirmText(e.target.value)}
+                  className="
+        h-[48px]
+        w-full
+        border
+        border-black/20
+        px-4
+        text-[14px]
+        outline-none
+        focus:border-black
+      "
+                />
+              </div>
+
+              <div>
+                <p className="text-[12px] uppercase tracking-[1px] text-black/60 mb-2">
+                  Password
+                </p>
+
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="
+        h-[48px]
+        w-full
+        border
+        border-black/20
+        px-4
+        text-[14px]
+        outline-none
+        focus:border-black
+      "
+                />
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-4 mt-6">
+              <button
+                onClick={() => {
+                  setShowDeleteModal(false);
+                  setConfirmText("");
+                  setPassword("");
+                }}
+                className="text-[13px]"
+              >
+                Cancel
+              </button>
+
+              <button
+                onClick={handleDeleteAccount}
+                disabled={loading}
+                className="bg-black text-white px-5 py-2 text-[13px]"
+              >
+                {loading ? "Deleting..." : "Delete Account"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

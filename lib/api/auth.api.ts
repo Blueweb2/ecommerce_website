@@ -14,4 +14,9 @@ export const authApi = {
     api.post("/auth/verify-email-change", data),
 
   getMe: () => api.get("/auth/me"),
+
+  deleteAccount: (password: string) =>
+  api.delete("/auth/account", {
+    data: { password },
+  }),
 };
