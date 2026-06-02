@@ -1,12 +1,16 @@
 "use client";
 import { inter } from "@/lib/fonts";
+import { useState } from "react";
 
 export default function PrivacySettings() {
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [confirmText, setConfirmText] = useState("");
+  const [password, setPassword] = useState("");
   return (
     <div className={`min-h-screen ${inter.className} px-4`}>
-      
+
       <div className="max-w-[760px]">
-        
+
         {/* TERMS */}
         <section className="mb-12">
           <h2 className="text-[24px] leading-tight font-normal text-black mb-2">
@@ -92,7 +96,10 @@ export default function PrivacySettings() {
             look at our Privacy Policy.
           </p>
 
-          <button className="text-[13px] border-b border-black/50 text-black/70 hover:text-black transition">
+          <button
+            onClick={() => setShowDeleteModal(true)}
+            className="text-[13px] border-b border-black/50 text-black/70 hover:text-black"
+          >
             Close Account
           </button>
         </section>
