@@ -96,7 +96,7 @@ export default function AdminSidebar() {
   ];
 
   return (
-    <div className="flex h-screen w-64 flex-col bg-[#1a1f1a] p-4 text-white">
+    <div className="flex h-full w-64 flex-col bg-[#1a1f1a] p-4 text-white">
       <h1 className="mb-8 text-xl font-bold">Admin Panel</h1>
 
       <nav className="space-y-2">

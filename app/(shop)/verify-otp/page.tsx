@@ -20,6 +20,7 @@ export default function VerifyOtpPage() {
   const isAdminFlow = searchParams.get("admin") === "true";
   const step = searchParams.get("step") || "email";
   const redirect = searchParams.get("redirect") || "";
+  const restored = searchParams.get("restored") === "true";
 
   const [otp, setOtp] = useState<string[]>(["", "", "", "", "", ""]);
   const [loading, setLoading] = useState(false);
@@ -186,6 +187,20 @@ export default function VerifyOtpPage() {
   return (
     <div className="min-h-screen bg-[#0f172a] flex items-center justify-center px-4">
       <div className="w-full max-w-md rounded-2xl bg-[#f8f6f2] p-8 shadow-2xl space-y-6">
+
+        {restored && (
+  <div className="rounded-lg border border-[#d4af37]/30 bg-[#fffdf6] p-4">
+    <h3 className="text-[16px] font-medium text-[#1a1f1a] mb-2">
+      Welcome Back
+    </h3>
+
+    <p className="text-[13px] leading-6 text-[#555]">
+      We found a previously closed account associated with this
+      email and restored it for you. Please verify your email to
+      continue.
+    </p>
+  </div>
+)}
 
         {/* HEADER */}
         <div className="text-center">
