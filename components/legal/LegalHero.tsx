@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { bodoni, inter } from "@/lib/fonts";
 
 type Props = {
   title: string;
@@ -28,12 +29,12 @@ export default function LegalHero({
       <div className="relative mx-auto flex h-full max-w-[1600px] items-end px-6 pb-20 md:px-20">
         <div>
           {subtitle && (
-            <p className="mb-4 text-sm text-white/90">
+            <p className={`mb-4 ${inter.className} text-sm text-white/90`}>
               {subtitle}
             </p>
           )}
 
-          <h1 className="font-serif text-5xl font-light tracking-tight text-white md:text-7xl">
+          <h1 className={`text-5xl ${bodoni.className} font-light tracking-tight text-white md:text-7xl`}>
             {title}
           </h1>
         </div>
