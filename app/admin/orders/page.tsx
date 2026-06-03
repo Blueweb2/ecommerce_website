@@ -64,19 +64,19 @@ export default function AdminOrdersPage() {
   >("all");
 
   useEffect(() => {
-    fetchOrders(1, 10, customerType === "all" ? undefined : customerType);
+    fetchOrders(1, 20, customerType === "all" ? undefined : customerType);
   }, [fetchOrders, customerType]);
 
 
   const filteredOrders = useMemo(() => {
     let result = orders;
 
-    // ✅ STATUS FILTER
+    //  STATUS FILTER
     if (activeStatus !== "all") {
       result = result.filter((order) => order.status === activeStatus);
     }
 
-    // ✅ SEARCH FILTER
+    //  SEARCH FILTER
     if (searchQuery.trim().length > 0) {
       const query = searchQuery.toLowerCase();
 
@@ -93,7 +93,7 @@ export default function AdminOrdersPage() {
       });
     }
 
-    // ✅ 🔥 REFUND FILTER (NEW)
+    //  REFUND FILTER (NEW)
     if (refundFilter !== "all") {
       result = result.filter(
         (order) => order.refundStatus === refundFilter
@@ -110,7 +110,11 @@ export default function AdminOrdersPage() {
   };
 
   const handlePageChange = (newPage: number) => {
-    fetchOrders(newPage, pagination.limit);
+    fetchOrders(
+      newPage,
+      pagination.limit,
+      customerType === "all" ? undefined : customerType
+    );
   };
 
   return (
@@ -179,7 +183,7 @@ export default function AdminOrdersPage() {
               <option value="guest">Guest Orders</option>
               <option value="registered">Registered Orders</option>
             </select>
-            
+
             {/* 🔥 REFUND FILTER BUTTONS WITH COUNT */}
             <div className="flex gap-2">
               {["all", "requested", "approved", "rejected"].map((f) => {
@@ -193,8 +197,8 @@ export default function AdminOrdersPage() {
                     key={f}
                     onClick={() => setRefundFilter(f as any)}
                     className={`px-3 py-1 rounded text-sm flex items-center gap-1 ${refundFilter === f
-                        ? "bg-black text-white"
-                        : "bg-gray-100"
+                      ? "bg-black text-white"
+                      : "bg-gray-100"
                       }`}
                   >
                     {f}
@@ -356,24 +360,51 @@ export default function AdminOrdersPage() {
 
         {/* PAGINATION */}
         {pagination.pages > 1 && (
-          <div className="flex justify-between p-4 border-t">
-            <button
-              disabled={pagination.page <= 1}
-              onClick={() => handlePageChange(pagination.page - 1)}
-            >
-              Previous
-            </button>
+          // <div className="flex justify-between p-4 border-t">
+          //   <button
+          //     disabled={pagination.page <= 1}
+          //     onClick={() => handlePageChange(pagination.page - 1)}
+          //   >
+          //     Previous
+          //   </button>
 
-            <span>
-              Page {pagination.page} / {pagination.pages}
-            </span>
+          //   <span>
+          //     Page {pagination.page} / {pagination.pages}
+          //   </span>
 
-            <button
-              disabled={pagination.page >= pagination.pages}
-              onClick={() => handlePageChange(pagination.page + 1)}
-            >
-              Next
-            </button>
+          //   <button
+          //     disabled={pagination.page >= pagination.pages}
+          //     onClick={() => handlePageChange(pagination.page + 1)}
+          //   >
+          //     Next
+          //   </button>
+          // </div>
+          <div className="flex items-center justify-between border-t px-6 py-4">
+            <p className="text-sm text-slate-500">
+              Showing page {pagination.page} of {pagination.pages}
+            </p>
+
+            <div className="flex items-center gap-2">
+              <button
+                disabled={pagination.page <= 1}
+                onClick={() => handlePageChange(pagination.page - 1)}
+                className="rounded-lg border px-4 py-2 text-sm disabled:opacity-40"
+              >
+                Previous
+              </button>
+
+              <span className="rounded-lg bg-slate-100 px-4 py-2 text-sm font-medium">
+                {pagination.page}
+              </span>
+
+              <button
+                disabled={pagination.page >= pagination.pages}
+                onClick={() => handlePageChange(pagination.page + 1)}
+                className="rounded-lg border px-4 py-2 text-sm disabled:opacity-40"
+              >
+                Next
+              </button>
+            </div>
           </div>
         )}
 
