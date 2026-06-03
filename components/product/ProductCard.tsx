@@ -60,7 +60,7 @@ export default function ProductCard({
       {/* IMAGE */}
       <div className="relative aspect-[4/5] 2xl:aspect-[4/6] w-full overflow-hidden bg-neutral-100">
 
-        {/* PRIMARY IMAGE */}
+        {/* PRIMARY IMAGE  group-hover:scale-[1.03] */}
         <Image
           src={imageUrl}
           alt={product.name}
@@ -70,11 +70,10 @@ export default function ProductCard({
             object-cover
             transition-all duration-700
             group-hover:opacity-0
-            group-hover:scale-[1.03]
           "
         />
 
-        {/* SECOND IMAGE */}
+        {/* SECOND IMAGE  group-hover:scale-[1.03] */}
         {secondImg && (
           <Image
             src={hoverImageUrl}
@@ -86,7 +85,6 @@ export default function ProductCard({
               opacity-0
               transition-all duration-700
               group-hover:opacity-100
-              group-hover:scale-[1.03]
             "
           />
         )}

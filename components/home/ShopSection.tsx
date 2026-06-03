@@ -105,7 +105,6 @@ export default function ShopSection() {
                       w-full object-fill
                       transition-all duration-700
                       group-hover:opacity-0
-                      group-hover:scale-[1.02]
                     "
                   />
 
@@ -115,14 +114,13 @@ export default function ShopSection() {
                       src={resolveImageSrc(product.images[1].url)}
                       alt={product.name}
                       className="
-        absolute inset-0
-        h-44 lg:h-60 2xl:h-80
-        w-full object-fill
-        opacity-0
-        transition-all duration-700
-        group-hover:opacity-100
-        group-hover:scale-[1.02]
-      "
+                        absolute inset-0
+                        h-44 lg:h-60 2xl:h-80
+                        w-full object-fill
+                        opacity-0
+                        transition-all duration-700
+                        group-hover:opacity-100
+                      "
                     />
                   )}
                 </Link>
