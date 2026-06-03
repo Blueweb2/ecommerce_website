@@ -247,7 +247,7 @@ const MyOrders = () => {
         return (
           <div
             key={order._id}
-            className="group overflow-hidden rounded-[2rem] border border-gray-100 bg-white shadow-sm transition-all duration-300 hover:shadow-md"
+            className="group overflow-hidden border border-gray-100 bg-white shadow-sm transition-all duration-300 hover:shadow-md"
           >
             <div className="flex flex-wrap items-center justify-between gap-4 p-6">
               <div className="flex items-center gap-4">
@@ -319,14 +319,14 @@ const MyOrders = () => {
 
             {expandedOrder === order._id && (
               <div className="animate-in fade-in slide-in-from-top-2 px-6 pb-6 pt-0 duration-300">
-                <div className="space-y-4 rounded-3xl border border-gray-100 bg-gray-50 p-6">
+                <div className="space-y-4 border border-gray-100 bg-gray-50 p-6">
                   <OrderTimeline status={order.status} />
 
                   <div className="space-y-3 border-t border-gray-200/50 pt-4">
                     {order.items.map((item, i) => (
                       <div key={i} className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                          <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-gray-100 bg-white text-[10px] font-bold">
+                          <div className="flex h-8 w-8 items-center justify-center border border-gray-100 bg-white text-[10px] font-bold">
                             {item.quantity}x
                           </div>
                           <p className="text-sm font-bold text-gray-700">
@@ -347,7 +347,7 @@ const MyOrders = () => {
                       {order.status === "pending" && (
                         <button
                           onClick={() => handleCancelOrder(order._id)}
-                          className="text-[10px] font-black uppercase text-rose-500 hover:underline"
+                          className="text-[10px] font-black uppercase text-[#656565] hover:underline"
                         >
                           Cancel
                         </button>

@@ -49,7 +49,7 @@ export default function OrderTimeline({ status }: { status: string }) {
               {/* Label */}
               <p
                 className="text-xs mt-2"
-                style={{ color: isCompleted ? '#000000' : '#9ca3af' }}
+                style={{ color: isCompleted ? '#22c55e' : '#9ca3af' }}
               >
                 {labels[step]}
               </p>

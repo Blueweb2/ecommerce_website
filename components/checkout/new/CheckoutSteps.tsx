@@ -26,7 +26,7 @@ export default function CheckoutSteps({
         <div className="absolute left-[10%] right-[10%] top-5 h-px bg-[#d5d5d5]" />
 
         <div
-          className="absolute left-[10%] top-5 h-px bg-[#4c7c61] transition-all duration-300"
+          className="absolute left-[10%] top-5 h-px bg-green-400 transition-all duration-300"
           style={{ width: `calc(80% * ${progressWidth})` }}
         />
 
@@ -42,18 +42,18 @@ export default function CheckoutSteps({
                 className="flex flex-col items-center text-center"
               >
                 <div
-                  className={`relative z-10 flex h-10 w-10 items-center justify-center rounded-full border bg-[#f7f7f5] text-sm font-medium transition-colors ${
+                  className={`relative z-10 flex h-10 w-10 items-center justify-center rounded-full border text-sm font-medium transition-colors ${
                     active
-                      ? "border-[#4c7c61] text-[#4c7c61]"
-                      : "border-[#d5d5d5] text-[#999]"
-                  } ${isCurrent ? "shadow-[0_0_0_4px_rgba(76,124,97,0.12)]" : ""}`}
+                      ? "border-[#4c7c61] text-white bg-[#00ce00]"
+                      : "border-[#d5d5d5] text-[#999] bg-[#f7f7f5]"
+                  }`}
                 >
                   {current}
                 </div>
 
                 <span
                   className={`mt-3 text-[11px] sm:text-[13px] ${
-                    active ? "text-black" : "text-[#999]"
+                    active ? "text-[#00ce00]" : "text-[#999]"
                   }`}
                 >
                   {label}
