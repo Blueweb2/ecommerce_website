@@ -22,6 +22,9 @@ createOrder: (data: {
   // ✅ ADD THESE
   packagingOption?: "standard" | "gift";
   giftMessage?: string;
+  isGuestOrder?: boolean;
+  guestEmail?: string;
+  items?: any[];
 }) => api.post("/orders", data),
 
   // ✅ Get my orders (MATCHES BACKEND)

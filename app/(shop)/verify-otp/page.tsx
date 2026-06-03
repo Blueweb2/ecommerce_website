@@ -134,10 +134,19 @@ export default function VerifyOtpPage() {
       setAccessToken(accessToken);
       setUser(user);
 
+      // if (redirect.startsWith("/checkout")) {
+      //   setStoredCheckoutMode("account");
+      //   await mergeCart();
+      // }
       if (redirect.startsWith("/checkout")) {
-        setStoredCheckoutMode("account");
-        await mergeCart();
-      }
+  setStoredCheckoutMode("account");
+
+  const cartItems = useCartStore.getState().items;
+
+  if (cartItems.length > 0) {
+    await mergeCart();
+  }
+}
 
       toast.success("Verified successfully 🎉");
 

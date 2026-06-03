@@ -43,7 +43,9 @@ export interface Order {
   paymentId: any;
   razorpayOrderId: any;
   _id: string;
-  user: string | OrderUser; // String ID or populated User object
+  user?: string | OrderUser; // String ID or populated User object
+  isGuestOrder?: boolean;
+  guestEmail?: string;
   items: OrderItem[];
   totalPrice: number;
   totalGstAmount: number;

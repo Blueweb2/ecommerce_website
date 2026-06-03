@@ -149,7 +149,7 @@ export default function PreviewSection({ form, files }: Props) {
           {/* 🔥 Variants (dynamic attributes) */}
           {hasVariants(form.variants) && (
             <div className="flex flex-wrap gap-2">
-              {form.variants.map((variant, i: number) => (
+              {form.variants?.map((variant, i: number) => (
                 <span
                   key={i}
                   className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs text-slate-600"

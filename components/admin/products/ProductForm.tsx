@@ -10,6 +10,8 @@ import { uploadMultipleImages } from "@/lib/cloudinary/upload";
 import {
   CatalogImage,
   ProductPayload,
+  CustomField,
+  CustomizableConfig,
 } from "@/lib/constants/admin-catalog";
 
 import ProductHeader from "./ProductHeader";
@@ -80,16 +82,7 @@ export type ProductFormValues = {
   minOrderQty: number | string;
   stepQty: number | string;
 
-  customizable?: {
-    isCustomizable: boolean;
-    fields: {
-      name: string;
-      type: "text" | "number" | "select";
-      required?: boolean;
-      options?: string[];
-      unit?: string;
-    }[];
-  };
+  customizable?: CustomizableConfig;
 };
 
 export type ProductFormInitialData =
@@ -242,13 +235,16 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
     stepQty: initialData?.stepQty ?? 0.5,
   });
 
-  const [customizable, setCustomizable] = useState({
+  const [customizable, setCustomizable] = useState<CustomizableConfig>({
     isCustomizable: initialData?.customizable?.isCustomizable || false,
     fields:
-      initialData?.customizable?.fields?.map((field) => ({
-        ...field,
+      (initialData?.customizable?.fields?.map((field): CustomField => ({
+        name: field.name,
+        type: field.type,
+        required: field.required,
         options: field.options ? [...field.options] : undefined,
-      })) || [],
+        unit: field.unit,
+      })) || []) as CustomField[],
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -293,10 +289,13 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
       setCustomizable({
         isCustomizable: initialData.customizable.isCustomizable,
         fields:
-          initialData.customizable.fields?.map((field) => ({
-            ...field,
+          (initialData.customizable.fields?.map((field): CustomField => ({
+            name: field.name,
+            type: field.type,
+            required: field.required,
             options: field.options ? [...field.options] : undefined,
-          })) || [],
+            unit: field.unit,
+          })) || []) as CustomField[],
       });
     }
   }, [initialData]);
