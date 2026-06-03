@@ -37,7 +37,7 @@ export default function CheckoutLoginPage() {
 
   return (
     <CheckoutContainer>
-      <div className="pt-8">
+      <div>
         <h1 className={`text-[42px] font-light text-black ${bodoni.className}`}>
           Sign in to continue checkout
         </h1>
