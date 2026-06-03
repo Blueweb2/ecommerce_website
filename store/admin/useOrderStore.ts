@@ -34,9 +34,9 @@ export const useOrderStore = create<OrderStore>((set, get) => ({
   currentOrder: null,
   loading: false,
   error: null,
-  pagination: { total: 0, page: 1, limit: 10, pages: 1 },
+  pagination: { total: 0, page: 1, limit: 20, pages: 1 },
 
-  fetchOrders: async (page = 1, limit = 10, customerType?: string) => {
+  fetchOrders: async (page = 1, limit = 20, customerType?: string) => {
     set({ loading: true, error: null });
     try {
       const res = await adminOrderAPI.getAllOrders(page, limit, customerType);
