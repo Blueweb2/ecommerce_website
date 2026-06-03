@@ -4,21 +4,25 @@ import api from "@/lib/api/axios";
 
 export const orderAPI = {
   // ✅ Create order (MATCHES YOUR BACKEND)
-  createOrder: (data: {
-    shippingAddress: {
-      fullName: string;
-      phone: string;
-      street: string;
-      city: string;
-      state: string;
-      postalCode: string;
-      country: string;
-    };
-    paymentMethod: "cod" | "razorpay";
-    shippingCharge: number; // ✅ ADD THIS
-    promoCode?: string;     // ✅ ADD THIS
-    notes?: string;
-  }) => api.post("/orders", data),
+createOrder: (data: {
+  shippingAddress: {
+    fullName: string;
+    phone: string;
+    street: string;
+    city: string;
+    state: string;
+    postalCode: string;
+    country: string;
+  };
+  paymentMethod: "cod" | "razorpay";
+  shippingCharge: number;
+  promoCode?: string;
+  notes?: string;
+
+  // ✅ ADD THESE
+  packagingOption?: "standard" | "gift";
+  giftMessage?: string;
+}) => api.post("/orders", data),
 
   // ✅ Get my orders (MATCHES BACKEND)
   getMyOrders: (page: number = 1, limit: number = 10) =>

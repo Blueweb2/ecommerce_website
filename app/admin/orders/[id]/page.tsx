@@ -83,13 +83,12 @@ export default function AdminOrderDetailPage() {
               Order #{order._id.slice(-8).toUpperCase()}
             </h1>
             <span
-              className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium capitalize ${
-                order.status === "delivered"
+              className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium capitalize ${order.status === "delivered"
                   ? "bg-emerald-100 text-emerald-800"
                   : order.status === "cancelled"
                     ? "bg-rose-100 text-rose-800"
                     : "bg-blue-100 text-blue-800"
-              }`}
+                }`}
             >
               {order.status}
             </span>
@@ -147,17 +146,17 @@ export default function AdminOrderDetailPage() {
 
                       {(item.variantId ||
                         (item.selectedOptions && item.selectedOptions.length > 0)) && (
-                        <div className="mt-1 text-xs text-slate-500">
-                          {item.variantId && (
-                            <span className="block">Variant: {item.variantId}</span>
-                          )}
-                          {item.selectedOptions?.map((opt, i) => (
-                            <span key={i} className="block">
-                              {opt.fieldName}: {opt.value}
-                            </span>
-                          ))}
-                        </div>
-                      )}
+                          <div className="mt-1 text-xs text-slate-500">
+                            {item.variantId && (
+                              <span className="block">Variant: {item.variantId}</span>
+                            )}
+                            {item.selectedOptions?.map((opt, i) => (
+                              <span key={i} className="block">
+                                {opt.fieldName}: {opt.value}
+                              </span>
+                            ))}
+                          </div>
+                        )}
 
                       <div className="mt-2 flex items-center justify-between">
                         <span className="text-sm font-medium text-slate-600">
@@ -258,6 +257,36 @@ export default function AdminOrderDetailPage() {
             )}
           </div>
 
+
+          <div className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm">
+            <h2 className="mb-4 font-semibold text-slate-900">
+              Packaging & Gifting
+            </h2>
+
+            <div className="space-y-3 text-sm text-slate-600">
+              <div>
+                <span className="font-medium text-slate-800">
+                  Packaging:
+                </span>{" "}
+                {order.packagingOption === "gift"
+                  ? "Gift Packaging"
+                  : "Standard Packaging"}
+              </div>
+
+              {order.packagingOption === "gift" && (
+                <div>
+                  <p className="mb-2 font-medium text-slate-800">
+                    Personal Message
+                  </p>
+
+                  <div className="rounded-lg bg-slate-50 p-3 italic text-slate-700">
+                    {order.giftMessage?.trim() || "No personal message provided"}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
           <div className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm">
             <h2 className="mb-4 flex items-center gap-2 font-semibold text-slate-900">
               <CreditCard className="h-5 w-5 text-emerald-600" />
@@ -271,9 +300,8 @@ export default function AdminOrderDetailPage() {
               <p className="flex justify-between">
                 <span className="font-medium text-slate-800">Status:</span>
                 <span
-                  className={`font-semibold ${
-                    order.isPaid ? "text-emerald-600" : "text-rose-600"
-                  }`}
+                  className={`font-semibold ${order.isPaid ? "text-emerald-600" : "text-rose-600"
+                    }`}
                 >
                   {order.isPaid ? "Paid" : "Unpaid"}
                 </span>

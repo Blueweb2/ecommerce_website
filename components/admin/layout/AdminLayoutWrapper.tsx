@@ -10,7 +10,7 @@ export default function AdminLayoutWrapper({ children }: any) {
       <AdminSidebar />
 
       {/* Main */}
-      <div className="flex-1 flex flex-col h-screen overflow-hidden">
+      <div className="flex-1 flex flex-col h-[800px] overflow-hidden">
         <AdminNavbar />
 
         <main className="flex-1 overflow-y-auto p-6 bg-gray-50">

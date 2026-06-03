@@ -49,7 +49,10 @@ export interface Order {
   totalGstAmount: number;
   grandTotal: number;
   totalQuantity: number;
-   shippingCharge?: number;
+  shippingCharge?: number;
+  packagingOption?: "standard" | "gift";
+  giftMessage?: string;
+
   discountAmount?: number;
   status: "pending" | "processing" | "shipped" | "delivered" | "cancelled";
   shippingAddress: ShippingAddress;
