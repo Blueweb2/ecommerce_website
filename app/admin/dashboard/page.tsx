@@ -32,7 +32,7 @@ export default function AdminDashboard() {
       <h1 className="text-2xl font-bold">Admin Dashboard</h1>
 
       {/* 🔹 STATS CARDS */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-6">
 
         <div className="p-5 bg-white rounded-2xl shadow">
           <p className="text-gray-500 text-sm">Total Orders</p>

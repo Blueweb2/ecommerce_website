@@ -10,7 +10,24 @@ const CHECKOUT_PACKAGING_KEY = "checkout-packaging";
 const CHECKOUT_MODE_KEY = "checkout-mode";
 const CHECKOUT_GIFT_MESSAGE_KEY = "checkout-gift-message";
 
+const CHECKOUT_GUEST_EMAIL_KEY = "checkout-guest-email";
+
 const canUseStorage = () => typeof window !== "undefined";
+
+export const getGuestCheckoutEmail = (): string | null => {
+  if (!canUseStorage()) return null;
+  return window.localStorage.getItem(CHECKOUT_GUEST_EMAIL_KEY);
+};
+
+export const setGuestCheckoutEmail = (email: string) => {
+  if (!canUseStorage()) return;
+  window.localStorage.setItem(CHECKOUT_GUEST_EMAIL_KEY, email);
+};
+
+export const clearGuestCheckoutEmail = () => {
+  if (!canUseStorage()) return;
+  window.localStorage.removeItem(CHECKOUT_GUEST_EMAIL_KEY);
+};
 
 export const getStoredCheckoutAddress = (): Address | null => {
   if (!canUseStorage()) {
@@ -164,4 +181,5 @@ export const clearCheckoutSession = () => {
   window.localStorage.removeItem(CHECKOUT_PACKAGING_KEY);
   window.localStorage.removeItem(CHECKOUT_MODE_KEY);
   window.localStorage.removeItem(CHECKOUT_GIFT_MESSAGE_KEY);
+  window.localStorage.removeItem(CHECKOUT_GUEST_EMAIL_KEY);
 };

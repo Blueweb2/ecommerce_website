@@ -16,7 +16,7 @@ interface OrderStore {
     pages: number;
   };
 
-  fetchOrders: (page?: number, limit?: number) => Promise<void>;
+  fetchOrders: (page?: number, limit?: number, customerType?: string) => Promise<void>;
   fetchOrderDetails: (id: string) => Promise<void>;
   updateOrderStatus: (id: string, status: string) => Promise<void>;
   deleteOrder: (id: string) => Promise<void>;
@@ -36,10 +36,10 @@ export const useOrderStore = create<OrderStore>((set, get) => ({
   error: null,
   pagination: { total: 0, page: 1, limit: 10, pages: 1 },
 
-  fetchOrders: async (page = 1, limit = 10) => {
+  fetchOrders: async (page = 1, limit = 10, customerType?: string) => {
     set({ loading: true, error: null });
     try {
-      const res = await adminOrderAPI.getAllOrders(page, limit);
+      const res = await adminOrderAPI.getAllOrders(page, limit, customerType);
       const data = res.data?.data || res.data;
 
       set({

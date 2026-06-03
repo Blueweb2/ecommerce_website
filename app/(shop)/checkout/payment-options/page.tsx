@@ -21,6 +21,7 @@ import {
   getStoredGiftMessage,
   getStoredPackagingOption,
   getStoredShippingOption,
+  getGuestCheckoutEmail,
   type PackagingOption,
   type ShippingOption,
 } from "@/lib/utils/checkoutSession";
@@ -142,7 +143,7 @@ export default function PaymentOptionsPage() {
 
     const normalizedPhone = normalizePhoneNumber(shippingAddress.phone);
 
-    if (!isAuthenticated) {
+    if (!isAuthenticated && checkoutMode !== "guest") {
       toast.error("Please sign in to place your order.");
       router.push("/checkout/login");
       return;
@@ -150,7 +151,6 @@ export default function PaymentOptionsPage() {
 
     try {
       setLoading(true);
-
       const cartReady = await ensureServerCartForCheckout();
 
       if (!cartReady) {
@@ -159,7 +159,10 @@ export default function PaymentOptionsPage() {
         return;
       }
 
-      await syncCart();
+      // Only sync server cart for logged-in users
+      if (checkoutMode !== "guest") {
+        await syncCart();
+      }
 
       const latestItems = useCartStore.getState().items;
       const payableTotals = calculateCheckoutTotals({
@@ -181,12 +184,20 @@ export default function PaymentOptionsPage() {
         paymentMethod,
         shippingCharge,
         promoCode: appliedPromo?.code,
-          packagingOption,
-  giftMessage: packagingOption === "gift" ? giftMessage : "",
+        packagingOption,
+        giftMessage: packagingOption === "gift" ? giftMessage : "",
         notes: buildCheckoutOrderNotes(
           packagingOption,
           packagingOption === "gift" ? giftMessage : null
         ),
+        isGuestOrder: checkoutMode === "guest",
+        guestEmail: checkoutMode === "guest" ? getGuestCheckoutEmail() || undefined : undefined,
+        items: checkoutMode === "guest" ? latestItems.map((i) => ({
+          product: i.productId,
+          quantity: i.quantity,
+          variantId: i.variantId,
+          selectedOptions: i.selectedOptions,
+        })) : undefined,
       });
 
       const order = (res.data.data || res.data) as CreatedOrder;

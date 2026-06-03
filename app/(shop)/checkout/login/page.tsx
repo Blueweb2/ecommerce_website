@@ -1,20 +1,22 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import LoginForm from "@/components/auth/LoginForm";
 import CheckoutContainer from "@/components/checkout/new/CheckoutContainer";
 import { bodoni, inter } from "@/lib/fonts";
-import { setStoredCheckoutMode } from "@/lib/utils/checkoutSession";
+import { setStoredCheckoutMode, setGuestCheckoutEmail } from "@/lib/utils/checkoutSession";
 import { useAuthStore } from "@/store/auth/useAuthStore";
 import { useCartStore } from "@/store/user/cart/useCartStore";
+import toast from "react-hot-toast";
 
 export default function CheckoutLoginPage() {
   const router = useRouter();
   const { initialized, isAuthenticated } = useAuthStore();
   const { items, hydrated } = useCartStore();
+  const [guestEmail, setGuestEmail] = useState("");
 
   useEffect(() => {
     if (!initialized || !hydrated) {
@@ -34,6 +36,27 @@ export default function CheckoutLoginPage() {
   if (!initialized || !hydrated || items.length === 0) {
     return null;
   }
+
+  const handleGuestCheckout = () => {
+  const email = guestEmail.trim().toLowerCase();
+
+  if (!email) {
+    toast.error("Email is required");
+    return;
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  if (!emailRegex.test(email)) {
+    toast.error("Enter a valid email address");
+    return;
+  }
+
+  setGuestCheckoutEmail(email);
+  setStoredCheckoutMode("guest");
+  router.push("/checkout/shipping-address");
+};
+
 
   return (
     <CheckoutContainer>
@@ -61,7 +84,7 @@ export default function CheckoutLoginPage() {
           </div>
 
           <div className={`mt-6 border-t border-[#ececec] pt-6 ${inter.className}`}>
-            <button
+            {/* <button
               type="button"
               onClick={() => {
                 setStoredCheckoutMode("guest");
@@ -70,7 +93,27 @@ export default function CheckoutLoginPage() {
               className="w-full border border-black px-5 py-3 text-sm uppercase tracking-[0.15em] text-black transition hover:bg-black hover:text-white"
             >
               Continue as Guest
-            </button>
+            </button> */}
+              <h3 className="mb-3 text-sm font-medium uppercase tracking-[0.1em]">
+                Guest Checkout
+              </h3>
+
+              <input
+                type="email"
+                value={guestEmail}
+                onChange={(e) => setGuestEmail(e.target.value)}
+                placeholder="Email Address"
+                className="w-full border border-[#d9d9d9] px-4 py-3 text-sm"
+              />
+
+              <button
+                type="button"
+                onClick={handleGuestCheckout}
+                className="mt-4 w-full border border-black px-5 py-3 text-sm uppercase tracking-[0.15em] text-black transition hover:bg-black hover:text-white"
+              >
+                Continue as Guest
+              </button>
+         
           </div>
         </div>
       </div>

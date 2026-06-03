@@ -4,6 +4,7 @@ import { ImagePlus, Maximize2, Star, GripVertical, Trash2, Upload, Plus, Image a
 import { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import ImageModal from "@/components/admin/ui/ImageModal";
 import { CatalogImage } from "@/lib/constants/admin-catalog";
+import { ProductFormValues } from "./ProductForm";
 
 type MediaFormState = {
   images: CatalogImage[];
@@ -15,8 +16,10 @@ type MediaFormState = {
 type Props = {
   files: File[];
   setFiles: (files: File[] | ((prev: File[]) => File[])) => void;
-  form: MediaFormState;
-  setForm: React.Dispatch<React.SetStateAction<MediaFormState>>;
+  // form: MediaFormState;
+  // setForm: React.Dispatch<React.SetStateAction<MediaFormState>>;
+  form: ProductFormValues;
+setForm: React.Dispatch<React.SetStateAction<ProductFormValues>>;
   errors: Record<string, string>;
 };
 

@@ -210,8 +210,23 @@ export default function AdminOrderDetailPage() {
               <User className="h-5 w-5 text-emerald-600" />
               Customer Details
             </h2>
-            {order.user && typeof order.user !== "string" ? (
+            {order.isGuestOrder ? (
               <div className="space-y-2 text-sm text-slate-600">
+                <p>
+                  <span className="font-medium text-slate-800">Type:</span>{" "}
+                  <span className="px-2 py-0.5 bg-gray-200 text-xs rounded-full text-gray-700">Guest</span>
+                </p>
+                <p>
+                  <span className="font-medium text-slate-800">Guest Email:</span>{" "}
+                  {order.guestEmail}
+                </p>
+              </div>
+            ) : order.user && typeof order.user !== "string" ? (
+              <div className="space-y-2 text-sm text-slate-600">
+                <p>
+                  <span className="font-medium text-slate-800">Type:</span>{" "}
+                  <span className="px-2 py-0.5 bg-blue-100 text-blue-800 text-xs rounded-full">Registered User</span>
+                </p>
                 <p>
                   <span className="font-medium text-slate-800">Name:</span>{" "}
                   {order.user.name}

@@ -57,14 +57,15 @@ export default function AdminOrdersPage() {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [activeStatus, setActiveStatus] = useState("all");
+  const [customerType, setCustomerType] = useState<"all" | "guest" | "registered">("all");
   const { approveRefund, rejectRefund, approveReturn, rejectReturn, markReturnReceived } = useOrderStore();
   const [refundFilter, setRefundFilter] = useState<
     "all" | "requested" | "approved" | "rejected"
   >("all");
 
   useEffect(() => {
-    fetchOrders();
-  }, [fetchOrders]);
+    fetchOrders(1, 10, customerType === "all" ? undefined : customerType);
+  }, [fetchOrders, customerType]);
 
 
   const filteredOrders = useMemo(() => {
@@ -86,7 +87,8 @@ export default function AdminOrdersPage() {
         return (
           order._id.toLowerCase().includes(query) ||
           (userObj?.name?.toLowerCase().includes(query)) ||
-          (userObj?.email?.toLowerCase().includes(query))
+          (userObj?.email?.toLowerCase().includes(query)) ||
+          (order.guestEmail?.toLowerCase().includes(query))
         );
       });
     }
@@ -167,6 +169,17 @@ export default function AdminOrdersPage() {
               className="border px-3 py-2 rounded"
             />
 
+            {/* CUSTOMER TYPE FILTER */}
+            <select
+              value={customerType}
+              onChange={(e) => setCustomerType(e.target.value as any)}
+              className="border px-3 py-2 rounded text-sm bg-white"
+            >
+              <option value="all">All Customers</option>
+              <option value="guest">Guest Orders</option>
+              <option value="registered">Registered Orders</option>
+            </select>
+            
             {/* 🔥 REFUND FILTER BUTTONS WITH COUNT */}
             <div className="flex gap-2">
               {["all", "requested", "approved", "rejected"].map((f) => {
@@ -224,10 +237,17 @@ export default function AdminOrdersPage() {
 
                     {/* USER */}
                     <td className="p-4">
-                      {order.user && typeof order.user === "object" ? (
+                      {order.isGuestOrder ? (
                         <>
-                          <p>{order.user?.name}</p>
+                          <p className="font-medium text-slate-800">Guest</p>
+                          <p className="text-xs text-gray-500">{order.guestEmail}</p>
+                          <span className="px-2 py-0.5 bg-gray-200 text-xs rounded-full inline-block mt-1 text-gray-700">Guest Order</span>
+                        </>
+                      ) : order.user && typeof order.user === "object" ? (
+                        <>
+                          <p className="font-medium text-slate-800">{order.user?.name}</p>
                           <p className="text-xs text-gray-500">{order.user?.email}</p>
+                          <span className="px-2 py-0.5 bg-blue-100 text-blue-800 text-xs rounded-full inline-block mt-1">Registered</span>
                         </>
                       ) : "Unknown"}
                     </td>
