@@ -54,10 +54,11 @@ export default function PrivacySettings() {
           <p className="text-[13px] text-black/65 mb-2">
             Read by you on 11 April 2026
           </p>
-
-          <button className="text-[13px] border-b border-black/50 text-black/70 hover:text-black transition">
-            Read the Terms and Conditions
-          </button>
+          <Link href="/terms-of-use">
+            <button className="text-[13px] border-b border-black/50 text-black/70 hover:text-black transition">
+              Read the Terms and Conditions
+            </button>
+          </Link>
         </section>
 
         {/* PRIVACY POLICY */}
