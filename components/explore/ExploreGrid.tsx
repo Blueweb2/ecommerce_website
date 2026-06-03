@@ -116,7 +116,7 @@ export default function ExploreGrid({
                     object-cover
                     transition-all duration-700
                     group-hover:opacity-0
-                    group-hover:scale-[1.03]
+                    
                   "
                 />
 
@@ -132,7 +132,7 @@ export default function ExploreGrid({
                       opacity-0
                       transition-all duration-700
                       group-hover:opacity-100
-                      group-hover:scale-[1.03]
+                      
                     "
                   />
                 )}

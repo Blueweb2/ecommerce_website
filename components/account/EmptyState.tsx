@@ -17,7 +17,7 @@ export default function EmptyState({
   buttonText,
 }: EmptyStateProps) {
   return (
-    <div className={`${inter.className} ml-8 flex px-4 2xl:ml-14`}>
+    <div className={`${inter.className} lg:ml-8 flex items-center justify-center lg:items-start lg:justify-start px-4 2xl:ml-14`}>
       <div className="flex w-full max-w-[520px] flex-col items-center text-center">
 
         {/* ICON */}
