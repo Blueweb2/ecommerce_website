@@ -8,7 +8,7 @@ type Props = {
   form: any;
   setForm: (updater: any) => void;
   categories: any[];
-  designers?: any[]; // ✅ Added
+  designers?: any[]; //  Added
   errors: Record<string, string>;
 };
 
@@ -16,11 +16,11 @@ export default function CatalogSection({
   form,
   setForm,
   categories,
-  designers = [], // ✅ Added
+  designers = [], //  Added
   errors,
 }: Props) {
   
-  // ✅ toggle logic inside component
+  //  toggle logic inside component
   const toggleSection = (section: string) => {
     setForm((prev: any) => ({
       ...prev,

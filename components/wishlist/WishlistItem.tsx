@@ -24,7 +24,7 @@ export default function WishlistItem({ item }: Props) {
   const addToCart = useCartStore((state) => state.addItem);
   const { user } = useAuthStore();
 
-  // ✅ Remove (sync with backend if logged in)
+  //  Remove (sync with backend if logged in)
   const handleRemove = async () => {
     toggleWishlist(item);
 
@@ -39,7 +39,7 @@ export default function WishlistItem({ item }: Props) {
     toast.success("Removed from wishlist");
   };
 
-  // ✅ Add to cart + remove from wishlist
+  //  Add to cart + remove from wishlist
   const handleAddToCart = async () => {
     addToCart({
       productId: item._id,

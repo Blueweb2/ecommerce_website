@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useCategoryStore } from "@/store/admin/useCategoryStore";
-import { useDesignerStore } from "@/store/admin/useDesignerStore"; // ✅ Added
+import { useDesignerStore } from "@/store/admin/useDesignerStore"; 
 import { generateVariants } from "@/lib/utils/generateVariants";
 import { calculateVariantStock, hasVariants } from "@/lib/utils/product-stock";
 import { uploadMultipleImages } from "@/lib/cloudinary/upload";
@@ -62,7 +62,7 @@ export type ProductFormValues = {
   deliveryDetails: string;
   keyFeatures: string[];
   category: string;
-  designer: string; // ✅ ADD THIS
+  designer: string; //
   sections: string[];
   images: CatalogImage[];
   stock: number | string;
@@ -106,7 +106,7 @@ const defaultValues: ProductFormValues = {
   deliveryDetails: "",
   keyFeatures: [],
   category: "",
-  designer: "", // ✅ ADD THIS
+  designer: "", 
   sections: [],
   images: [],
   stock: "",
@@ -409,7 +409,7 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
         price: Number(form.price),
         discountPrice: Number(form.discountPrice) || undefined,
         category: form.category,
-        designer: form.designer || undefined, // ✅ Added
+        designer: form.designer || undefined, 
         brand:
           designers.find((designer) => designer._id === form.designer)?.brandName ||
           form.brand?.trim() ||

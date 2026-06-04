@@ -10,7 +10,7 @@ interface Props {
 }
 
 export default function ImageModal({ isOpen, onClose, imageUrl }: Props) {
-  // ✅ Close on Escape key
+  //  Close on Escape key
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();

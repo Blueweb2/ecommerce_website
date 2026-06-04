@@ -34,7 +34,7 @@ export default function PreviewSection({ form, files }: Props) {
     };
   }, [previews]);
 
-  // 🔥 Primary image
+  //  Primary image
   const existingImages = form.images || [];
   const totalImages = existingImages.length + previews.length;
   const primaryIndex = totalImages
@@ -45,12 +45,12 @@ export default function PreviewSection({ form, files }: Props) {
       ? existingImages[primaryIndex]?.url
       : previews[primaryIndex - existingImages.length];
 
-  // 🔥 Variant stock total
+  //  Variant stock total
   const totalStock = hasVariants(form.variants)
     ? calculateVariantStock(form.variants)
     : Number(form.stock) || 0;
 
-  // 🔥 Attribute keys
+  //  Attribute keys
   const variantAttributeKeys =
     hasVariants(form.variants) &&
     firstVariantAttributes &&
@@ -146,7 +146,7 @@ export default function PreviewSection({ form, files }: Props) {
             ))}
           </div>
 
-          {/* 🔥 Variants (dynamic attributes) */}
+          {/*  Variants (dynamic attributes) */}
           {hasVariants(form.variants) && (
             <div className="flex flex-wrap gap-2">
               {form.variants?.map((variant, i: number) => (

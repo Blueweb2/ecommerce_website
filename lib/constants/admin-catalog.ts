@@ -1,4 +1,4 @@
-// ✅ SECTION OPTIONS
+// SECTION OPTIONS
 export const PRODUCT_SECTION_OPTIONS = [
   { value: "featured", label: "Featured" },
   { value: "best-seller", label: "Best Seller" },
@@ -11,7 +11,7 @@ export type ProductSectionValue =
   (typeof PRODUCT_SECTION_OPTIONS)[number]["value"];
 
 
-// 🔥 COMMON IMAGE TYPE (FINAL)
+//  COMMON IMAGE TYPE (FINAL)
 export type CatalogImage = {
   _id?: string;
   url: string;
@@ -21,31 +21,31 @@ export type CatalogImage = {
 };
 
 
-// ✅ CATEGORY / GENERIC ENTITY
+//  CATEGORY / GENERIC ENTITY
 export type CatalogEntity = {
   _id: string;
   name: string;
   slug?: string;
   description?: string;
   image?: CatalogImage;
-  parent?: string | CatalogEntity | null; // 🔥 important
+  parent?: string | CatalogEntity | null; 
   children?: CatalogEntity[];
   isActive?: boolean;
 };
 
 
-// ✅ CATEGORY PAYLOAD
+//  CATEGORY PAYLOAD
 export type CategoryPayload = {
   name: string;
   description?: string;
   image?: CatalogImage;
-  parent?: string | null; // 🔥 REQUIRED for subcategory
+  parent?: string | null; //  REQUIRED for subcategory
   slug?: string;
 };
 
-// ✅ PRODUCT VARIANT
+//  PRODUCT VARIANT
 export interface ProductVariant {
-  attributes: Record<string, string>; // 🔥 IMPORTANT
+  attributes: Record<string, string>; //  IMPORTANT
   stock: number;
   price?: number;
   discountPrice?: number;
@@ -76,11 +76,11 @@ export type ProductSeo = Record<string, unknown>;
 
 export type ProductMetadata = Record<string, unknown>;
 
-// ❌ REMOVE string | ... → STRICT TYPE
+//  REMOVE string | ... → STRICT TYPE
 export type CatalogProductImage = CatalogImage;
 
 
-// ✅ PRODUCT TYPE
+//  PRODUCT TYPE
 export type CatalogProduct = {
   _id: string;
 
@@ -93,11 +93,11 @@ export type CatalogProduct = {
   keyFeatures?: string[];
 
   price: number;
-  discountPrice?: number; // ✅ ADD THIS
+  discountPrice?: number; //  ADD THIS
   isOnSale: boolean;
   gstPercentage?: number;
 
-  brand?: string; // ✅ ADD THIS
+  brand?: string; //  ADD THIS
 
   stock?: number;
   isPublished?: boolean;
@@ -110,7 +110,7 @@ export type CatalogProduct = {
   images?: CatalogProductImage[];
 
   category?: CatalogEntity | string | null;
-  designer?: CatalogEntity | string | null; // ✅ ADD THIS
+  designer?: CatalogEntity | string | null; //  ADD THIS
 
   sections?: string[];
   tags?: string[];
@@ -120,7 +120,7 @@ export type CatalogProduct = {
   attributes?: {
     name: string;
     values: string[];
-  }[]; // ✅ ADD THIS
+  }[]; //  ADD THIS
 
   variants?: ProductVariant[];
 
@@ -153,18 +153,18 @@ export type CatalogCollection = {
   createdAt?: string;
 };
 
-// ✅ PRODUCT PAYLOAD
+//  PRODUCT PAYLOAD
 export type ProductPayload = {
   slug?: string;
   sku?: string;
   name: string;
   price: number;
   description: string;
-  deliveryDetails: string;   // ✅ ADD
+  deliveryDetails: string;   //  ADD
   keyFeatures: string[];
   category: string;
-  designer?: string; // ✅ ADD THIS
-  brand?: string;    // ✅ ADD THIS
+  designer?: string; //  ADD THIS
+  brand?: string;    //  ADD THIS
   sections: string[];
   tags?: string[];
   seo?: ProductSeo;
@@ -212,9 +212,9 @@ export interface CartItem {
   price: number;
   quantity: number;
 
-  variantId?: string; // ✅ FIXED
+  variantId?: string; //  FIXED
 
-  selectedOptions?: SelectedOption[]; // ✅ FIXED
+  selectedOptions?: SelectedOption[]; //  FIXED
   gstPercentage?: number;
   gstAmount?: number;
 
@@ -223,7 +223,7 @@ export interface CartItem {
   minOrderQty?: number;
   stepQty?: number;
 }
-// ✅ API ERROR TYPE
+//  API ERROR TYPE
 export type ApiErrorResponse = {
   response?: {
     data?: {
@@ -233,7 +233,7 @@ export type ApiErrorResponse = {
 };
 
 
-// 🔥 HELPERS
+//  HELPERS
 
 export function getSectionLabel(section: string) {
   return (
@@ -246,7 +246,7 @@ export function getSectionLabel(section: string) {
 }
 
 
-// ✅ CLOUDINARY URL OPTIMIZER (WebP + Auto Quality)
+//  CLOUDINARY URL OPTIMIZER (WebP + Auto Quality)
 export function optimizeCloudinaryUrl(url?: string): string {
   if (!url?.trim()) return "";
   
@@ -266,13 +266,13 @@ export function optimizeCloudinaryUrl(url?: string): string {
   return url.replace("/upload/", "/upload/f_webp,q_auto/");
 }
 
-// ✅ SAFE (NO string case anymore)
+//  SAFE (NO string case anymore)
 export function getProductImageUrl(image?: CatalogProductImage | null) {
   return optimizeCloudinaryUrl(image?.url || "");
 }
 
 
-// ✅ PRIMARY IMAGE
+//  PRIMARY IMAGE
 export function getPrimaryProductImage(
   images?: CatalogProductImage[] | null
 ) {
@@ -282,7 +282,7 @@ export function getPrimaryProductImage(
 }
 
 
-// ✅ IMAGE ID
+//  IMAGE ID
 export function getProductImageId(image?: CatalogProductImage | null) {
   return image?._id || "";
 }

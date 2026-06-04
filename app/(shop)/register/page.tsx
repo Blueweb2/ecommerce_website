@@ -49,7 +49,7 @@ export default function RegisterPage() {
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    // 🔥 Validation
+    //  Validation
     if (!form.name || !form.email || !form.password || !form.phone) {
       return toast.error("Please fill all required fields");
     }

@@ -28,7 +28,7 @@ ordersCode = ordersCode.replace(
 // Add customer type dropdown
 if (!ordersCode.includes('value={customerType}')) {
   ordersCode = ordersCode.replace(
-    '            {/* 🔥 REFUND FILTER BUTTONS WITH COUNT */}',
+    '            {/*  REFUND FILTER BUTTONS WITH COUNT */}',
     `            {/* CUSTOMER TYPE FILTER */}
             <select
               value={customerType}
@@ -40,7 +40,7 @@ if (!ordersCode.includes('value={customerType}')) {
               <option value="registered">Registered Orders</option>
             </select>
             
-            {/* 🔥 REFUND FILTER BUTTONS WITH COUNT */}`
+            {/*  REFUND FILTER BUTTONS WITH COUNT */}`
   );
 }
 

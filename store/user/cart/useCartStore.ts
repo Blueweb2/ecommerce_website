@@ -12,7 +12,7 @@ export type SelectedOption = {
 };
 
 export interface CartItem {
-  _id?: string; // ✅ REQUIRED for backend operations
+  _id?: string; 
 
   productId: string;
   name: string;
@@ -59,7 +59,7 @@ interface CartState {
   appliedPromo: {
     code: string;
     discountAmount: number;
-  } | null; // ✅ ADDED
+  } | null; 
 
   addItem: (item: CartItem) => Promise<void>;
   updateQuantity: (item: CartItem, quantity: number) => Promise<void>;
@@ -74,8 +74,8 @@ interface CartState {
   clearCart: () => void;
   clearCartAsync: () => Promise<void>; 
 
-  applyPromo: (code: string, discountAmount: number) => void; // ✅ ADDED
-  removePromo: () => void; // ✅ ADDED 
+  applyPromo: (code: string, discountAmount: number) => void; 
+  removePromo: () => void;
 }
 
 /* ================= HELPERS ================= */
@@ -108,7 +108,7 @@ export const useCartStore = create<CartState>()(
       totalPrice: 0,
       totalGstAmount: 0,
       hydrated: false,
-      appliedPromo: null, // ✅ ADDED
+      appliedPromo: null, 
 
       /* ================= SYNC CART ================= */
       syncCart: async () => {
@@ -162,7 +162,7 @@ export const useCartStore = create<CartState>()(
             })),
           });
 
-          // ✅ clear guest cart after merge
+          //  clear guest cart after merge
           set({ items: [], totalPrice: 0, totalGstAmount: 0 });
 
           await get().syncCart();

@@ -2,10 +2,10 @@ import api from "@/lib/api/axios";
 import { ProductPayload } from "@/lib/constants/admin-catalog";
 import { uploadMultipleImages } from "@/lib/cloudinary/upload";
 
-// ✅ GET PRODUCTS
+//  GET PRODUCTS
 export const getProducts = () => api.get("/products");
 
-// ✅ CREATE PRODUCT (WITH CLOUDINARY)
+//  CREATE PRODUCT (WITH CLOUDINARY)
 export const createProduct = async (data: ProductPayload, files: File[]) => {
   try {
     let images = data.images || [];
@@ -15,7 +15,7 @@ export const createProduct = async (data: ProductPayload, files: File[]) => {
       images = [...images, ...uploadedImages];
     }
 
-    // ✅ set primary
+    //  set primary
     images = images.map((img, index) => ({
       ...img,
       isPrimary: index === (data.primaryImageIndex || 0),
@@ -32,7 +32,7 @@ export const createProduct = async (data: ProductPayload, files: File[]) => {
   }
 };
 
-// ✅ UPDATE PRODUCT (NOW SUPPORTS IMAGE UPLOAD)
+//  UPDATE PRODUCT (NOW SUPPORTS IMAGE UPLOAD)
 export const updateProduct = async (
   id: string,
   data: ProductPayload,
@@ -41,14 +41,14 @@ export const updateProduct = async (
   try {
     let images = data.images || [];
 
-    // 🔥 If new files exist → upload
+    //  If new files exist → upload
     if (files.length > 0) {
       const uploadedImages = await uploadMultipleImages(
         files,
         "ecommerce/products"
       );
 
-      // ✅ Merge old + new images
+      // Merge old + new images
       images = [...images, ...uploadedImages];
     }
 
@@ -68,6 +68,6 @@ export const updateProduct = async (
   }
 };
 
-// ✅ DELETE PRODUCT
+//  DELETE PRODUCT
 export const deleteProduct = (id: string) =>
   api.delete(`/products/${id}`);

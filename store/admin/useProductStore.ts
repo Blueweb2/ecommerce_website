@@ -24,7 +24,7 @@ export const useProductStore = create<ProductState>((set, get) => ({
   products: [],
   loading: false,
 
-  // ✅ FETCH PRODUCTS
+  //  FETCH PRODUCTS
   fetchProducts: async () => {
     set({ loading: true });
 
@@ -47,7 +47,7 @@ export const useProductStore = create<ProductState>((set, get) => ({
     }
   },
 
-  // ✅ CREATE PRODUCT
+  // CREATE PRODUCT
   createProduct: async (data, files) => {
     set({ loading: true });
 
@@ -61,7 +61,7 @@ export const useProductStore = create<ProductState>((set, get) => ({
     }
   },
 
-  // ✅ UPDATE PRODUCT (🔥 FULL FIX)
+  //  UPDATE PRODUCT ( FULL FIX)
   updateProduct: async (id, data, files) => {
     set({ loading: true });
 
@@ -70,10 +70,10 @@ export const useProductStore = create<ProductState>((set, get) => ({
         (p: CatalogProduct) => p._id === id
       );
 
-      // 🔥 STEP 1: Upload new images (handled in API)
+      //  STEP 1: Upload new images (handled in API)
       const res = await api.updateProduct(id, data, files);
 
-      // 🔥 STEP 2: OPTIONAL - delete removed images ONLY
+      //  STEP 2: OPTIONAL - delete removed images ONLY
       if (existing?.images?.length) {
         const newPublicIds = res.data.data.images.map(
           (img: CatalogProductImage) => img.public_id
@@ -83,7 +83,7 @@ export const useProductStore = create<ProductState>((set, get) => ({
           (img) => !newPublicIds.includes(img.public_id)
         );
 
-        // ✅ delete only removed ones
+        //  delete only removed ones
         await Promise.all(
           removedImages.map((img) =>
             fetch("/api/cloudinary/delete", {
@@ -95,7 +95,7 @@ export const useProductStore = create<ProductState>((set, get) => ({
         );
       }
 
-      // 🔥 STEP 3: Update state
+      //  STEP 3: Update state
       set((state) => ({
         products: state.products.map((product) =>
           product._id === id ? res.data.data : product
@@ -109,7 +109,7 @@ export const useProductStore = create<ProductState>((set, get) => ({
     }
   },
 
-  // ✅ DELETE PRODUCT
+  //  DELETE PRODUCT
   deleteProduct: async (id: string) => {
     set({ loading: true });
 
@@ -118,7 +118,7 @@ export const useProductStore = create<ProductState>((set, get) => ({
         (p: CatalogProduct) => p._id === id
       );
 
-      // 🔥 Delete all images from Cloudinary
+      //  Delete all images from Cloudinary
       if (existing?.images?.length) {
         await Promise.all(
           existing.images.map((img: CatalogProductImage) =>

@@ -17,16 +17,16 @@ export default function AttributeBuilder({
   setAttributes,
 }: Props) {
 
-  // 🔥 Add new attribute
+  //  Add new attribute
   const addAttribute = () => {
     setAttributes([...attributes, { name: "", values: [""] }]);
   };
 
-  // 🔥 Update attribute name (clean + lowercase)
+  //  Update attribute name (clean + lowercase)
   const updateName = (index: number, name: string) => {
     const cleaned = name.trim().toLowerCase();
 
-    // ❌ prevent duplicate names
+    //  prevent duplicate names
     if (
       attributes.some(
         (attr, i) => i !== index && attr.name === cleaned
@@ -40,7 +40,7 @@ export default function AttributeBuilder({
     setAttributes(updated);
   };
 
-  // 🔥 Update value (trimmed)
+  // Update value (trimmed)
   const updateValue = (
     attrIndex: number,
     valueIndex: number,
@@ -53,14 +53,14 @@ export default function AttributeBuilder({
     setAttributes(updated);
   };
 
-  // 🔥 Add value
+  //  Add value
   const addValue = (index: number) => {
     const updated = [...attributes];
     updated[index].values.push("");
     setAttributes(updated);
   };
 
-  // 🔥 Remove value (keep at least 1)
+  //  Remove value (keep at least 1)
   const removeValue = (attrIndex: number, valueIndex: number) => {
     const updated = [...attributes];
 
@@ -73,7 +73,7 @@ export default function AttributeBuilder({
     setAttributes(updated);
   };
 
-  // 🔥 Remove attribute
+  //  Remove attribute
   const removeAttribute = (index: number) => {
     setAttributes(attributes.filter((_, i) => i !== index));
   };

@@ -15,7 +15,7 @@ interface CategoryState {
   deleteCategory: (id: string) => Promise<void>;
   getCategory: (id: string) => CatalogEntity | undefined;
 
-  // 🔥 NEW HELPERS
+  //  NEW HELPERS
   getParentCategories: () => CatalogEntity[];
   getCategoryTree: () => (CatalogEntity & { children: CatalogEntity[] })[];
 }
@@ -24,7 +24,7 @@ export const useCategoryStore = create<CategoryState>((set, get) => ({
   categories: [],
   loading: false,
 
-  // ✅ FETCH ALL
+  // FETCH ALL
   fetchCategories: async () => {
     set({ loading: true });
 
@@ -44,7 +44,7 @@ export const useCategoryStore = create<CategoryState>((set, get) => ({
     }
   },
 
-  // ✅ CREATE
+  //  CREATE
   createCategory: async (data) => {
     try {
       const res = await api.createCategory(data);
@@ -58,7 +58,7 @@ export const useCategoryStore = create<CategoryState>((set, get) => ({
     }
   },
 
-  // ✅ UPDATE
+  //  UPDATE
   updateCategory: async (id, data) => {
     try {
       const res = await api.updateCategory(id, data);
@@ -74,7 +74,7 @@ export const useCategoryStore = create<CategoryState>((set, get) => ({
     }
   },
 
-  // ✅ DELETE
+  //  DELETE
   deleteCategory: async (id) => {
     try {
       await api.deleteCategory(id);
@@ -88,15 +88,15 @@ export const useCategoryStore = create<CategoryState>((set, get) => ({
     }
   },
 
-  // ✅ GET SINGLE
+  //  GET SINGLE
   getCategory: (id) =>
     get().categories.find((cat) => cat._id === id),
 
-  // ✅ GET ONLY PARENT CATEGORIES (for dropdown)
+  // GET ONLY PARENT CATEGORIES (for dropdown)
   getParentCategories: () =>
     get().categories.filter((cat) => !cat.parent),
 
-  // ✅ BUILD TREE STRUCTURE (VERY IMPORTANT 🔥)
+  //  BUILD TREE STRUCTURE (VERY IMPORTANT )
   getCategoryTree: () => {
     const categories = get().categories;
 

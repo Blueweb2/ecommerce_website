@@ -18,7 +18,7 @@ export default function EditCollectionPage() {
   const [collection, setCollection] = useState<Collection | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // 🔥 LOAD COLLECTION
+  //  LOAD COLLECTION
   useEffect(() => {
     if (!id) return;
 
@@ -34,7 +34,7 @@ export default function EditCollectionPage() {
           return;
         }
 
-        // ✅ normalize category for form (important)
+        //  normalize category for form (important)
         const normalized = {
           ...data,
           category:
@@ -56,7 +56,7 @@ export default function EditCollectionPage() {
     void loadCollection();
   }, [id, router]);
 
-  // 🔥 SUBMIT
+  //  SUBMIT
   const handleSubmit = async (data: CollectionPayload) => {
     try {
       await updateCollection(id, data);

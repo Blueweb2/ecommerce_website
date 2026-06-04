@@ -18,7 +18,7 @@ export default function AdminLoginPage() {
 
   const [loading, setLoading] = useState(false);
 
-  // 🔥 Redirect if already logged in
+  //  Redirect if already logged in
 
 
   useEffect(() => {
@@ -63,7 +63,7 @@ const handleLogin = async (e: any) => {
 
     toast.success(res.data.message || "OTP sent");
 
-    // 🔥 DEV MODE OTP DISPLAY
+    //  DEV MODE OTP DISPLAY
     if (res.data.otp) {
       alert(`DEV OTP: ${res.data.otp}`);
       console.log("OTP:", res.data.otp);

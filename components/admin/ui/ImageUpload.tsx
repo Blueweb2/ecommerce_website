@@ -24,7 +24,7 @@ export default function ImageUpload({
     setPreview(previewUrls);
   };
 
-  // 🔥 cleanup memory
+  //  cleanup memory
   useEffect(() => {
     return () => {
       preview.forEach((url) => URL.revokeObjectURL(url));

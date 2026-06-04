@@ -14,9 +14,9 @@ export default function AuthInitializer() {
 
         setAccessToken(res.data.accessToken);
 
-        console.log("✅ Access token restored");
+        console.log(" Access token restored");
       } catch (err) {
-        console.log("❌ No valid session");
+        console.log(" No valid session");
       }
     };
 

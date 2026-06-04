@@ -7,7 +7,7 @@ import { optimizeCloudinaryUrl } from "@/lib/constants/admin-catalog";
 
 export default function BannerList({ banners, refresh }: any) {
 
-  // 🔥 Flatten grouped banners
+  // Flatten grouped banners
   const allBanners = [
     ...(banners.hero || []),
     ...(banners.center ? [banners.center] : []),
@@ -20,12 +20,12 @@ export default function BannerList({ banners, refresh }: any) {
     if (!confirmDelete) return;
 
     try {
-      // ✅ 1. Delete image from Cloudinary
+      //  1. Delete image from Cloudinary
       if (banner.image?.public_id) {
         await deleteImage(banner.image.public_id);
       }
 
-      // ✅ 2. Delete from DB
+      //  2. Delete from DB
       await deleteBanner(banner._id);
 
       toast.success("Banner deleted");

@@ -6,9 +6,9 @@
 //   isPrimary?: boolean;
 // };
 
-// // 🔥 Get signature (private helper)
+// //  Get signature (private helper)
 // const getSignature = async (folder: string) => {
-//   const token = localStorage.getItem("accessToken"); // 🔥 FIX
+//   const token = localStorage.getItem("accessToken"); //  FIX
 
 //   if (!token) {
 //     throw new Error("No access token found");
@@ -19,7 +19,7 @@
 //     {
 //       method: "GET",
 //       headers: {
-//         Authorization: `Bearer ${token}`, // ✅ correct now
+//         Authorization: `Bearer ${token}`, //  correct now
 //       },
 //       credentials: "include",
 //     }
@@ -32,7 +32,7 @@
 //   return res.json();
 // };
 
-// // 🔥 SINGLE IMAGE UPLOAD
+// //  SINGLE IMAGE UPLOAD
 // export const uploadSingleImage = async (
 //   file: File,
 //   folder = "categories"
@@ -72,7 +72,7 @@
 //   }
 // };
 
-// // 🔥 MULTIPLE IMAGE UPLOAD
+// //  MULTIPLE IMAGE UPLOAD
 // export const uploadMultipleImages = async (
 //   files: File[],
 //   folder = "products"
@@ -106,7 +106,7 @@
 //       return {
 //         url: data.secure_url,
 //         public_id: data.public_id,
-//         isPrimary: index === 0, // 🔥 can improve later
+//         isPrimary: index === 0, //  can improve later
 //       };
 //     });
 
@@ -125,13 +125,13 @@ type UploadedImage = {
   isPrimary?: boolean;
 };
 
-// ✅ Get signature (FIXED)
+//  Get signature (FIXED)
 const getSignature = async (folder: string) => {
   const res = await api.get(`/cloudinary/signature?folder=${folder}`);
   return res.data;
 };
 
-// 🔥 SINGLE IMAGE UPLOAD
+//  SINGLE IMAGE UPLOAD
 export const uploadSingleImage = async (
   file: File,
   folder = "ecommerce/categories"
@@ -171,7 +171,7 @@ export const uploadSingleImage = async (
   }
 };
 
-// ✅ MULTIPLE IMAGE UPLOAD
+//  MULTIPLE IMAGE UPLOAD
 export const uploadMultipleImages = async (
   files: File[],
   folder = "ecommerce/products",

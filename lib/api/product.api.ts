@@ -26,7 +26,7 @@ export const productAPI = {
   }) =>
     api.get("/products", { params }),
 
-  // 🔥 SALE PRODUCTS (VERY IMPORTANT FOR YOUR PAGE)
+  //  SALE PRODUCTS (VERY IMPORTANT FOR YOUR PAGE)
   getSale: (params?: {
     page?: number;
     limit?: number;

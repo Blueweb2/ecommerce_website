@@ -12,7 +12,7 @@ export default function AdminsPage() {
   const [admins, setAdmins] = useState<any[]>([]);
   const [pageLoading, setPageLoading] = useState(true);
 
-  // 🔥 Fetch admins
+  //  Fetch admins
   const fetchAdmins = async () => {
     try {
       const res = await api.get("/auth/admins");
@@ -20,11 +20,11 @@ export default function AdminsPage() {
     } catch {
       toast.error("Failed to load admins");
     } finally {
-      setPageLoading(false); // ✅ FIXED
+      setPageLoading(false); //  FIXED
     }
   };
 
-  // ✅ wait for auth, then fetch
+  //  wait for auth, then fetch
   useEffect(() => {
     if (user?.role === "superadmin") {
       fetchAdmins();
@@ -38,7 +38,7 @@ export default function AdminsPage() {
     return <div className="p-6">Loading...</div>;
   }
 
-  // ❌ role check
+  //  role check
   if (user?.role !== "superadmin") {
     return <div className="p-6 text-red-600">Access denied</div>;
   }

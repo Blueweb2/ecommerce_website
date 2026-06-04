@@ -28,7 +28,7 @@ export default function VerifyOtpPage() {
 
   const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
 
-  // 🚨 Redirect if no email
+  // Redirect if no email
   useEffect(() => {
     if (!email) {
       toast.error("Invalid access. Please login again");
@@ -40,12 +40,12 @@ export default function VerifyOtpPage() {
     }
   }, [email, router, redirect]);
 
-  // 🔥 Auto focus first input
+  //  Auto focus first input
   useEffect(() => {
     inputsRef.current[0]?.focus();
   }, []);
 
-  // ⏱️ Cooldown timer
+  // ⏱ Cooldown timer
   useEffect(() => {
     if (cooldown <= 0) return;
 
@@ -94,7 +94,7 @@ export default function VerifyOtpPage() {
     }, 0);
   };
 
-  // ✅ VERIFY OTP
+  //  VERIFY OTP
   const handleVerify = async (otpParam?: string) => {
     const otpValue = otpParam || otp.join("");
 
@@ -114,7 +114,7 @@ export default function VerifyOtpPage() {
 
       const { accessToken, user, phoneVerified } = res.data;
 
-      // 🚨 If Email verified but Phone is NOT verified yet, redirect to Phone Verification step
+      //  If Email verified but Phone is NOT verified yet, redirect to Phone Verification step
       if (step === "email" && phoneVerified === false) {
         toast.success("Email verified successfully! 🎉");
         setOtp(["", "", "", "", "", ""]);
@@ -130,7 +130,7 @@ export default function VerifyOtpPage() {
         throw new Error("Invalid response from server");
       }
 
-      // 🔐 Save auth
+      //  Save auth
       setAccessToken(accessToken);
       setUser(user);
 
@@ -150,7 +150,7 @@ export default function VerifyOtpPage() {
 
       toast.success("Verified successfully 🎉");
 
-      // 🚨 ROLE-BASED SECURITY
+      // ROLE-BASED SECURITY
       if (isAdminFlow) {
         if (user.role !== "admin" && user.role !== "superadmin") {
           toast.error("Access denied: Admin only");
@@ -173,7 +173,7 @@ export default function VerifyOtpPage() {
     }
   };
 
-  // 🔄 RESEND OTP
+  // RESEND OTP
   const handleResend = async () => {
     if (cooldown > 0) return;
 

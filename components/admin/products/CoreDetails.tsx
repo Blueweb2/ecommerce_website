@@ -9,10 +9,10 @@ type Props = {
 };
 
 export default function CoreDetails({ form, setForm, errors }: Props) {
-  // 🔥 Detect if variants exist
+  //  Detect if variants exist
   const stockManagedByVariants = hasVariants(form.variants);
 
-  // 🔥 Calculate total stock from variants (optional UX boost)
+  //  Calculate total stock from variants (optional UX boost)
   const totalVariantStock = calculateVariantStock(form.variants);
 
   return (

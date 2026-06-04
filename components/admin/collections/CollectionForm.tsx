@@ -57,7 +57,7 @@ export default function CollectionForm({ initialData, onSubmit }: Props) {
     });
   }, [initialData]);
 
-  // 🔥 IMAGE UPLOAD
+  //  IMAGE UPLOAD
   const handleImageUpload = async (file: File) => {
     try {
       setLoading(true);
@@ -80,7 +80,7 @@ export default function CollectionForm({ initialData, onSubmit }: Props) {
     }
   };
 
-  // 🔥 VALIDATION
+  //  VALIDATION
   const validate = () => {
     if (!form.title.trim()) {
       toast.error("Title required");
@@ -95,7 +95,7 @@ export default function CollectionForm({ initialData, onSubmit }: Props) {
     return true;
   };
 
-  // 🔥 SUBMIT
+  //  SUBMIT
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (loading) return;

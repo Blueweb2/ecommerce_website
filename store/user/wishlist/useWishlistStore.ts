@@ -116,7 +116,7 @@ export const useWishlistStore = create<WishlistStore>()(
         }
       },
 
-      // 🔄 Fetch from backend
+      // Fetch from backend
       syncWishlist: async () => {
         try {
           const res = await wishlistAPI.get();
@@ -134,7 +134,7 @@ export const useWishlistStore = create<WishlistStore>()(
         }
       },
 
-      // 🔄 Merge guest → backend
+      //  Merge guest → backend
       mergeWishlist: async () => {
         try {
           const items = get().items.map((i) => ({

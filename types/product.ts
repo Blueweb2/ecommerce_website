@@ -10,11 +10,11 @@ export type Product = {
   images?: { url: string; alt?: string }[];
   brand?: string;
   category?: any;
-  designer?: any; // ✅ ADD THIS
+  designer?: any; 
   sections?: string[];
   isOnSale?: boolean;
   gstPercentage?: number;
-  stock: number; // ✅ ADD THIS
+  stock: number; 
   
   isFabric?: boolean;
   unit?: string;

@@ -67,7 +67,7 @@ export const collectionAPI = {
       getCollectionSlugPaths(encodedSlug)
     );
 
-    // ✅ extract from .data wrapper
+    //  extract from .data wrapper
     return {
       success: response.success,
       collection: response.data?.collection,

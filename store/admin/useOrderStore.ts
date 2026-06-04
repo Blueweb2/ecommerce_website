@@ -21,7 +21,7 @@ interface OrderStore {
   updateOrderStatus: (id: string, status: string) => Promise<void>;
   deleteOrder: (id: string) => Promise<void>;
 
-  /* 🔥 ADD THESE */
+  /*  ADD THESE */
   approveRefund: (id: string) => Promise<void>;
   rejectRefund: (id: string) => Promise<void>;
   approveReturn: (id: string) => Promise<void>;
@@ -112,7 +112,7 @@ export const useOrderStore = create<OrderStore>((set, get) => ({
     }
   },
 
-  /* 🔥 REFUND ACTIONS */
+  /*  REFUND ACTIONS */
   approveRefund: async (id: string) => {
     try {
       await adminOrderAPI.approveRefund(id);
@@ -133,7 +133,7 @@ export const useOrderStore = create<OrderStore>((set, get) => ({
     }
   },
 
-  /* 🔥 RETURN ACTIONS */
+  /*  RETURN ACTIONS */
   approveReturn: async (id: string) => {
     try {
       await adminOrderAPI.approveReturn(id);

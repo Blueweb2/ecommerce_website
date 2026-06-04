@@ -14,20 +14,20 @@ export default function RichEditor({
   const editor = useEditor({
     extensions: [StarterKit],
     content: value,
-    immediatelyRender: false, // ✅ FIX for Next.js SSR
+    immediatelyRender: false, //  FIX for Next.js SSR
     onUpdate: ({ editor }) => {
       onChange(editor.getHTML());
     },
   });
 
-  // ✅ Sync external value (important for edit mode)
+  //  Sync external value (important for edit mode)
   useEffect(() => {
     if (editor && value !== editor.getHTML()) {
       editor.commands.setContent(value);
     }
   }, [value, editor]);
 
-  // ✅ Prevent crash before editor initializes
+  //  Prevent crash before editor initializes
   if (!editor) {
     return (
       <div className="border rounded-2xl p-3 bg-white min-h-[150px] text-sm text-gray-400">
@@ -39,7 +39,7 @@ export default function RichEditor({
   return (
     <div className="border rounded-2xl bg-white overflow-hidden">
       
-      {/* 🔥 TOOLBAR */}
+      {/*  TOOLBAR */}
       <div className="flex flex-wrap gap-2 px-3 py-2 border-b bg-gray-50 text-sm">
         
         <button

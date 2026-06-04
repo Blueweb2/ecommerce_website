@@ -37,7 +37,7 @@ export default function VariantSection({
       ? Object.keys(firstVariantAttributes)
       : [];
 
-  // 🔥 Update field (NO SKU)
+  //  Update field (NO SKU)
   const updateField = (
     index: number,
     field: "stock" | "price" | "discountPrice",
@@ -51,7 +51,7 @@ export default function VariantSection({
     }));
   };
 
-  // 🔥 Image upload
+  //  Image upload
   const handleImageUpload = (
     index: number,
     files: FileList | null
@@ -209,7 +209,7 @@ export default function VariantSection({
         <p className="text-red-500 text-sm">{errors.variants}</p>
       )}
 
-      {/* ✅ Image Preview Modal */}
+      {/* Image Preview Modal */}
       <ImageModal
         isOpen={zoomedImage !== null}
         onClose={() => setZoomedImage(null)}

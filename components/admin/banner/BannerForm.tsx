@@ -16,17 +16,17 @@ export default function BannerForm({ onSuccess }: any) {
     position: "hero",
   });
 
-  // 🔥 Upload handler (same as category)
+  //  Upload handler (same as category)
   const handleUpload = async (file: File) => {
     try {
       setLoading(true);
 
       const oldImage = form.image;
 
-      // ✅ Upload to Cloudinary
+      //  Upload to Cloudinary
       const img = await uploadSingleImage(file, "ecommerce/banners");
 
-      // ✅ Delete old image (important)
+      //  Delete old image (important)
       if (oldImage?.public_id) {
         await deleteImage(oldImage.public_id);
       }
@@ -43,7 +43,7 @@ export default function BannerForm({ onSuccess }: any) {
     }
   };
 
-  // 🔥 Submit
+  //  Submit
   const handleSubmit = async () => {
     if (!form.image) {
       toast.error("Image is required");

@@ -105,7 +105,7 @@ export default function AccountPage() {
               My Account
             </p>
 
-            {/* ✅ LOGGED USER NAME */}
+            {/*  LOGGED USER NAME */}
             <h1
               className={`text-[56px] font-light tracking-tight ${bodoni.className}`}
             >

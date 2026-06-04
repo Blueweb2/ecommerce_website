@@ -17,7 +17,7 @@ import ProductFilters from "@/components/admin/products/mainpage/ProductFilters"
 import ProductList from "@/components/admin/products/mainpage/ProductList";
 
 export default function ProductsPage() {
-  // ✅ STORES
+  //  STORES
   const {
     products,
     loading,
@@ -27,19 +27,19 @@ export default function ProductsPage() {
 
   const { categories, fetchCategories } = useCategoryStore();
 
-  // ✅ STATE
+  // STATE
   const [searchQuery, setSearchQuery] = useState("");
   const [activeSection, setActiveSection] = useState("all");
   const [activeCategory, setActiveCategory] = useState("all");
   const [saleFilter, setSaleFilter] = useState("all"); // all | sale
 
-  // ✅ FETCH DATA
+  //  FETCH DATA
   useEffect(() => {
     fetchProducts();
     fetchCategories();
   }, [fetchProducts, fetchCategories]);
 
-  // ✅ SECTION TABS
+  //  SECTION TABS
   const sectionTabs = useMemo(() => {
     const dynamicSections = Array.from(
       new Set(
@@ -67,7 +67,7 @@ export default function ProductsPage() {
     ];
   }, [products]);
 
-  // ✅ FILTERED PRODUCTS
+  //  FILTERED PRODUCTS
   const filteredProducts = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
 
@@ -108,7 +108,7 @@ export default function ProductsPage() {
     });
   }, [products, searchQuery, activeSection, activeCategory, saleFilter]);
 
-  // ✅ DELETE PRODUCT
+  //  DELETE PRODUCT
   const handleDelete = async (id: string) => {
     const confirmDelete = confirm(
       "Are you sure you want to delete this product?"
@@ -123,7 +123,7 @@ export default function ProductsPage() {
     }
   };
 
-  // ✅ DELETE IMAGE
+  // DELETE IMAGE
   const handleDeleteImage = async (
     productId: string,
     imageId: string
@@ -144,12 +144,12 @@ export default function ProductsPage() {
     }
   };
 
-  // ✅ STATS
+  //  STATS
   const publishedCount = products.filter(
     (p) => p.isPublished
   ).length;
 
-  // ✅ RETURN
+  //  RETURN
   return (
     <div className="space-y-6">
       <ProductHeader />

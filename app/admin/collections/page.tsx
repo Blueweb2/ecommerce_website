@@ -31,7 +31,7 @@ export default function CollectionsPage() {
     void fetchCategories();
   }, [fetchCollections, fetchCategories]);
 
-  // 🔥 category lookup
+  //  category lookup
   const categoryLookup = useMemo(() => {
     return new Map(categories.map((cat) => [cat._id, cat.name]));
   }, [categories]);

@@ -15,24 +15,24 @@ export default function CreateProductPage() {
   const { createProduct } = useProductStore();
   const router = useRouter();
 
-  // ✅ FIXED: now receives files also
+  //  FIXED: now receives files also
 
 const handleSubmit = async (
   data: ProductPayload,
   files: File[]
 ) => {
   try {
-    // 🔥 STEP 1: Upload images to Cloudinary (with correct primary index)
+    //  STEP 1: Upload images to Cloudinary (with correct primary index)
     const primaryIndex = data.primaryImageIndex ?? 0;
     const uploadedImages = await uploadMultipleImages(files, "ecommerce/products", primaryIndex);
 
-    // 🔥 STEP 2: Attach images to payload
+    //  STEP 2: Attach images to payload
     const payload = {
       ...data,
       images: uploadedImages,
     };
 
-    // 🔥 STEP 3: Send to backend
+    //  STEP 3: Send to backend
     await createProduct(payload, []);
 
     toast.success("Product created successfully");
@@ -59,7 +59,7 @@ const handleSubmit = async (
         </p>
       </div>
 
-      {/* ✅ IMPORTANT: ProductForm must send (data, files) */}
+      {/*  IMPORTANT: ProductForm must send (data, files) */}
       <ProductForm onSubmit={handleSubmit} />
       
     </div>

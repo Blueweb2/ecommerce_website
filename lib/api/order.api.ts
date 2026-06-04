@@ -3,7 +3,7 @@
 import api from "@/lib/api/axios";
 
 export const orderAPI = {
-  // ✅ Create order (MATCHES YOUR BACKEND)
+  //  Create order (MATCHES YOUR BACKEND)
 createOrder: (data: {
   shippingAddress: {
     fullName: string;
@@ -19,7 +19,7 @@ createOrder: (data: {
   promoCode?: string;
   notes?: string;
 
-  // ✅ ADD THESE
+  //  ADD THESE
   packagingOption?: "standard" | "gift";
   giftMessage?: string;
   isGuestOrder?: boolean;
@@ -27,14 +27,14 @@ createOrder: (data: {
   items?: any[];
 }) => api.post("/orders", data),
 
-  // ✅ Get my orders (MATCHES BACKEND)
+  //  Get my orders (MATCHES BACKEND)
   getMyOrders: (page: number = 1, limit: number = 10) =>
     api.get(`/orders/my-orders?page=${page}&limit=${limit}`),
 
-  // ✅ Get single order
+  //  Get single order
   getOrderById: (id: string) => api.get(`/orders/${id}`),
 
-  // ✅ Cancel order
+  //  Cancel order
   cancelOrder: (id: string) => api.put(`/orders/${id}/cancel`),
   verifyPayment: (data: {
   razorpayOrderId: string;

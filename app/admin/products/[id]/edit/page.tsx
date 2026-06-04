@@ -42,7 +42,7 @@ export default function EditProductPage() {
   const [product, setProduct] = useState<CatalogProduct | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // ✅ Fetch product
+  //  Fetch product
   useEffect(() => {
     if (!id) return;
 
@@ -60,7 +60,7 @@ export default function EditProductPage() {
     fetchProduct();
   }, [id]);
 
-  // ✅ Submit
+  //  Submit
   const handleSubmit = async (data: ProductPayload, files: File[]) => {
     try {
       const payload: ProductPayload = {
@@ -79,7 +79,7 @@ export default function EditProductPage() {
     }
   };
 
-  // ✅ Map product → form initialData (memoized)
+  // Map product → form initialData (memoized)
   const initialData = useMemo<ProductFormInitialData | undefined>(() => {
     if (!product) return undefined;
 
@@ -161,7 +161,7 @@ export default function EditProductPage() {
     };
   }, [product]);
 
-  // ✅ Loading / Not found
+  //  Loading / Not found
   if (loading) {
     return (
       <div className="p-10 text-center text-slate-500">
@@ -178,7 +178,7 @@ export default function EditProductPage() {
     );
   }
 
-  // ✅ UI
+  //  UI
   return (
     <div className="max-w-6xl mx-auto space-y-8 pb-20">
 

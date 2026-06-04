@@ -44,7 +44,7 @@ export default function AdminForm({
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    // ✅ Basic validation
+    //  Basic validation
     if (!form.name || !form.email) {
       toast.error("Name and Email are required");
       return;

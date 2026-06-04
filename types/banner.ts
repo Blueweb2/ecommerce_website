@@ -6,7 +6,7 @@ export interface BannerImage {
 export interface Banner {
   _id: string;
   title?: string;
-  image: BannerImage; // ✅ FIXED
+  image: BannerImage;
   link?: string;
   position: "hero" | "center" | "rightTop" | "rightBottom";
   order?: number;
