@@ -1,16 +1,12 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import { useState, useEffect } from "react";
 import { resolveImageSrc } from "@/lib/utils/image";
 import { useProductStore } from "@/store/user/product/useProductStore";
+import Loading from "@/app/loading";
 
-const Carousel = dynamic(() => import("./inside-product-feature/Carousel"),{
-  loading: () => <p className="text-center py-10">Loading...</p>,
-});
-const RightSide = dynamic<{ product: any; onVariantChange?: (variant: any | null) => void }>(() => import("./inside-product-feature/RightSide"),{
-  loading: () => <p className="text-center py-10">Loading...</p>,
-});
+import Carousel from "./inside-product-feature/Carousel";
+import RightSide from "./inside-product-feature/RightSide";
 
 type ProductFeatureProps = {
   product: any;
@@ -20,7 +16,7 @@ const ProductFeature = ({ product }: ProductFeatureProps) => {
 
   const [leftPos, setLeftPos] = useState({ x: 0, y: 0 });
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState<boolean | null>(null);
   const [carouselImageIndex, setCarouselImageIndex] = useState<number>(0);
   const [selectedVariant, setSelectedVariant] = useState<any | null>(null);
   const { zooming, setZooming } = useProductStore();
@@ -78,7 +74,12 @@ const ProductFeature = ({ product }: ProductFeatureProps) => {
     );
   };
 
-  // only in mobile divice
+  // first render time the show the loading ( check device small or not)
+  if (isMobile === null) {
+    return <Loading />
+  };
+
+  // only in mobile and medium device
   if (isMobile) {
     return (
       <>
