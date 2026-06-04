@@ -134,7 +134,7 @@ export default function ShopSection() {
                   )}
 
                   <div>
-                    <h3 className={`${inter.className} mb-2 text-[12px]`}>
+                    <h3 className={`${inter.className} mb-2 text-[12px] truncate`}>
                       {product.name}
                     </h3>
 
