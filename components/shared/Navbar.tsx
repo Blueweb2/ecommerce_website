@@ -299,40 +299,40 @@ export default function Navbar() {
               </div>
             )}
 
-      {/* DESIGNER DROPDOWN */}
-{activeMenu.type === "designer" && (
-  <div
-    className="absolute left-1/2 top-full z-50 w-screen -translate-x-1/2 border-t border-gray-200 bg-white py-10 text-black shadow-2xl"
-    onMouseEnter={() =>
-      setActiveMenu({
-        type: "designer",
-      })
-    }
-    onMouseLeave={() =>
-      setActiveMenu({
-        type: null,
-      })
-    }
-  >
-    <div className="mx-auto max-w-[1300px] px-10">
-      <h3 className="mb-8 text-lg font-semibold tracking-wider hover:underline">
-        DESIGNERS
-      </h3>
+            {/* DESIGNER DROPDOWN */}
+            {activeMenu.type === "designer" && (
+              <div
+                className="absolute left-1/2 top-full z-50 w-screen -translate-x-1/2 border-t border-gray-200 bg-white py-10 text-black shadow-2xl"
+                onMouseEnter={() =>
+                  setActiveMenu({
+                    type: "designer",
+                  })
+                }
+                onMouseLeave={() =>
+                  setActiveMenu({
+                    type: null,
+                  })
+                }
+              >
+                <div className="mx-auto max-w-[1300px] px-10">
+                  <h3 className="mb-8 text-lg font-semibold tracking-wider hover:underline">
+                    DESIGNERS
+                  </h3>
 
-      <div className="flex flex-wrap gap-x-16 gap-y-6">
-        {designers.map((designer) => (
-          <Link
-            key={designer._id}
-            href={`/designers/${designer.slug}`}
-            className="min-w-[180px] text-sm font-semibold uppercase tracking-wide text-black hover:text-gray-600"
-          >
-            {designer.name}
-          </Link>
-        ))}
-      </div>
-    </div>
-  </div>
-)}
+                  <div className="flex flex-wrap gap-x-16 gap-y-6">
+                    {designers.map((designer) => (
+                      <Link
+                        key={designer._id}
+                        href={`/designers/${designer.slug}`}
+                        className="min-w-[180px] text-sm font-semibold uppercase tracking-wide text-black hover:text-gray-600"
+                      >
+                        {designer.name}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
 
           </nav>
         </div>

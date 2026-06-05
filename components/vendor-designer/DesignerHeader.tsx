@@ -1,59 +1,88 @@
 "use client";
 
-import { Bell, Menu, Search } from "lucide-react";
+import Link from "next/link";
+import { useMemo } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { LogOut, Menu, Plus, UserRound } from "lucide-react";
 import Image from "next/image";
+import {
+  clearVendorSession,
+  useVendorSessionPreview,
+} from "@/lib/vendor/auth";
 
 interface DesignerHeaderProps {
   onMenuClick?: () => void;
 }
 
+const PAGE_TITLES: Record<string, string> = {
+  dashboard: "Dashboard",
+  products: "Products",
+  orders: "Orders",
+  promocodes: "Promo Codes",
+  analytics: "Analytics",
+  profile: "Profile",
+};
+
 export default function DesignerHeader({
   onMenuClick,
 }: DesignerHeaderProps) {
+  const pathname = usePathname();
+  const router = useRouter();
+  const preview = useVendorSessionPreview();
+
+  const pageTitle = useMemo(() => {
+    const segment = pathname.split("/")[2];
+    return PAGE_TITLES[segment] || "Vendor workspace";
+  }, [pathname]);
+
+  const handleLogout = () => {
+    clearVendorSession();
+    router.push("/vendor/login");
+  };
+
   return (
-    <header className="sticky top-0 z-40 bg-white border-b">
-      <div className="flex items-center justify-between px-6 h-16">
-        
-        {/* Left Section */}
+    <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/90 backdrop-blur">
+      <div className="flex min-h-16 items-center justify-between gap-4 px-4 md:px-6">
         <div className="flex items-center gap-4">
           <button
+            type="button"
             onClick={onMenuClick}
-            className="lg:hidden p-2 rounded-lg hover:bg-gray-100"
+            className="rounded-xl p-2 hover:bg-slate-100 lg:hidden"
           >
             <Menu size={20} />
           </button>
 
-          <h1 className="text-lg font-semibold text-gray-800">
-            Designer Dashboard
-          </h1>
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">
+              Vendor Workspace
+            </p>
+            <h1 className="text-lg font-semibold text-slate-900">{pageTitle}</h1>
+          </div>
         </div>
 
-        {/* Center Search */}
-        <div className="hidden md:flex items-center relative w-full max-w-md mx-8">
-          <Search
-            size={18}
-            className="absolute left-3 text-gray-400"
-          />
+        <div className="hidden items-center gap-3 lg:flex">
+          <Link
+            href="/vendor/products/create"
+            className="inline-flex items-center gap-2 rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800"
+          >
+            <Plus className="h-4 w-4" />
+            Add Product
+          </Link>
 
-          <input
-            type="text"
-            placeholder="Search products, orders..."
-            className="w-full pl-10 pr-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-black"
-          />
+          <Link
+            href="/vendor/profile"
+            className="inline-flex items-center gap-2 rounded-full border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+          >
+            <UserRound className="h-4 w-4" />
+            Profile
+          </Link>
         </div>
 
-        {/* Right Section */}
         <div className="flex items-center gap-4">
-          
-          {/* Notifications */}
-          <button className="relative p-2 rounded-lg hover:bg-gray-100">
-            <Bell size={20} />
-
-            <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
-          </button>
-
-          {/* Designer Profile */}
-          <button className="flex items-center gap-3 hover:bg-gray-100 px-3 py-2 rounded-xl transition">
+          <Link
+            href="/vendor/profile"
+            className="flex items-center gap-3 rounded-2xl px-3 py-2 transition hover:bg-slate-100"
+          >
             <Image
               src="/avatar-placeholder.png"
               alt="Designer"
@@ -62,15 +91,23 @@ export default function DesignerHeader({
               className="rounded-full object-cover"
             />
 
-            <div className="hidden md:block text-left">
-              <p className="text-sm font-medium text-gray-800">
-                Designer Name
+            <div className="hidden text-left md:block">
+              <p className="text-sm font-medium text-slate-800">
+                {preview.brandName || preview.name || "Designer"}
               </p>
-
-              <p className="text-xs text-gray-500">
-                Fashion Designer
+              <p className="text-xs text-slate-500">
+                {preview.email || "Vendor account"}
               </p>
             </div>
+          </Link>
+
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="inline-flex items-center gap-2 rounded-full border border-slate-200 px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50"
+          >
+            <LogOut className="h-4 w-4" />
+            <span className="hidden md:inline">Logout</span>
           </button>
         </div>
       </div>

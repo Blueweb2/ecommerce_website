@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { persistVendorToken } from "@/lib/vendor/auth";
 
 export default function DesignerLoginPage() {
   const router = useRouter();
@@ -52,14 +53,24 @@ export default function DesignerLoginPage() {
         );
       }
 
-      localStorage.setItem(
-        "designerToken",
-        data.token
-      );
+      const token =
+        data?.token ||
+        data?.data?.token ||
+        data?.data?.accessToken;
 
-      router.push("/designer/dashboard");
-    } catch (error: any) {
-      alert(error.message);
+      if (!token || typeof token !== "string") {
+        throw new Error("Designer login response did not include a token");
+      }
+
+      persistVendorToken(token);
+      router.push("/vendor/dashboard");
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Login failed";
+
+      alert(message);
     } finally {
       setLoading(false);
     }
