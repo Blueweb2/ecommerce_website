@@ -46,11 +46,11 @@ export default async function StoryDetailPage({ params }: Props) {
         Story not found
       </div>
     );
-  }
+  }git a
 
   return (
-    <section className="bg-[#f8f5ef] pt-46 pb-20">
-      <div className="mx-auto grid max-w-[1800px] grid-cols-1 gap-14 px-4 md:px-10 lg:grid-cols-[48%_52%] lg:px-20">
+    <section className="bg-[#f8f5ef] pt-24 md:pt-32 lg:pt-46 pb-3 md:pb-7">
+      <div className="mx-auto grid max-w-[1800px] grid-cols-1 gap-1 lg:gap-14 px-4 md:px-10 lg:grid-cols-[48%_52%] lg:px-20">
 
         {/* LEFT SIDE - STICKY IMAGE */}
         <div className="relative">
@@ -69,7 +69,7 @@ export default async function StoryDetailPage({ params }: Props) {
         </div>
 
         {/* RIGHT SIDE - CONTENT */}
-        <div className="flex flex-col justify-start pt-2">
+        <div className="flex flex-col justify-start pt-2 lg:pt-0">
 
           {/* CATEGORY */}
           <p className="mb-4 text-[11px] uppercase tracking-[0.35em] text-neutral-500">
@@ -77,13 +77,13 @@ export default async function StoryDetailPage({ params }: Props) {
           </p>
 
           {/* TITLE */}
-          <h1 className={`mb-10 max-w-4xl text-4xl ${bodoni.className} font-light leading-[1.05] tracking-[-0.04em] text-[#111] md:text-4xl`}>
+          <h1 className={`mb-5 lg:mb-10 max-w-4xl text-4xl ${bodoni.className} font-light leading-[1.05] tracking-[-0.04em] text-[#111] md:text-4xl`}>
             {story.title}
           </h1>
 
           {/* DESCRIPTION */}
           <div
-            className={`prose prose-neutral max-w-none prose-headings:font-light prose-headings:text-[#111] prose-p:text-[13px] prose-p:leading-[2] prose-p:text-[#444] prose-a:text-black prose-a:no-underline prose-strong:font-semibold prose-blockquote:border-l-black prose-blockquote:text-neutral-700 prose-img:rounded-2xl ${inter.className}`}
+            className={`prose prose-neutral max-w-none prose-headings:font-light prose-headings:text-[#111] prose-p:text-[13px] text-[13px] prose-p:leading-[2] prose-p:text-[#444] prose-a:text-black prose-a:no-underline prose-strong:font-semibold prose-blockquote:border-l-black prose-blockquote:text-neutral-700 prose-img:rounded-2xl ${inter.className}`}
             dangerouslySetInnerHTML={{
               __html: story.description,
             }}
