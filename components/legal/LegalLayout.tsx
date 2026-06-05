@@ -61,7 +61,7 @@ export default function LegalLayout({
           </div>
 
           {/* RIGHT */}
-          <LegalSidebar sections={sections} />
+          {/* <LegalSidebar sections={sections} /> */}
         </div>
       </section>
     </main>
