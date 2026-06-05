@@ -65,62 +65,65 @@ export default function CategoriesSlider() {
       {/* SLIDER */}
       <div className="relative">
 
-        <button
-          onClick={handlePrev}
-          aria-label="Scroll left"
-          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white border border-neutral-200 w-6 h-10 md:w-10 md:h-14 flex items-center justify-center shadow-sm hover:shadow-md transition-all duration-200"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-full h-full m-0.5 text-neutral-700"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-          </svg>
-        </button>
+        {!loading && (
+          <>
+            <button
+              onClick={handlePrev}
+              aria-label="Scroll left"
+              className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white border border-neutral-200 w-6 h-10 md:w-10 md:h-14 flex items-center justify-center shadow-sm hover:shadow-md transition-all duration-200"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="w-full h-full m-0.5 text-neutral-700"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
 
-        <div ref={scrollRef} className="flex gap-2 overflow-x-auto scrollbar-hide">
-          {!loading && (
-            categories.map((cat) => (
-              <Link key={cat._id} href={`/category/${cat.slug}`}>
-                <div className="relative w-[200px] h-[250px] lg:w-[290px] lg:h-[330px]">
-                  <Image
-                    src={optimizeCloudinaryUrl(cat.image?.url) || "/placeholder.png"}
-                    alt={cat.name}
-                    fill
-                    sizes="(max-width: 768px) 200px, 290px"
-                    className="object-cover"
-                  />
-                  <h3 className="absolute inset-0 flex items-center justify-center text-white bg-black/30">
-                    {cat.name}
-                  </h3>
-                </div>
-              </Link>
-            ))
-          )}
-        </div>
+            <div ref={scrollRef} className="flex gap-2 overflow-x-auto scrollbar-hide">
+              {!loading && (
+                categories.map((cat) => (
+                  <Link key={cat._id} href={`/category/${cat.slug}`}>
+                    <div className="relative w-[200px] h-[250px] lg:w-[290px] lg:h-[330px]">
+                      <Image
+                        src={optimizeCloudinaryUrl(cat.image?.url) || "/placeholder.png"}
+                        alt={cat.name}
+                        fill
+                        sizes="(max-width: 768px) 200px, 290px"
+                        className="object-cover"
+                      />
+                      <h3 className="absolute inset-0 flex items-center justify-center text-white bg-black/30">
+                        {cat.name}
+                      </h3>
+                    </div>
+                  </Link>
+                ))
+              )}
+            </div>
 
-        <button
-          onClick={handleNext}
-          aria-label="Scroll right"
-          
-          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white border border-neutral-200 w-6 h-10 md:w-10 md:h-14 flex items-center justify-center shadow-sm hover:shadow-md transition-all duration-200"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-full h-full m-0.5 text-neutral-700"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-          </svg>
-        </button>
-
+            <button
+              onClick={handleNext}
+              aria-label="Scroll right"
+              
+              className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white border border-neutral-200 w-6 h-10 md:w-10 md:h-14 flex items-center justify-center shadow-sm hover:shadow-md transition-all duration-200"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="w-full h-full m-0.5 text-neutral-700"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </>
+        )}
       </div>
     </div>
   );
