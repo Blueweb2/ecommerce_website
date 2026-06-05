@@ -314,27 +314,21 @@ export default function Navbar() {
                   })
                 }
               >
-                <div className="mx-auto grid max-w-[1300px] grid-cols-4 gap-16 px-10">
+                <div className="mx-auto max-w-[1300px] px-10">
+                  <h3 className="mb-8 text-lg font-semibold tracking-wider hover:underline">
+                    DESIGNERS
+                  </h3>
 
-                  <div>
-                    <h3 className="mb-6 text-lg font-semibold tracking-wider hover:underline">
-                      DESIGNERS
-                    </h3>
-
-                    <div className="space-y-4">
-                      {designers
-                        .filter((designer) => designer.isFavorite)
-                        .slice(0, 6)
-                        .map((designer) => (
-                          <Link
-                            key={designer._id}
-                            href={`/designers/${designer.slug}`}
-                            className="block text-sm font-semibold uppercase tracking-wide text-black hover:text-gray-600"
-                          >
-                            {designer.name}
-                          </Link>
-                        ))}
-                    </div>
+                  <div className="flex flex-wrap gap-x-16 gap-y-6">
+                    {designers.map((designer) => (
+                      <Link
+                        key={designer._id}
+                        href={`/designers/${designer.slug}`}
+                        className="min-w-[180px] text-sm font-semibold uppercase tracking-wide text-black hover:text-gray-600"
+                      >
+                        {designer.name}
+                      </Link>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -406,7 +400,7 @@ export default function Navbar() {
                     Preferences
                   </Link>
 
-                
+
                 </div>
 
                 <div className="border-t border-black/10 mx-8" />
