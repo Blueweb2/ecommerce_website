@@ -166,9 +166,6 @@ export default function RelatedProducts({ product }: Props) {
                 <h3 className={`${inter.className} text-xs font-normal uppercase tracking-widest text-neutral-600`}>
                   {item.name}
                 </h3>
-                <p className={`${inter.className} line-clamp-1 text-[10px] font-medium text-gray-400`}>
-                  {item.description}
-                </p>
                 <div className="flex items-center gap-2 pt-1">
                   <p className={`${inter.className} text-sm text-[15px]`}>
 
