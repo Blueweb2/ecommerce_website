@@ -362,12 +362,6 @@ export default function Navbar() {
               </span>
             )}
           </Link>
-          {/* <button onClick={() => {
-            if (loading) return;
-            router.push(user ? "/account" : "/account/login");
-          }} className="transition-colors duration-300 hover:text-[#D4AF37]">
-            <User size={18} />
-          </button> */}
           <div
             className="relative"
             onMouseEnter={() => user && setShowAccountMenu(true)}
