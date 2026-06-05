@@ -129,7 +129,7 @@ export default function RelatedProducts({ product }: Props) {
               : "border-transparent text-gray-400"
           }`}
         >
-          RECENTLY VIEWED
+          RECENTLY VIEWEDmn
         </button>
       </div>
 

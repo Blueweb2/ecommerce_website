@@ -1,18 +1,23 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { useProductStore } from "@/store/user/product/useProductStore";
 
 import Loading from "@/app/loading";
 
-const ProductFeature = dynamic(() => import("@/components/details/ProductFeature"));
-const RelatedProducts = dynamic(() => import("@/components/details/RelatedProducts"));
+const ProductFeature = dynamic(() => import("@/components/details/ProductFeature"), {
+  loading: () => <Loading />
+});
+const RelatedProducts = dynamic(() => import("@/components/details/RelatedProducts"), {
+  loading: () => <Loading />
+});
 
 export default function Page() {
 
-  const { product, loading, error, zooming,  fetchProductBySlug } = useProductStore();
+  const { product, loading, error, zooming, fetchProductBySlug } = useProductStore();
+  const [isReady, setIsReady] = useState(false);
 
   const params = useParams();
   const slug = params?.slug as string;
@@ -20,11 +25,12 @@ export default function Page() {
   // Fetch product using Zustand
   useEffect(() => {
     if (!slug) return;
+    setIsReady(true);
     fetchProductBySlug(slug);
   }, [slug, fetchProductBySlug]);
 
   // Loading state
-  if (loading) {
+  if (!isReady || loading) {
     return <Loading />;
   }
 
