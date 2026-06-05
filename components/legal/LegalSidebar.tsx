@@ -14,16 +14,16 @@ export default function LegalSidebar({
   return (
     <aside className="hidden lg:block">
       <div className="sticky top-32">
-        <h3 className="font-serif text-[42px] font-light">
+        <h3 className="text-[42px] font-light">
           Quick links
         </h3>
 
-        <div className="mt-10 flex flex-col gap-8">
+        <div className="mt-6 flex flex-col gap-8">
           {sections.map((section) => (
             <a
               key={section.id}
               href={`#${section.id}`}
-              className="text-[18px] leading-[32px] underline underline-offset-4 transition hover:text-black"
+              className="text-[13px] underline underline-offset-4 transition hover:text-black"
             >
               {section.title.replace(/^\d+\.\s/, "")}
             </a>

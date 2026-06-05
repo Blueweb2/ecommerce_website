@@ -46,7 +46,7 @@ export default async function StoryDetailPage({ params }: Props) {
         Story not found
       </div>
     );
-  }git a
+  }
 
   return (
     <section className="bg-[#f8f5ef] pt-24 md:pt-32 lg:pt-46 pb-3 md:pb-7">
