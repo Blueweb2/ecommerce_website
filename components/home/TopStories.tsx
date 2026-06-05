@@ -51,11 +51,15 @@ export default function TopStories() {
           <h2 className={`${bodoni.className} text-[24px] font-normal border-t-2 py-5 border-gray-300`}>
             top stories on
           </h2>
-          <div className="flex gap-6 pb-14 border-b-2 border-gray-300">
+
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 pb-14 border-b-2 border-gray-300">
             {[0, 1, 2, 3, 4].map((i) => (
               <div
                 key={i}
-                className="w-[200px] flex-shrink-0 rounded-xl animate-pulse"
+                className={`
+                  rounded-xl animate-pulse
+                  ${i >= 4 ? "hidden md:block" : ""}
+                `}
               >
                 <div className="h-56 w-full bg-gray-200 rounded mb-4" />
                 <div className="h-3 w-16 bg-gray-200 rounded mb-2" />
