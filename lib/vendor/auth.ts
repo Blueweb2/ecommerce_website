@@ -79,12 +79,22 @@ export function getVendorToken() {
   );
 }
 
+let cachedToken: string | null = null;
+let cachedSnapshot: VendorSessionPreview = EMPTY_VENDOR_SESSION_PREVIEW;
+
 export function getVendorSessionPreview(): VendorSessionPreview {
   const token = getVendorToken();
+
+  if (token === cachedToken) {
+    return cachedSnapshot;
+  }
+
   const payload = token ? decodeJwtPayload(token) : null;
   const subject = getDesignerObject(payload);
 
-  return {
+  cachedToken = token;
+
+  cachedSnapshot = {
     token,
     id:
       readString(subject?._id) ||
@@ -96,7 +106,11 @@ export function getVendorSessionPreview(): VendorSessionPreview {
     name: readString(subject?.name),
     brandName: readString(subject?.brandName),
   };
+
+  return cachedSnapshot;
 }
+
+
 
 function subscribe(onStoreChange: () => void) {
   if (typeof window === "undefined") {
