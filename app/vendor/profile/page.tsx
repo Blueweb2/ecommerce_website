@@ -1,7 +1,5 @@
-import React from 'react'
+import VendorProfileClient from "@/components/vendor-designer/VendorProfileClient";
 
-export default function page() {
-  return (
-    <div>page</div>
-  )
+export default function VendorProfilePage() {
+  return <VendorProfileClient />;
 }
