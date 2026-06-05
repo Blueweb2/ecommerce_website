@@ -127,3 +127,62 @@ export type DesignerPayload = {
   isFeatured?: boolean;
   isActive?: boolean;
 };
+
+// Phase 14 - New Store Types
+
+export interface DesignerAuthTypes {
+  designer: Designer | null;
+  isAuthenticated: boolean;
+  loading: boolean;
+  error: string | null;
+}
+
+export interface DesignerDashboardStats {
+  totalProducts: number;
+  totalOrders: number;
+  totalRevenue: number;
+  activeCoupons: number;
+  recentOrders: any[]; // Or order type
+  topProducts: any[]; // Or product type
+  lowStockProducts: any[]; // Or product type
+}
+
+export interface DesignerDashboardTypes {
+  stats: DesignerDashboardStats | null;
+  loading: boolean;
+  error: string | null;
+}
+
+export interface DesignerProductTypes {
+  products: any[];
+  currentProduct: any | null;
+  loading: boolean;
+  error: string | null;
+}
+
+export interface DesignerOrderTypes {
+  orders: any[];
+  currentOrder: any | null;
+  loading: boolean;
+  error: string | null;
+}
+
+export interface DesignerCouponTypes {
+  coupons: any[];
+  currentCoupon: any | null;
+  loading: boolean;
+  error: string | null;
+}
+
+export interface DesignerAnalyticsData {
+  revenueTrend: { date: string; revenue: number }[];
+  ordersTrend: { date: string; orders: number }[];
+  topProducts: any[];
+  categoryPerformance: any[];
+}
+
+export interface DesignerAnalyticsTypes {
+  data: DesignerAnalyticsData | null;
+  loading: boolean;
+  error: string | null;
+}

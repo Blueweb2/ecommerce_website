@@ -15,12 +15,12 @@ import {
 } from "lucide-react";
 
 const menu = [
-  { name: "Dashboard", href: "/vendor/dashboard", icon: LayoutDashboard },
-  { name: "Products", href: "/vendor/products", icon: Box },
-  { name: "Orders", href: "/vendor/orders", icon: ShoppingBag },
-  { name: "Promo Codes", href: "/vendor/promocodes", icon: BadgePercent },
-  { name: "Analytics", href: "/vendor/analytics", icon: BarChart3 },
-  { name: "Profile", href: "/vendor/profile", icon: UserRound },
+  { name: "Dashboard", href: "/designer/dashboard", icon: LayoutDashboard },
+  { name: "Products", href: "/designer/products", icon: Box },
+  { name: "Orders", href: "/designer/orders", icon: ShoppingBag },
+  { name: "Coupons", href: "/designer/coupons", icon: BadgePercent },
+  { name: "Analytics", href: "/designer/analytics", icon: BarChart3 },
+  { name: "Profile", href: "/designer/profile", icon: UserRound },
 ];
 
 export default function DesignerSidebar({
