@@ -11,7 +11,6 @@ import { useAuthStore } from "@/store/auth/useAuthStore";
 import { useWishlistStore } from '@/store/user/wishlist/useWishlistStore';
 import { categoryAPI } from "@/lib/api/category.api";
 import { getDesigners } from "@/lib/api/designer.api";
-import { authApi } from '@/lib/api/auth.api';
 
 type Category = {
   _id: string;
@@ -138,7 +137,7 @@ export default function Navbar() {
         ${isProductPage ? "relative" : "fixed top-0"}
         ${showNavbar
           ? "scale-100 opacity-100"
-          : "scale-95 opacity-0 -translate-y-2"
+          : "scale-95 opacity-0 -translate-y-2 pointer-events-none"
         }
       `}
     >
@@ -409,15 +408,15 @@ export default function Navbar() {
                   <button
                     onClick={logout}
                     className="
-            w-full
-            h-[48px]
-            border
-            border-black
-            text-[15px]
-            transition
-            hover:bg-black
-            hover:text-white
-          "
+                      w-full
+                      h-[48px]
+                      border
+                      border-black
+                      text-[15px]
+                      transition
+                      hover:bg-black
+                      hover:text-white
+                    "
                   >
                     Sign Out
                   </button>

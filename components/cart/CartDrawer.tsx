@@ -101,7 +101,8 @@ export default function CartDrawer() {
                   {/* Remove */}
                   <button
                     onClick={() => removeItem(item)}
-                    className={`${inter.className} flex items-center gap-1 text-xs text-gray-500 hover:text-red-500 transition mt-2`}
+                    className={`${inter.className} flex items-center gap-1 text-xs text-[#656565]
+                    hover:text-black mt-2`}
                   >
                     <Trash2 size={14} />
                     Remove

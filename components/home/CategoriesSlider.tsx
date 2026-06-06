@@ -21,6 +21,8 @@ export default function CategoriesSlider() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showPrev, setShowPrev] = useState(false);
+  const [showNext, setShowNext] = useState(true);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -36,6 +38,32 @@ export default function CategoriesSlider() {
 
     fetchCategories();
   }, []);
+
+  useEffect(() => {
+    const container = scrollRef.current;
+
+    if (!container) return;
+
+    checkScrollPosition();
+
+    container.addEventListener("scroll", checkScrollPosition);
+
+    return () => {
+      container.removeEventListener("scroll", checkScrollPosition);
+    };
+  }, [categories]);
+
+  const checkScrollPosition = () => {
+    if (!scrollRef.current) return;
+
+    const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
+
+    setShowPrev(scrollLeft > 0);
+
+    setShowNext(
+      scrollLeft < scrollWidth - clientWidth - 1
+    );
+  };
 
   const handleNext = () => {
     if (scrollRef.current) {
@@ -67,22 +95,24 @@ export default function CategoriesSlider() {
 
         {!loading && (
           <>
-            <button
-              onClick={handlePrev}
-              aria-label="Scroll left"
-              className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white border border-neutral-200 w-6 h-10 md:w-10 md:h-14 flex items-center justify-center shadow-sm hover:shadow-md transition-all duration-200"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="w-full h-full m-0.5 text-neutral-700"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
+            {showPrev && (
+              <button
+                onClick={handlePrev}
+                aria-label="Scroll left"
+                className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white border border-neutral-200 w-6 h-10 md:w-10 md:h-14 flex items-center justify-center shadow-sm hover:shadow-md transition-all duration-200"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-              </svg>
-            </button>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="w-full h-full m-0.5 text-neutral-700"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+            )}
 
             <div ref={scrollRef} className="flex gap-2 overflow-x-auto scrollbar-hide">
               {!loading && (
@@ -105,23 +135,25 @@ export default function CategoriesSlider() {
               )}
             </div>
 
-            <button
-              onClick={handleNext}
-              aria-label="Scroll right"
-              
-              className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white border border-neutral-200 w-6 h-10 md:w-10 md:h-14 flex items-center justify-center shadow-sm hover:shadow-md transition-all duration-200"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="w-full h-full m-0.5 text-neutral-700"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
+            {showNext && (
+              <button
+                onClick={handleNext}
+                aria-label="Scroll right"
+                
+                className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white border border-neutral-200 w-6 h-10 md:w-10 md:h-14 flex items-center justify-center shadow-sm hover:shadow-md transition-all duration-200"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="w-full h-full m-0.5 text-neutral-700"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            )}
           </>
         )}
       </div>
