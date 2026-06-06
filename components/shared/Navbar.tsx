@@ -11,6 +11,7 @@ import { useAuthStore } from "@/store/auth/useAuthStore";
 import { useWishlistStore } from '@/store/user/wishlist/useWishlistStore';
 import { categoryAPI } from "@/lib/api/category.api";
 import { getDesigners } from "@/lib/api/designer.api";
+import { inter } from '@/lib/fonts';
 
 type Category = {
   _id: string;
@@ -372,55 +373,61 @@ export default function Navbar() {
             </button>
 
             {user && showAccountMenu && (
-              <div className="absolute right-0 top-[35px] z-[9999] w-[320px] bg-white text-black shadow-2xl border border-black/10">
-                {/* Triangle */}
-                <div className="absolute -top-2 right-6 h-4 w-4 rotate-45 bg-white border-l border-t border-black/10" />
+              <div className={`absolute ${inter.className} right-0 z-[9999] -top-0.5 w-[320px] text-black shadow-2xl`}>
 
-                {/* Header */}
-                <div className="px-8 pt-8 pb-6">
-                  <p className="text-[24px] tracking-[3px] uppercase">
-                    Hi {user.name}
-                  </p>
+                {/* top space without background color */}
+                <div className='h-10'/> 
+
+                <div className='absolute w-full bg-white'>
+                  {/* Triangle */}
+                  <div className="absolute -top-2 right-6 h-4 w-4 rotate-45 bg-white border-l border-t border-black/10" />
+
+                  {/* Header */}
+                  <div className="px-8 pt-8 pb-6">
+                    <p className="text-[24px] tracking-[3px] uppercase">
+                      Hi {user.name}
+                    </p>
+                  </div>
+
+                  <div className="border-t border-black/10" />
+
+                  {/* Links */}
+                  <div className="px-8 py-6 flex flex-col gap-5 text-[15px]">
+                    <Link href="/account/orders">My Orders</Link>
+
+                    <Link href="/wishlist">Wish List</Link>
+
+                    <Link href="/account/address">
+                      Address Book
+                    </Link>
+
+                    <Link href="/account/preferences">
+                      Preferences
+                    </Link>
+                  </div>
+
+                  <div className="border-t border-black/10 mx-8" />
+
+                  <div className="p-8">
+                    <button
+                      onClick={logout}
+                      className="
+                        w-full
+                        h-[48px]
+                        border
+                        border-black
+                        text-[15px]
+                        transition
+                        hover:bg-black
+                        hover:text-white
+                      "
+                    >
+                      Sign Out
+                    </button>
+                  </div>
+                  
                 </div>
 
-                <div className="border-t border-black/10" />
-
-                {/* Links */}
-                <div className="px-8 py-6 flex flex-col gap-5 text-[15px]">
-                  <Link href="/account/orders">My Orders</Link>
-
-                  <Link href="/wishlist">Wish List</Link>
-
-                  <Link href="/account/address">
-                    Address Book
-                  </Link>
-
-                  <Link href="/account/preferences">
-                    Preferences
-                  </Link>
-
-
-                </div>
-
-                <div className="border-t border-black/10 mx-8" />
-
-                <div className="p-8">
-                  <button
-                    onClick={logout}
-                    className="
-                      w-full
-                      h-[48px]
-                      border
-                      border-black
-                      text-[15px]
-                      transition
-                      hover:bg-black
-                      hover:text-white
-                    "
-                  >
-                    Sign Out
-                  </button>
-                </div>
               </div>
             )}
           </div>
