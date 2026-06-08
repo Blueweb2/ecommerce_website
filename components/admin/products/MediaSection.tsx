@@ -16,8 +16,6 @@ type MediaFormState = {
 type Props = {
   files: File[];
   setFiles: (files: File[] | ((prev: File[]) => File[])) => void;
-  // form: MediaFormState;
-  // setForm: React.Dispatch<React.SetStateAction<MediaFormState>>;
   form: ProductFormValues;
 setForm: React.Dispatch<React.SetStateAction<ProductFormValues>>;
   errors: Record<string, string>;

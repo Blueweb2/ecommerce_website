@@ -1,7 +1,7 @@
 import { useState } from "react";
 import ProductCard from "./ProductCard";
 import Link from "next/link";
-import { getPrimaryProductImage, getProductImageUrl } from "@/lib/constants/admin-catalog";
+import { getProductImageUrl } from "@/lib/constants/admin-catalog";
 
 export default function ProductList({
   products,

@@ -101,7 +101,7 @@ export default function RichEditor({
         </button>
       </div>
 
-      {/* ✍️ EDITOR */}
+      {/* EDITOR */}
       <div className="p-3 min-h-[150px] prose max-w-none">
         <EditorContent editor={editor} />
       </div>

@@ -65,23 +65,14 @@ export default function CategoriesSlider() {
     );
   };
 
-  const handleNext = () => {
-    if (scrollRef.current) {
+  const handleScroll = (position:number) => {
+    if(scrollRef.current){
       scrollRef.current.scrollBy({
-        left: 300,
-        behavior: "smooth",
-      });
+        left:  position,
+        behavior: "smooth"
+      })
     }
-  };
-
-  const handlePrev = () => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollBy({
-        left: -300,
-        behavior: "smooth",
-      });
-    }
-  };
+  }
 
   return (
     <div>
@@ -97,9 +88,9 @@ export default function CategoriesSlider() {
           <>
             {showPrev && (
               <button
-                onClick={handlePrev}
+                onClick={() => handleScroll(-300)}
                 aria-label="Scroll left"
-                className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white border border-neutral-200 w-6 h-10 md:w-10 md:h-14 flex items-center justify-center shadow-sm hover:shadow-md transition-all duration-200"
+                className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white border border-neutral-200 w-6 h-10 md:w-10 md:h-14 flex items-center justify-center shadow-sm hover:shadow-md transition-all duration-200 hover:scale-105"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -137,10 +128,9 @@ export default function CategoriesSlider() {
 
             {showNext && (
               <button
-                onClick={handleNext}
+                onClick={() => handleScroll(300)}
                 aria-label="Scroll right"
-                
-                className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white border border-neutral-200 w-6 h-10 md:w-10 md:h-14 flex items-center justify-center shadow-sm hover:shadow-md transition-all duration-200"
+                className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white border border-neutral-200 w-6 h-10 md:w-10 md:h-14 flex items-center justify-center shadow-sm hover:shadow-md transition-all duration-200 hover:scale-105"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

@@ -132,14 +132,6 @@ export default function CheckoutOrderSummary({
                   <span>{formatCurrency(totals.subtotal)}</span>
                 </div>
 
-                {/* GST */}
-                {/* <div className="flex items-center justify-between text-[15px] text-[#333]">
-                  <span>GST</span>
-                  <span>
-                    {formatCurrency(totals.totalGstAmount)}
-                  </span>
-                </div> */}
-
                 {/* SHIPPING */}
                 <div className="flex items-center justify-between text-[15px] text-[#333]">
                   <span>Shipping</span>

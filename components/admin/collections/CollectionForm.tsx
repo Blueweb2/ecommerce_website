@@ -15,8 +15,6 @@ type Props = {
   onSubmit: (data: CollectionPayload) => Promise<void>;
 };
 
-const FALLBACK_IMAGE = "/placeholder.png";
-
 export default function CollectionForm({ initialData, onSubmit }: Props) {
   const router = useRouter();
   const { categories, fetchCategories } = useCategoryStore();

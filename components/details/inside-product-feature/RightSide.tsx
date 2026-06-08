@@ -35,7 +35,6 @@ const RightSide = ({ product, onVariantChange }: Props) => {
   // Fabric / Quantity State
   const isFabric = product?.isFabric;
   const minQty = isFabric ? product?.minOrderQty || 1 : 1;
-  const [quantity, setQuantity] = useState<number>(minQty);
 
   const { toggleWishlist, isInWishlist } = useWishlistStore();
   const { user } = useAuthStore();
@@ -221,7 +220,7 @@ const RightSide = ({ product, onVariantChange }: Props) => {
       name: product.name,
       image: primaryImageUrl,
       price: basePrice,
-      quantity: quantity,
+      quantity: minQty,
       gstPercentage: product.gstPercentage || 0,
       variantId: selectedVariant?.sku,
       selectedOptions,
