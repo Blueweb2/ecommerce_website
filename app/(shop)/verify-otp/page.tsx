@@ -45,7 +45,7 @@ export default function VerifyOtpPage() {
     inputsRef.current[0]?.focus();
   }, []);
 
-  // ⏱ Cooldown timer
+  // Cooldown timer
   useEffect(() => {
     if (cooldown <= 0) return;
 
@@ -56,7 +56,7 @@ export default function VerifyOtpPage() {
     return () => clearInterval(timer);
   }, [cooldown]);
 
-  // 🔢 Handle OTP typing
+  // Handle OTP typing
   const handleChange = (value: string, index: number) => {
     if (!/^\d?$/.test(value)) return;
 
@@ -74,14 +74,14 @@ export default function VerifyOtpPage() {
     }
   };
 
-  // ⌫ Backspace navigation
+  // Backspace navigation
   const handleKeyDown = (e: React.KeyboardEvent, index: number) => {
     if (e.key === "Backspace" && !otp[index] && index > 0) {
       inputsRef.current[index - 1]?.focus();
     }
   };
 
-  // 📋 Paste OTP
+  // Paste OTP
   const handlePaste = (e: React.ClipboardEvent) => {
     const pasted = e.clipboardData.getData("text").slice(0, 6);
     if (!/^\d+$/.test(pasted)) return;
@@ -134,10 +134,6 @@ export default function VerifyOtpPage() {
       setAccessToken(accessToken);
       setUser(user);
 
-      // if (redirect.startsWith("/checkout")) {
-      //   setStoredCheckoutMode("account");
-      //   await mergeCart();
-      // }
       if (redirect.startsWith("/checkout")) {
   setStoredCheckoutMode("account");
 

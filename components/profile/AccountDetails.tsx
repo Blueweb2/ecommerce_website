@@ -34,31 +34,6 @@ export default function AccountDetails() {
       setEmail(user.email);
     }
   }, [user]);
-  // const handleUpdateProfile = async () => {
-  //   try {
-  //     setSaving(true);
-
-  //     const res = await api.patch("/users/profile", {
-  //       name,
-  //       email,
-  //     });
-
-  //     updateUser(res.data.user);
-
-  //     toast.success("Profile updated");
-
-  //     setEditingName(false);
-  //     setEditingEmail(false);
-  //   } catch (error) {
-  //     toast.error("Failed to update profile");
-  //   } finally {
-  //     setSaving(false);
-  //   }
-  // };
-
-
-
-
 
   const handleUpdateName = async () => {
     try {
@@ -79,6 +54,7 @@ export default function AccountDetails() {
       setSaving(false);
     }
   };
+  
   const handleRequestEmailChange = async () => {
     try {
       setSaving(true);

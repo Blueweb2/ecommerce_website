@@ -15,7 +15,7 @@ export default function OrderTimeline({ status }: { status: string }) {
   return (
     <div className="space-y-6">
 
-      {/* 🔥 Progress Bar */}
+      {/* Progress Bar */}
       <div className="w-full h-2 rounded" style={{ backgroundColor: '#e5e7eb' }}>
         <div
           className="h-2 rounded transition-all duration-500"
@@ -26,7 +26,7 @@ export default function OrderTimeline({ status }: { status: string }) {
         />
       </div>
 
-      {/* 🔹 Steps */}
+      {/* Steps */}
       <div className="flex justify-between">
         {steps.map((step, index) => {
           const isCompleted = index <= currentIndex;

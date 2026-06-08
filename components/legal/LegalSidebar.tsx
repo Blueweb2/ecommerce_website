@@ -1,7 +1,4 @@
-// components/legal/LegalSidebar.tsx
-
 "use client";
-
 import { LegalSection } from "@/lib/legal/types";
 
 type Props = {
