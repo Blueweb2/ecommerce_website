@@ -58,8 +58,6 @@ export default function AccountDetails() {
 
 
 
-
-
   const handleUpdateName = async () => {
     try {
       setSaving(true);

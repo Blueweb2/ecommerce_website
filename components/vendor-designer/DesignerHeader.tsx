@@ -37,7 +37,7 @@ export default function DesignerHeader({
 
   const handleLogout = () => {
     clearVendorSession();
-    router.push("/vendor/login");
+    router.push("/designer/login");
   };
 
   return (
@@ -62,7 +62,7 @@ export default function DesignerHeader({
 
         <div className="hidden items-center gap-3 lg:flex">
           <Link
-            href="/vendor/products/create"
+            href="/designer/products/create"
             className="inline-flex items-center gap-2 rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800"
           >
             <Plus className="h-4 w-4" />
@@ -70,7 +70,7 @@ export default function DesignerHeader({
           </Link>
 
           <Link
-            href="/vendor/profile"
+            href="/designer/profile"
             className="inline-flex items-center gap-2 rounded-full border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
           >
             <UserRound className="h-4 w-4" />
@@ -80,7 +80,7 @@ export default function DesignerHeader({
 
         <div className="flex items-center gap-4">
           <Link
-            href="/vendor/profile"
+            href="/designer/profile"
             className="flex items-center gap-3 rounded-2xl px-3 py-2 transition hover:bg-slate-100"
           >
             <Image

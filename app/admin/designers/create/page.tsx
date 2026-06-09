@@ -4,13 +4,13 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import DesignerForm from "@/components/admin/designers/DesignerForm";
 import { useDesignerStore } from "@/store/admin/useDesignerStore";
-import type { DesignerPayload } from "@/types/designer";
+import type { AdminCreateDesignerPayload } from "@/types/designer";
 
 export default function CreateDesignerPage() {
   const router = useRouter();
   const { createDesigner } = useDesignerStore();
 
-  const handleSubmit = async (data: DesignerPayload) => {
+  const handleSubmit = async (data: AdminCreateDesignerPayload) => {
     try {
       await createDesigner(data);
       toast.success("Designer created successfully");

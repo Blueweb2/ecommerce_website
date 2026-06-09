@@ -25,10 +25,15 @@ import { deleteImage } from "@/lib/cloudinary/delete";
 import { uploadSingleImage } from "@/lib/cloudinary/upload";
 import { updateDesigner } from "@/lib/api/admin/designer.api";
 import { useCategoryStore } from "@/store/admin/useCategoryStore";
+import { useDesignerProfileStore } from "@/store/designer/useDesignerProfileStore";
 import type { Designer, DesignerImage, DesignerPayload } from "@/types/designer";
 
-type VendorProfileForm = DesignerPayload & {
+type VendorProfileForm = Omit<DesignerPayload, "categories" | "name" | "brandName" | "description"> & {
+  name: string;
+  brandName: string;
+  description: string;
   slug?: string;
+  categories: string[];
   avatar?: DesignerImage;
   brandImage?: DesignerImage;
   bannerImage?: DesignerImage;
@@ -84,7 +89,9 @@ function createFormFromDesigner(designer: Designer): VendorProfileForm {
     phone: designer.phone || "",
     gstNumber: designer.gstNumber || "",
     website: designer.website || "",
-    categories: designer.categories || [],
+    categories: Array.isArray(designer.categories) 
+      ? designer.categories.map((c: any) => typeof c === "string" ? c : c._id) 
+      : [],
     address: {
       addressLine1: designer.address?.addressLine1 || "",
       addressLine2: designer.address?.addressLine2 || "",
@@ -108,24 +115,6 @@ function createFormFromDesigner(designer: Designer): VendorProfileForm {
     isFavorite: designer.isFavorite ?? false,
     isFeatured: designer.isFeatured ?? false,
   };
-}
-
-function getCompletionPercentage(form: VendorProfileForm) {
-  const completionItems = [
-    !!form.name.trim(),
-    !!form.brandName.trim(),
-    !!form.description.trim(),
-    !!form.businessName?.trim(),
-    !!form.email?.trim(),
-    !!form.phone?.trim(),
-    (form.categories?.length ?? 0) > 0,
-    !!form.avatar?.url,
-    !!form.brandImage?.url,
-    !!form.bannerImage?.url,
-  ];
-
-  const completed = completionItems.filter(Boolean).length;
-  return Math.round((completed / completionItems.length) * 100);
 }
 
 function formatCurrency(value: number) {
@@ -159,15 +148,15 @@ function StatusBadge({
 
 export default function VendorProfileClient() {
   const {
-    designer,
     identityLabel,
     stats,
-    loading,
-    error,
+    loading: portalLoading,
+    error: portalError,
     notice,
     refresh,
   } = useVendorPortalData();
   const { categories, fetchCategories } = useCategoryStore();
+  const { profile: designer, loading: profileLoading, fetchProfile, completionPercentage, sections, updateProfile } = useDesignerProfileStore();
 
   const [form, setForm] = useState<VendorProfileForm>(EMPTY_FORM);
   const [saving, setSaving] = useState(false);
@@ -175,15 +164,14 @@ export default function VendorProfileClient() {
 
   useEffect(() => {
     void fetchCategories();
-  }, [fetchCategories]);
+    void fetchProfile();
+  }, [fetchCategories, fetchProfile]);
 
   useEffect(() => {
     if (designer) {
       setForm(createFormFromDesigner(designer));
     }
   }, [designer]);
-
-  const completion = useMemo(() => getCompletionPercentage(form), [form]);
 
   const handleImageUpload = async (field: ImageField, file: File) => {
     const previous = form[field];
@@ -255,11 +243,7 @@ export default function VendorProfileClient() {
         website: form.website?.trim() || undefined,
       };
 
-      const updated = await updateDesigner(designer._id, payload);
-
-      if (updated) {
-        setForm(createFormFromDesigner(updated));
-      }
+      await updateProfile(payload);
 
       await refresh();
       toast.success("Vendor profile updated");
@@ -271,7 +255,7 @@ export default function VendorProfileClient() {
     }
   };
 
-  if (loading && !designer) {
+  if ((portalLoading || profileLoading) && !designer) {
     return (
       <div className="flex min-h-[420px] items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-emerald-600" />
@@ -279,11 +263,11 @@ export default function VendorProfileClient() {
     );
   }
 
-  if (error) {
+  if (portalError) {
     return (
       <section className="rounded-[32px] border border-rose-200 bg-rose-50 p-8 text-rose-700">
         <h1 className="text-2xl font-semibold">Vendor profile unavailable</h1>
-        <p className="mt-3 text-sm leading-6">{error}</p>
+        <p className="mt-3 text-sm leading-6">{portalError}</p>
       </section>
     );
   }
@@ -398,9 +382,32 @@ export default function VendorProfileClient() {
       ) : null}
 
       <div className="grid gap-4 md:grid-cols-4">
-        <article className="rounded-[24px] border bg-white p-5 shadow-sm">
-          <p className="text-sm text-slate-500">Profile completion</p>
-          <p className="mt-3 text-3xl font-semibold text-slate-900">{completion}%</p>
+        <article className="col-span-1 md:col-span-4 rounded-[24px] border bg-white p-5 shadow-sm">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <p className="text-sm text-slate-500">Profile Completion</p>
+              <p className="mt-1 text-3xl font-semibold text-slate-900">{completionPercentage}%</p>
+            </div>
+            <div className="flex-1 max-w-xl">
+              <div className="h-3 w-full rounded-full bg-slate-100 overflow-hidden">
+                <div 
+                  className={`h-full transition-all duration-500 ${completionPercentage === 100 ? 'bg-emerald-500' : 'bg-amber-500'}`} 
+                  style={{ width: `${completionPercentage}%` }} 
+                />
+              </div>
+              <div className="mt-3 flex flex-wrap gap-2 text-xs">
+                {sections.map(section => (
+                  <span 
+                    key={section.key} 
+                    className={`inline-flex items-center gap-1 rounded-full px-2 py-1 ${section.isComplete ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-slate-50 text-slate-500 border border-slate-200'}`}
+                  >
+                    {section.isComplete ? <BadgeCheck className="h-3 w-3" /> : <Sparkles className="h-3 w-3 text-slate-400" />}
+                    {section.label}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
         </article>
         <article className="rounded-[24px] border bg-white p-5 shadow-sm">
           <p className="text-sm text-slate-500">Products</p>
@@ -513,34 +520,16 @@ export default function VendorProfileClient() {
               </div>
 
               <div className="mt-5 space-y-3 text-sm text-white/85">
-                <div className="flex items-center justify-between rounded-2xl bg-white/5 px-4 py-3">
-                  <span>Brand story completed</span>
-                  {form.description.trim() ? <BadgeCheck className="h-4 w-4" /> : <Sparkles className="h-4 w-4" />}
-                </div>
-                <div className="flex items-center justify-between rounded-2xl bg-white/5 px-4 py-3">
-                  <span>Business contact details</span>
-                  {form.email?.trim() && form.phone?.trim() ? (
-                    <BadgeCheck className="h-4 w-4" />
-                  ) : (
-                    <Sparkles className="h-4 w-4" />
-                  )}
-                </div>
-                <div className="flex items-center justify-between rounded-2xl bg-white/5 px-4 py-3">
-                  <span>Brand visuals uploaded</span>
-                  {form.avatar?.url && form.brandImage?.url && form.bannerImage?.url ? (
-                    <BadgeCheck className="h-4 w-4" />
-                  ) : (
-                    <Sparkles className="h-4 w-4" />
-                  )}
-                </div>
-                <div className="flex items-center justify-between rounded-2xl bg-white/5 px-4 py-3">
-                  <span>Categories assigned</span>
-                  {(form.categories?.length ?? 0) > 0 ? (
-                    <BadgeCheck className="h-4 w-4" />
-                  ) : (
-                    <Sparkles className="h-4 w-4" />
-                  )}
-                </div>
+                {sections.map(section => (
+                  <div key={section.key} className="flex items-center justify-between rounded-2xl bg-white/5 px-4 py-3">
+                    <span className={section.isComplete ? "text-emerald-300" : ""}>{section.label} ({section.weight}%)</span>
+                    {section.isComplete ? (
+                      <BadgeCheck className="h-4 w-4 text-emerald-400" />
+                    ) : (
+                      <Sparkles className="h-4 w-4 text-white/40" />
+                    )}
+                  </div>
+                ))}
               </div>
             </article>
           </div>

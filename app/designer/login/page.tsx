@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { useDesignerAuthStore } from "@/store/designer/useDesignerAuthStore";
+import { designerLogin } from "@/lib/api/designer-portal.api";
+import { persistVendorToken } from "@/lib/vendor/auth";
 
 export default function DesignerLogin() {
   const [email, setEmail] = useState("");
@@ -17,25 +19,20 @@ export default function DesignerLogin() {
     setError(null);
 
     try {
-      // Temporary mockup, in a real scenario we'd call /api/designer/auth/login
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/designer/auth/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
+      const data = await designerLogin({ email, password });
+      
+      if (!data.success) {
         throw new Error(data.message || "Login failed");
+      }
+
+      if (data.token) {
+        persistVendorToken(data.token);
       }
 
       setDesigner(data.data);
       router.push("/designer/dashboard");
     } catch (err: any) {
-      setError(err.message);
+      setError(err?.response?.data?.message || err.message || "Failed to login");
     } finally {
       setLoading(false);
     }

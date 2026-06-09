@@ -1,4 +1,4 @@
-
+// ─── Response shape helpers ───────────────────────────────────────────────────
 
 export type DesignerWithProductsResponse =
   | Designer
@@ -38,8 +38,7 @@ export type DesignerDetailResponse =
           };
     };
 
-
-
+// ─── Image & sub-objects ─────────────────────────────────────────────────────
 
 export type DesignerImage = {
   url: string;
@@ -66,69 +65,100 @@ export type DesignerSocialLinks = {
   twitter?: string;
 };
 
+// ─── Core Designer type ───────────────────────────────────────────────────────
+
 export type Designer = {
   _id?: string;
 
   name: string;
   slug?: string;
   description?: string;
-  brandName: string;
+  brandName?: string;
 
-  // NEW BUSINESS FIELDS
+  // Business fields
   businessName?: string;
   email?: string;
   phone?: string;
   gstNumber?: string;
   website?: string;
 
-  // CATEGORY IDS
-  categories?: string[];
+  // Category IDs
+  categories?: string[] | { _id: string; name: string; slug?: string }[];
 
-  // ADDRESS
+  // Address
   address?: DesignerAddress;
 
-  // SOCIAL LINKS
+  // Social links
   socialLinks?: DesignerSocialLinks;
 
+  // Brand assets
   avatar?: DesignerImage | null;
   brandImage?: DesignerImage | null;
   bannerImage?: DesignerImage | null;
 
+  // Storefront controls (admin-only)
   isFavorite?: boolean;
   isFeatured?: boolean;
   isActive?: boolean;
+
+  // Admin approval workflow
+  isVerified?: boolean;
+  verificationStatus?: "pending" | "approved" | "rejected";
+
+  // Profile completion
+  profileCompleted?: boolean;
 
   createdAt?: string;
   updatedAt?: string;
 };
 
-export type DesignerPayload = {
+// ─── Admin create payload (minimal) ──────────────────────────────────────────
+
+export type AdminCreateDesignerPayload = {
   name: string;
-  description: string;
-  brandName: string;
+  email: string;
+  password: string;
+};
+
+// ─── Designer profile update payload (all content fields) ────────────────────
+
+export type DesignerProfilePayload = {
+  brandName?: string;
+  description?: string;
 
   businessName?: string;
-  email?: string;
   phone?: string;
   gstNumber?: string;
   website?: string;
 
   categories?: string[];
-
   address?: DesignerAddress;
-
   socialLinks?: DesignerSocialLinks;
 
   avatar?: DesignerImage;
   brandImage?: DesignerImage;
   bannerImage?: DesignerImage;
+};
 
+// ─── Admin storefront payload ─────────────────────────────────────────────────
+
+export type AdminStorefrontPayload = {
+  isFeatured?: boolean;
+  isFavorite?: boolean;
+  isActive?: boolean;
+};
+
+// ─── Legacy DesignerPayload (backward compat) ─────────────────────────────────
+
+export type DesignerPayload = DesignerProfilePayload & {
+  name?: string;
+  email?: string;
   isFavorite?: boolean;
   isFeatured?: boolean;
   isActive?: boolean;
 };
 
-// Phase 14 - New Store Types
+// ─── Zustand Store Types ──────────────────────────────────────────────────────
 
 export interface DesignerAuthTypes {
   designer: Designer | null;
@@ -142,9 +172,9 @@ export interface DesignerDashboardStats {
   totalOrders: number;
   totalRevenue: number;
   activeCoupons: number;
-  recentOrders: any[]; // Or order type
-  topProducts: any[]; // Or product type
-  lowStockProducts: any[]; // Or product type
+  recentOrders: any[];
+  topProducts: any[];
+  lowStockProducts: any[];
 }
 
 export interface DesignerDashboardTypes {

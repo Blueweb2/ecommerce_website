@@ -252,9 +252,13 @@ export function useVendorPortalData(): VendorPortalState {
       }
 
       const designerDirectory =
-        designersResult.status === "fulfilled" ? designersResult.value : [];
+        designersResult.status === "fulfilled"
+          ? Array.isArray(designersResult.value)
+            ? designersResult.value
+            : (designersResult.value as any).designers || []
+          : [];
       const currentDesigner =
-        designerDirectory.find((designer) => matchDesigner(designer, preview)) ||
+        designerDirectory.find((designer: Designer) => matchDesigner(designer, preview)) ||
         null;
 
       if (!currentDesigner) {

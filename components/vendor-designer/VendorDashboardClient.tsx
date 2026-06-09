@@ -113,13 +113,13 @@ export default function VendorDashboardClient() {
 
           <div className="flex flex-wrap gap-3">
             <Link
-              href="/vendor/products"
+              href="/designer/products"
               className="rounded-full bg-white px-5 py-3 text-sm font-semibold text-slate-900 hover:bg-slate-100"
             >
               View Products
             </Link>
             <Link
-              href="/vendor/products/create"
+              href="/designer/products/create"
               className="rounded-full border border-white/20 px-5 py-3 text-sm font-semibold text-white hover:bg-white/10"
             >
               Add Product
@@ -229,7 +229,7 @@ export default function VendorDashboardClient() {
               </p>
             </div>
             <Link
-              href="/vendor/orders"
+              href="/designer/orders"
               className="text-sm font-medium text-emerald-700 hover:text-emerald-800"
             >
               View all

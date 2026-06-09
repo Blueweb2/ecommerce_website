@@ -79,7 +79,13 @@ export default function EditDesignerPage() {
         </p>
       </div>
 
-      <DesignerForm initialData={designer} onSubmit={handleSubmit} />
+      {/* TODO: Implement Admin Designer View/Approve Page */}
+      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <p className="text-slate-500">
+          Admin profile view and approval controls coming soon.
+          Designers now manage their own profile details.
+        </p>
+      </div>
     </div>
   );
 }
