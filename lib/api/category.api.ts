@@ -1,5 +1,3 @@
-// lib/api/category.api.ts
-
 import api from "@/lib/api/axios";
 
 export const categoryAPI = {

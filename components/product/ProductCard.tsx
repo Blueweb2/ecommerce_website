@@ -14,7 +14,6 @@ type ProductCardProps = {
   isEntering?: boolean;
   direction?: number;
   useBrandAsTitle?: boolean;
-  showFullDetails?: boolean;
 };
 
 export default function ProductCard({
@@ -24,7 +23,6 @@ export default function ProductCard({
   isEntering = false,
   direction = 0,
   useBrandAsTitle = false,
-  showFullDetails = false,
 }: ProductCardProps) {
 
   const primaryImg =

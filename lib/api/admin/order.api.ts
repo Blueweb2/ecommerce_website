@@ -1,5 +1,4 @@
 import api from "@/lib/api/axios";
-import { Order } from "@/types/order"; 
 
 export const adminOrderAPI = {
   getAllOrders: (page: number = 1, limit: number = 10, customerType?: string) =>

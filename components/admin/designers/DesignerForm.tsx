@@ -3,15 +3,97 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+<<<<<<< HEAD
 import { Loader2 } from "lucide-react";
 import type { AdminCreateDesignerPayload } from "@/types/designer";
+=======
+import { uploadSingleImage } from "@/lib/cloudinary/upload";
+import { deleteImage } from "@/lib/cloudinary/delete";
+import type { Designer, DesignerPayload } from "@/types/designer";
+import BrandInformationCard from "./BrandInformationCard";
+import BusinessInformationCard from "./BusinessInformationCard";
+import CategoryAssignmentCard from "./CategoryAssignmentCard";
+import BusinessAddressCard from "./BusinessAddressCard";
+import MediaAssetsCard from "./MediaAssetsCard";
+import SocialLinksCard from "./SocialLinksCard";
+import BrandSummaryCard from "./BrandSummaryCard";
+import StorefrontSettingsCard from "./StorefrontSettingsCard";
+import GuidelinesCard from "./GuidelinesCard";
+import { useCategoryStore } from "@/store/admin/useCategoryStore";
+>>>>>>> c0b113f08364540b39b2748dd5949eb57162c109
 
 type Props = {
   onSubmit: (data: AdminCreateDesignerPayload) => Promise<void>;
 };
 
+<<<<<<< HEAD
 export default function DesignerForm({ onSubmit }: Props) {
   const router = useRouter();
+=======
+type ImageField = "avatar" | "brandImage" | "bannerImage";
+const DESIGNER_UPLOAD_FOLDER = "ecommerce/designers";
+
+const IMAGE_HELPERS: Record<ImageField, { title: string; folder: string; aspect: string }> = {
+  avatar: {
+    title: "Designer Avatar",
+    folder: DESIGNER_UPLOAD_FOLDER,
+    aspect: "aspect-square",
+  },
+  brandImage: {
+    title: "Brand Image",
+    folder: DESIGNER_UPLOAD_FOLDER,
+    aspect: "aspect-[4/3]",
+  },
+  bannerImage: {
+    title: "Banner Image",
+    folder: DESIGNER_UPLOAD_FOLDER,
+    aspect: "aspect-[16/7]",
+  },
+};
+
+export default function DesignerForm({ initialData, onSubmit }: Props) {
+  const router = useRouter();
+
+  const [form, setForm] = useState<DesignerPayload>({
+    name: "",
+    brandName: "",
+    description: "",
+
+    businessName: "",
+    email: "",
+    phone: "",
+    gstNumber: "",
+    website: "",
+
+    categories: [],
+
+    address: {
+      addressLine1: "",
+      addressLine2: "",
+      city: "",
+      district: "",
+      state: "",
+      country: "India",
+      pincode: "",
+    },
+
+    socialLinks: {
+      instagram: "",
+      facebook: "",
+      youtube: "",
+      pinterest: "",
+      twitter: "",
+    },
+
+    avatar: undefined,
+    brandImage: undefined,
+    bannerImage: undefined,
+
+    isFavorite: false,
+    isFeatured: false,
+    isActive: true,
+  });
+>>>>>>> c0b113f08364540b39b2748dd5949eb57162c109
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState<AdminCreateDesignerPayload>({
     name: "",
@@ -116,6 +198,7 @@ export default function DesignerForm({ onSubmit }: Props) {
             Cancel
           </button>
 
+<<<<<<< HEAD
           <button
             type="submit"
             disabled={loading}
@@ -124,6 +207,19 @@ export default function DesignerForm({ onSubmit }: Props) {
             {loading && <Loader2 className="h-4 w-4 animate-spin" />}
             {loading ? "Creating..." : "Create Account"}
           </button>
+=======
+            <button
+              type="submit"
+              disabled={loading}
+              className="rounded-xl bg-slate-900 px-8 py-2.5 text-sm font-medium text-white hover:bg-slate-800 disabled:opacity-70"
+            >
+              {initialData
+                ? "Update Brand"
+                : "Create Brand"
+              }
+            </button>
+          </div>
+>>>>>>> c0b113f08364540b39b2748dd5949eb57162c109
         </div>
       </form>
     </>

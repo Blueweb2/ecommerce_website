@@ -1,5 +1,3 @@
-// "use client";
-
 import Link from "next/link";
 import { Facebook, Instagram, Linkedin, X, Youtube } from "lucide-react";
 import { inter } from "@/lib/fonts";
@@ -61,8 +59,12 @@ export default function Footer() {
             <p className={`${inter.className} text-[11px] text-[#5C5A58]`}>Building: pookottumpadam road Karulai, Maplappuram, kerala, india</p>
             <div className="flex items-center gap-4 mt-4 mb-6 text-[#5C5A58]">
               <Facebook size={20} className="cursor-pointer hover:text-black h-4" />
-              <Instagram size={20} className="cursor-pointer hover:text-black h-4" />
-              <Linkedin size={20} className="cursor-pointer hover:text-black h-4" />
+              <Link href='https://www.instagram.com/blueweb2agency/' target="_blank">
+                <Instagram size={20} className="cursor-pointer hover:text-black h-4" />
+              </Link>
+              <Link href='https://www.linkedin.com/company/blueweb2/' target="_blank"> 
+                <Linkedin size={20} className="cursor-pointer hover:text-black h-4"/>
+              </Link>
               <Youtube size={20} className="cursor-pointer hover:text-black h-4" />
             </div>
           </div>

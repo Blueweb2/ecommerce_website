@@ -67,14 +67,14 @@ export default function AccountPage() {
 
   const { user, isAuthenticated, initialized } = useAuthStore();
 
-  // 🔒 PROTECT PAGE
+  // PROTECT PAGE
   useEffect(() => {
     if (initialized && !isAuthenticated) {
       router.replace("/account/login");
     }
   }, [initialized, isAuthenticated, router]);
 
-  // ⏳ Prevent flash before redirect
+  // Prevent flash before redirect
   if (!initialized || !isAuthenticated || !user) {
     return null;
   }

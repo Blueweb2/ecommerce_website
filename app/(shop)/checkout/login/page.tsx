@@ -84,16 +84,6 @@ export default function CheckoutLoginPage() {
           </div>
 
           <div className={`mt-6 border-t border-[#ececec] pt-6 ${inter.className}`}>
-            {/* <button
-              type="button"
-              onClick={() => {
-                setStoredCheckoutMode("guest");
-                router.push("/checkout/shipping-address");
-              }}
-              className="w-full border border-black px-5 py-3 text-sm uppercase tracking-[0.15em] text-black transition hover:bg-black hover:text-white"
-            >
-              Continue as Guest
-            </button> */}
               <h3 className="mb-3 text-sm font-medium uppercase tracking-[0.1em]">
                 Guest Checkout
               </h3>

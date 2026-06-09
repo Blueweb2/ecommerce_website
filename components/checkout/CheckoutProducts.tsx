@@ -60,49 +60,7 @@ export default function CheckoutProducts() {
             </div>
           </div>
 
-          {/* DELIVERY DETAILS SECTION */}
-          {/* <div className="w-full mt-6">
-            <h3 className="font-bold text-[19px]">Delivery</h3>
-            <div className="relative">
-              <p className="absolute left-5 mt-1.5 text-xs text-gray-400">Country/Region</p>
-              <select name="" id="" className="w-full rounded-[5px] border-2 border-gray-200 outline-none bg-white pt-6 px-4">
-                <option value="">India</option>
-                <option value="">UAE</option>
-                <option value="">Saudi</option>
-              </select>
-            </div> */}
-
-            {/* FIRST NAME AND LAST NAME SECTION */}
-            {/* <div className="flex gap-3">
-              <input type="text" placeholder="First Name" className="text-black py-2 px-4 bg-white mt-3 rounded-[5px] border-2 border-gray-200 outline-none w-full" />
-              <input type="text" placeholder="Last Name" className="text-black py-2 px-4 bg-white mt-3 rounded-[5px] border-2 border-gray-200 outline-none w-full" />
-            </div>
-
-            <div className="relative mt-3">
-              <input type="text" placeholder="Address" className="text-black py-2 px-4 bg-white  rounded-[5px] border-2 border-gray-200 outline-none w-full" />
-              <Search className=" text-gray-200 absolute right-3 top-1/2 -translate-y-1/2" />
-            </div> */}
-
-            {/* <input type="text" placeholder="Apartment, suite, unit, etc.(Optional)" className="text-black py-2 px-4 bg-white  rounded-[5px] border-2 border-gray-200 outline-none w-full mt-3" />
-
-            <div className="flex gap-3">
-              <input type="text" placeholder="City" className="text-black py-2 px-4 bg-white mt-3 rounded-[5px] border-2 border-gray-200 outline-none w-full" />
-              <select name="" id="" className="w-full mt-3 rounded-[5px] border-2 border-gray-200 bg-white outline-none">
-                <option value="">India</option>
-                <option value="">UAE</option>
-                <option value="">Saudi</option>
-              </select>
-              <input type="text" placeholder="Zip Code" className="text-black py-2 px-4 bg-white mt-3 rounded-[5px] border-2 border-gray-200 outline-none w-full" />
-            </div> */}
-
-            {/* <div className="flex pl-1.5 mt-2">
-              <input type="checkbox" className="scale-200 mr-6 "/>
-              <p>Text me with news and offers</p>
-            </div> */}
-
-            <CheckoutAddress onSelect={setAddress}  />
-
-          {/* </div> */}
+          <CheckoutAddress onSelect={setAddress}  />
 
           {/* SHIPPING METHOD */}
           <div className="flex flex-col w-full mt-6">

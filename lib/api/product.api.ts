@@ -1,20 +1,18 @@
-// lib/api/product.api.ts
-
 import api from "@/lib/api/axios";
 
 export const productAPI = {
-  // 🔹 PRODUCT DETAILS
+  // PRODUCT DETAILS
   getBySlug: (slug: string) =>
     api.get(`/products/slug/${slug}`),
 
   getById: (id: string) =>
     api.get(`/products/${id}`),
 
-  // 🔹 VARIANTS
+  // VARIANTS
   getVariants: (id: string) =>
     api.get(`/products/${id}/variants`),
 
-  // 🔹 MAIN PRODUCT LIST (WITH FILTERS)
+  // MAIN PRODUCT LIST (WITH FILTERS)
   getAll: (params?: {
     page?: number;
     limit?: number;
@@ -26,7 +24,7 @@ export const productAPI = {
   }) =>
     api.get("/products", { params }),
 
-  //  SALE PRODUCTS (VERY IMPORTANT FOR YOUR PAGE)
+  // SALE PRODUCTS (VERY IMPORTANT FOR YOUR PAGE)
   getSale: (params?: {
     page?: number;
     limit?: number;
@@ -34,11 +32,11 @@ export const productAPI = {
   }) =>
     api.get("/products/sale", { params }),
 
-  // 🔹 NEW PRODUCTS
+  // NEW PRODUCTS
   getNew: () =>
     api.get("/products/new"),
 
-  // 🔹 FEATURED / HOME SECTIONS
+  // FEATURED / HOME SECTIONS
   getFeatured: () =>
     api.get("/products/featured"),
 
@@ -48,7 +46,7 @@ export const productAPI = {
   getBestSellers: () =>
     api.get("/products?sections=best-seller"),
 
-  // 🔍 SEARCH
+  // SEARCH
   search: (query: string) =>
     api.get("/products/search", {
       params: { q: query },

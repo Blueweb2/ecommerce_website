@@ -6,7 +6,7 @@ import { Handbag } from "lucide-react";
 import { toast } from "react-hot-toast";
 import api from "@/lib/api/axios";
 import { optimizeCloudinaryUrl } from "@/lib/constants/admin-catalog";
-import { bodoni, inter } from "@/lib/fonts";
+import { inter } from "@/lib/fonts";
 import { getPrimaryProductImage } from "@/lib/constants/admin-catalog";
 import { useCartStore } from "@/store/user/cart/useCartStore";
 

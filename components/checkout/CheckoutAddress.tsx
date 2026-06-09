@@ -38,8 +38,6 @@ export default function CheckoutAddress({
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState(emptyForm);
-  const [submitting, setSubmitting] = useState(false);
-  const [editingId, setEditingId] = useState<string | null>(null);
   const closeForm = () => {
   setShowForm(false);
   setForm(emptyForm);
@@ -446,7 +444,6 @@ export default function CheckoutAddress({
         <button
           type="button"
           onClick={() => void handleSave()}
-          disabled={submitting}
           className="
             h-[54px]
             min-w-[220px]
@@ -462,7 +459,7 @@ export default function CheckoutAddress({
             disabled:opacity-60
           "
         >
-          {submitting ? "Saving..." : "Save Address"}
+          Save Address
         </button>
       </div>
     </div>

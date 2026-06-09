@@ -1,5 +1,3 @@
-// lib/api/order.api.ts
-
 import api from "@/lib/api/axios";
 
 export const orderAPI = {

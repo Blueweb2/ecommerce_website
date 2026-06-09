@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { LegalSection } from "../../lib/legal/types";
+import { inter } from "@/lib/fonts";
 
 type Props = {
   sections: LegalSection[];
@@ -14,7 +15,7 @@ export default function LegalAccordion({
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <div className="mt-20 border-t border-[#d8d2cc]">
+    <div className="mt-6 lg:mt-10 border-t border-[#d8d2cc]">
       {sections.map((section, index) => {
         const isOpen = openIndex === index;
 
@@ -22,15 +23,15 @@ export default function LegalAccordion({
           <div
             key={section.id}
             id={section.id}
-            className="border-b border-[#d8d2cc]"
+            className={`border-b border-[#d8d2cc] ${inter.className}`}
           >
             <button
               onClick={() =>
                 setOpenIndex(isOpen ? null : index)
               }
-              className="flex w-full items-start justify-between gap-10 py-10 text-left"
+              className="flex w-full items-start justify-between py-3 md:py-6 text-left"
             >
-              <h2 className="max-w-4xl font-serif text-[12px] leading-[24px] font-light md:text-[24px] md:leading-[32px]">
+              <h2 className="max-w-4xl text-[15px] md:text-[20px]">
                 {section.title}
               </h2>
 
@@ -49,7 +50,7 @@ export default function LegalAccordion({
               }`}
             >
               <div className="overflow-hidden">
-                <div className="max-w-4xl whitespace-pre-line text-[18px] leading-[38px] text-[#333]">
+                <div className="max-w-4xl whitespace-pre-line text-[13px] md:text-[17px] text-[#333]">
                   {section.content}
                 </div>
               </div>

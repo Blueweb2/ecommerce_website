@@ -1,5 +1,3 @@
-// lib/api/admin/story.api.ts
-
 import api from "@/lib/api/axios";
 
 export const createStory = (data: any) =>

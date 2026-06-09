@@ -147,9 +147,7 @@ export default function NewInSection() {
             <button
               onClick={handlePrev}
               aria-label="Scroll left"
-              className={`absolute left-0 z-10 bg-white border border-neutral-200 w-10 h-14 flex items-center justify-center shadow-sm hover:shadow-md transition-all duration-200 ${
-                currentIndex === 0 ? "opacity-30 cursor-not-allowed" : "hover:scale-105"
-              }`}
+              className={`absolute left-0 z-10 bg-white border border-neutral-200 w-10 h-14 flex items-center justify-center shadow-sm hover:shadow-md transition-all duration-200 hover:scale-105`}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -194,11 +192,8 @@ export default function NewInSection() {
           {currentIndex + itemsPerPage < products.length && (
             <button
               onClick={handleNext}
-              disabled={currentIndex + itemsPerPage >= products.length}
               aria-label="Scroll right"
-              className={`absolute right-0 z-10 bg-white border border-neutral-200 w-10 h-14 flex items-center justify-center shadow-sm hover:shadow-md transition-all duration-200 ${
-                currentIndex + itemsPerPage >= products.length ? "opacity-30 cursor-not-allowed" : "hover:scale-105"
-              }`}
+              className={`absolute right-0 z-10 bg-white border border-neutral-200 w-10 h-14 flex items-center justify-center shadow-sm hover:shadow-md transition-all duration-200 hover:scale-105`}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
