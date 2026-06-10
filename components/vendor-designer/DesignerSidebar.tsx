@@ -28,6 +28,7 @@ export default function DesignerSidebar({
   onClose,
 }: {
   mobileOpen?: boolean;
+  
   onClose?: () => void;
 }) {
   const pathname = usePathname();
@@ -51,7 +52,7 @@ export default function DesignerSidebar({
         <div className="flex items-center justify-between border-b border-slate-200 px-5 py-5">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.24em] text-emerald-700">
-              Vendor Panel
+              Designer Panel
             </p>
             <h2 className="mt-2 text-xl font-semibold text-slate-900">
               Designer workspace

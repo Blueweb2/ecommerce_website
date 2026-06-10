@@ -79,7 +79,7 @@ export default function VendorProductsClient() {
           </div>
 
           <Link
-            href="/vendor/products/create"
+            href="/designer/products/create"
             className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-semibold text-slate-900 hover:bg-slate-100"
           >
             <Plus className="h-4 w-4" />

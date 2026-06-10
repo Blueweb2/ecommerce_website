@@ -97,7 +97,7 @@ export default async function DesignerSlugPage({
 
   try {
     const { designer, products: apiProducts } = await getDesignerDetail(slug);
-    const products = await getDesignerProducts(designer.brandName, apiProducts);
+    const products = await getDesignerProducts(designer.brandName || designer.name, apiProducts);
 
     return (
       <section className="min-h-screen bg-white pt-[85px] md:pt-[98px] lg:pt-[130px]">
@@ -179,7 +179,7 @@ export default async function DesignerSlugPage({
           <ExploreGrid
             products={products}
             fallbackImage={FALLBACK_PRODUCT_IMAGE}
-            categoryTitle={designer.brandName}
+            categoryTitle={designer.brandName || designer.name}
           />
         </div>
       </section>

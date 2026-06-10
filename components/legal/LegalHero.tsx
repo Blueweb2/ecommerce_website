@@ -40,5 +40,8 @@ export default function LegalHero({
         </div>
       </div>
     </section>
-  );
-}
+  );                                                                  
+}                
+
+
+                                                                                                                                
