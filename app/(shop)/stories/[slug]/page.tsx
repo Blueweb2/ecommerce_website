@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { getStoryBySlug } from "@/lib/api/story.api";
 import { inter, bodoni } from "@/lib/fonts";
+import { headingClassName } from "@/components/ui/headingClassNames";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -49,7 +50,7 @@ export default async function StoryDetailPage({ params }: Props) {
   }
 
   return (
-    <section className="bg-[#f8f5ef] pt-24 md:pt-32 lg:pt-46 pb-3 md:pb-7">
+    <section className="pt-24 md:pt-32 lg:pt-46 pb-3 md:pb-7">
       <div className="mx-auto grid max-w-[1800px] grid-cols-1 gap-1 lg:gap-14 px-4 md:px-10 lg:grid-cols-[48%_52%] lg:px-20">
 
         {/* LEFT SIDE - STICKY IMAGE */}
@@ -77,13 +78,13 @@ export default async function StoryDetailPage({ params }: Props) {
           </p>
 
           {/* TITLE */}
-          <h1 className={`mb-5 lg:mb-10 max-w-4xl text-4xl ${bodoni.className} font-light leading-[1.05] tracking-[-0.04em] text-[#111] md:text-4xl`}>
+          <h1 className={`mb-5 lg:mb-10 max-w-4xl ${headingClassName} ${bodoni.className} font-light leading-[1.05] tracking-[-0.04em] text-[#111]`}>
             {story.title}
           </h1>
 
           {/* DESCRIPTION */}
           <div
-            className={`prose prose-neutral max-w-none prose-headings:font-light prose-headings:text-[#111] prose-p:text-[13px] text-[13px] prose-p:leading-[2] prose-p:text-[#444] prose-a:text-black prose-a:no-underline prose-strong:font-semibold prose-blockquote:border-l-black prose-blockquote:text-neutral-700 prose-img:rounded-2xl ${inter.className}`}
+            className={`prose prose-neutral max-w-none prose-headings:font-light prose-headings:text-[#111] prose-p:text-[13px] text-[10px] prose-p:leading-[2] prose-p:text-[#444] prose-a:text-black prose-a:no-underline prose-strong:font-semibold prose-blockquote:border-l-black prose-blockquote:text-neutral-700 prose-img:rounded-2xl ${inter.className}`}
             dangerouslySetInnerHTML={{
               __html: story.description,
             }}

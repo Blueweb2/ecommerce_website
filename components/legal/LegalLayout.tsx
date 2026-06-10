@@ -26,7 +26,7 @@ export default function LegalLayout({
   activeHref,
 }: Props) {
   return (
-    <main className="min-h-screen bg-[#f6f4f1] text-[#111111]">
+    <main className="min-h-screen text-[#111111]">
       <LegalHero
         title={heroTitle}
         subtitle={heroSubtitle}
