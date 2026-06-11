@@ -72,11 +72,7 @@ export function getVendorToken() {
   if (typeof window === "undefined") {
     return null;
   }
-
-  return (
-    localStorage.getItem("designerToken") ||
-    localStorage.getItem("accessToken")
-  );
+  return localStorage.getItem("designerToken");
 }
 
 let cachedToken: string | null = null;
@@ -139,7 +135,6 @@ export function persistVendorToken(token: string) {
   }
 
   localStorage.setItem("designerToken", token);
-  setAccessToken(token);
 }
 
 export function clearVendorSession() {
@@ -148,5 +143,6 @@ export function clearVendorSession() {
   }
 
   localStorage.removeItem("designerToken");
-  clearAccessToken();
+  localStorage.removeItem("designer");
 }
+

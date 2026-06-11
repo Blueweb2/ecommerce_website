@@ -9,6 +9,7 @@ import {
   clearVendorSession,
   useVendorSessionPreview,
 } from "@/lib/vendor/auth";
+import { useDesignerAuthStore } from "@/store/designer/useDesignerAuthStore";
 
 interface DesignerHeaderProps {
   onMenuClick?: () => void;
@@ -30,13 +31,15 @@ export default function DesignerHeader({
   const router = useRouter();
   const preview = useVendorSessionPreview();
 
+  const logoutDesigner = useDesignerAuthStore((state) => state.logout);
+
   const pageTitle = useMemo(() => {
     const segment = pathname.split("/")[2];
     return PAGE_TITLES[segment] || "Vendor workspace";
   }, [pathname]);
 
   const handleLogout = () => {
-    clearVendorSession();
+    logoutDesigner();
     router.push("/designer/login");
   };
 

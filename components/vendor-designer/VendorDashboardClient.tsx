@@ -249,7 +249,7 @@ export default function VendorDashboardClient() {
                 </thead>
                 <tbody>
                   {recentOrders.map((order) => (
-                    <tr key={order._id} className="border-t border-slate-100">
+                               <tr key={order._id} className="border-t border-slate-100">
                       <td className="px-6 py-4 font-mono text-slate-700">
                         #{order._id.slice(-8)}
                       </td>

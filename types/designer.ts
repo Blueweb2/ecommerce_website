@@ -108,6 +108,8 @@ export type Designer = {
   // Profile completion
   profileCompleted?: boolean;
 
+  role?: string;
+
   createdAt?: string;
   updatedAt?: string;
 };
