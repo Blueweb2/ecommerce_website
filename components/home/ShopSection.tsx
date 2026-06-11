@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { productAPI } from "@/lib/api/product.api";
 import { bodoni, inter } from "@/lib/fonts";
 import { Product } from "@/types/product";
@@ -14,6 +14,7 @@ export default function ShopSection() {
   const [activeTab, setActiveTab] = useState("Featured");
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -47,6 +48,13 @@ export default function ShopSection() {
     fetchProducts();
   }, [activeTab]);
 
+  useEffect(() => {
+    scrollRef.current?.scrollTo({
+      left: 0,
+      behavior: "smooth",
+    });
+  }, [activeTab]);
+
   return (
     <section className="pt-6 md:pt-14 md:py-0">
       <div className="max-w-[2000px] mx-auto px-4 md:px-10 lg:px-32">
@@ -74,7 +82,9 @@ export default function ShopSection() {
         </div>
 
         {/* PRODUCTS */}
-        <div className="flex gap-2 overflow-x-auto scrollbar-hide scroll-smooth lg:grid lg:grid-cols-6 lg:gap-6">
+        <div ref={scrollRef} 
+          className="flex gap-2 overflow-x-auto scrollbar-hide scroll-smooth lg:grid lg:grid-cols-6 lg:gap-6"
+        >
 
           {loading ? (
             <div className="w-full h-[262px] md:h-[293px] lg:h-[326px] 2xl:h-[406px] flex items-center justify-center col-span-6">

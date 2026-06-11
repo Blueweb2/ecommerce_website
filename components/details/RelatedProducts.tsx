@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { Handbag } from "lucide-react";
 import { toast } from "react-hot-toast";
@@ -39,6 +39,7 @@ export default function RelatedProducts({ product }: Props) {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
   const { addItem } = useCartStore();
+  const scrollRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     let isMounted = true;
@@ -80,6 +81,16 @@ export default function RelatedProducts({ product }: Props) {
       isMounted = false;
     };
   }, [activeTab, product?._id]);
+
+
+  useEffect(() => {
+    if(!loading){
+      scrollRef.current?.scrollTo({
+        left: 0,
+        behavior: "auto"
+      })
+    }
+  },[activeTab, loading])
 
   const handleAddToCart = (product:any) => {
     const primaryImageUrl = getPrimaryProductImage(product.images)?.url || "/placeholder.png";
@@ -133,53 +144,73 @@ export default function RelatedProducts({ product }: Props) {
         </button>
       </div>
 
-      <div className="flex gap-6 overflow-x-auto scrollbar-hide">
-        {products.map((item) => {
-          const primaryImage =
-            item.images?.find((image) => image.isPrimary) || item.images?.[0];
-
-          return (
-            <Link
-              href={`/product/${item.slug}`}
-              key={item._id}
-              className="group w-[150px] flex-shrink-0 cursor-pointer lg:w-[290px]"
+      {loading ? (
+        <div className="flex gap-6 overflow-x-auto scrollbar-hide">
+          {Array.from({ length: 6 }).map((_, index) => (
+            <div
+              key={index}
+              className="w-[150px] flex-shrink-0 lg:w-[290px] animate-pulse"
             >
-              <div className="relative aspect-[4/5] overflow-hidden bg-gray-100">
-                <img
-                  src={optimizeCloudinaryUrl(primaryImage?.url) || "/placeholder.png"}
-                  alt={item.name}
-                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
+              {/* Image Skeleton */}
+              <div className="w-full aspect-[4/5] bg-gray-200"></div>
 
-                <div 
-                onClick={(e) => {
-                  e.preventDefault()
-                  e.stopPropagation()
-                  handleAddToCart(item)
-                }}
-                className="absolute right-4 bottom-4 flex h-10 w-10 translate-y-2 items-center justify-center rounded-full bg-white/80 text-black opacity-0 shadow-sm backdrop-blur-sm transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
-                  <Handbag size={18} />
-                </div>
+              {/* Text Skeleton */}
+              <div className="mt-4 space-y-2">
+                <div className="h-6 bg-gray-200 rounded w-3/4"></div>
+                <div className="h-7 bg-gray-200 rounded w-1/3"></div>
               </div>
+            </div>
+          ))}
+        </div>
+      ):(
+        <div ref={scrollRef} className="flex gap-6 overflow-x-auto scrollbar-hide">
+          {products.map((item) => {
+            const primaryImage =
+              item.images?.find((image) => image.isPrimary) || item.images?.[0];
 
-              <div className="mt-4 space-y-1">
-                <h3 className={`${inter.className} text-xs font-normal uppercase tracking-widest text-neutral-600`}>
-                  {item.name}
-                </h3>
-                <div className="flex items-center gap-2 pt-1">
-                  <p className={`${inter.className} text-sm text-[15px]`}>
+            return (
+              <Link
+                href={`/product/${item.slug}`}
+                key={item._id}
+                className="group w-[150px] flex-shrink-0 cursor-pointer lg:w-[290px]"
+              >
+                <div className="relative aspect-[4/5] overflow-hidden bg-gray-100">
+                  <img
+                    src={optimizeCloudinaryUrl(primaryImage?.url) || "/placeholder.png"}
+                    alt={item.name}
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
 
-                    ₹
-                    {Math.round(
-                      item.price * (1 + (item.gstPercentage || 0) / 100)
-                    )}
-                  </p>
+                  <div 
+                  onClick={(e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    handleAddToCart(item)
+                  }}
+                  className="absolute right-4 bottom-4 flex h-10 w-10 translate-y-2 items-center justify-center rounded-full bg-white/80 text-black opacity-0 shadow-sm backdrop-blur-sm transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+                    <Handbag size={18} />
+                  </div>
                 </div>
-              </div>
-            </Link>
-          );
-        })}
-      </div>
+
+                <div className="mt-4 space-y-1">
+                  <h3 className={`${inter.className} text-xs font-normal uppercase tracking-widest text-neutral-600`}>
+                    {item.name}
+                  </h3>
+                  <div className="flex items-center gap-2 pt-1">
+                    <p className={`${inter.className} text-sm text-[15px]`}>
+
+                      ₹
+                      {Math.round(
+                        item.price * (1 + (item.gstPercentage || 0) / 100)
+                      )}
+                    </p>
+                  </div>
+                </div>
+              </Link>
+            );
+          })}
+        </div>
+      )}
 
       {!loading && products.length === 0 && (
         <p className="mt-10 text-center text-gray-400">No products found</p>
