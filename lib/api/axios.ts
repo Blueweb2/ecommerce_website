@@ -35,9 +35,9 @@ api.interceptors.request.use((config) => {
       const designerToken = localStorage.getItem("designerToken");
       if (designerToken) {
         config.headers.Authorization = `Bearer ${designerToken}`;
-        return config;
       }
     }
+    return config; // Early return to completely isolate designer tokens
   }
 
   // Customer / Admin endpoints: use the standard accessToken
@@ -164,6 +164,9 @@ api.interceptors.response.use(
           !currentPath.includes("/admin/login")
         ) {
           window.location.href = "/admin/login";
+        } else if (currentPath.startsWith("/designer")) {
+          // Do not redirect designer routes to customer login.
+          // Designer route guards handle unauthenticated designer states.
         } else if (!currentPath.includes("/login")) {
           window.location.href = "/account/login";
         }

@@ -7,7 +7,6 @@
 import api from "@/lib/api/axios";
 import type { Designer, DesignerProfilePayload } from "@/types/designer";
 import type { Product } from "@/types/product";
-
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function extractDesigner(data: any): Designer | null {
