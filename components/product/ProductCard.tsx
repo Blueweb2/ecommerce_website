@@ -35,6 +35,8 @@ export default function ProductCard({
   const imageUrl = resolveImageSrc(primaryImg?.url);
   const hoverImageUrl = resolveImageSrc(secondImg?.url);
 
+  console.log(product.designer);
+
   return (
     <Link
       href={`/product/${product.slug}`}
