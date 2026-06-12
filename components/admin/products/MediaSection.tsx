@@ -17,7 +17,7 @@ type Props = {
   files: File[];
   setFiles: (files: File[] | ((prev: File[]) => File[])) => void;
   form: ProductFormValues;
-setForm: React.Dispatch<React.SetStateAction<ProductFormValues>>;
+  setForm: React.Dispatch<React.SetStateAction<ProductFormValues>>;
   errors: Record<string, string>;
 };
 
@@ -35,6 +35,11 @@ export default function MediaSection({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const addMoreInputRef = useRef<HTMLInputElement>(null);
   const existingImageCount = form.images?.length || 0;
+  const [existingDragIndex, setExistingDragIndex] =
+    useState<number | null>(null);
+
+  const [existingDragOverIndex, setExistingDragOverIndex] =
+    useState<number | null>(null);
 
   const previews = useMemo(
     () => files.map((file) => URL.createObjectURL(file)),
@@ -118,10 +123,82 @@ export default function MediaSection({
     setDragIndex(index);
   };
 
+  const handleExistingDragStart = (index: number) => {
+    setExistingDragIndex(index);
+  };
+
   const handleReorderDragOver = (e: React.DragEvent, index: number) => {
     e.preventDefault();
     setDragOverIndex(index);
   };
+
+
+  const handleExistingDragOver = (
+    e: React.DragEvent,
+    index: number
+  ) => {
+    e.preventDefault();
+    setExistingDragOverIndex(index);
+  };
+
+  const handleExistingDrop = (
+    e: React.DragEvent,
+    dropIndex: number
+  ) => {
+    e.preventDefault();
+
+    if (
+      existingDragIndex === null ||
+      existingDragIndex === dropIndex
+    ) {
+      setExistingDragIndex(null);
+      setExistingDragOverIndex(null);
+      return;
+    }
+
+    setForm((prev) => {
+      const updatedImages = [...(prev.images || [])];
+
+      const [movedImage] = updatedImages.splice(
+        existingDragIndex,
+        1
+      );
+
+      updatedImages.splice(dropIndex, 0, movedImage);
+
+      let nextPrimaryIndex =
+        prev.primaryImageIndex ?? 0;
+
+      if (nextPrimaryIndex === existingDragIndex) {
+        nextPrimaryIndex = dropIndex;
+      } else if (
+        existingDragIndex < nextPrimaryIndex &&
+        dropIndex >= nextPrimaryIndex
+      ) {
+        nextPrimaryIndex--;
+      } else if (
+        existingDragIndex > nextPrimaryIndex &&
+        dropIndex <= nextPrimaryIndex
+      ) {
+        nextPrimaryIndex++;
+      }
+
+      return {
+        ...prev,
+        images: updatedImages,
+        primaryImageIndex: nextPrimaryIndex,
+      };
+    });
+
+    setExistingDragIndex(null);
+    setExistingDragOverIndex(null);
+  };
+
+  const handleExistingDragEnd = () => {
+    setExistingDragIndex(null);
+    setExistingDragOverIndex(null);
+  };
+
 
   const handleReorderDrop = (e: React.DragEvent, dropIndex: number) => {
     e.preventDefault();
@@ -295,21 +372,18 @@ export default function MediaSection({
             onDragOver={handleDragOver}
             onDrop={handleDrop}
             onClick={() => fileInputRef.current?.click()}
-            className={`relative cursor-pointer rounded-3xl border-2 border-dashed transition-all duration-300 ${
-              isDragOver
+            className={`relative cursor-pointer rounded-3xl border-2 border-dashed transition-all duration-300 ${isDragOver
                 ? "border-violet-400 bg-violet-50 scale-[1.01] shadow-xl shadow-violet-100"
                 : "border-slate-200 bg-gradient-to-b from-slate-50 to-white hover:border-violet-300 hover:bg-violet-50/50 hover:shadow-lg"
-            }`}
+              }`}
           >
             <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
-              <div className={`flex items-center justify-center w-20 h-20 rounded-3xl mb-6 transition-all duration-300 ${
-                isDragOver
+              <div className={`flex items-center justify-center w-20 h-20 rounded-3xl mb-6 transition-all duration-300 ${isDragOver
                   ? "bg-violet-100 scale-110"
                   : "bg-gradient-to-br from-slate-100 to-slate-50"
-              }`}>
-                <Upload className={`h-8 w-8 transition-colors duration-300 ${
-                  isDragOver ? "text-violet-500" : "text-slate-400"
-                }`} />
+                }`}>
+                <Upload className={`h-8 w-8 transition-colors duration-300 ${isDragOver ? "text-violet-500" : "text-slate-400"
+                  }`} />
               </div>
 
               <p className="text-lg font-bold text-slate-700 mb-1">
@@ -354,11 +428,10 @@ export default function MediaSection({
             onDragOver={handleDragOver}
             onDrop={handleDrop}
             onClick={() => addMoreInputRef.current?.click()}
-            className={`cursor-pointer rounded-2xl border-2 border-dashed transition-all duration-200 ${
-              isDragOver
+            className={`cursor-pointer rounded-2xl border-2 border-dashed transition-all duration-200 ${isDragOver
                 ? "border-violet-400 bg-violet-50"
                 : "border-slate-200 bg-slate-50/50 hover:border-violet-300 hover:bg-violet-50/30"
-            }`}
+              }`}
           >
             <div className="flex items-center justify-center gap-3 py-5 px-4">
               <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-white border border-slate-200 shadow-sm">
@@ -395,13 +468,29 @@ export default function MediaSection({
 
             <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3">
               {form.images.map((img: CatalogImage, i: number) => (
+                // <div
+                //   key={i}
+                //   className={`relative group overflow-hidden rounded-2xl border-2 transition-all duration-200 ${
+                //     i === primaryIndex
+                //       ? "border-amber-400 shadow-lg shadow-amber-100 ring-2 ring-amber-200"
+                //       : "border-slate-200 hover:border-slate-300 hover:shadow-md"
+                //   }`}
+                // >
                 <div
                   key={i}
-                  className={`relative group overflow-hidden rounded-2xl border-2 transition-all duration-200 ${
-                    i === primaryIndex
-                      ? "border-amber-400 shadow-lg shadow-amber-100 ring-2 ring-amber-200"
-                      : "border-slate-200 hover:border-slate-300 hover:shadow-md"
-                  }`}
+                  draggable
+                  onDragStart={() => handleExistingDragStart(i)}
+                  onDragOver={(e) => handleExistingDragOver(e, i)}
+                  onDrop={(e) => handleExistingDrop(e, i)}
+                  onDragEnd={handleExistingDragEnd}
+                  className={`relative group overflow-hidden rounded-2xl border-2 transition-all duration-200 cursor-grab active:cursor-grabbing ${existingDragIndex === i
+                      ? "opacity-40 scale-95 border-violet-400"
+                      : existingDragOverIndex === i
+                        ? "border-violet-400 scale-105 shadow-xl shadow-violet-100"
+                        : i === primaryIndex
+                          ? "border-amber-400 shadow-lg shadow-amber-100 ring-2 ring-amber-200"
+                          : "border-slate-200 hover:border-slate-300 hover:shadow-md"
+                    }`}
                 >
                   <div className="aspect-square">
                     <img
@@ -518,15 +607,14 @@ export default function MediaSection({
                   onDragOver={(e) => handleReorderDragOver(e, i)}
                   onDrop={(e) => handleReorderDrop(e, i)}
                   onDragEnd={handleReorderDragEnd}
-                  className={`relative group overflow-hidden rounded-2xl border-2 transition-all duration-200 cursor-grab active:cursor-grabbing ${
-                    dragIndex === i
+                  className={`relative group overflow-hidden rounded-2xl border-2 transition-all duration-200 cursor-grab active:cursor-grabbing ${dragIndex === i
                       ? "opacity-40 scale-95 border-violet-400"
                       : dragOverIndex === i
                         ? "border-violet-400 scale-105 shadow-xl shadow-violet-100"
                         : existingImageCount + i === primaryIndex
                           ? "border-amber-400 shadow-lg shadow-amber-100 ring-2 ring-amber-200"
                           : "border-slate-200 hover:border-slate-300 hover:shadow-md"
-                  }`}
+                    }`}
                 >
                   {/* Image */}
                   <div className="aspect-square">
@@ -537,6 +625,11 @@ export default function MediaSection({
                       onClick={() => setZoomedImage(src)}
                     />
                   </div>
+                  <div className="absolute top-1.5 left-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+  <div className="flex items-center justify-center w-6 h-6 rounded-lg bg-black/50 backdrop-blur-sm">
+    <GripVertical className="h-3.5 w-3.5 text-white" />
+  </div>
+</div>
 
                   {/* Drag Handle */}
                   <div className="absolute top-1.5 left-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
