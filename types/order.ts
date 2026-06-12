@@ -54,6 +54,12 @@ export interface Order {
   shippingCharge?: number;
   packagingOption?: "standard" | "gift";
   giftMessage?: string;
+    promoCode?: {
+    _id?: string;
+    code: string;
+    discountType?: string;
+    discountValue?: number;
+  };
 
   discountAmount?: number;
   status: "pending" | "processing" | "shipped" | "delivered" | "cancelled";

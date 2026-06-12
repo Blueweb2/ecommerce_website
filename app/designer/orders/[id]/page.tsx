@@ -11,36 +11,39 @@ import {
   Calendar,
   User,
 } from "lucide-react";
-import { useOrderStore } from "@/store/admin/useOrderStore";
+import { getMyOrderById } from "@/lib/api/designer/designer-portal.api";
 import { getOrderTotals } from "@/lib/utils/orderTotals";
+import toast from "react-hot-toast";
 
-const STATUS_OPTIONS = [
-  { value: "pending", label: "Pending" },
-  { value: "processing", label: "Processing" },
-  { value: "shipped", label: "Shipped" },
-  { value: "delivered", label: "Delivered" },
-  { value: "cancelled", label: "Cancelled" },
-];
-
-export default function AdminOrderDetailPage() {
+export default function DesignerOrderDetailPage() {
   const params = useParams();
   const id = params.id as string;
 
-  const {
-    currentOrder: order,
-    loading,
-    fetchOrderDetails,
-    updateOrderStatus,
-  } = useOrderStore();
-  const [updating, setUpdating] = useState(false);
+  const [order, setOrder] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (id) {
-      fetchOrderDetails(id);
+      loadOrder();
     }
-  }, [id, fetchOrderDetails]);
+  }, [id]);
 
-  if (loading && !order) {
+  const loadOrder = async () => {
+    try {
+      const data = await getMyOrderById(id);
+      if (data) {
+        setOrder(data);
+      } else {
+        toast.error("Order not found");
+      }
+    } catch (error) {
+      toast.error("Failed to load order details");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
     return <div className="p-10 text-center text-slate-500">Loading order details...</div>;
   }
 
@@ -49,7 +52,7 @@ export default function AdminOrderDetailPage() {
       <div className="p-10 text-center text-slate-500">
         <p>Order not found</p>
         <Link
-          href="/admin/orders"
+          href="/designer/orders"
           className="mt-4 inline-block text-emerald-600 hover:underline"
         >
           Back to Orders
@@ -58,21 +61,16 @@ export default function AdminOrderDetailPage() {
     );
   }
 
+  // Calculate pricing based on the filtered items (only designer's items)
+  // getOrderTotals works on the order object provided
   const pricing = getOrderTotals(order);
-
-  const handleStatusChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const newStatus = e.target.value;
-    setUpdating(true);
-    await updateOrderStatus(order._id, newStatus);
-    setUpdating(false);
-  };
 
   return (
     <div className="space-y-6 pb-12">
       <section className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <Link
-            href="/admin/orders"
+            href="/designer/orders"
             className="mb-4 inline-flex items-center gap-2 text-sm font-medium text-slate-500 transition hover:text-slate-900"
           >
             <ChevronLeft className="h-4 w-4" />
@@ -98,24 +96,6 @@ export default function AdminOrderDetailPage() {
             Placed on {new Date(order.createdAt).toLocaleString()}
           </p>
         </div>
-
-        <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-          <label className="text-sm font-semibold text-slate-700">
-            Update Status:
-          </label>
-          <select
-            value={order.status}
-            onChange={handleStatusChange}
-            disabled={updating}
-            className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-medium text-slate-900 outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 disabled:opacity-50"
-          >
-            {STATUS_OPTIONS.map((status) => (
-              <option key={status.value} value={status.value}>
-                {status.label}
-              </option>
-            ))}
-          </select>
-        </div>
       </section>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
@@ -124,12 +104,12 @@ export default function AdminOrderDetailPage() {
             <div className="border-b border-slate-200 bg-slate-50 p-5">
               <h2 className="flex items-center gap-2 text-lg font-semibold text-slate-900">
                 <ShoppingBag className="h-5 w-5 text-emerald-600" />
-                Order Items ({order.totalQuantity})
+                Order Items ({order.items.length})
               </h2>
             </div>
 
             <div className="divide-y divide-slate-100">
-              {order.items.map((item, index) => {
+              {order.items.map((item: any, index: number) => {
                 const isPopulated =
                   typeof item.product === "object" && item.product !== null;
                 const productName = isPopulated
@@ -150,7 +130,7 @@ export default function AdminOrderDetailPage() {
                             {item.variantId && (
                               <span className="block">Variant: {item.variantId}</span>
                             )}
-                            {item.selectedOptions?.map((opt, i) => (
+                            {item.selectedOptions?.map((opt: any, i: number) => (
                               <span key={i} className="block">
                                 {opt.fieldName}: {opt.value}
                               </span>
@@ -235,10 +215,6 @@ export default function AdminOrderDetailPage() {
                   <span className="font-medium text-slate-800">Email:</span>{" "}
                   {order.user.email}
                 </p>
-                <p>
-                  <span className="font-medium text-slate-800">User ID:</span>{" "}
-                  {order.user._id}
-                </p>
               </div>
             ) : (
               <p className="text-sm text-slate-500">Customer details unavailable</p>
@@ -272,36 +248,6 @@ export default function AdminOrderDetailPage() {
             )}
           </div>
 
-
-          <div className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm">
-            <h2 className="mb-4 font-semibold text-slate-900">
-              Packaging & Gifting
-            </h2>
-
-            <div className="space-y-3 text-sm text-slate-600">
-              <div>
-                <span className="font-medium text-slate-800">
-                  Packaging:
-                </span>{" "}
-                {order.packagingOption === "gift"
-                  ? "Gift Packaging"
-                  : "Standard Packaging"}
-              </div>
-
-              {order.packagingOption === "gift" && (
-                <div>
-                  <p className="mb-2 font-medium text-slate-800">
-                    Personal Message
-                  </p>
-
-                  <div className="rounded-lg bg-slate-50 p-3 italic text-slate-700">
-                    {order.giftMessage?.trim() || "No personal message provided"}
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-
           <div className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm">
             <h2 className="mb-4 flex items-center gap-2 font-semibold text-slate-900">
               <CreditCard className="h-5 w-5 text-emerald-600" />
@@ -321,36 +267,6 @@ export default function AdminOrderDetailPage() {
                   {order.isPaid ? "Paid" : "Unpaid"}
                 </span>
               </p>
-              {order.paidAt && (
-                <p className="mt-2 flex flex-col border-t border-slate-100 pt-2">
-                  <span className="text-xs text-slate-400">Paid on</span>
-                  <span>{new Date(order.paidAt).toLocaleString()}</span>
-                </p>
-              )}
-              {order.paymentMethod === "razorpay" && (
-                <div className="mt-3 space-y-2 border-t border-slate-100 pt-3">
-                  {order.razorpayOrderId && (
-                    <p className="flex flex-col">
-                      <span className="text-xs text-slate-400">
-                        Razorpay Order ID
-                      </span>
-                      <span className="mt-1 rounded bg-slate-50 p-1 text-xs font-mono">
-                        {order.razorpayOrderId}
-                      </span>
-                    </p>
-                  )}
-                  {order.paymentId && (
-                    <p className="flex flex-col">
-                      <span className="text-xs text-slate-400">
-                        Transaction ID
-                      </span>
-                      <span className="mt-1 rounded bg-slate-50 p-1 text-xs font-mono">
-                        {order.paymentId}
-                      </span>
-                    </p>
-                  )}
-                </div>
-              )}
             </div>
           </div>
         </div>

@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { Search, ShoppingBag } from "lucide-react";
 import { useVendorPortalData } from "@/hooks/useVendorPortalData";
+import Link from "next/link";
 
 function formatCurrency(value: number) {
   return new Intl.NumberFormat("en-IN", {
@@ -148,7 +149,9 @@ export default function VendorOrdersClient() {
                 {filteredOrders.map((order) => (
                   <tr key={order._id} className="border-t border-slate-100">
                     <td className="px-6 py-4 font-mono text-slate-700">
-                      #{order._id.slice(-8)}
+                      <Link href={`/designer/orders/${order._id}`} className="hover:text-blue-600 hover:underline">
+                        #{order._id.slice(-8)}
+                      </Link>
                     </td>
                     <td className="px-6 py-4 text-slate-600">
                       {typeof order.user === "object"

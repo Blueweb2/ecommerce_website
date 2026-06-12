@@ -99,6 +99,13 @@ export const getMyOrders = async (): Promise<any[]> => {
   return extractList(response.data);
 };
 
+export const getMyOrderById = async (id: string): Promise<any | null> => {
+  const response = await api.get(`/designers/orders/${id}`);
+  const data = response.data;
+  if (data?.data) return data.data;
+  return data;
+};
+
 // ─── Coupons ──────────────────────────────────────────────────────────────────
 
 export const getMyCoupons = async (): Promise<any[]> => {
