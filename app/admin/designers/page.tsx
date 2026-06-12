@@ -37,6 +37,8 @@ export default function DesignersPage() {
   const { designers, loading, fetchDesigners, deleteDesigner } = useDesignerStore();
 
   useEffect(() => {
+      console.log("Fetching designers...");
+
     void fetchDesigners();
   }, [fetchDesigners]);
 
@@ -58,6 +60,8 @@ export default function DesignersPage() {
       toast.error("Failed to delete designer");
     }
   };
+  console.log("loading:", loading);
+console.log("designers:", designers);
 
   return (
     <div className="space-y-6">

@@ -19,10 +19,19 @@ console.log("API URL:", process.env.NEXT_PUBLIC_API_URL);
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function isDesignerUrl(url?: string) {
-  return (
-    url?.startsWith("/designer/") ||
-    url?.startsWith("/designers/")
-  );
+  if (!url) return false;
+
+  const designerAuthPaths = [
+    "/designers/auth",
+    "/designers/dashboard",
+    "/designers/products",
+    "/designers/cloudinary",
+    "/designers/orders",
+    "/designers/coupons",
+    "/designers/analytics",
+  ];
+
+  return designerAuthPaths.some((path) => url.startsWith(path));
 }
 
 // ─── Request Interceptor ─────────────────────────────────────────────────────

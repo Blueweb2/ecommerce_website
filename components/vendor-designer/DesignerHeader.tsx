@@ -20,7 +20,7 @@ const PAGE_TITLES: Record<string, string> = {
   products: "Products",
   orders: "Orders",
   promocodes: "Promo Codes",
-  analytics: "Analytics",
+  // analytics: "Analytics",
   profile: "Profile",
 };
 
