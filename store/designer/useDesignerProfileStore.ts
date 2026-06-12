@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import * as portalApi from "@/lib/api/designer-portal.api";
+import * as portalApi from "@/lib/api/designer/designer-portal.api";
 import type { Designer, DesignerProfilePayload } from "@/types/designer";
 
 // ─── Completion helpers ───────────────────────────────────────────────────────

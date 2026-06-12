@@ -1,10 +1,11 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { getDesigners as getAdminDesigners } from "@/lib/api/admin/designer.api";
-import { adminOrderAPI } from "@/lib/api/admin/order.api";
-import { getProducts } from "@/lib/api/admin/product.api";
-import { getDesigners as getPublicDesigners } from "@/lib/api/designer.api";
+import {
+  getMyProfile,
+  getMyProducts,
+  getMyOrders,
+} from "@/lib/api/designer/designer-portal.api";
 import {
   useVendorSessionPreview,
   type VendorSessionPreview,
@@ -194,13 +195,7 @@ function getVendorOrderTotal(order: Order, productIds: Set<string>) {
   }, 0);
 }
 
-async function loadDesignerDirectory() {
-  try {
-    return await getAdminDesigners();
-  } catch {
-    return getPublicDesigners();
-  }
-}
+// loadDesignerDirectory removed
 
 export function useVendorPortalData(): VendorPortalState {
   const [designer, setDesigner] = useState<Designer | null>(null);
@@ -226,20 +221,20 @@ export function useVendorPortalData(): VendorPortalState {
     try {
       const preview = identity;
 
-      const [designersResult, productsResult, ordersResult] =
+      const [designerResult, productsResult, ordersResult] =
         await Promise.allSettled([
-          loadDesignerDirectory(),
-          getProducts(),
-          adminOrderAPI.getAllOrders(1, 100),
+          getMyProfile(),
+          getMyProducts(),
+          getMyOrders(),
         ]);
 
       if (
-        designersResult.status === "rejected" &&
+        designerResult.status === "rejected" &&
         productsResult.status === "rejected" &&
         ordersResult.status === "rejected"
       ) {
         setError(
-          "The vendor dashboard could not load data. Please confirm the designer account has API access."
+          "The vendor dashboard could not load data. Please confirm you are logged in."
         );
         setDesigner(null);
         setProducts([]);
@@ -251,15 +246,8 @@ export function useVendorPortalData(): VendorPortalState {
         return;
       }
 
-      const designerDirectory =
-        designersResult.status === "fulfilled"
-          ? Array.isArray(designersResult.value)
-            ? designersResult.value
-            : (designersResult.value as any).designers || []
-          : [];
       const currentDesigner =
-        designerDirectory.find((designer: Designer) => matchDesigner(designer, preview)) ||
-        null;
+        designerResult.status === "fulfilled" ? designerResult.value : null;
 
       if (!currentDesigner) {
         setNotice(
@@ -271,24 +259,12 @@ export function useVendorPortalData(): VendorPortalState {
         );
       }
 
-      const rawProducts =
-        productsResult.status === "fulfilled"
-          ? ((productsResult.value.data?.data?.products ||
-              productsResult.value.data?.products ||
-              []) as Product[])
-          : [];
-
-      const vendorProducts = rawProducts.filter((product) =>
-        matchesVendorProduct(product, currentDesigner)
-      );
+      const vendorProducts =
+        productsResult.status === "fulfilled" ? (productsResult.value as Product[]) : [];
 
       const productIds = new Set(vendorProducts.map((product) => product._id));
       const rawOrders =
-        ordersResult.status === "fulfilled"
-          ? ((ordersResult.value.data?.data?.orders ||
-              ordersResult.value.data?.orders ||
-              []) as Order[])
-          : [];
+        ordersResult.status === "fulfilled" ? (ordersResult.value as Order[]) : [];
 
       const vendorOrders = rawOrders
         .filter((order) =>

@@ -91,6 +91,7 @@ export type ProductFormInitialData =
 type Props = {
   onSubmit: (data: ProductPayload, files: File[]) => Promise<void>;
   initialData?: ProductFormInitialData;
+  isDesignerPortal?: boolean;
 };
 
 const defaultValues: ProductFormValues = {
@@ -196,7 +197,7 @@ const normalize = (obj: Record<string, string>) =>
       }, {} as Record<string, string>)
   );
 
-export default function ProductForm({ onSubmit, initialData }: Props) {
+export default function ProductForm({ onSubmit, initialData, isDesignerPortal }: Props) {
   const router = useRouter();
   const { categories, fetchCategories } = useCategoryStore();
   const [loading, setLoading] = useState(false);
@@ -318,8 +319,10 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
 
   const { designers, fetchDesigners } = useDesignerStore();
   useEffect(() => {
-    fetchDesigners();
-  }, [fetchDesigners]);
+    if (!isDesignerPortal) {
+      fetchDesigners();
+    }
+  }, [fetchDesigners, isDesignerPortal]);
 
   const validateForm = () => {
     const nextErrors: Record<string, string> = {};
@@ -487,7 +490,7 @@ export default function ProductForm({ onSubmit, initialData }: Props) {
         {currentStep === 1 && (
           <div className="space-y-8">
             <CoreDetails form={form} setForm={setForm} errors={errors} />
-            <CatalogSection form={form} setForm={setForm} categories={categories} designers={designers} errors={errors} />
+            <CatalogSection form={form} setForm={setForm} categories={categories} designers={designers} errors={errors} isDesignerPortal={isDesignerPortal} />
             {/* Features section merged here for Step 1 */}
             <section className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm space-y-6">
               <div>

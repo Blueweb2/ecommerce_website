@@ -8,9 +8,10 @@ import toast from "react-hot-toast";
 type Props = {
   initialData?: any;
   onSubmit: (data: PromoPayload) => Promise<void>;
+  returnUrl?: string;
 };
 
-export default function PromoForm({ initialData, onSubmit }: Props) {
+export default function PromoForm({ initialData, onSubmit, returnUrl }: Props) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState<PromoPayload>({
@@ -32,7 +33,7 @@ export default function PromoForm({ initialData, onSubmit }: Props) {
       setLoading(true);
       await onSubmit(form);
       toast.success(initialData ? "Promo code updated" : "Promo code created");
-      router.push("/admin/promo");
+      router.push(returnUrl || "/admin/promo");
     } catch (err: any) {
       toast.error(err?.response?.data?.message || "Something went wrong");
     } finally {
@@ -159,7 +160,7 @@ export default function PromoForm({ initialData, onSubmit }: Props) {
       <div className="flex gap-4">
         <button
           type="button"
-          onClick={() => router.back()}
+          onClick={() => router.push(returnUrl || "/admin/promo")}
           className="flex-1 rounded-2xl bg-slate-100 py-4 font-bold text-slate-600 transition hover:bg-slate-200"
         >
           Cancel

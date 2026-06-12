@@ -7,19 +7,23 @@ type UploadedImage = {
 };
 
 //  Get signature (FIXED)
-const getSignature = async (folder: string) => {
-  const res = await api.get(`/cloudinary/signature?folder=${folder}`);
+const getSignature = async (folder: string, isDesignerPortal?: boolean) => {
+  const endpoint = isDesignerPortal 
+    ? `/designers/cloudinary/signature?folder=${folder}`
+    : `/cloudinary/signature?folder=${folder}`;
+  const res = await api.get(endpoint);
   return res.data;
 };
 
 //  SINGLE IMAGE UPLOAD
 export const uploadSingleImage = async (
   file: File,
-  folder = "ecommerce/categories"
+  folder = "ecommerce/categories",
+  isDesignerPortal?: boolean
 ): Promise<UploadedImage> => {
   try {
     const { timestamp, signature, cloudName, apiKey } =
-      await getSignature(folder);
+      await getSignature(folder, isDesignerPortal);
 
     const formData = new FormData();
     formData.append("file", file);
@@ -56,11 +60,12 @@ export const uploadSingleImage = async (
 export const uploadMultipleImages = async (
   files: File[],
   folder = "ecommerce/products",
-  primaryIndex = 0
+  primaryIndex = 0,
+  isDesignerPortal?: boolean
 ): Promise<UploadedImage[]> => {
   try {
     const { timestamp, signature, cloudName, apiKey } =
-      await getSignature(folder);
+      await getSignature(folder, isDesignerPortal);
 
     const uploads = files.map(async (file, index) => {
       const formData = new FormData();
