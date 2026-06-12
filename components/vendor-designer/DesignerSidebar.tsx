@@ -19,7 +19,7 @@ const menu = [
   { name: "Products", href: "/designer/products", icon: Box },
   { name: "Orders", href: "/designer/orders", icon: ShoppingBag },
   { name: "Coupons", href: "/designer/coupons", icon: BadgePercent },
-  { name: "Analytics", href: "/designer/analytics", icon: BarChart3 },
+  // { name: "Analytics", href: "/designer/analytics", icon: BarChart3 },
   { name: "Profile", href: "/designer/profile", icon: UserRound },
 ];
 
