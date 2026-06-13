@@ -12,6 +12,8 @@ import { useWishlistStore } from '@/store/user/wishlist/useWishlistStore';
 import { categoryAPI } from "@/lib/api/category.api";
 import { getDesigners } from "@/lib/api/designer.api";
 import { inter } from '@/lib/fonts';
+import SearchOverlay from '../search/SearchOverlay';
+import type { Designer } from "@/types/designer";
 
 type Category = {
   _id: string;
@@ -36,7 +38,7 @@ export default function Navbar() {
   const { user, loading } = useAuthStore();
   const wishlistItems = useWishlistStore((state) => state.items);
   const [categories, setCategories] = useState<Category[]>([]);
-  const [designers, setDesigners] = useState<any[]>([]);
+  const [designers, setDesigners] = useState<Designer[]>([]);
   const [activeMenu, setActiveMenu] = useState<{
     type: "category" | "designer" | null;
     id?: string;
@@ -49,6 +51,7 @@ export default function Navbar() {
   const cartCount = items.reduce((acc, item) => acc + item.quantity, 0);
 
   const [showAccountMenu, setShowAccountMenu] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
 
   const linkClass = (path: string) => {
     return `whitespace-nowrap border-b-2 transition-all duration-200 pb-3 ${pathname === path
@@ -340,6 +343,8 @@ export default function Navbar() {
         {/* ICONS */}
         <div className="flex items-center gap-6 text-white justify-end flex-1 md:mt-5">
           <button
+            onClick={() => setSearchOpen(true)}
+
             className="font-brand-sans flex items-center justify-center gap-x-1.5 text-[13px] text-sm transition-colors duration-300 hover:text-[#D4AF37]"
           >
             <Search size={18} /> Search
@@ -448,6 +453,10 @@ export default function Navbar() {
         </div>
 
       </div>
+
+      {searchOpen && (
+  <SearchOverlay onClose={() => setSearchOpen(false)} />
+)}
 
     </header>
   );
