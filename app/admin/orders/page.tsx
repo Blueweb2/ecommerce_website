@@ -2,49 +2,10 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import toast from "react-hot-toast";
 import {
-  ChevronRight,
-  Search,
-  Trash2,
-  Eye,
   ShoppingBag,
-  Clock,
-  CheckCircle,
-  Truck,
-  XCircle,
-  RefreshCw,
 } from "lucide-react";
 import { useOrderStore } from "@/store/admin/useOrderStore";
-
-const STATUS_TABS = [
-  { value: "all", label: "All Orders" },
-  { value: "pending", label: "Pending" },
-  { value: "processing", label: "Processing" },
-  { value: "shipped", label: "Shipped" },
-  { value: "delivered", label: "Delivered" },
-  { value: "cancelled", label: "Cancelled" },
-];
-
-const getStatusColor = (status: string) => {
-  switch (status) {
-    case "delivered": return "bg-emerald-50 text-emerald-700 border-emerald-200";
-    case "shipped": return "bg-blue-50 text-blue-700 border-blue-200";
-    case "processing": return "bg-orange-50 text-orange-700 border-orange-200";
-    case "cancelled": return "bg-rose-50 text-rose-700 border-rose-200";
-    default: return "bg-slate-100 text-slate-700 border-slate-200"; // pending
-  }
-};
-
-const getStatusIcon = (status: string) => {
-  switch (status) {
-    case "delivered": return <CheckCircle className="h-3 w-3" />;
-    case "shipped": return <Truck className="h-3 w-3" />;
-    case "processing": return <RefreshCw className="h-3 w-3" />;
-    case "cancelled": return <XCircle className="h-3 w-3" />;
-    default: return <Clock className="h-3 w-3" />;
-  }
-};
 
 export default function AdminOrdersPage() {
   const {
@@ -360,25 +321,6 @@ export default function AdminOrdersPage() {
 
         {/* PAGINATION */}
         {pagination.pages > 1 && (
-          // <div className="flex justify-between p-4 border-t">
-          //   <button
-          //     disabled={pagination.page <= 1}
-          //     onClick={() => handlePageChange(pagination.page - 1)}
-          //   >
-          //     Previous
-          //   </button>
-
-          //   <span>
-          //     Page {pagination.page} / {pagination.pages}
-          //   </span>
-
-          //   <button
-          //     disabled={pagination.page >= pagination.pages}
-          //     onClick={() => handlePageChange(pagination.page + 1)}
-          //   >
-          //     Next
-          //   </button>
-          // </div>
           <div className="flex items-center justify-between border-t px-6 py-4">
             <p className="text-sm text-slate-500">
               Showing page {pagination.page} of {pagination.pages}

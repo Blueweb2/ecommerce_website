@@ -18,14 +18,6 @@ import {
   CheckCircle2,
 } from "lucide-react";
 
-type AdminProfile = {
-  id?: string;
-  name: string;
-  email: string;
-  role: string;
-  phone?: string;
-};
-
 function getInitials(name: string) {
   return name
     .split(" ")

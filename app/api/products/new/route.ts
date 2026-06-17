@@ -1,19 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-// import Product from "@/models/Product"; // Assuming you have a Product model
-// import connectDB from "@/lib/db"; // Assuming you have a DB connection
 
 export async function GET(request: NextRequest) {
   try {
-    // await connectDB(); // Connect to database
-
-    // const products = await Product.find({
-    //   isPublished: true,
-    //   sections: { $in: ["new-in"] }
-    // })
-    // .sort({ createdAt: -1 })
-    // .limit(12)
-    // .select("_id name slug price discountPrice images brand")
-    // .lean();
 
     // For now, return mock data
     const products = [

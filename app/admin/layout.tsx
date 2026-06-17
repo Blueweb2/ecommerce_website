@@ -29,12 +29,12 @@ export default function AdminLayout({
     }
   }, [user, loading, router, pathname, isLoginPage]);
 
-  // 🔹 If it's the login page, just render children without auth check or wrapper
+  // If it's the login page, just render children without auth check or wrapper
   if (isLoginPage) {
     return <>{children}</>;
   }
 
-  // ⛔ Prevent rendering until auth is checked
+  // Prevent rendering until auth is checked
   if (loading || !user) {
     return <div className="p-6">Loading...</div>;
   }
