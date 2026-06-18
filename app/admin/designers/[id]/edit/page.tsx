@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import DesignerForm from "@/components/admin/designers/DesignerForm";
 import { getDesignerById } from "@/lib/api/admin/designer.api";
 import { useDesignerStore } from "@/store/admin/useDesignerStore";
 import type { Designer, DesignerPayload } from "@/types/designer";

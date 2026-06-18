@@ -28,10 +28,10 @@ export default function AdminDashboard() {
   return (
     <div className="p-6 space-y-8">
 
-      {/* 🔹 HEADER */}
+      {/* HEADER */}
       <h1 className="text-2xl font-bold">Admin Dashboard</h1>
 
-      {/* 🔹 STATS CARDS */}
+      {/* STATS CARDS */}
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-6">
 
         <div className="p-5 bg-white rounded-2xl shadow">
@@ -51,7 +51,7 @@ export default function AdminDashboard() {
 
       </div>
 
-      {/* 🔹 REVENUE CHART */}
+      {/* REVENUE CHART */}
       <div className="bg-white p-6 rounded-2xl shadow">
         <h2 className="font-semibold mb-4">Revenue Trend</h2>
 
@@ -66,7 +66,7 @@ export default function AdminDashboard() {
         </ResponsiveContainer>
       </div>
 
-      {/* 🔹 ORDERS CHART */}
+      {/* ORDERS CHART */}
       <div className="bg-white p-6 rounded-2xl shadow">
         <h2 className="font-semibold mb-4">Orders per Month</h2>
 

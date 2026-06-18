@@ -5,11 +5,10 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import api from "@/lib/api/axios";
 import { useAuthStore } from "@/store/auth/useAuthStore";
-import { setAccessToken } from "@/lib/auth";
 
 export default function AdminLoginPage() {
   const router = useRouter();
-  const { setUser, user } = useAuthStore();
+  const { user } = useAuthStore();
 
   const [form, setForm] = useState({
     email: "",
@@ -18,65 +17,40 @@ export default function AdminLoginPage() {
 
   const [loading, setLoading] = useState(false);
 
-  //  Redirect if already logged in
-
-
   useEffect(() => {
     if (user && (user.role === "admin" || user.role === "superadmin")) {
       router.replace("/admin/dashboard");
     }
   }, [user]);
 
-// const handleLogin = async (e: any) => {
-//   e.preventDefault();
-//   setLoading(true);
+  const handleLogin = async (e: any) => {
+    e.preventDefault();
+    setLoading(true);
 
-//   try {
-//     const emailNormalized = form.email.trim().toLowerCase();
+    try {
+      const emailNormalized = form.email.trim().toLowerCase();
 
-//     const res = await api.post("/auth/login", {
-//       email: emailNormalized,
-//       password: form.password,
-//     });
+      const res = await api.post("/auth/login", {
+        email: emailNormalized,
+        password: form.password,
+      });
 
-//     toast.success(res.data.message || "OTP sent");
+      toast.success(res.data.message || "OTP sent");
 
-//     router.push(`/verify-otp?email=${encodeURIComponent(emailNormalized)}&admin=true`);
+      //  DEV MODE OTP DISPLAY
+      if (res.data.otp) {
+        alert(`DEV OTP: ${res.data.otp}`);
+        console.log("OTP:", res.data.otp);
+      }
 
-//   } catch (error: any) {
-//     toast.error(error?.response?.data?.message || "Login failed");
-//   } finally {
-//     setLoading(false);
-//   }
+      router.push(`/verify-otp?email=${encodeURIComponent(emailNormalized)}&admin=true`);
 
-const handleLogin = async (e: any) => {
-  e.preventDefault();
-  setLoading(true);
-
-  try {
-    const emailNormalized = form.email.trim().toLowerCase();
-
-    const res = await api.post("/auth/login", {
-      email: emailNormalized,
-      password: form.password,
-    });
-
-    toast.success(res.data.message || "OTP sent");
-
-    //  DEV MODE OTP DISPLAY
-    if (res.data.otp) {
-      alert(`DEV OTP: ${res.data.otp}`);
-      console.log("OTP:", res.data.otp);
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || "Login failed");
+    } finally {
+      setLoading(false);
     }
-
-    router.push(`/verify-otp?email=${encodeURIComponent(emailNormalized)}&admin=true`);
-
-  } catch (error: any) {
-    toast.error(error?.response?.data?.message || "Login failed");
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
 
   return (

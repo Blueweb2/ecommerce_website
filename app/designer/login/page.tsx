@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useDesignerAuthStore } from "@/store/designer/useDesignerAuthStore";
 import { designerLogin } from "@/lib/api/designer/designer-portal.api";
-import { persistVendorToken } from "@/lib/vendor/auth";
+
 import {
   Loader2,
   Eye,
