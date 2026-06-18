@@ -32,7 +32,7 @@ export default function ProductCard({
         <img
           src={imageUrl}
           alt={product.name}
-          className="h-32 w-full object-cover rounded-lg"
+          className="h-62 w-full object-cover rounded-lg"
         />
 
         {/* Image Gallery */}
