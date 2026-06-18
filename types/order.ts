@@ -14,7 +14,8 @@ export interface OrderItem {
     name: string;
     price: number;
     images?: string[];
-  };
+  }
+  | null;
   quantity: number;
   price: number;
   gstPercentage?: number;
@@ -40,8 +41,8 @@ export interface OrderUser {
 }
 
 export interface Order {
-  paymentId: any;
-  razorpayOrderId: any;
+  paymentId: string | null;
+  razorpayOrderId: string | null;
   _id: string;
   user?: string | OrderUser; // String ID or populated User object
   isGuestOrder?: boolean;

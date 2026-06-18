@@ -19,7 +19,6 @@ import { loadRazorpay } from "@/lib/utils/loadRazorpay";
 import { orderAPI } from "@/lib/api/order.api";
 import { Order } from "@/types/order";
 import { getOrderTotals } from "@/lib/utils/orderTotals";
-import { bodoni } from "@/lib/fonts";
 
 interface RazorpaySuccessResponse {
   razorpay_order_id: string;
@@ -67,6 +66,18 @@ const getStatusIcon = (status: string) => {
     default:
       return <Clock className="h-4 w-4" />;
   }
+};
+
+const getOrderItemProductName = (item: Order["items"][number]) => {
+  if (
+    item.product &&
+    typeof item.product === "object" &&
+    "name" in item.product
+  ) {
+    return item.product.name;
+  }
+
+  return "Product";
 };
 
 const MyOrders = () => {
@@ -330,9 +341,7 @@ const MyOrders = () => {
                             {item.quantity}x
                           </div>
                           <p className="text-sm font-bold text-gray-700">
-                            {typeof item.product === "object"
-                              ? item.product.name
-                              : "Product"}
+                            {getOrderItemProductName(item)}
                           </p>
                         </div>
                         <span className="text-sm font-black text-gray-900">
@@ -455,9 +464,7 @@ const MyOrders = () => {
                           fontSize: "11px",
                         }}
                       >
-                        {typeof item.product === "object"
-                          ? item.product.name
-                          : "Product"}
+                        {getOrderItemProductName(item)}
                       </td>
                       <td
                         style={{
