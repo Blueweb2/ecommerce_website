@@ -12,6 +12,7 @@ export default function ProductList({
 }: any) {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [sortBy, setSortBy] = useState<'name' | 'price' | 'stock' | 'created'>('created');
+  console.log("Products count:", products.length);
 
   if (loading) {
     return (

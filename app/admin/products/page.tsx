@@ -107,6 +107,8 @@ export default function ProductsPage() {
       );
     });
   }, [products, searchQuery, activeSection, activeCategory, saleFilter]);
+  console.log("Products from store:", products);
+console.log("Length:", products.length);
 
   //  DELETE PRODUCT
   const handleDelete = async (id: string) => {
