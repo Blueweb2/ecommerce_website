@@ -1,14 +1,17 @@
-//  (category + sections)
 "use client";
 
+import type { Dispatch, SetStateAction } from "react";
 import { Tags } from "lucide-react";
 import { PRODUCT_SECTION_OPTIONS } from "@/lib/constants/admin-catalog";
+import type { CatalogEntity } from "@/lib/constants/admin-catalog";
+import type { Designer } from "@/types/designer";
+import type { ProductFormValues } from "./ProductForm";
 
 type Props = {
-  form: any;
-  setForm: (updater: any) => void;
-  categories: any[];
-  designers?: any[]; //  Added
+  form: ProductFormValues;
+  setForm: Dispatch<SetStateAction<ProductFormValues>>;
+  categories: CatalogEntity[];
+  designers?: Designer[];
   errors: Record<string, string>;
   isDesignerPortal?: boolean;
 };
@@ -17,25 +20,21 @@ export default function CatalogSection({
   form,
   setForm,
   categories,
-  designers = [], //  Added
+  designers = [],
   errors,
   isDesignerPortal,
 }: Props) {
-  
-  //  toggle logic inside component
   const toggleSection = (section: string) => {
-    setForm((prev: any) => ({
+    setForm((prev) => ({
       ...prev,
       sections: prev.sections.includes(section)
-        ? prev.sections.filter((item: string) => item !== section)
+        ? prev.sections.filter((item) => item !== section)
         : [...prev.sections, section],
     }));
   };
 
   return (
     <section className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm">
-      
-      {/* Header */}
       <div className="flex items-center gap-2">
         <Tags className="h-5 w-5 text-slate-500" />
         <h3 className="text-xl font-semibold tracking-tight text-slate-900">
@@ -44,8 +43,6 @@ export default function CatalogSection({
       </div>
 
       <div className="mt-6 grid gap-6">
-        
-        {/* Category */}
         <div className="grid gap-2">
           <label className="text-sm font-medium text-slate-700">
             Category
@@ -54,7 +51,7 @@ export default function CatalogSection({
           <select
             value={form.category}
             onChange={(e) =>
-              setForm((prev: any) => ({
+              setForm((prev) => ({
                 ...prev,
                 category: e.target.value,
               }))
@@ -75,7 +72,6 @@ export default function CatalogSection({
           )}
         </div>
 
-        {/* Designer / Brand */}
         {!isDesignerPortal && (
           <div className="grid gap-2">
             <label className="text-sm font-medium text-slate-700">
@@ -85,7 +81,7 @@ export default function CatalogSection({
             <select
               value={form.designer}
               onChange={(e) =>
-                setForm((prev: any) => ({
+                setForm((prev) => ({
                   ...prev,
                   designer: e.target.value,
                 }))
@@ -96,14 +92,14 @@ export default function CatalogSection({
 
               {designers.map((designer) => (
                 <option key={designer._id} value={designer._id}>
-                  {designer.name} {designer.brandName ? `(${designer.brandName})` : ''}
+                  {designer.name}
+                  {designer.brandName ? ` (${designer.brandName})` : ""}
                 </option>
               ))}
             </select>
           </div>
         )}
 
-        {/* Sections */}
         <div className="grid gap-3">
           <label className="text-sm font-medium text-slate-700">
             Storefront sections
@@ -133,7 +129,6 @@ export default function CatalogSection({
             })}
           </div>
         </div>
-
       </div>
     </section>
   );

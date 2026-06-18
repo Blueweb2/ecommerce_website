@@ -2,18 +2,19 @@
 
 import { useEffect, useState } from "react";
 import { useCategoryStore } from "@/store/admin/useCategoryStore";
-import { useDesignerStore } from "@/store/admin/useDesignerStore"; 
+import { useDesignerStore } from "@/store/admin/useDesignerStore";
 import { generateVariants } from "@/lib/utils/generateVariants";
 import { calculateVariantStock, hasVariants } from "@/lib/utils/product-stock";
 import { uploadMultipleImages } from "@/lib/cloudinary/upload";
 
 import {
+  CatalogEntity,
   CatalogImage,
-  ProductPayload,
   CustomField,
   CustomizableConfig,
+  ProductPayload,
 } from "@/lib/constants/admin-catalog";
-
+import type { Designer } from "@/types/designer";
 import ProductHeader from "./ProductHeader";
 import CoreDetails from "./CoreDetails";
 import CatalogSection from "./CatalogSection";
@@ -128,6 +129,16 @@ const getPrimaryImageIndex = (images?: CatalogImage[]) => {
   return primaryIndex >= 0 ? primaryIndex : 0;
 };
 
+type DesignerCategoryReference = NonNullable<Designer["categories"]>[number];
+
+const getDesignerCategoryId = (category: DesignerCategoryReference) => {
+  if (typeof category === "string") {
+    return category;
+  }
+
+  return category._id;
+};
+
 const cloneAttributes = (
   attributes?: { name: string; values: string[] }[]
 ) =>
@@ -200,6 +211,12 @@ const normalize = (obj: Record<string, string>) =>
 export default function ProductForm({ onSubmit, initialData, isDesignerPortal }: Props) {
   const router = useRouter();
   const { categories, fetchCategories } = useCategoryStore();
+  const {
+    designers,
+    fetchDesigners,
+    currentDesigner,
+    fetchMyProfile,
+  } = useDesignerStore();
   const [loading, setLoading] = useState(false);
   const initialPrimaryImageIndex =
     typeof initialData?.primaryImageIndex === "number"
@@ -302,8 +319,28 @@ export default function ProductForm({ onSubmit, initialData, isDesignerPortal }:
   }, [initialData]);
 
   useEffect(() => {
-    fetchCategories();
+    void fetchCategories();
   }, [fetchCategories]);
+
+  useEffect(() => {
+    if (!isDesignerPortal) {
+      return;
+    }
+
+    void fetchMyProfile();
+  }, [fetchMyProfile, isDesignerPortal]);
+
+  useEffect(() => {
+    if (!isDesignerPortal || !currentDesigner?._id) {
+      return;
+    }
+
+    setForm((prev) =>
+      prev.designer === currentDesigner._id
+        ? prev
+        : { ...prev, designer: currentDesigner._id }
+    );
+  }, [currentDesigner?._id, isDesignerPortal]);
 
   useEffect(() => {
     if (!hasVariants(form.variants)) {
@@ -317,12 +354,25 @@ export default function ProductForm({ onSubmit, initialData, isDesignerPortal }:
     );
   }, [form.variants]);
 
-  const { designers, fetchDesigners } = useDesignerStore();
   useEffect(() => {
     if (!isDesignerPortal) {
-      fetchDesigners();
+      void fetchDesigners();
     }
   }, [fetchDesigners, isDesignerPortal]);
+
+  const designerCategoryIds = new Set<string>(
+    (currentDesigner?.categories ?? [])
+      .map((category) => getDesignerCategoryId(category))
+      .filter(Boolean)
+  );
+
+  const filteredCategories: CatalogEntity[] = isDesignerPortal
+    ? categories.filter((category) => designerCategoryIds.has(category._id))
+    : categories;
+
+  const selectedDesigner =
+    designers.find((designer) => designer._id === form.designer) ??
+    (currentDesigner?._id === form.designer ? currentDesigner : null);
 
   const validateForm = () => {
     const nextErrors: Record<string, string> = {};
@@ -412,11 +462,8 @@ export default function ProductForm({ onSubmit, initialData, isDesignerPortal }:
         price: Number(form.price),
         discountPrice: Number(form.discountPrice) || undefined,
         category: form.category,
-        designer: form.designer || undefined, 
-        brand:
-          designers.find((designer) => designer._id === form.designer)?.brandName ||
-          form.brand?.trim() ||
-          undefined,
+        designer: form.designer || undefined,
+        brand: selectedDesigner?.brandName || form.brand?.trim() || undefined,
         sections: form.sections,
         images: form.images,
         stock: totalStock,
@@ -451,7 +498,6 @@ export default function ProductForm({ onSubmit, initialData, isDesignerPortal }:
       setLoading(false);
     }
   };
-
   return (
     <form onSubmit={handleSubmit} className="space-y-10">
       <ProductHeader
@@ -490,7 +536,7 @@ export default function ProductForm({ onSubmit, initialData, isDesignerPortal }:
         {currentStep === 1 && (
           <div className="space-y-8">
             <CoreDetails form={form} setForm={setForm} errors={errors} />
-            <CatalogSection form={form} setForm={setForm} categories={categories} designers={designers} errors={errors} isDesignerPortal={isDesignerPortal} />
+            <CatalogSection form={form} setForm={setForm} categories={filteredCategories} designers={designers} errors={errors} isDesignerPortal={isDesignerPortal} />
             {/* Features section merged here for Step 1 */}
             <section className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm space-y-6">
               <div>

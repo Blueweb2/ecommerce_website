@@ -233,3 +233,11 @@ export const getDesignerDetail = async (slug: string) => {
     products: normalizeDesignerProducts(response.data),
   };
 };
+
+export const getMyDesignerProfile = async () => {
+  const response = await getWithFallback<DesignerDetailResponse>([
+    "/designers/auth/profile",
+  ]);
+
+  return normalizeDesigner(response.data);
+};

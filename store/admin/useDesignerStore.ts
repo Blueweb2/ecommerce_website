@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import * as designerApi from "@/lib/api/admin/designer.api";
+import { getMyDesignerProfile } from "@/lib/api/designer.api";
 import type {
   AdminCreateDesignerPayload,
   AdminStorefrontPayload,
@@ -25,6 +26,7 @@ interface DesignerState {
   }) => Promise<void>;
 
   fetchDesignerById: (id: string) => Promise<Designer | null>;
+  fetchMyProfile: () => Promise<Designer | null>;
 
   createDesigner: (data: AdminCreateDesignerPayload) => Promise<Designer | null>;
   updateDesigner: (id: string, data: DesignerPayload) => Promise<Designer | null>;
@@ -82,6 +84,21 @@ export const useDesignerStore = create<DesignerState>((set, get) => ({
   },
 
   // ─── Create ────────────────────────────────────────────────────────────────
+
+  fetchMyProfile: async () => {
+    set({ loading: true });
+    try {
+      const designer = await getMyDesignerProfile();
+      set({ currentDesigner: designer });
+      return designer;
+    } catch (error) {
+      console.error("Fetch my designer profile error:", error);
+      set({ currentDesigner: null });
+      return null;
+    } finally {
+      set({ loading: false });
+    }
+  },
 
   createDesigner: async (data) => {
     const created = await designerApi.createDesigner(data);
