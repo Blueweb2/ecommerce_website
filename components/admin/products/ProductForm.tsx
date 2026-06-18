@@ -331,14 +331,16 @@ export default function ProductForm({ onSubmit, initialData, isDesignerPortal }:
   }, [fetchMyProfile, isDesignerPortal]);
 
   useEffect(() => {
-    if (!isDesignerPortal || !currentDesigner?._id) {
+    const designerId = currentDesigner?._id;
+
+    if (!isDesignerPortal || !designerId) {
       return;
     }
 
     setForm((prev) =>
-      prev.designer === currentDesigner._id
+      prev.designer === designerId
         ? prev
-        : { ...prev, designer: currentDesigner._id }
+        : { ...prev, designer: designerId }
     );
   }, [currentDesigner?._id, isDesignerPortal]);
 
