@@ -1,5 +1,6 @@
 "use client";
 
+import axios from "axios";
 import Link from "next/link";
 import { CartItem, useCartStore } from "@/store/user/cart/useCartStore";
 import { ShoppingCart } from "lucide-react";
@@ -14,7 +15,7 @@ import { getInclusivePrice } from "@/lib/utils/pricing";
 export default function CartPage() {
   const [selectedItem, setSelectedItem] = useState<CartItem | null>(null);
 
-  const { items, totalPrice, totalGstAmount, removeItem, updateQuantity, appliedPromo, applyPromo, removePromo } = useCartStore();
+  const { items, totalPrice, totalGstAmount, removeItem, appliedPromo, applyPromo, removePromo } = useCartStore();
   const [promoInput, setPromoInput] = useState("");
   const [loadingPromo, setLoadingPromo] = useState(false);
 
@@ -26,8 +27,12 @@ export default function CartPage() {
       applyPromo(res.data.code, res.data.discountAmount);
       toast.success("Promo code applied!");
       setPromoInput("");
-    } catch (err: any) {
-      toast.error(err?.response?.data?.message || "Invalid promo code");
+    } catch (err: unknown) {
+      const message = axios.isAxiosError<{ message?: string }>(err)
+        ? err.response?.data?.message || "Invalid promo code"
+        : "Invalid promo code";
+
+      toast.error(message);
     } finally {
       setLoadingPromo(false);
     }
@@ -73,8 +78,16 @@ export default function CartPage() {
                 className="flex gap-7"
               >
                 {/* CLICKABLE PRODUCT */}
-                <button
+                <div
+                  role="button"
+                  tabIndex={0}
                   onClick={() => setSelectedItem(item)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      setSelectedItem(item);
+                    }
+                  }}
                   className="flex flex-1 gap-7 text-left"
                 >
                   {/* IMAGE */}
@@ -170,7 +183,7 @@ export default function CartPage() {
                       </button>
                     </div>
                   </div>
-                </button>
+                </div>
               </div>
             ))}
           </div>

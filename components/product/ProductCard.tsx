@@ -49,10 +49,10 @@ export default function ProductCard({
             ? "translateX(-50px)"
             : "translateX(50px)"
           : isEntering
-          ? direction === 1
-            ? "translateX(50px)"
-            : "translateX(-50px)"
-          : "translateX(0)",
+            ? direction === 1
+              ? "translateX(50px)"
+              : "translateX(-50px)"
+            : "translateX(0)",
         opacity: isAnimating ? 0 : isEntering ? 0 : 1,
       }}
     >
@@ -110,42 +110,44 @@ export default function ProductCard({
       </div>
 
       {/* CONTENT */}
-   {/* CONTENT */}
-<div className="space-y-1 px-1 pt-1">
-  {useBrandAsTitle ? (
-    <p
-      className={`${inter.className} text-[13px] text-center font-semibold uppercase tracking-[0.03em] text-neutral-700`}
-    >
-      {product.designer?.brandName ||
-        product.brand ||
-        product.designer?.name ||
-        "DESIGNER"}
-    </p>
-  ) : (
-    <>
-      <p
-        className={`${inter.className} text-[13px] font-semibold uppercase tracking-[0.03em] text-neutral-600`}
-      >
-        {product.designer?.brandName ||
-          product.brand  || product.designer?.name || "DESIGNER"}
-      </p>
+      {/* CONTENT */}
+      <div className="space-y-1 px-1 pt-1">
+        {useBrandAsTitle ? (
+          <p
+            className={`${inter.className} text-center text-[13px] font-semibold uppercase tracking-[0.03em] text-neutral-700`}
+          >
+            {product.designer?.brandName ||
+              product.brand ||
+              product.designer?.name ||
+              "DESIGNER"}
+          </p>
+        ) : (
+          <>
+            <p
+              className={`${inter.className} text-[13px] font-semibold uppercase tracking-[0.03em] text-neutral-600`}
+            >
+              {product.designer?.brandName ||
+                product.brand ||
+                product.designer?.name ||
+                "DESIGNER"}
+            </p>
 
-      <Link
-        href={`/product/${product.slug}`}
-        className={`${inter.className} mt-2 line-clamp-2 block text-[13px] leading-6 text-[#5C5A58]`}
-      >
-        {product.name}
-      </Link>
+            {/* Product Name - Removed nested Link */}
+            <p
+              className={`${inter.className} mt-2 line-clamp-2 text-[13px] leading-6 text-[#5C5A58]`}
+            >
+              {product.name}
+            </p>
 
-      <span className={inter.className}>
-        ₹
-        {Math.round(
-          product.price * (1 + (product.gstPercentage || 0) / 100)
+            <span className={inter.className}>
+              ₹
+              {Math.round(
+                product.price * (1 + (product.gstPercentage || 0) / 100)
+              )}
+            </span>
+          </>
         )}
-      </span>
-    </>
-  )}
-</div>
+      </div>
 
     </Link>
   );
