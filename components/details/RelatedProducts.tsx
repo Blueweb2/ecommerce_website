@@ -55,10 +55,27 @@ export default function RelatedProducts({ product }: Props) {
 
         setLoading(true);
 
-        const res =
-          activeTab === "like"
-            ? await api.get(`/products/${productId}/related`)
-            : await api.get("/products/new");
+        if (activeTab === "recent") {
+          try {
+            const stored = localStorage.getItem("recentlyViewed");
+            if (stored) {
+              let recent = JSON.parse(stored);
+              if (productId) {
+                recent = recent.filter((p: any) => p._id !== productId);
+              }
+              if (isMounted) setProducts(recent);
+            } else {
+              if (isMounted) setProducts([]);
+            }
+          } catch (e) {
+            console.error("Failed to parse recently viewed:", e);
+            if (isMounted) setProducts([]);
+          }
+          if (isMounted) setLoading(false);
+          return;
+        }
+
+        const res = await api.get(`/products/${productId}/related`);
 
         if (isMounted) {
           const nextProducts = Array.isArray(res.data?.data)
