@@ -39,7 +39,11 @@ export default function RelatedProducts({ product }: Props) {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
   const { addItem } = useCartStore();
-  const scrollRef = useRef<HTMLDivElement>(null)
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const isDragging = useRef(false);
+  const dragged = useRef(false);
+  const startX = useRef(0);
+  const scrollLeft = useRef(0);
 
   useEffect(() => {
     let isMounted = true;
@@ -82,7 +86,6 @@ export default function RelatedProducts({ product }: Props) {
     };
   }, [activeTab, product?._id]);
 
-
   useEffect(() => {
     if(!loading){
       scrollRef.current?.scrollTo({
@@ -116,6 +119,30 @@ export default function RelatedProducts({ product }: Props) {
     });
 
     toast.success("Added to cart");
+  };
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    isDragging.current = true;
+    dragged.current = false;
+
+    startX.current = e.pageX;
+    scrollLeft.current = scrollRef.current!.scrollLeft;
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging.current) return;
+
+    const walk = e.pageX - startX.current;
+
+    if (Math.abs(walk) > 5) {
+      dragged.current = true;
+    }
+
+    scrollRef.current!.scrollLeft = scrollLeft.current - walk;
+  };
+
+  const handleMouseUp = () => {
+    isDragging.current = false;
   };
 
   return (
@@ -163,7 +190,14 @@ export default function RelatedProducts({ product }: Props) {
           ))}
         </div>
       ):(
-        <div ref={scrollRef} className="flex gap-6 overflow-x-auto scrollbar-hide">
+        <div 
+          ref={scrollRef} 
+          className="flex gap-6 overflow-x-auto cursor-grab active:cursor-grabbing scrollbar-hide"
+          onMouseDown={handleMouseDown}
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseUp}
+        >
           {products.map((item) => {
             const primaryImage =
               item.images?.find((image) => image.isPrimary) || item.images?.[0];
@@ -172,6 +206,12 @@ export default function RelatedProducts({ product }: Props) {
               <Link
                 href={`/product/${item.slug}`}
                 key={item._id}
+                onClick={(e) => {
+                  if (dragged.current) {
+                    e.preventDefault();
+                    dragged.current = false;
+                  }
+                }}
                 className="group w-[150px] flex-shrink-0 cursor-pointer lg:w-[290px]"
               >
                 <div className="relative aspect-[4/5] overflow-hidden bg-gray-100">
