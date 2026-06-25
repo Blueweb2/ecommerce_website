@@ -437,18 +437,18 @@ export default function Navbar() {
             )}
           </div>
 
-          <button
-            onClick={openCart}
-            className="relative transition-colors duration-300 hover:text-[#D4AF37]"
-          >
-            <ShoppingCart size={18} />
+            <button
+      onClick={() => router.push("/cart")}
+      className="relative transition-colors duration-300 hover:text-[#D4AF37]"
+    >
+      <ShoppingCart size={18} />
 
-            {cartCount > 0 && (
-              <span className="absolute -top-3 -right-3 bg-[#656565] text-white font-bold text-[11px] px-1.5 py-0.5 rounded-full">
-                {cartCount > 99 ? "99+" : cartCount}
-              </span>
-            )}
-          </button>
+      {cartCount > 0 && (
+        <span className="absolute -top-3 -right-3 bg-[#656565] text-white font-bold text-[11px] px-1.5 py-0.5 rounded-full">
+          {cartCount > 99 ? "99+" : cartCount}
+        </span>
+      )}
+    </button>
 
         </div>
 
