@@ -109,7 +109,7 @@ export default function ProductCard({
         <div className="absolute inset-0 z-10 bg-transparent transition duration-500 group-hover:bg-white/10" />
       </div>
 
-      {/* CONTENT */}
+      
       {/* CONTENT */}
       <div className="space-y-1 px-1 pt-1">
         {useBrandAsTitle ? (

@@ -19,10 +19,12 @@ export default function Providers({
   const pathname = usePathname();
   const isDesignerRoute = pathname?.startsWith("/designer");
 
+  // redux provider is already wrapping the app, so we can just call the hydrateDesigner action here
   const hydrateDesigner = useDesignerAuthStore(
     (state) => state.hydrateDesigner
   );
 
+  // Hydrate the designer auth state on mount, but only for designer routes
   useEffect(() => {
     hydrateDesigner();
   }, [hydrateDesigner]);

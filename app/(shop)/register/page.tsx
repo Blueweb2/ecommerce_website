@@ -143,6 +143,7 @@ export default function RegisterPage() {
                   value={form.email}
                   onChange={handleChange("email")}
                   disabled={loading}
+                  placeholder="Enter your email"
                   className="h-[48px] w-full border border-[#d7d7d7] bg-white pl-11 pr-4 text-sm outline-none transition focus:border-black"
                 />
               </div>
@@ -160,6 +161,7 @@ export default function RegisterPage() {
                 <input
                   type={showPassword ? "text" : "password"}
                   required
+                  placeholder="Enter your password"
                   value={form.password}
                   onChange={handleChange("password")}
                   disabled={loading}
@@ -200,6 +202,7 @@ export default function RegisterPage() {
                   value={form.name}
                   onChange={handleChange("name")}
                   disabled={loading}
+                  placeholder="John Doe"
                   className="h-[48px] w-full border border-[#d7d7d7] bg-white pl-11 pr-4 text-sm outline-none transition focus:border-black"
                 />
               </div>
@@ -220,6 +223,7 @@ export default function RegisterPage() {
                   value={form.phone}
                   onChange={handleChange("phone")}
                   disabled={loading}
+                  placeholder="1234567890"
                   className="h-[48px] w-full border border-[#d7d7d7] bg-white pl-11 pr-4 text-sm outline-none transition focus:border-black"
                 />
               </div>
