@@ -91,6 +91,9 @@ export default function VerifyOtpPage() {
 
     setTimeout(() => {
       inputsRef.current[5]?.focus();
+      if (pasted.length === 6) {
+        handleVerify(pasted);
+      }
     }, 0);
   };
 
