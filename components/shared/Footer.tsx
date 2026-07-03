@@ -55,7 +55,7 @@ export default function Footer() {
           {/* SOCIAL ICONS */}
           <div>
             <h3 className={`${inter.className} mb-4 font-semibold text-neutral-600`}>ABOUT ZENFAZZ ADDRESS</h3>
-            <p className={`${inter.className} text-[11px] text-[#5C5A58]`}>Blue Web2</p>
+            <p className={`${inter.className} text-[11px] text-[#5C5A58]`}>BlueWeb2</p>
             <p className={`${inter.className} text-[11px] text-[#5C5A58]`}>Building: pookottumpadam road Karulai, Maplappuram, kerala, india</p>
             <div className="flex items-center gap-4 mt-4 mb-6 text-[#5C5A58]">
               <Facebook size={20} className="cursor-pointer hover:text-black h-4" />
