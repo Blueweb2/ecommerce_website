@@ -91,6 +91,9 @@ export default function VerifyOtpPage() {
 
     setTimeout(() => {
       inputsRef.current[5]?.focus();
+      if (pasted.length === 6) {
+        handleVerify(pasted);
+      }
     }, 0);
   };
 
@@ -190,8 +193,8 @@ export default function VerifyOtpPage() {
   const otpValue = otp.join("");
 
   return (
-    <div className="min-h-screen bg-[#0f172a] flex items-center justify-center px-4">
-      <div className="w-full max-w-md rounded-2xl bg-[#f8f6f2] p-8 shadow-2xl space-y-6">
+    <div className="min-h-screen bg-[#F3F3F1] flex items-center justify-center px-4">
+      <div className="w-full max-w-md  bg-[#F0F0F0] p-8 shadow-2xl space-y-6">
 
         {restored && (
   <div className="rounded-lg border border-[#d4af37]/30 bg-[#fffdf6] p-4">
@@ -235,7 +238,7 @@ export default function VerifyOtpPage() {
               value={digit}
               onChange={(e) => handleChange(e.target.value, index)}
               onKeyDown={(e) => handleKeyDown(e, index)}
-              className="w-12 h-12 text-center text-xl font-semibold border rounded-lg focus:ring-2 focus:ring-[#d4af37] outline-none"
+              className="w-12 h-12 text-center text-xl font-semibold border focus:ring-2 focus:ring-[#d4af37] outline-none"
             />
           ))}
         </div>
