@@ -13,7 +13,8 @@ export interface OrderItem {
     _id: string;
     name: string;
     price: number;
-    images?: string[];
+    slug?: string;
+    images?: { url: string; altText?: string }[] | string[];
   }
   | null;
   quantity: number;

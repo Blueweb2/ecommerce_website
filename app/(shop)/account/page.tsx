@@ -107,7 +107,7 @@ export default function AccountPage() {
 
             {/*  LOGGED USER NAME */}
             <h1
-              className={`text-[56px] font-light tracking-tight ${bodoni.className}`}
+              className={`text-[52px] font-light tracking-tight ${bodoni.className}`}
             >
               Welcome {user.name}
             </h1>

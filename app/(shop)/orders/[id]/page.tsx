@@ -2,12 +2,14 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { orderAPI } from "@/lib/api/order.api";
 import OrderTimeline from "@/components/orders/OrderTimeline";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import { loadRazorpay } from "@/lib/utils/loadRazorpay";
 import { getLineGstAmount, getOrderTotals } from "@/lib/utils/orderTotals";
+import { resolveImageSrc } from "@/lib/utils/image";
 
 interface RazorpaySuccessResponse {
   razorpay_order_id: string;
@@ -29,9 +31,12 @@ interface RazorpayInstance {
 
 interface OrderItem {
   product: {
+    _id: string;
     name: string;
+    slug?: string;
+    images?: { url: string; altText?: string }[] | string[];
     image?: string;
-  };
+  } | null;
   quantity: number;
   price: number;
   gstPercentage?: number;
@@ -59,6 +64,22 @@ interface Order {
   };
   createdAt: string;
 }
+
+const getExpectedDeliveryRange = (createdAtString: string) => {
+  const createdDate = new Date(createdAtString);
+  const minDate = new Date(createdDate);
+  minDate.setDate(createdDate.getDate() + 6);
+  const maxDate = new Date(createdDate);
+  maxDate.setDate(createdDate.getDate() + 8);
+
+  const options: Intl.DateTimeFormatOptions = {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  };
+
+  return `${minDate.toLocaleDateString("en-IN", options)} - ${maxDate.toLocaleDateString("en-IN", options)}`;
+};
 
 export default function OrderDetailPage({
   params,
@@ -259,6 +280,18 @@ export default function OrderDetailPage({
                   })}
                 </p>
               </div>
+              {order.status !== "delivered" && order.status !== "cancelled" && (
+                <div className="mt-3 pt-3 border-t border-gray-200">
+                  <p
+                    className="text-[10px] font-bold uppercase tracking-widest text-emerald-600"
+                  >
+                    Expected Delivery
+                  </p>
+                  <p className="text-xs font-bold text-emerald-700">
+                    {getExpectedDeliveryRange(order.createdAt)}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -328,42 +361,71 @@ export default function OrderDetailPage({
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-50">
-                    {order.items.map((item, i) => (
-                      <tr key={i} className="text-[11px]">
-                        <td className="px-4 py-4">
-                          <div className="flex items-center gap-3">
-                            <Image
-                              src={item.product?.image || "/placeholder.png"}
-                              alt={item.product?.name}
-                              width={40}
-                              height={40}
-                              className="h-10 w-10 rounded-lg border border-gray-100 object-cover"
-                            />
-                            <p className="leading-tight font-bold text-gray-900">
-                              {item.product?.name || "Product"}
-                            </p>
-                          </div>
-                        </td>
-                        <td className="px-4 py-4 text-center font-medium text-gray-400">
-                          9983
-                        </td>
-                        <td className="px-4 py-4 text-center font-bold text-gray-900">
-                          {item.quantity}
-                        </td>
-                        <td className="px-4 py-4 text-right text-gray-600">
-                          ₹{item.price}
-                        </td>
-                        <td className="px-4 py-4 text-center text-gray-600">
-                          {item.gstPercentage || 0}%
-                        </td>
-                        <td className="px-4 py-4 text-right text-gray-600">
-                          ₹{getLineGstAmount(item)}
-                        </td>
-                        <td className="px-4 py-4 text-right font-black text-gray-900">
-                          ₹{item.price * item.quantity + getLineGstAmount(item)}
-                        </td>
-                      </tr>
-                    ))}
+                    {order.items.map((item, i) => {
+                      const productName = item.product?.name || "Product";
+                      const productSlug = item.product?.slug;
+                      
+                      // Resolve product image
+                      let imageSrc = "/placeholder.png";
+                      if (item.product?.images && item.product.images.length > 0) {
+                        const firstImg = item.product.images[0];
+                        if (typeof firstImg === "object" && firstImg !== null && "url" in firstImg) {
+                          imageSrc = firstImg.url;
+                        } else if (typeof firstImg === "string") {
+                          imageSrc = firstImg;
+                        }
+                      } else if (item.product?.image) {
+                        imageSrc = item.product.image;
+                      }
+                      const resolvedUrl = resolveImageSrc(imageSrc);
+
+                      const productCellContent = (
+                        <div className="flex items-center gap-3">
+                          <Image
+                            src={resolvedUrl}
+                            alt={productName}
+                            width={40}
+                            height={40}
+                            className="h-10 w-10 rounded-lg border border-gray-100 object-cover"
+                          />
+                          <p className="leading-tight font-bold text-gray-900 hover:text-black transition-colors">
+                            {productName}
+                          </p>
+                        </div>
+                      );
+
+                      return (
+                        <tr key={i} className="text-[11px]">
+                          <td className="px-4 py-4">
+                            {productSlug ? (
+                              <Link href={`/product/${productSlug}`} className="hover:opacity-90 transition-opacity">
+                                {productCellContent}
+                              </Link>
+                            ) : (
+                              productCellContent
+                            )}
+                          </td>
+                          <td className="px-4 py-4 text-center font-medium text-gray-400">
+                            9983
+                          </td>
+                          <td className="px-4 py-4 text-center font-bold text-gray-900">
+                            {item.quantity}
+                          </td>
+                          <td className="px-4 py-4 text-right text-gray-600">
+                            ₹{item.price}
+                          </td>
+                          <td className="px-4 py-4 text-center text-gray-600">
+                            {item.gstPercentage || 0}%
+                          </td>
+                          <td className="px-4 py-4 text-right text-gray-600">
+                            ₹{getLineGstAmount(item)}
+                          </td>
+                          <td className="px-4 py-4 text-right font-black text-gray-900">
+                            ₹{item.price * item.quantity + getLineGstAmount(item)}
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>

@@ -19,6 +19,9 @@ import { loadRazorpay } from "@/lib/utils/loadRazorpay";
 import { orderAPI } from "@/lib/api/order.api";
 import { Order } from "@/types/order";
 import { getOrderTotals } from "@/lib/utils/orderTotals";
+import Link from "next/link";
+import Image from "next/image";
+import { resolveImageSrc } from "@/lib/utils/image";
 
 interface RazorpaySuccessResponse {
   razorpay_order_id: string;
@@ -78,6 +81,38 @@ const getOrderItemProductName = (item: Order["items"][number]) => {
   }
 
   return "Product";
+};
+
+const getOrderItemProductImage = (item: Order["items"][number]) => {
+  if (item.product && typeof item.product === "object" && item.product.images) {
+    const images = item.product.images;
+    if (images.length > 0) {
+      const first = images[0];
+      if (typeof first === "object" && first !== null && "url" in first) {
+        return first.url;
+      }
+      if (typeof first === "string") {
+        return first;
+      }
+    }
+  }
+  return null;
+};
+
+const getExpectedDeliveryRange = (createdAtString: string) => {
+  const createdDate = new Date(createdAtString);
+  const minDate = new Date(createdDate);
+  minDate.setDate(createdDate.getDate() + 6);
+  const maxDate = new Date(createdDate);
+  maxDate.setDate(createdDate.getDate() + 8);
+
+  const options: Intl.DateTimeFormatOptions = {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  };
+
+  return `${minDate.toLocaleDateString("en-IN", options)} - ${maxDate.toLocaleDateString("en-IN", options)}`;
 };
 
 const MyOrders = () => {
@@ -248,7 +283,7 @@ const MyOrders = () => {
         </div>
       </div>
     );
-  };
+  }
 
   return (
     <div className="space-y-6">
@@ -276,6 +311,11 @@ const MyOrders = () => {
                       year: "numeric",
                     })}
                   </p>
+                  {order.status !== "delivered" && order.status !== "cancelled" && (
+                    <p className="mt-0.5 text-[10px] font-bold uppercase tracking-wider text-emerald-600">
+                      Est. Delivery: {getExpectedDeliveryRange(order.createdAt)}
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -334,21 +374,64 @@ const MyOrders = () => {
                   <OrderTimeline status={order.status} />
 
                   <div className="space-y-3 border-t border-gray-200/50 pt-4">
-                    {order.items.map((item, i) => (
-                      <div key={i} className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div className="flex h-8 w-8 items-center justify-center border border-gray-100 bg-white text-[10px] font-bold">
-                            {item.quantity}x
-                          </div>
-                          <p className="text-sm font-bold text-gray-700">
-                            {getOrderItemProductName(item)}
-                          </p>
-                        </div>
-                        <span className="text-sm font-black text-gray-900">
-                          ₹{item.price * item.quantity}
-                        </span>
+                    {order.status !== "delivered" && order.status !== "cancelled" && (
+                      <div className="mb-3 rounded-xl bg-emerald-50/50 px-4 py-2 border border-emerald-100 text-xs font-medium text-emerald-800">
+                        Expected Delivery: <span className="font-bold">{getExpectedDeliveryRange(order.createdAt)}</span>
                       </div>
-                    ))}
+                    )}
+                    {order.items.map((item, i) => {
+                      const productName = getOrderItemProductName(item);
+                      const productObj = item.product && typeof item.product === "object" ? item.product : null;
+                      const productSlug = productObj?.slug;
+                      const imageUrl = resolveImageSrc(getOrderItemProductImage(item));
+
+                      const productContent = (
+                        <div className="flex items-center gap-3">
+                          <div className="relative h-12 w-12 flex-shrink-0 overflow-hidden rounded-lg border border-gray-200 bg-neutral-100">
+                            <Image
+                              src={imageUrl}
+                              alt={productName}
+                              fill
+                              className="object-cover"
+                            />
+                          </div>
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <span className="flex h-5 w-5 items-center justify-center rounded-md border border-gray-250 bg-white text-[9px] font-bold text-gray-650">
+                                {item.quantity}x
+                              </span>
+                              <span className="text-sm font-bold text-gray-700 hover:text-black transition-colors">
+                                {productName}
+                              </span>
+                            </div>
+                            {item.selectedOptions && item.selectedOptions.length > 0 && (
+                              <div className="mt-1 flex flex-wrap gap-x-2 gap-y-0.5 pl-7 text-[10px] text-gray-400">
+                                {item.selectedOptions.map((opt, idx) => (
+                                  <span key={idx}>
+                                    <span className="font-medium text-gray-500">{opt.fieldName}:</span> {opt.value}
+                                  </span>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      );
+
+                      return (
+                        <div key={i} className="flex items-center justify-between border-b border-gray-200/40 pb-3 last:border-0 last:pb-0">
+                          {productSlug ? (
+                            <Link href={`/product/${productSlug}`} className="hover:opacity-90 transition-opacity">
+                              {productContent}
+                            </Link>
+                          ) : (
+                            productContent
+                          )}
+                          <span className="text-sm font-black text-gray-900">
+                            ₹{item.price * item.quantity}
+                          </span>
+                        </div>
+                      );
+                    })}
                   </div>
 
                   <div className="flex items-center justify-between border-t border-gray-200/50 pt-4">
