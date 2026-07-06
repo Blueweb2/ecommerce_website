@@ -5,7 +5,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Search, Heart, User, ShoppingCart } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useCartUIStore } from "@/store/ui/useCartUIStore";
 import { useCartStore } from "@/store/user/cart/useCartStore";
 import { useAuthStore } from "@/store/auth/useAuthStore";
 import { useWishlistStore } from '@/store/user/wishlist/useWishlistStore';
@@ -32,7 +31,6 @@ export default function Navbar() {
 
   const pathname = usePathname();
   const router = useRouter();
-  const { openCart } = useCartUIStore();
   const [index, setIndex] = useState(0);
   const { items } = useCartStore();
   const { user, loading } = useAuthStore();
@@ -204,6 +202,11 @@ export default function Navbar() {
                   type: "designer",
                 })
               }
+              onMouseLeave={() =>
+                setActiveMenu({
+                  type: null,
+                })
+              }
               href="/designers"
               className={linkClass("/designers")}
             >
@@ -221,6 +224,11 @@ export default function Navbar() {
                   setActiveMenu({
                     type: "category",
                     id: cat._id,
+                  })
+                }
+                onMouseLeave={() =>
+                  setActiveMenu({
+                    type: null,
                   })
                 }
               >

@@ -63,14 +63,14 @@ export default async function DesignersPage({
   return (
     <section className="min-h-screen pb-20 pt-10 md:pt-32">
       <div className="mx-auto max-w-[2000px] px-4 md:px-10 lg:px-20">
-        <div className="overflow-hidden">
+        <div>
 
           <div
             id="designer-index"
             className="py-12"
           >
             {/* TITLE */}
-            <div className="border-b border-black/10 pb-8">
+            <div className="sticky top-0 z-50 border-b border-black/10 pb-8 bg-white pt-10 -mt-10">
               <h2
                 className={`${bodoni.className} text-[42px] tracking-tight text-black`}
               >
