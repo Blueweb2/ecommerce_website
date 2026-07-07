@@ -62,15 +62,22 @@ interface Order {
     postalCode: string;
     country: string;
   };
+  shippingCharge?: number;
   createdAt: string;
 }
 
-const getExpectedDeliveryRange = (createdAtString: string) => {
+const getExpectedDeliveryRange = (createdAtString: string, isExpress?: boolean) => {
   const createdDate = new Date(createdAtString);
   const minDate = new Date(createdDate);
-  minDate.setDate(createdDate.getDate() + 6);
   const maxDate = new Date(createdDate);
-  maxDate.setDate(createdDate.getDate() + 8);
+
+  if (isExpress) {
+    minDate.setDate(createdDate.getDate() + 1);
+    maxDate.setDate(createdDate.getDate() + 2);
+  } else {
+    minDate.setDate(createdDate.getDate() + 6);
+    maxDate.setDate(createdDate.getDate() + 8);
+  }
 
   const options: Intl.DateTimeFormatOptions = {
     day: "2-digit",
@@ -288,7 +295,7 @@ export default function OrderDetailPage({
                     Expected Delivery
                   </p>
                   <p className="text-xs font-bold text-emerald-700">
-                    {getExpectedDeliveryRange(order.createdAt)}
+                    {getExpectedDeliveryRange(order.createdAt, order.shippingCharge === 50)}
                   </p>
                 </div>
               )}
@@ -388,9 +395,21 @@ export default function OrderDetailPage({
                             height={40}
                             className="h-10 w-10 rounded-lg border border-gray-100 object-cover"
                           />
-                          <p className="leading-tight font-bold text-gray-900 hover:text-black transition-colors">
-                            {productName}
-                          </p>
+                          <div>
+                            <p className="leading-tight font-bold text-gray-900 hover:text-black transition-colors">
+                              {productName}
+                            </p>
+                            {order.status !== "delivered" && order.status !== "cancelled" && (
+                              <p className="mt-0.5 text-[10px] font-bold text-emerald-650">
+                                Delivery: {getExpectedDeliveryRange(order.createdAt, order.shippingCharge === 50)}
+                              </p>
+                            )}
+                            {order.status === "delivered" && (
+                              <p className="mt-0.5 text-[10px] font-bold text-emerald-700">
+                                Delivered
+                              </p>
+                            )}
+                          </div>
                         </div>
                       );
 

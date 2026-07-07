@@ -11,6 +11,7 @@ import {
   ChevronDown,
   ChevronUp,
   Download,
+  SlidersHorizontal,
 } from "lucide-react";
 import OrderTimeline from "@/components/orders/OrderTimeline";
 import jsPDF from "jspdf";
@@ -99,12 +100,18 @@ const getOrderItemProductImage = (item: Order["items"][number]) => {
   return null;
 };
 
-const getExpectedDeliveryRange = (createdAtString: string) => {
+const getExpectedDeliveryRange = (createdAtString: string, isExpress?: boolean) => {
   const createdDate = new Date(createdAtString);
   const minDate = new Date(createdDate);
-  minDate.setDate(createdDate.getDate() + 6);
   const maxDate = new Date(createdDate);
-  maxDate.setDate(createdDate.getDate() + 8);
+
+  if (isExpress) {
+    minDate.setDate(createdDate.getDate() + 1);
+    maxDate.setDate(createdDate.getDate() + 2);
+  } else {
+    minDate.setDate(createdDate.getDate() + 6);
+    maxDate.setDate(createdDate.getDate() + 8);
+  }
 
   const options: Intl.DateTimeFormatOptions = {
     day: "2-digit",
@@ -119,6 +126,16 @@ const MyOrders = () => {
   const { orders, loading, fetchMyOrders, cancelOrder, requestReturn } =
     useMyOrderStore();
   const [expandedOrder, setExpandedOrder] = useState<string | null>(null);
+  const [showFilters, setShowFilters] = useState(false);
+  const [activeFilter, setActiveFilter] = useState<"all" | "processing" | "shipped" | "delivered">("all");
+
+  const filteredOrders = orders.filter((order) => {
+    if (activeFilter === "all") return true;
+    if (activeFilter === "processing") {
+      return order.status === "processing" || order.status === "pending";
+    }
+    return order.status === activeFilter;
+  });
 
   useEffect(() => {
     fetchMyOrders();
@@ -287,7 +304,48 @@ const MyOrders = () => {
 
   return (
     <div className="space-y-6">
-      {orders.map((order) => {
+      {/* Horizontal Status Filters */}
+      <div className="flex flex-col gap-4 border-b border-gray-150 pb-5">
+        <div className="flex items-center justify-between">
+          <h2 className="text-sm font-black uppercase tracking-wider text-gray-400">Filters</h2>
+          <button
+            onClick={() => setShowFilters(!showFilters)}
+            className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2 text-xs font-black uppercase tracking-widest text-gray-700 shadow-sm transition hover:bg-gray-50 active:scale-95"
+          >
+            <SlidersHorizontal size={14} className={`transition-transform duration-300 ${showFilters ? "rotate-180" : ""}`} />
+            {showFilters ? "Close Filters" : "Filter Status"}
+          </button>
+        </div>
+
+        {showFilters && (
+          <div className="flex flex-wrap gap-2 animate-in fade-in slide-in-from-top-1 duration-200">
+            {(["all", "processing", "shipped", "delivered"] as const).map((filter) => {
+              const label = filter === "all" ? "All Orders" : filter === "processing" ? "Processed" : filter;
+              const isActive = activeFilter === filter;
+              return (
+                <button
+                  key={filter}
+                  onClick={() => setActiveFilter(filter)}
+                  className={`rounded-full px-5 py-2 text-[10px] font-black uppercase tracking-widest transition-all duration-200 ${
+                    isActive
+                      ? "bg-black text-white shadow-md scale-105"
+                      : "bg-gray-150 text-gray-700 hover:bg-gray-200 hover:text-black"
+                  }`}
+                >
+                  {label}
+                </button>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      {filteredOrders.length === 0 ? (
+        <div className="py-12 text-center text-sm text-gray-500 font-bold uppercase tracking-wider">
+          No orders found matching this status filter.
+        </div>
+      ) : (
+        filteredOrders.map((order) => {
         const pricing = getOrderTotals(order);
 
         return (
@@ -313,7 +371,7 @@ const MyOrders = () => {
                   </p>
                   {order.status !== "delivered" && order.status !== "cancelled" && (
                     <p className="mt-0.5 text-[10px] font-bold uppercase tracking-wider text-emerald-600">
-                      Est. Delivery: {getExpectedDeliveryRange(order.createdAt)}
+                      Est. Delivery: {getExpectedDeliveryRange(order.createdAt, order.shippingCharge === 50)}
                     </p>
                   )}
                 </div>
@@ -338,7 +396,7 @@ const MyOrders = () => {
                 </span>
 
                 <div className="ml-2 flex items-center gap-2 border-l pl-4">
-                  <button
+                  {/* <button
                     onClick={() => {
                       window.location.href = `/orders/${order._id}`;
                     }}
@@ -346,7 +404,7 @@ const MyOrders = () => {
                     title="View Details"
                   >
                     <Truck size={18} />
-                  </button>
+                  </button> */}
                   <button
                     onClick={() => downloadInvoice(order)}
                     className="rounded-xl p-2 text-gray-400 transition-colors hover:bg-emerald-50 hover:text-emerald-600"
@@ -376,7 +434,7 @@ const MyOrders = () => {
                   <div className="space-y-3 border-t border-gray-200/50 pt-4">
                     {order.status !== "delivered" && order.status !== "cancelled" && (
                       <div className="mb-3 rounded-xl bg-emerald-50/50 px-4 py-2 border border-emerald-100 text-xs font-medium text-emerald-800">
-                        Expected Delivery: <span className="font-bold">{getExpectedDeliveryRange(order.createdAt)}</span>
+                        Expected Delivery: <span className="font-bold">{getExpectedDeliveryRange(order.createdAt, order.shippingCharge === 50)}</span>
                       </div>
                     )}
                     {order.items.map((item, i) => {
@@ -412,6 +470,16 @@ const MyOrders = () => {
                                   </span>
                                 ))}
                               </div>
+                            )}
+                            {order.status !== "delivered" && order.status !== "cancelled" && (
+                              <p className="mt-1 pl-7 text-[10px] font-bold text-emerald-600">
+                                Est. Delivery: {getExpectedDeliveryRange(order.createdAt, order.shippingCharge === 50)}
+                              </p>
+                            )}
+                            {order.status === "delivered" && (
+                              <p className="mt-1 pl-7 text-[10px] font-bold text-emerald-700">
+                                Delivered
+                              </p>
                             )}
                           </div>
                         </div>
@@ -661,7 +729,7 @@ const MyOrders = () => {
             </div>
           </div>
         );
-      })}
+      }))}
     </div>
   );
 };
