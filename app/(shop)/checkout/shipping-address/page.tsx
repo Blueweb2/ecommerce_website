@@ -24,7 +24,8 @@ import { useCartStore } from "@/store/user/cart/useCartStore";
 import type { Address } from "@/types/address";
 
 type GuestAddressField =
-  | "fullName"
+  | "firstName"
+  | "lastName"
   | "phone"
   | "street"
   | "city"
@@ -33,7 +34,8 @@ type GuestAddressField =
   | "country";
 
 const emptyGuestAddress: Address = {
-  fullName: "",
+  firstName: "",
+  lastName: "",
   phone: "",
   street: "",
   city: "",
@@ -43,7 +45,8 @@ const emptyGuestAddress: Address = {
 };
 
 const guestAddressFields: GuestAddressField[] = [
-  "fullName",
+  "firstName",
+  "lastName",
   "phone",
   "street",
   "city",
@@ -53,7 +56,8 @@ const guestAddressFields: GuestAddressField[] = [
 ];
 
 const fieldLabels: Record<GuestAddressField, string> = {
-  fullName: "Full Name",
+  firstName: "First Name",
+  lastName: "Last Name (Optional)",
   phone: "Phone Number",
   street: "Street Address",
   city: "City",
@@ -95,7 +99,7 @@ export default function ShippingAddressPage() {
   const handleContinue = () => {
     if (isGuestCheckout) {
       const hasEmptyField = guestAddressFields.some(
-        (field) => !String(guestAddress[field] || "").trim()
+        (field) => field !== "lastName" && !String(guestAddress[field] || "").trim()
       );
 
       if (hasEmptyField) {

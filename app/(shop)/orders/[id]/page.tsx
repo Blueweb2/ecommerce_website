@@ -54,7 +54,8 @@ interface Order {
   totalGstAmount: number;
   grandTotal: number;
   shippingAddress: {
-    fullName?: string;
+    firstName?: string;
+    lastName?: string;
     phone?: string;
     street: string;
     city: string;
@@ -317,9 +318,9 @@ export default function OrderDetailPage({
                 Shipping To
               </h2>
               <div className="space-y-1 pl-10">
-                {order.shippingAddress.fullName && (
+                {order.shippingAddress.firstName && (
                   <p className="font-bold" style={{ color: "#111827" }}>
-                    {order.shippingAddress.fullName}
+                    {order.shippingAddress.firstName} {order.shippingAddress.lastName}
                   </p>
                 )}
                 {order.shippingAddress.phone && (

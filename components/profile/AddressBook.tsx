@@ -14,7 +14,8 @@ import {
 } from "@/lib/utils/phone";
 
 const emptyForm: AddressInput = {
-  fullName: "",
+  firstName: "",
+  lastName: "",
   phone: "",
   street: "",
   city: "",
@@ -25,7 +26,8 @@ const emptyForm: AddressInput = {
 };
 
 const toFormData = (address: Address): AddressInput => ({
-  fullName: address.fullName,
+  firstName: address.firstName,
+  lastName: address.lastName || "",
   phone: address.phone,
   street: address.street,
   city: address.city,
@@ -94,7 +96,7 @@ export default function AddressBook() {
 
   const handleSubmit = async () => {
     const requiredFields: (keyof AddressInput)[] = [
-      "fullName",
+      "firstName",
       "phone",
       "street",
       "city",
@@ -122,7 +124,8 @@ export default function AddressBook() {
 
     const payload: AddressInput = {
       ...form,
-      fullName: form.fullName.trim(),
+      firstName: form.firstName.trim(),
+      lastName: form.lastName?.trim() || "",
       phone: normalizePhoneNumber(form.phone),
       street: form.street.trim(),
       city: form.city.trim(),
@@ -210,7 +213,7 @@ export default function AddressBook() {
             >
               <div className="space-y-1 text-[15px] text-black">
                 <div className="flex items-center gap-2">
-                  <p className="font-medium">{address.fullName}</p>
+                  <p className="font-medium">{address.firstName} {address.lastName}</p>
                   {address.isDefault && (
                     <span className="rounded bg-emerald-50 px-2 py-0.5 text-[11px] uppercase tracking-wide text-emerald-700">
                       Default
@@ -273,18 +276,32 @@ export default function AddressBook() {
             </div>
 
             <div className="space-y-3">
-              <label className="block">
-                <span className="mb-1 block text-xs uppercase tracking-wide text-gray-500">
-                  Full name
-                </span>
-                <input
-                  value={form.fullName}
-                  onChange={(event) =>
-                    setForm((current) => ({ ...current, fullName: event.target.value }))
-                  }
-                  className="w-full border border-black/15 bg-white px-3 py-2 text-sm outline-none focus:border-black"
-                />
-              </label>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <label className="block">
+                  <span className="mb-1 block text-xs uppercase tracking-wide text-gray-500">
+                    First name
+                  </span>
+                  <input
+                    value={form.firstName}
+                    onChange={(event) =>
+                      setForm((current) => ({ ...current, firstName: event.target.value }))
+                    }
+                    className="w-full border border-black/15 bg-white px-3 py-2 text-sm outline-none focus:border-black"
+                  />
+                </label>
+                <label className="block">
+                  <span className="mb-1 block text-xs uppercase tracking-wide text-gray-500">
+                    Last name (Optional)
+                  </span>
+                  <input
+                    value={form.lastName}
+                    onChange={(event) =>
+                      setForm((current) => ({ ...current, lastName: event.target.value }))
+                    }
+                    className="w-full border border-black/15 bg-white px-3 py-2 text-sm outline-none focus:border-black"
+                  />
+                </label>
+              </div>
 
               <label className="block">
                 <span className="mb-1 block text-xs uppercase tracking-wide text-gray-500">

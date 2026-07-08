@@ -252,9 +252,9 @@ export default function AdminOrderDetailPage() {
             </h2>
             {order.shippingAddress ? (
               <div className="space-y-1 text-sm text-slate-600">
-                {order.shippingAddress.fullName && (
+                {order.shippingAddress.firstName && (
                   <p className="font-medium text-slate-900">
-                    {order.shippingAddress.fullName}
+                    {order.shippingAddress.firstName} {order.shippingAddress.lastName}
                   </p>
                 )}
                 {order.shippingAddress.phone && (

@@ -19,7 +19,8 @@ interface CheckoutAddressProps {
 }
 
 const emptyForm = {
-  fullName: "",
+  firstName: "",
+  lastName: "",
   phone: "",
   street: "",
   city: "",
@@ -141,7 +142,7 @@ export default function CheckoutAddress({
                   <div className="flex items-start justify-between text-neutral-600">
                     <div>
                       <p className="font-medium">
-                        {addr.fullName}
+                        {addr.firstName} {addr.lastName}
                         {addr.isDefault && (
                           <span className="ml-2 rounded bg-green-100 px-2 py-0.5 text-xs text-green-600">
                             Default
@@ -212,33 +213,62 @@ export default function CheckoutAddress({
       {/* FORM */}
       <div className={`${inter.className} space-y-7`}>
         
-        {/* FULL NAME */}
-        <div>
-          <label className="mb-2 block text-[13px] uppercase tracking-[0.15em] text-[#666]">
-            Full Name
-          </label>
+        {/* NAME */}
+        <div className="grid gap-6 md:grid-cols-2">
+          <div>
+            <label className="mb-2 block text-[13px] uppercase tracking-[0.15em] text-[#666]">
+              First Name
+            </label>
 
-          <input
-            value={form.fullName}
-            onChange={(event) =>
-              setForm((current) => ({
-                ...current,
-                fullName: event.target.value,
-              }))
-            }
-            className="
-              h-[54px]
-              w-full
-              border
-              border-[#d7d7d7]
-              bg-white
-              px-4
-              text-[15px]
-              outline-none
-              transition
-              focus:border-black
-            "
-          />
+            <input
+              value={form.firstName}
+              onChange={(event) =>
+                setForm((current) => ({
+                  ...current,
+                  firstName: event.target.value,
+                }))
+              }
+              className="
+                h-[54px]
+                w-full
+                border
+                border-[#d7d7d7]
+                bg-white
+                px-4
+                text-[15px]
+                outline-none
+                transition
+                focus:border-black
+              "
+            />
+          </div>
+          <div>
+            <label className="mb-2 block text-[13px] uppercase tracking-[0.15em] text-[#666]">
+              Last Name (Optional)
+            </label>
+
+            <input
+              value={form.lastName}
+              onChange={(event) =>
+                setForm((current) => ({
+                  ...current,
+                  lastName: event.target.value,
+                }))
+              }
+              className="
+                h-[54px]
+                w-full
+                border
+                border-[#d7d7d7]
+                bg-white
+                px-4
+                text-[15px]
+                outline-none
+                transition
+                focus:border-black
+              "
+            />
+          </div>
         </div>
 
         {/* PHONE */}

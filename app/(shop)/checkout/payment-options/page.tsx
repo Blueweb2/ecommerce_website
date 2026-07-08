@@ -173,7 +173,8 @@ export default function PaymentOptionsPage() {
 
       const res = await orderAPI.createOrder({
         shippingAddress: {
-          fullName: shippingAddress.fullName,
+          firstName: shippingAddress.firstName,
+          lastName: shippingAddress.lastName,
           phone: normalizedPhone,
           street: shippingAddress.street,
           city: shippingAddress.city,
@@ -286,7 +287,7 @@ export default function PaymentOptionsPage() {
             </p>
 
             <div className="space-y-1 text-[13px] leading-7 text-black">
-              <p className="uppercase">{shippingAddress.fullName}</p>
+              <p className="uppercase">{shippingAddress.firstName} {shippingAddress.lastName}</p>
               <p>{shippingAddress.street}</p>
               <p>
                 {shippingAddress.city}, {shippingAddress.state}, {shippingAddress.postalCode}

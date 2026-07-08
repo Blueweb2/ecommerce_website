@@ -72,7 +72,7 @@ export default function ShippingOptionsPage() {
           </p>
 
           <div className="space-y-1 text-[15px] leading-7 text-black">
-            <p className="uppercase">{shippingAddress.fullName}</p>
+            <p className="uppercase">{shippingAddress.firstName} {shippingAddress.lastName}</p>
             <p>{shippingAddress.street}</p>
             <p>
               {shippingAddress.city}, {shippingAddress.state}, {shippingAddress.postalCode}
