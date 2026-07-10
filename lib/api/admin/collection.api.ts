@@ -35,7 +35,7 @@ function isCollection(value: unknown): value is Collection {
     typeof value === "object" &&
     value !== null &&
     !Array.isArray(value) &&
-    "slug" in value
+    "title" in value
   );
 }
 
