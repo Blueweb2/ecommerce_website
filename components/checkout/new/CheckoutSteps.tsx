@@ -44,7 +44,7 @@ export default function CheckoutSteps({
                 <div
                   className={`relative z-10 flex h-10 w-10 items-center justify-center rounded-full border text-sm font-medium transition-colors ${
                     active
-                      ? "border-[#4c7c61] text-white bg-[#00ce00]"
+                      ? "border-[#4c7c61] text-white bg-[#000000]"
                       : "border-[#d5d5d5] text-[#999] bg-[#f7f7f5]"
                   }`}
                 >
@@ -53,7 +53,7 @@ export default function CheckoutSteps({
 
                 <span
                   className={`mt-3 text-[11px] sm:text-[13px] ${
-                    active ? "text-[#00ce00]" : "text-[#999]"
+                    active ? "text-[#000000]" : "text-[#999]"
                   }`}
                 >
                   {label}

@@ -1,41 +1,102 @@
 import { useMemo } from "react";
+import {
+  AlertTriangle,
+  ArchiveX,
+  CheckCircle2,
+  FileText,
+  Package,
+  Tag,
+} from "lucide-react";
 
 interface ProductStatsProps {
-  products: any[];
+  products: Array<{
+    isPublished?: boolean;
+    isOnSale?: boolean;
+    stock?: number;
+  }>;
 }
 
-export default function ProductStats({ products }: ProductStatsProps) {
+export default function ProductStats({
+  products,
+}: ProductStatsProps) {
   const stats = useMemo(() => {
     const total = products.length;
-    const published = products.filter(p => p.isPublished).length;
+    const published = products.filter((product) => product.isPublished).length;
     const draft = total - published;
-    const onSale = products.filter(p => p.isOnSale).length;
-    const outOfStock = products.filter(p => p.stock === 0).length;
-    const lowStock = products.filter(p => p.stock > 0 && p.stock <= 5).length;
+    const onSale = products.filter((product) => product.isOnSale).length;
+    const outOfStock = products.filter(
+      (product) => (product.stock ?? 0) === 0
+    ).length;
+    const lowStock = products.filter((product) => {
+      const stock = product.stock ?? 0;
+      return stock > 0 && stock <= 5;
+    }).length;
 
-    return { total, published, draft, onSale, outOfStock, lowStock };
+    return {
+      total,
+      published,
+      draft,
+      onSale,
+      outOfStock,
+      lowStock,
+    };
   }, [products]);
 
-  const StatCard = ({ title, value, color = "bg-gray-100", icon }: {
-    title: string;
-    value: number;
-    color?: string;
-    icon?: string;
-  }) => (
-    <div className={`${color} rounded-lg p-4 text-center transition-transform hover:scale-105`}>
-      <div className="text-2xl font-bold text-gray-900">{value}</div>
-      <div className="text-sm text-gray-600 font-medium">{title}</div>
-    </div>
-  );
+  const statCards = [
+    {
+      title: "Total Products",
+      value: stats.total,
+      icon: <Package size={22} />,
+    },
+    {
+      title: "Published",
+      value: stats.published,
+      icon: <CheckCircle2 size={22} />,
+    },
+    {
+      title: "Draft",
+      value: stats.draft,
+      icon: <FileText size={22} />,
+    },
+    {
+      title: "On Sale",
+      value: stats.onSale,
+      icon: <Tag size={22} />,
+    },
+    {
+      title: "Out of Stock",
+      value: stats.outOfStock,
+      icon: <ArchiveX size={22} />,
+    },
+    {
+      title: "Low Stock",
+      value: stats.lowStock,
+      icon: <AlertTriangle size={22} />,
+    },
+  ];
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
-      <StatCard title="Total Products" value={stats.total} color="bg-blue-100" />
-      <StatCard title="Published" value={stats.published} color="bg-green-100" />
-      <StatCard title="Draft" value={stats.draft} color="bg-yellow-100" />
-      <StatCard title="On Sale" value={stats.onSale} color="bg-red-100" />
-      <StatCard title="Out of Stock" value={stats.outOfStock} color="bg-gray-100" />
-      <StatCard title="Low Stock (≤5)" value={stats.lowStock} color="bg-orange-100" />
+    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6">
+      {statCards.map((card) => (
+        <div
+          key={card.title}
+          className="group rounded-[28px] border border-black/10 bg-white p-5 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg"
+        >
+          <div className="mb-5 flex items-start justify-between gap-4">
+            <div className="rounded-2xl bg-[#f6f1ea] p-3 text-[#171717] transition group-hover:bg-black group-hover:text-white">
+              {card.icon}
+            </div>
+
+            <h2 className="font-brand-display text-4xl text-[#171717]">
+              {card.value}
+            </h2>
+          </div>
+
+          <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#8a7356]">
+            {card.title}
+          </p>
+        </div>
+      ))}
     </div>
   );
 }

@@ -3,43 +3,36 @@
 import { useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 
-import { useProductStore } from "@/store/admin/useProductStore";
-import { useCategoryStore } from "@/store/admin/useCategoryStore";
-
+import ProductFilters from "@/components/admin/products/mainpage/ProductFilters";
+import ProductHeader from "@/components/admin/products/mainpage/ProductHeader";
+import ProductList from "@/components/admin/products/mainpage/ProductList";
+import ProductStats from "@/components/admin/products/mainpage/ProductStats";
 import {
   getSectionLabel,
   PRODUCT_SECTION_OPTIONS,
 } from "@/lib/constants/admin-catalog";
-
-import ProductHeader from "@/components/admin/products/mainpage/ProductHeader";
-import ProductStats from "@/components/admin/products/mainpage/ProductStats";
-import ProductFilters from "@/components/admin/products/mainpage/ProductFilters";
-import ProductList from "@/components/admin/products/mainpage/ProductList";
+import { useCategoryStore } from "@/store/admin/useCategoryStore";
+import { useProductStore } from "@/store/admin/useProductStore";
 
 export default function ProductsPage() {
-  //  STORES
   const {
     products,
     loading,
     fetchProducts,
     deleteProduct,
   } = useProductStore();
-
   const { categories, fetchCategories } = useCategoryStore();
 
-  // STATE
   const [searchQuery, setSearchQuery] = useState("");
   const [activeSection, setActiveSection] = useState("all");
   const [activeCategory, setActiveCategory] = useState("all");
-  const [saleFilter, setSaleFilter] = useState("all"); // all | sale
+  const [saleFilter, setSaleFilter] = useState("all");
 
-  //  FETCH DATA
   useEffect(() => {
     fetchProducts();
     fetchCategories();
   }, [fetchProducts, fetchCategories]);
 
-  //  SECTION TABS
   const sectionTabs = useMemo(() => {
     const dynamicSections = Array.from(
       new Set(
@@ -67,7 +60,6 @@ export default function ProductsPage() {
     ];
   }, [products]);
 
-  //  FILTERED PRODUCTS
   const filteredProducts = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
 
@@ -79,8 +71,8 @@ export default function ProductsPage() {
 
       const matchesSKU =
         product.sku?.toLowerCase().includes(query) ||
-        product.variants?.some((v) =>
-          v.sku?.toLowerCase().includes(query)
+        product.variants?.some((variant) =>
+          variant.sku?.toLowerCase().includes(query)
         );
 
       const matchesQuery =
@@ -107,10 +99,7 @@ export default function ProductsPage() {
       );
     });
   }, [products, searchQuery, activeSection, activeCategory, saleFilter]);
-  console.log("Products from store:", products);
-console.log("Length:", products.length);
 
-  //  DELETE PRODUCT
   const handleDelete = async (id: string) => {
     const confirmDelete = confirm(
       "Are you sure you want to delete this product?"
@@ -125,40 +114,14 @@ console.log("Length:", products.length);
     }
   };
 
-  // DELETE IMAGE
-  const handleDeleteImage = async (
-    productId: string,
-    imageId: string
-  ) => {
-    const confirmDelete = confirm("Delete this image?");
-    if (!confirmDelete) return;
-
-    try {
-      await fetch(`/api/products/${productId}/image/${imageId}`, {
-        method: "DELETE",
-        credentials: "include",
-      });
-
-      toast.success("Image deleted");
-      fetchProducts(); // refresh
-    } catch {
-      toast.error("Failed to delete image");
-    }
-  };
-
-  //  STATS
-  const publishedCount = products.filter(
-    (p) => p.isPublished
-  ).length;
-
-  //  RETURN
   return (
-    <div className="space-y-6">
-      <ProductHeader />
-
-      <ProductStats
+    <div className="space-y-8">
+      <ProductHeader
         products={products}
+        categories={categories}
       />
+
+      <ProductStats products={products} />
 
       <ProductFilters
         searchQuery={searchQuery}
@@ -178,7 +141,6 @@ console.log("Length:", products.length);
         loading={loading}
         categories={categories}
         onDelete={handleDelete}
-        onDeleteImage={handleDeleteImage}
       />
     </div>
   );
