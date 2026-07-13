@@ -410,7 +410,7 @@ export default function Navbar() {
 
                     <Link href="/wishlist">Wish List</Link>
 
-                    <Link href="/account/address">
+                    <Link href="/account/addresses">
                       Address Book
                     </Link>
 
