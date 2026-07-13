@@ -7,6 +7,16 @@ export const legalTabs = [
   },
 
   {
+    label: "About Us",
+    href: "/about-us",
+  },
+
+  {
+    label: "Careers",
+    href: "/careers",
+  },
+
+  {
     label: "FAQs",
     href: "/faqs",
   },
