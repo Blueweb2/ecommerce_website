@@ -14,17 +14,17 @@ export default function Footer() {
             <h3 className={`${inter.className} mb-4 font-semibold text-neutral-600`}>ABOUT</h3>
             <ul className="font-brand-sans space-y-2 text-[11px]">
               <li>
-                <Link href='' className={`${inter.className} text-[#5C5A58] hover:text-black transition-colors`}>
+                <Link href='/contact-us' className={`${inter.className} text-[#5C5A58] hover:text-black transition-colors`}>
                   Contact Us
                 </Link>
               </li>
               <li>
-                <Link href='' className={`${inter.className} text-[#5C5A58] hover:text-black transition-colors`}>
+                <Link href='/about-us' className={`${inter.className} text-[#5C5A58] hover:text-black transition-colors`}>
                   About Us
                 </Link>
               </li>
               <li>
-                <Link href='' className={`${inter.className} text-[#5C5A58] hover:text-black transition-colors`}>
+                <Link href='careers' className={`${inter.className} text-[#5C5A58] hover:text-black transition-colors`}>
                   Careers
                 </Link>
               </li>
