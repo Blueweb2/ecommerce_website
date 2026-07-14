@@ -78,10 +78,12 @@ export default function CheckoutAddress({
     }
 
     try {
+      console.log("[CheckoutAddress] Raw form data before addAddress:", form);
       const newAddress = await addAddress({
         ...form,
         phone: normalizePhoneNumber(form.phone),
       });
+      console.log("[CheckoutAddress] Resulting newAddress from addAddress:", newAddress);
 
       setShowForm(false);
       setForm(emptyForm);
