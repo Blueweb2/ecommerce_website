@@ -171,7 +171,7 @@ export default function PaymentOptionsPage() {
         discountAmount,
       });
 
-      const res = await orderAPI.createOrder({
+      const orderPayload = {
         shippingAddress: {
           firstName: shippingAddress.firstName,
           lastName: shippingAddress.lastName,
@@ -198,8 +198,12 @@ export default function PaymentOptionsPage() {
           quantity: i.quantity,
           variantId: i.variantId,
           selectedOptions: i.selectedOptions,
-        })) : undefined,
-      });
+        })) : undefined
+      };
+      console.log("[payment-options] shippingAddress from local storage:", shippingAddress);
+      console.log("[payment-options] payload being sent to orderAPI.createOrder:", orderPayload);
+
+      const res = await orderAPI.createOrder(orderPayload);
 
       const order = (res.data.data || res.data) as CreatedOrder;
 

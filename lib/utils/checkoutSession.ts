@@ -37,21 +37,27 @@ export const getStoredCheckoutAddress = (): Address | null => {
   const raw = window.localStorage.getItem(CHECKOUT_ADDRESS_KEY);
 
   if (!raw) {
+    console.log("[checkoutSession] getStoredCheckoutAddress - no raw item found in localStorage");
     return null;
   }
 
   try {
-    return JSON.parse(raw) as Address;
+    const parsed = JSON.parse(raw) as Address;
+    console.log("[checkoutSession] getStoredCheckoutAddress - raw parsed from localStorage:", parsed);
+    return parsed;
   } catch {
+    console.error("[checkoutSession] getStoredCheckoutAddress - error parsing JSON from localStorage");
     return null;
   }
 };
+
 
 export const setStoredCheckoutAddress = (address: Address) => {
   if (!canUseStorage()) {
     return;
   }
 
+  console.log("[checkoutSession] setStoredCheckoutAddress - setting:", address);
   window.localStorage.setItem(
     CHECKOUT_ADDRESS_KEY,
     JSON.stringify(address)

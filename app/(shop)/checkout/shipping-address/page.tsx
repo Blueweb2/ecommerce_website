@@ -114,10 +114,12 @@ export default function ShippingAddressPage() {
         return;
       }
 
-      setStoredCheckoutAddress({
+      const finalGuestAddress = {
         ...guestAddress,
         phone: normalizePhoneNumber(guestAddress.phone),
-      });
+      };
+      console.log("[shipping-address] finalGuestAddress being stored:", finalGuestAddress);
+      setStoredCheckoutAddress(finalGuestAddress);
       router.push("/checkout/shipping-options");
       return;
     }
@@ -134,10 +136,19 @@ export default function ShippingAddressPage() {
       return;
     }
 
-    setStoredCheckoutAddress({
+    console.log("[shipping-address] Guest Address", guestAddress);
+    console.log(
+  "[shipping-address] Stored (Before)",
+  getStoredCheckoutAddress()
+);
+    console.log("[shipping-address] selectedAddress before storing:", selectedAddress);
+    
+    const finalAddress = {
       ...selectedAddress,
       phone: normalizePhoneNumber(selectedAddress.phone),
-    });
+    };
+    console.log("[shipping-address] finalAddress being stored:", finalAddress);
+    setStoredCheckoutAddress(finalAddress);
     router.push("/checkout/shipping-options");
   };
 
