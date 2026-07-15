@@ -282,14 +282,14 @@ const RightSide = ({ product, onVariantChange }: Props) => {
   return (
     <div className="mx-4 mt-10 h-fit space-y-6 text-sm lg:sticky lg:top-7 lg:mx-10 md:mt-10">
       <div>
+        <h1 className={`${bodoni.className} text-2xl uppercase`}>
+          {product?.name}
+        </h1>
         {(product?.brand || product?.designer?.brandName || product?.designer?.name) && (
           <p className={`${inter.className} mb-2 text-[11px] uppercase tracking-[0.16em] text-[#8D8B9D]`}>
             {product?.brand || product?.designer?.brandName || product?.designer?.name}
           </p>
         )}
-        <h1 className={`${bodoni.className} text-2xl md:text-3xl`}>
-          {product?.name}
-        </h1>
       </div>
 
       <div className="flex flex-col gap-3">
