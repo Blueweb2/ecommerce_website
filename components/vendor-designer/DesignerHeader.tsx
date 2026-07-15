@@ -87,7 +87,7 @@ export default function DesignerHeader({
             className="flex items-center gap-3 rounded-2xl px-3 py-2 transition hover:bg-slate-100"
           >
             <Image
-              src="/avatar-placeholder.png"
+              src="/placeholder.png"
               alt="Designer"
               width={40}
               height={40}

@@ -135,9 +135,11 @@ export default function CheckoutProducts() {
                 </div>
 
                 <div className="flex gap-3">
-                  <img src="/home/footer/visa.png" alt="" />
-                  <img src="/home/footer/master.png" alt="" />
-                  <img src="/checkout/amex.png" alt="" />
+                  <img
+                    src="/home/footer/payment-method-69e7ec.svg"
+                    alt="Accepted payment methods"
+                    className="h-5 w-auto"
+                  />
                 </div>
 
               </div>

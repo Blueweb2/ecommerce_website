@@ -6,14 +6,15 @@ import Link from "next/link";
 import toast from "react-hot-toast";
 import { useCollectionStore } from "@/store/admin/useCollectionStore";
 import { useCategoryStore } from "@/store/admin/useCategoryStore";
+import { resolveImageSrc } from "@/lib/utils/image";
 import { Collection } from "@/types/collection";
 
 const FALLBACK_IMAGE = "/home/herosection/hero-right-top.png";
 
 function resolveCollectionImage(image?: Collection["image"]) {
   if (!image) return FALLBACK_IMAGE;
-  if (typeof image === "string") return image || FALLBACK_IMAGE;
-  return image.url || FALLBACK_IMAGE;
+  if (typeof image === "string") return resolveImageSrc(image, FALLBACK_IMAGE);
+  return resolveImageSrc(image.url, FALLBACK_IMAGE);
 }
 
 export default function CollectionsPage() {
