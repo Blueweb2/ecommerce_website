@@ -15,8 +15,16 @@ export function resolveImageSrc(
 
   const trimmed = url.trim();
 
+  if (trimmed.startsWith("data:") || trimmed.startsWith("blob:")) {
+    return trimmed;
+  }
+
   if (trimmed.startsWith("/")) {
     return trimmed;
+  }
+
+  if (trimmed.startsWith("//")) {
+    return optimizeCloudinaryUrl(`https:${trimmed}`) || fallback;
   }
 
   const optimized = optimizeCloudinaryUrl(trimmed);

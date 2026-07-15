@@ -117,17 +117,10 @@ const RightSide = ({ product, onVariantChange }: Props) => {
     const targetKeyNormalized = normalizeKey(attributeName);
     const targetValueLower = value.toLowerCase().trim();
 
-    let candidates = inStockVariants.filter((variant: any) => {
+    const candidates = (product?.variants || []).filter((variant: any) => {
       const variantValue = getAttributeValueCaseInsensitive(variant.attributes, attributeName);
       return variantValue !== undefined && String(variantValue).toLowerCase().trim() === targetValueLower;
     });
-
-    if (candidates.length === 0) {
-      candidates = (product?.variants || []).filter((variant: any) => {
-        const variantValue = getAttributeValueCaseInsensitive(variant.attributes, attributeName);
-        return variantValue !== undefined && String(variantValue).toLowerCase().trim() === targetValueLower;
-      });
-    }
 
     if (candidates.length === 0) return null;
 
@@ -146,8 +139,10 @@ const RightSide = ({ product, onVariantChange }: Props) => {
         }
       });
 
-      if (matches > maxMatches) {
-        maxMatches = matches;
+      const score = matches * 10 + (candidate.stock > 0 ? 1 : 0);
+
+      if (score > maxMatches) {
+        maxMatches = score;
         bestCandidate = candidate;
       }
     });
@@ -197,9 +192,26 @@ const RightSide = ({ product, onVariantChange }: Props) => {
   const price = getInclusivePrice(basePrice, gstPct);
   const discountPrice = baseDiscountPrice ? getInclusivePrice(baseDiscountPrice, gstPct) : undefined;
 
+  const currentStock = product?.variants?.length
+    ? (selectedVariant?.stock || 0)
+    : (product?.stock || 0);
+
+  const getStockStatus = (stock: number) => {
+    if (stock <= 0) return { label: "Sold Out", color: "text-red-600" };
+    if (stock < 10) return { label: "Limited Stock", color: "text-orange-600" };
+    return { label: "In Stock", color: "text-green-600" };
+  };
+
+  const stockInfo = getStockStatus(currentStock);
+
   const { addItem } = useCartStore();
 
   const handleAddToCart = () => {
+    if (currentStock <= 0) {
+      toast.error("This product is currently out of stock");
+      return;
+    }
+
     if (product.variants?.length && !selectedVariant) {
       toast.error("Please select product options");
       return;
@@ -310,6 +322,9 @@ const RightSide = ({ product, onVariantChange }: Props) => {
             ₹{price}{isFabric && <span className="text-sm font-normal text-gray-400 ml-1">/ {product.unit || "meter"}</span>}
           </p>
         )}
+        <p className={`text-sm font-medium ${stockInfo.color}`}>
+          {stockInfo.label}
+        </p>
       </div>
 
       {(product?.attributes || []).map((attribute: any) => {
@@ -327,11 +342,29 @@ const RightSide = ({ product, onVariantChange }: Props) => {
 
             <div className="grid grid-cols-4 gap-2">
               {values.map((value: string) => {
-                const hasAnyVariant = inStockVariants.some((v: any) => {
+                const hasAnyVariantGlobally = (product?.variants || []).some((v: any) => {
                   const val = getAttributeValueCaseInsensitive(v.attributes, attribute.name);
                   return val !== undefined && String(val).toLowerCase().trim() === value.toLowerCase().trim();
                 });
-                const isOutOfStock = !hasAnyVariant;
+                const isCompletelyInvalid = !hasAnyVariantGlobally;
+
+                const isOutOfStockForSelection = !(product?.variants || []).some((v: any) => {
+                  const val = getAttributeValueCaseInsensitive(v.attributes, attribute.name);
+                  if (val === undefined || String(val).toLowerCase().trim() !== value.toLowerCase().trim()) {
+                    return false;
+                  }
+                  
+                  let matchesOther = true;
+                  Object.entries(selectedAttributes).forEach(([selKey, selVal]) => {
+                    if (normalizeKey(selKey) === normalizeKey(attribute.name)) return;
+                    const vVal = getAttributeValueCaseInsensitive(v.attributes, selKey);
+                    if (vVal === undefined || String(vVal).toLowerCase().trim() !== String(selVal).toLowerCase().trim()) {
+                      matchesOther = false;
+                    }
+                  });
+                  
+                  return matchesOther && v.stock > 0;
+                });
 
                 const isSelected = (() => {
                   const currentVal = getAttributeValueCaseInsensitive(selectedAttributes, attribute.name);
@@ -341,7 +374,7 @@ const RightSide = ({ product, onVariantChange }: Props) => {
                 return (
                   <button
                     key={`${attribute.name}-${value}`}
-                    disabled={isOutOfStock}
+                    disabled={isCompletelyInvalid}
                     onClick={() => {
                       const matchedVariant = findBestMatchingVariant(
                         attribute.name,
@@ -363,9 +396,9 @@ const RightSide = ({ product, onVariantChange }: Props) => {
                       }
                     }}
                     className={`border px-3 py-2 transition ${isSelected
-                      ? "border border-black"
+                      ? "border-black border-2"
                       : "border-gray-200 hover:border-gray-400"
-                      } ${isOutOfStock ? "cursor-not-allowed opacity-40" : ""}`}
+                      } ${isCompletelyInvalid ? "hidden" : ""} ${!isSelected && isOutOfStockForSelection ? "opacity-40 line-through" : ""}`}
                   >
                     {value}
                   </button>
@@ -379,11 +412,11 @@ const RightSide = ({ product, onVariantChange }: Props) => {
       <div className="flex flex-col gap-3">
 
         <button
-          disabled={!isValid || (product?.variants?.length > 0 && !selectedVariant)}
+          disabled={!isValid || (product?.variants?.length > 0 && !selectedVariant) || currentStock <= 0}
           onClick={handleAddToCart}
-          className="bg-black py-2 text-white hover:bg-gray-800 disabled:bg-gray-400"
+          className="bg-black py-2 text-white hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed"
         >
-          Add To Cart
+          {currentStock <= 0 ? "Out of Stock" : "Add To Cart"}
         </button>
 
         <button

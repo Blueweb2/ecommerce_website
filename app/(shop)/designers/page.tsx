@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { getDesigners } from "@/lib/api/designer.api";
 import { bodoni, inter } from "@/lib/fonts";
+import { resolveImageSrc } from "@/lib/utils/image";
 import type { Designer } from "@/types/designer";
 
 const FALLBACK_AVATAR = "/placeholder.png";
@@ -32,7 +33,7 @@ function getDesignerHref(designer: Designer) {
 }
 
 function getDesignerAvatar(designer: Designer) {
-  return designer.avatar?.url || FALLBACK_AVATAR;
+  return resolveImageSrc(designer.avatar?.url, FALLBACK_AVATAR);
 }
 
 function groupDesigners(designers: Designer[]) {

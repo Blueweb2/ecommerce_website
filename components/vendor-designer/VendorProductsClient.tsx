@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { PackageSearch, Plus, Search } from "lucide-react";
 import { useVendorPortalData } from "@/hooks/useVendorPortalData";
+import { resolveImageSrc } from "@/lib/utils/image";
 
 function getCategoryLabel(category: unknown) {
   if (typeof category === "string") {
@@ -168,7 +169,7 @@ export default function VendorProductsClient() {
                       <div className="flex items-center gap-4">
                         <div className="relative h-14 w-14 overflow-hidden rounded-2xl bg-slate-100">
                           <Image
-                            src={product.images?.[0]?.url || "/placeholder.png"}
+                            src={resolveImageSrc(product.images?.[0]?.url)}
                             alt={product.name}
                             fill
                             className="object-cover"

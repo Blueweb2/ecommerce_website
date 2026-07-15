@@ -26,6 +26,7 @@ import { uploadSingleImage } from "@/lib/cloudinary/upload";
 import { updateDesigner } from "@/lib/api/admin/designer.api";
 import { useCategoryStore } from "@/store/admin/useCategoryStore";
 import { useDesignerProfileStore } from "@/store/designer/useDesignerProfileStore";
+import { resolveImageSrc } from "@/lib/utils/image";
 import type { Designer, DesignerImage, DesignerPayload } from "@/types/designer";
 
 type VendorProfileForm = Omit<DesignerPayload, "categories" | "name" | "brandName" | "description"> & {
@@ -297,7 +298,7 @@ export default function VendorProfileClient() {
         <div className="absolute inset-0">
           {form.bannerImage?.url ? (
             <Image
-              src={form.bannerImage.url}
+              src={resolveImageSrc(form.bannerImage.url)}
               alt={`${form.brandName} banner`}
               fill
               className="object-cover opacity-30"
@@ -311,7 +312,7 @@ export default function VendorProfileClient() {
             <div className="relative h-24 w-24 overflow-hidden rounded-[28px] border border-white/15 bg-white/10">
               {form.avatar?.url ? (
                 <Image
-                  src={form.avatar.url}
+                  src={resolveImageSrc(form.avatar.url)}
                   alt={form.name || "Designer avatar"}
                   fill
                   className="object-cover"

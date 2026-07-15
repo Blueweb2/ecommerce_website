@@ -6,13 +6,14 @@ import Link from "next/link";
 import toast from "react-hot-toast";
 import { Heart, PenSquare, Trash2 } from "lucide-react";
 import { useDesignerStore } from "@/store/admin/useDesignerStore";
+import { resolveImageSrc } from "@/lib/utils/image";
 import type { Designer, DesignerImage } from "@/types/designer";
 
 const FALLBACK_BANNER = "/home/herosection/hero-right-top.png";
 const FALLBACK_AVATAR = "/placeholder.png";
 
 function resolveImage(image?: DesignerImage | null, fallback = FALLBACK_AVATAR) {
-  return image?.url || fallback;
+  return resolveImageSrc(image?.url, fallback);
 }
 
 function StatusBadge({
