@@ -92,7 +92,7 @@ export default function TopStories() {
 
         {/* STORIES */}
         <div className="flex gap-6 lg:gap-3 overflow-x-auto scrollbar-hide scroll-smooth lg:grid lg:grid-cols-6 pb-14 text-[#5C5A58]">
-          {stories.map((story) => (
+          {stories.slice(0, 6).map((story) => (
             <div
               key={story._id}
               className="min-w-[200px] lg:w-full lg:min-w-0 flex flex-col justify-between"

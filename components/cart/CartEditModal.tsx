@@ -239,7 +239,7 @@ export default function CartEditModal({
 
             {/* DETAILS */}
             <Link
-              href={`/products/${item.slug || item.productId}`}
+              href={`/product/${item.slug || item.productId}`}
               className="mx-auto mt-5 border-b border-black pb-[1px] text-[15px] text-black transition hover:opacity-60"
             >
               View more details

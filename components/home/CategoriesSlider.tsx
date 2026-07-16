@@ -65,10 +65,10 @@ export default function CategoriesSlider() {
     );
   };
 
-  const handleScroll = (position:number) => {
-    if(scrollRef.current){
+  const handleScroll = (position: number) => {
+    if (scrollRef.current) {
       scrollRef.current.scrollBy({
-        left:  position,
+        left: position,
         behavior: "smooth"
       })
     }
@@ -117,8 +117,10 @@ export default function CategoriesSlider() {
                         sizes="(max-width: 768px) 200px, 290px"
                         className="object-cover"
                       />
-                      <h3 className="absolute inset-0 flex items-center justify-center text-white bg-black/30">
-                        {cat.name}
+                      <h3 className="absolute inset-0 capitalize flex items-center justify-center text-white bg-black/30">
+                        {cat.name
+                          ?.toLowerCase()
+                          .replace(/\b\w/g, (char) => char.toUpperCase())}
                       </h3>
                     </div>
                   </Link>
