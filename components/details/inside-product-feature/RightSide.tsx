@@ -298,7 +298,7 @@ const RightSide = ({ product, onVariantChange }: Props) => {
           {product?.brand || product?.designer?.brandName || product?.designer?.name}
         </h1>
         {(product?.brand || product?.designer?.brandName || product?.designer?.name) && (
-          <p className={`${inter.className} mb-2 text-[11px] uppercase text-[#8D8B9D]`}>
+          <p className={`${inter.className} mb-2 text-sm text-[#8D8B9D]`}>
             {product?.name}
           </p>
         )}
