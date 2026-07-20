@@ -6,9 +6,22 @@ export default function StoryProducts({ products }: { products: Product[] }) {
 
   return (
     <div className="mt-8 mb-16">
-      <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide md:grid md:grid-cols-3 lg:grid-cols-4 md:gap-6 md:overflow-visible">
+      <div
+        className="
+    grid
+    grid-cols-2
+    gap-x-8
+    gap-y-16
+    justify-items-center
+    max-w-[650px]
+    mx-auto
+  "
+      >
         {products.map((product) => (
-          <div key={product._id} className="flex-shrink-0">
+          <div
+            key={product._id}
+            className="w-full max-w-[250px]"
+          >
             <EditorialProductCard product={product} />
           </div>
         ))}
