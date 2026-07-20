@@ -13,6 +13,7 @@
     "@tiptap/react": "^3.22.4",
     "@tiptap/starter-kit": "^3.22.4",
     "axios": "^1.17.0",
+    "date-fns": "^4.4.0",
     "firebase": "^12.14.0",
     "html2canvas": "^1.4.1",
     "jspdf": "^4.2.1",

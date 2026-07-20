@@ -8,17 +8,48 @@ import { bodoni, inter } from "@/lib/fonts";
 import { resolveImageSrc } from "@/lib/utils/image";
 import { headingClassName } from "../ui/headingClassNames";
 
+// type Story = {
+//   _id: string;
+//   title: string;
+//   description: string;
+//   category: string;
+//   image: {
+//     url: string;
+//     public_id: string;
+//     alt?: string;
+//   };
+//   slug: string;
+// };
+
 type Story = {
   _id: string;
   title: string;
-  description: string;
+  slug: string;
   category: string;
-  image: {
+
+  description?: string;
+  excerpt?: string;
+
+  image?: {
     url: string;
-    public_id: string;
+    public_id?: string;
     alt?: string;
   };
-  slug: string;
+
+  heroImage?: {
+    url: string;
+    public_id?: string;
+    alt?: string;
+  };
+
+  sections?: {
+    heading?: string;
+    content?: string;
+    image?: {
+      url: string;
+      alt?: string;
+    };
+  }[];
 };
 
 export default function TopStories() {
@@ -26,8 +57,38 @@ export default function TopStories() {
   const [stories, setStories] = useState<Story[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const stripHtml = (html: string) => {
-    return html.replace(/<[^>]+>/g, "");
+  const stripHtml = (html?: string) => {
+    return (html ?? "").replace(/<[^>]+>/g, "");
+  };
+
+  const getStoryImage = (story: Story) => {
+    return (
+      story.heroImage?.url ||
+      story.image?.url ||
+      story.sections?.find(section => section.image)?.image?.url ||
+      ""
+    );
+  };
+
+  const getStoryAlt = (story: Story) => {
+    return (
+      story.heroImage?.alt ||
+      story.image?.alt ||
+      story.title
+    );
+  };
+
+  const getStoryPreview = (story: Story) => {
+    return (
+      story.excerpt ||
+      story.description ||
+      story.sections?.find(section => section.content)?.content ||
+      ""
+    );
+  };
+
+  const getStoryCategory = (story: Story) => {
+    return story.category || "EDITORIAL";
   };
 
   useEffect(() => {
@@ -103,8 +164,8 @@ export default function TopStories() {
                 className="flex justify-center h-80 2xl:h-90 mb-4 relative overflow-hidden"
               >
                 <Image
-                  src={resolveImageSrc(story.image?.url)}
-                  alt={story.image?.alt || story.title}
+                  src={resolveImageSrc(getStoryImage(story))}
+                  alt={getStoryAlt(story)}
                   fill
                   sizes="200px"
                   className="object-cover"
@@ -114,11 +175,11 @@ export default function TopStories() {
               {/* CONTENT */}
               <div className="mr-8">
                 <h3 className={`${inter.className} text-sm font-semibold mb-2 lowercase`}>
-                  {story.category}
+                  {getStoryCategory(story)}
                 </h3>
                 <div className="text-xs space-y-2">
                   <p className={`${inter.className} mt-3 min-h-[3rem] line-clamp-3`}>
-                    {stripHtml(story.description)}
+                    {stripHtml(getStoryPreview(story))}
                   </p>
                 </div>
               </div>

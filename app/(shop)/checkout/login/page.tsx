@@ -10,7 +10,7 @@ import { bodoni, inter } from "@/lib/fonts";
 import { setStoredCheckoutMode, setGuestCheckoutEmail } from "@/lib/utils/checkoutSession";
 import { useAuthStore } from "@/store/auth/useAuthStore";
 import { useCartStore } from "@/store/user/cart/useCartStore";
-import toast from "react-hot-toast";
+import {toast} from "react-hot-toast";
 
 export default function CheckoutLoginPage() {
   const router = useRouter();

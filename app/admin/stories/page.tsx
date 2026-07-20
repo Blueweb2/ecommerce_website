@@ -1,31 +1,32 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { RefreshCw, BookOpen } from "lucide-react";
 import { getStories } from "@/lib/api/admin/story.api";
 import StoryForm from "@/components/admin/story/StoryForm";
 import StoryList from "@/components/admin/story/StoryList";
 import toast from "react-hot-toast";
+import type { Story } from "@/types/story";
 
 export default function StoriesPage() {
-  const [stories, setStories] = useState<any[]>([]);
+  const [stories, setStories] = useState<Story[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchStories = async () => {
+  const fetchStories = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await getStories();
-      setStories(Array.isArray(res.data?.data) ? res.data.data : []);
+      const response = await getStories();
+      setStories(response.data.data);
     } catch {
       toast.error("Failed to load stories");
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
-    fetchStories();
-  }, []);
+    void fetchStories();
+  }, [fetchStories]);
 
   if (loading) {
     return (
