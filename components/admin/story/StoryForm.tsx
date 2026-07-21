@@ -9,6 +9,10 @@ import { createStory, updateStory } from "@/lib/api/admin/story.api";
 import ImageUpload from "@/components/admin/ui/ImageUpload";
 import SectionBuilder from "./SectionBuilder";
 import {
+  STORY_CATEGORIES,
+  DEFAULT_STORY_CATEGORY_SLUG,
+} from "@/lib/constants/storyCategories";
+import {
   type Story,
   type StoryFieldErrors,
   type StoryPayload,
@@ -52,7 +56,13 @@ function parseFieldErrors(
   for (const [key, value] of Object.entries(errors)) {
     const field = key.split(".")[0] as keyof StoryFieldErrors;
     const message = getTextError(value);
-    if (message && (field === "title" || field === "heroImage" || field === "excerpt")) {
+    if (
+      message &&
+      (field === "title" ||
+        field === "category" ||
+        field === "heroImage" ||
+        field === "excerpt")
+    ) {
       nextErrors[field] = message;
     }
   }
@@ -79,6 +89,7 @@ function getApiErrorDetails(error: unknown, fallbackMessage: string) {
 
 const DEFAULT_FORM: StoryPayload = {
   title: "",
+  category: DEFAULT_STORY_CATEGORY_SLUG,
   excerpt: "",
   author: "",
   publishDate: "",
@@ -129,6 +140,7 @@ export default function StoryForm({
 
     setForm({
       title: initialData.title || "",
+      category: initialData.category ?? DEFAULT_STORY_CATEGORY_SLUG,
       excerpt: initialData.excerpt || "",
       author: initialData.author || "",
       publishDate: initialData.publishDate
@@ -177,6 +189,7 @@ export default function StoryForm({
   const validateForm = () => {
     const errors: StoryFieldErrors = {};
     if (!form.title.trim()) errors.title = "Title is required";
+    if (!form.category) errors.category = "Category is required";
     if (!selectedHeroImage && !form.heroImage?.url)
       errors.heroImage = "Please choose a hero image";
     setFieldErrors(errors);
@@ -210,6 +223,7 @@ export default function StoryForm({
 
       const payload: StoryPayload = {
         title: form.title.trim(),
+        category: form.category,
         excerpt: form.excerpt?.trim(),
         author: form.author?.trim(),
         publishDate: form.publishDate || undefined,
@@ -246,10 +260,7 @@ export default function StoryForm({
   // ---------------------------------------------------------------------------
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="space-y-6"
-    >
+    <form onSubmit={handleSubmit} className="space-y-6">
       {/* ── Story Metadata ─────────────────────────────────── */}
       <div className="rounded-[24px] border border-slate-200 bg-white p-6 shadow-sm space-y-5">
         <div className="space-y-1">
@@ -271,7 +282,9 @@ export default function StoryForm({
 
         {/* Title */}
         <div className="space-y-1.5">
-          <label className="text-sm font-medium text-slate-700">Title</label>
+          <label className="text-sm font-medium text-slate-700">
+            Title <span className="text-rose-500">*</span>
+          </label>
           <input
             value={form.title}
             onChange={(e) => {
@@ -286,6 +299,36 @@ export default function StoryForm({
           />
           {fieldErrors.title && (
             <p className="text-xs font-medium text-rose-600">{fieldErrors.title}</p>
+          )}
+        </div>
+
+        {/* Category */}
+        <div className="space-y-1.5">
+          <label className="text-sm font-medium text-slate-700">
+            Category <span className="text-rose-500">*</span>
+          </label>
+          <select
+            value={form.category}
+            onChange={(e) => {
+              setForm((prev) => ({
+                ...prev,
+                category: e.target.value as StoryPayload["category"],
+              }));
+              clearFieldError("category");
+              setFormError("");
+            }}
+            className={`w-full rounded-2xl border bg-slate-50 px-4 py-3 text-sm outline-none focus:border-[#12251a] focus:ring-1 focus:ring-[#12251a] appearance-none ${
+              fieldErrors.category ? "border-rose-300 bg-rose-50" : "border-slate-200"
+            }`}
+          >
+            {STORY_CATEGORIES.map((cat) => (
+              <option key={cat.slug} value={cat.slug}>
+                {cat.label}
+              </option>
+            ))}
+          </select>
+          {fieldErrors.category && (
+            <p className="text-xs font-medium text-rose-600">{fieldErrors.category}</p>
           )}
         </div>
 
@@ -336,7 +379,9 @@ export default function StoryForm({
 
         {/* Hero Image */}
         <div className="space-y-1.5">
-          <label className="text-sm font-medium text-slate-700">Hero Image</label>
+          <label className="text-sm font-medium text-slate-700">
+            Hero Image <span className="text-rose-500">*</span>
+          </label>
           <ImageUpload
             multiple={false}
             showPreview={false}

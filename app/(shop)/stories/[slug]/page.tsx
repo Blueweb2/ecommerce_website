@@ -2,6 +2,8 @@ import { getStoryBySlug } from "@/lib/api/story.api";
 import StoryHero from "@/components/story/StoryHero";
 import StorySectionRenderer from "@/components/story/StorySectionRenderer";
 import StoryFooter from "@/components/story/StoryFooter";
+import EditorialHeader from "@/components/editorial/EditorialHeader";
+import EditorialCategoryNavigation from "@/components/editorial/EditorialCategoryNavigation";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -50,7 +52,9 @@ export default async function StoryDetailPage({ params }: Props) {
   }
 
   return (
-    <section className="bg-[#fcfbf9] min-h-screen pt-24 pb-10">
+    <section className="min-h-screen bg-[#fcfbf9] pb-10">
+      <EditorialHeader />
+      <EditorialCategoryNavigation currentCategory={story.category ?? ""} />
       <StoryHero
         title={story.title}
         excerpt={story.excerpt}

@@ -2,32 +2,28 @@ import ImageLeftSection from "./ImageLeftSection";
 import ImageRightSection from "./ImageRightSection";
 import FullImageSection from "./FullImageSection";
 import TextSection from "./TextSection";
-
-type StorySection = {
-  _id: string;
-  layout: "image-left" | "image-right" | "full-image" | "text";
-  heading?: string;
-  content?: string;
-  image?: { url: string; alt?: string };
-  caption?: string;
-  products?: any[];
-};
+import type { StorySection } from "@/types/story";
+import type { Product } from "@/types/product";
 
 export default function StorySectionRenderer({ sections }: { sections: StorySection[] }) {
   if (!sections || sections.length === 0) return null;
 
   return (
     <div className="flex flex-col w-full">
-      {sections.map((section) => {
+      {sections.map((section, index) => {
+        const apiProducts: unknown[] = section.products ?? [];
+        const products = apiProducts.filter(
+          (product): product is Product => typeof product !== "string"
+        );
         switch (section.layout) {
           case "image-left":
-            return <ImageLeftSection key={section._id} {...section} />;
+            return <ImageLeftSection key={section._id ?? index} {...section} products={products} />;
           case "image-right":
-            return <ImageRightSection key={section._id} {...section} />;
+            return <ImageRightSection key={section._id ?? index} {...section} products={products} />;
           case "full-image":
-            return <FullImageSection key={section._id} {...section} />;
+            return <FullImageSection key={section._id ?? index} {...section} />;
           case "text":
-            return <TextSection key={section._id} {...section} />;
+            return <TextSection key={section._id ?? index} {...section} />;
           default:
             return null;
         }

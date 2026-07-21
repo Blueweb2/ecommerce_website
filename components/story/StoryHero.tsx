@@ -5,10 +5,10 @@ import { headingClassName } from "@/components/ui/headingClassNames";
 type StoryHeroProps = {
   title: string;
   excerpt?: string;
-  heroImage: {
+  heroImage?: {
     url: string;
     alt?: string;
-  };
+  } | null;
   author?: string;
   publishDate?: string;
 };
@@ -24,14 +24,14 @@ export default function StoryHero({
     <div className="relative w-full mb-16 lg:mb-24">
       {/* Hero Image */}
       <div className="relative w-full h-[60vh] md:h-[75vh] lg:h-[85vh] overflow-hidden bg-[#ebe6de]">
-        <Image
+        {heroImage?.url && <Image
           src={heroImage.url}
           alt={heroImage.alt || title}
           fill
           priority
           sizes="100vw"
           className="object-cover transition duration-700 hover:scale-105"
-        />
+        />}
       </div>
 
       {/* Hero Content */}

@@ -7,6 +7,7 @@ import { getStories } from "@/lib/api/story.api";
 import { bodoni, inter } from "@/lib/fonts";
 import { resolveImageSrc } from "@/lib/utils/image";
 import { headingClassName } from "../ui/headingClassNames";
+import type { Story } from "@/types/story";
 
 // type Story = {
 //   _id: string;
@@ -20,37 +21,6 @@ import { headingClassName } from "../ui/headingClassNames";
 //   };
 //   slug: string;
 // };
-
-type Story = {
-  _id: string;
-  title: string;
-  slug: string;
-  category: string;
-
-  description?: string;
-  excerpt?: string;
-
-  image?: {
-    url: string;
-    public_id?: string;
-    alt?: string;
-  };
-
-  heroImage?: {
-    url: string;
-    public_id?: string;
-    alt?: string;
-  };
-
-  sections?: {
-    heading?: string;
-    content?: string;
-    image?: {
-      url: string;
-      alt?: string;
-    };
-  }[];
-};
 
 export default function TopStories() {
 

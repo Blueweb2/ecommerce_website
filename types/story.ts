@@ -1,13 +1,27 @@
-// Story section layout types
+// types/story.ts
+
+import type { StoryCategorySlug } from "@/lib/constants/storyCategories";
+import type { Product } from "./product";
+
+export type { StoryCategorySlug };
+
+// ---------------------------------------------------------------------------
+// Section layout
+// ---------------------------------------------------------------------------
 export type SectionLayout = "image-left" | "image-right" | "full-image" | "text";
 
+// ---------------------------------------------------------------------------
+// Image
+// ---------------------------------------------------------------------------
 export type StoryImage = {
   url: string;
   public_id: string;
   alt?: string;
-  altText?: string;
 };
 
+// ---------------------------------------------------------------------------
+// Section
+// ---------------------------------------------------------------------------
 export type StorySection = {
   _id?: string;
   layout: SectionLayout;
@@ -15,40 +29,49 @@ export type StorySection = {
   content?: string;
   image?: StoryImage;
   caption?: string;
-  products?: string[]; // ObjectIds when editing, full product objects when fetched
+  /** ObjectIds when editing, full product objects when fetched */
+  products?: string[] | Product[];
   order: number;
 };
 
+// ---------------------------------------------------------------------------
+// Story
+// ---------------------------------------------------------------------------
 export type Story = {
   _id: string;
   title: string;
-  slug?: string;
+  slug: string;
+  category: StoryCategorySlug;
   excerpt?: string;
   author?: string;
   publishDate?: string;
-  featured?: boolean;
-  heroImage?: StoryImage | null;
-  sections?: StorySection[];
+  featured: boolean;
+  heroImage: StoryImage;
+  sections: StorySection[];
   isActive: boolean;
-  createdAt?: string;
-  updatedAt?: string;
-  // Legacy (kept for backward-compat, will be removed after migration)
-  description?: string;
-  category?: string;
-  image?: StoryImage | null;
+  createdAt: string;
+  updatedAt: string;
 };
 
+// ---------------------------------------------------------------------------
+// Payload (create / update)
+// ---------------------------------------------------------------------------
 export type StoryPayload = {
   title: string;
+  slug?: string;
+  category: StoryCategorySlug;
   excerpt?: string;
   author?: string;
   publishDate?: string;
-  featured?: boolean;
+  featured: boolean;
   heroImage?: StoryImage;
-  sections?: StorySection[];
+  sections: StorySection[];
   isActive: boolean;
 };
 
+// ---------------------------------------------------------------------------
+// Form validation errors
+// ---------------------------------------------------------------------------
 export type StoryFieldErrors = Partial<
-  Record<"title" | "excerpt" | "heroImage" | "sections", string>
+  Record<"title" | "category" | "excerpt" | "heroImage" | "sections", string>
 >;
