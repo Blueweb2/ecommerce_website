@@ -18,7 +18,7 @@ export default function EditorialCategoryNavigation({ currentCategory }: Props) 
   const activeCategory = toCategorySlug(currentCategory);
 
   return (
-    <nav aria-label="Editorial categories" className="border-b border-stone-200 bg-white">
+    <nav aria-label="Editorial categories">
       <div className="scrollbar-hide mx-auto flex max-w-7xl snap-x items-center justify-start gap-6 overflow-x-auto px-5 py-4 sm:justify-center sm:gap-7 lg:gap-8">
         {STORY_CATEGORIES.map((category) => {
           const isActive = category.slug === activeCategory;
@@ -28,11 +28,7 @@ export default function EditorialCategoryNavigation({ currentCategory }: Props) 
               key={category.slug}
               href={`/editorial/${category.slug}`}
               aria-current={isActive ? "page" : undefined}
-              className={`shrink-0 snap-start border-b pb-1 font-brand-sans text-[10px] uppercase tracking-[0.16em] transition-colors duration-200 ${
-                isActive
-                  ? "border-stone-950 font-bold text-stone-950"
-                  : "border-transparent font-medium text-stone-600 hover:text-stone-950 focus-visible:border-stone-950 focus-visible:text-stone-950 focus-visible:outline-none"
-              }`}
+              className="shrink-0 snap-start border-b pb-1 font-brand-sans text-[11px] uppercase tracking-[0.10em] transition-colors duration-200 border-transparent font-bold text-stone-950 hover:text-stone-600"
             >
               {category.label}
             </Link>
