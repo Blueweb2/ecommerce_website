@@ -208,14 +208,11 @@ function CategoryPage({
     <>
       <EditorialHeader />
       <EditorialCategoryNavigation currentCategory={slug} />
-      <main className="mx-auto max-w-7xl px-5 py-12 sm:py-16">
-        <header className="mb-12 border-b border-stone-200 pb-8 text-center">
-          <p className="font-brand-sans text-[10px] font-semibold uppercase tracking-[0.2em] text-stone-500">
-            The Zenfaz Edit
-          </p>
-          <h1 className="mt-3 font-brand-display text-5xl text-stone-950 sm:text-7xl">
+      <main className="max-w-[2000px] mx-auto px-4 md:px-10 lg:px-32">
+        <header className="text-center">
+          <h3 className="mt-3 font-brand-display text-stone-950 sm:text-3xl uppercase">
             {category.label}
-          </h1>
+          </h3>
         </header>
 
         {featured || stories.length > 0 ? (
