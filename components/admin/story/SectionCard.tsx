@@ -45,6 +45,10 @@ export default function SectionCard({
   const update = (patch: Partial<StorySection>) =>
     onChange({ ...section, ...patch });
 
+  const selectedProductIds = (section.products ?? []).map((product) =>
+    typeof product === "string" ? product : product._id
+  );
+
   const handleImageFile = async (files: File[]) => {
     const file = files[0];
     if (!file) return;
@@ -206,7 +210,7 @@ export default function SectionCard({
             </button>
             {showProducts && (
               <ProductSelector
-                selectedIds={section.products ?? []}
+                selectedIds={selectedProductIds}
                 onChange={(ids) => update({ products: ids })}
               />
             )}

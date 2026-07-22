@@ -34,7 +34,6 @@ export default function TopStories() {
   const getStoryImage = (story: Story) => {
     return (
       story.heroImage?.url ||
-      story.image?.url ||
       story.sections?.find(section => section.image)?.image?.url ||
       ""
     );
@@ -43,7 +42,6 @@ export default function TopStories() {
   const getStoryAlt = (story: Story) => {
     return (
       story.heroImage?.alt ||
-      story.image?.alt ||
       story.title
     );
   };
@@ -51,7 +49,6 @@ export default function TopStories() {
   const getStoryPreview = (story: Story) => {
     return (
       story.excerpt ||
-      story.description ||
       story.sections?.find(section => section.content)?.content ||
       ""
     );

@@ -7,7 +7,7 @@ import { formatStoryDate, getStoryImage, storyCategoryLabel } from "./StoryCard"
 export default function FeaturedStory({ story }: { story: Story }) {
   return <article className="grid items-center gap-8 lg:grid-cols-[1.55fr_0.85fr] lg:gap-14">
     <Link href={`/editorial/${story.slug ?? story._id}`} className="group relative block aspect-[5/4] overflow-hidden bg-stone-100">
-      <Image src={resolveImageSrc(getStoryImage(story))} alt={story.heroImage?.alt || story.image?.alt || story.title} fill priority sizes="(min-width: 1024px) 62vw, 100vw" className="object-cover transition-transform duration-700 group-hover:scale-[1.025]" />
+      <Image src={resolveImageSrc(getStoryImage(story))} alt={story.heroImage?.alt || story.title} fill priority sizes="(min-width: 1024px) 62vw, 100vw" className="object-cover transition-transform duration-700 group-hover:scale-[1.025]" />
     </Link>
     <div className="max-w-md py-2 lg:py-8">
       <p className="font-brand-sans text-[10px] font-semibold uppercase tracking-[0.2em] text-stone-500">{storyCategoryLabel(story)}</p>

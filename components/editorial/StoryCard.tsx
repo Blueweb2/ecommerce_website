@@ -3,7 +3,7 @@ import Link from "next/link";
 import type { Story } from "@/types/story";
 import { resolveImageSrc } from "@/lib/utils/image";
 
-export const getStoryImage = (story: Story) => story.heroImage?.url ?? story.image?.url ?? story.sections?.find((section) => section.image)?.image?.url;
+export const getStoryImage = (story: Story) => story.heroImage?.url ?? story.sections?.find((section) => section.image)?.image?.url;
 export const formatStoryDate = (value?: string) => value ? new Intl.DateTimeFormat("en", { day: "numeric", month: "long", year: "numeric" }).format(new Date(value)) : "";
 export const storyCategoryLabel = (story: Story) => story.category || "Editorial";
 
@@ -13,7 +13,7 @@ export default function StoryCard({ story, priority = false }: { story: Story; p
     <article className="group animate-[fadeIn_600ms_ease-out_both]">
       <Link href={`/editorial/${story.slug ?? story._id}`} className="block overflow-hidden bg-stone-100">
         <div className="relative aspect-[4/5]">
-          <Image src={resolveImageSrc(image)} alt={story.heroImage?.alt || story.image?.alt || story.title} fill priority={priority} sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 100vw" className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.035]" />
+          <Image src={resolveImageSrc(image)} alt={story.heroImage?.alt || story.title} fill priority={priority} sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 100vw" className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.035]" />
         </div>
       </Link>
       <div className="pt-5">
