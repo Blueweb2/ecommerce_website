@@ -20,7 +20,7 @@ export default function StoryProducts({ products }: { products: Product[] }) {
         {products.map((product) => (
           <div
             key={product._id}
-            className="w-full max-w-[250px]"
+            className="w-full max-w-[180px]"
           >
             <EditorialProductCard product={product} />
           </div>

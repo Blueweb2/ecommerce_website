@@ -23,7 +23,7 @@ export default function ProductCardView({
             </p>
           )}
 
-          <h3 className="mt-2 text-[13px] text-[#444] leading-5 line-clamp-2">
+          <h3 className="mt-2 text-[10px] text-[#444] leading-5 line-clamp-2">
             {product.name}
           </h3>
         </div>
@@ -34,9 +34,9 @@ export default function ProductCardView({
           onClick={onExpand}
           className="group flex flex-col items-center"
         >
-          <span className="text-[38px] font-extralight">+</span>
+          <span className="text-[28px] font-extralight">+</span>
 
-          <span className="w-8 border-t border-black mt-1 transition-all group-hover:w-10" />
+          <span className="w-6 border-t border-black mt-1 transition-all group-hover:w-10" />
         </button>
       </div>
     </>
