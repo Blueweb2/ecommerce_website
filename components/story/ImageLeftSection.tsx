@@ -20,9 +20,9 @@ export default function ImageLeftSection({
 }: ImageLeftSectionProps) {
   return (
     <div className="mx-auto max-w-[1400px] px-4 md:px-10 lg:px-20 my-16 lg:my-28">
-      <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-10 lg:gap-20 items-center">
+      <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-10 lg:gap-20">
         {/* Left Side: Image */}
-        <div className="relative w-full">
+        <div className="relative w-full lg:sticky lg:top-24 lg:self-start">
           {image?.url && (
             <div className="relative aspect-[4/5] bg-[#ebe6de]">
               <Image

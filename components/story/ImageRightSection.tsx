@@ -39,7 +39,7 @@ export default function ImageRightSection({
         </div>
 
         {/* Right Side: Image */}
-        <div className="relative w-full order-1 lg:order-2">
+        <div className="relative w-full order-1 lg:order-2 lg:sticky lg:top-24 lg:self-start">
           {image?.url && (
             <div className="relative aspect-[4/5] bg-[#ebe6de]">
               <Image
