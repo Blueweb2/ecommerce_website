@@ -52,13 +52,12 @@ export default async function StoryDetailPage({ params }: Props) {
   }
 
   return (
-    <section className="min-h-screen bg-[#fcfbf9] pb-10">
+    <section className="min-h-screen py-8 mt-12 md:mt-20 lg:mt-[109px] mx-auto max-w-[2000px] px-4 md:px-10 lg:px-20">
       <EditorialHeader />
       <EditorialCategoryNavigation currentCategory={story.category ?? ""} />
       <StoryHero
         title={story.title}
         excerpt={story.excerpt}
-        heroImage={story.heroImage}
         author={story.author}
         publishDate={story.publishDate}
       />
