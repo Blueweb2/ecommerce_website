@@ -7,7 +7,7 @@ export const getStoryImage = (story: Story) => story.heroImage?.url ?? story.sec
 export const formatStoryDate = (value?: string) => value ? new Intl.DateTimeFormat("en", { day: "numeric", month: "long", year: "numeric" }).format(new Date(value)) : "";
 export const storyCategoryLabel = (story: Story) => story.category || "Editorial";
 
-export default function StoryCard({ story, priority = false, index }: { story: Story; priority?: boolean, index: Number }) {
+export default function StoryCard({ story, priority = false, index }: { story: Story; priority?: boolean, index: number }) {
 
   const image = getStoryImage(story);
   const stepMargin = index % 3;
